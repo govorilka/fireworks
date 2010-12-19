@@ -6,7 +6,8 @@
 
 QT       -= gui
 
-TARGET = fireworks
+TARGET = ../bin/fireworks
+
 TEMPLATE = lib
 
 DEFINES += FIREWORKS_LIBRARY
@@ -17,4 +18,4 @@ SOURCES += fireworks.cpp
 
 HEADERS += fireworks.h
 
-include (core/core.pri)
+include (fwcore/fwcore.pri)

@@ -1,7 +1,7 @@
 #ifndef FIREWORKS_ML_INL_H
 #define FIREWORKS_ML_INL_H
 
-#include "core/fwml.h"
+#include "fwcore/fwml.h"
 
 FwMLNode::Type FwMLNode::type() const
 {

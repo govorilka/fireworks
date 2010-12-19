@@ -2,9 +2,12 @@
 
 #include "mainwindow.h"
 
+#include "fwcore/fwml.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     BaseClass(parent),
-    m_treeView(0)
+    m_treeView(0),
+    m_rootObject(0)
 {
     m_treeView = new QTreeWidget(this);
 
@@ -18,6 +21,13 @@ MainWindow::MainWindow(QWidget *parent) :
     itemBackground->setText(0, "background");
 
     setCentralWidget(m_treeView);
+
+    QByteArray fwml = "\"Scene\" : {\n"
+                      "\"background\" : \"1.png\" \n"
+                      "}";
+
+    m_rootObject = new FwMLObject();
+    m_rootObject->parse(fwml);
 }
 
 MainWindow::~MainWindow()

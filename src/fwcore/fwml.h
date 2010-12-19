@@ -98,6 +98,9 @@ public:
 
     QByteArray toUtf8() const;
 
+    bool parse(const QByteArray& utf8String);
+    bool parse(QIODevice* ioDevice);
+
 private:
     QHash<QByteArray, FwMLNode*> m_attributes;
 };
@@ -117,6 +120,5 @@ public:
 };
 
 #include "fwml_inl.h"
-
 
 #endif // FIREWORKS_ML_H

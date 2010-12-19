@@ -5,6 +5,8 @@
 
 class QTreeWidget;
 
+class FwMLObject;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -16,6 +18,7 @@ public:
 
 private:
     QTreeWidget* m_treeView;
+    FwMLObject* m_rootObject;
 };
 
 #endif // MAINWINDOW_H

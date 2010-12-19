@@ -1,4 +1,46 @@
+#include <QtCore/qbuffer.h>
+#include <QtCore/qiodevice.h>
+#include <QtCore/qdebug.h>
+
 #include "fwml.h"
+
+namespace
+{
+    enum CharsType
+    {
+        C_Unknow = 0, //Unknow
+        C_Alpha,      //Alpha (A..Z, a..z)
+        C_QuMark,     //Quotation mark (")
+
+    };
+
+    const char chars_type[128] = {
+
+          /* 0  */  /* 1  */  /* 2  */  /* 3  */  /* 4  */  /* 5  */  /* 6  */  /* 7  */
+/*  0 */  C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow,
+/*  8 */  C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow,
+/* 16 */  C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow,
+/* 24 */  C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow,
+
+/* 32 */  C_Unknow, C_Unknow, C_QuMark, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow,
+/* 40 */  C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow,
+/* 48 */  C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow,
+/* 56 */  C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow,
+
+/* 64 */  C_Unknow, C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,
+/* 72 */  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,
+/* 80 */  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,
+/* 88 */  C_Alpha,  C_Alpha,  C_Alpha,  C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow,
+
+/* 96 */  C_Unknow, C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,
+/* 104*/  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,
+/* 112*/  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,  C_Alpha,
+/* 120*/  C_Alpha,  C_Alpha,  C_Alpha,  C_Unknow, C_Unknow, C_Unknow, C_Unknow, C_Unknow,
+
+    };
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 FwMLNode::FwMLNode(Type type) :
     m_type(type)
@@ -131,6 +173,55 @@ QByteArray FwMLObject::toUtf8() const
     }
 
     return "{" + attributes + "}";
+}
+
+/*!
+Разбирает данные, переданные в параметре utf8String, и строит по ним дерево.
+\param utf8String Строка в формате FwML
+\return Возвращает true, если данные разобраны успешно
+\sa FwMLObject::parse(const QIODevice* ioDevice)
+\note Если функцию передана пустая строка функция вернёт false
+*/
+bool FwMLObject::parse(const QByteArray& utf8String)
+{
+    if(!utf8String.isEmpty())
+    {
+        QByteArray tmpStr = utf8String;
+        QBuffer buffer(&tmpStr);
+        return parse(&buffer);
+    }
+    return false;
+}
+
+/*!
+Разбирает данные прочитанные из QIODevice и строит по ним дерево.
+\param ioDevice Указатель на QIODevice из которого будут прочитаны данные
+\return Возвращает true, если данные разобраны успешно
+\sa FwMLObject::parse(const QByteArray& utf8String)
+*/
+bool FwMLObject::parse(QIODevice* ioDevice)
+{
+    if(ioDevice->open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        while(!ioDevice->atEnd())
+        {
+            QByteArray line = ioDevice->readLine().trimmed();
+            if(!line.isEmpty())
+            {
+                qDebug() << line;
+                foreach(char c, line)
+                {
+                    if(c < 128)
+                    {
+                        char type = chars_type[c];
+                        qDebug() << c << static_cast<int>(type);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

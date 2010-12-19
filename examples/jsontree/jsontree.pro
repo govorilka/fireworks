@@ -6,9 +6,14 @@
 
 QT       += core gui
 
-TARGET = jsontree
+TARGET = ../../bin/jsontree
+
 TEMPLATE = app
 
+INCLUDEPATH += ../../src/
+
+LIBS += -L../../bin \
+        -lfireworks
 
 SOURCES += main.cpp\
         mainwindow.cpp
