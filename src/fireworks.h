@@ -9,7 +9,8 @@
 #  define FIREWORKSSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
-class FIREWORKSSHARED_EXPORT Fireworks {
+class FIREWORKSSHARED_EXPORT Fireworks
+{
 public:
     Fireworks();
 };

@@ -11,6 +11,10 @@ TEMPLATE = lib
 
 DEFINES += FIREWORKS_LIBRARY
 
+INCLUDEPATH += .
+
 SOURCES += fireworks.cpp
 
 HEADERS += fireworks.h
+
+include (core/core.pri)
