@@ -16,7 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(m_treeView);
 
     QByteArray fwml = "\"Scene\" : {\n"
-                      "\"background\" : \"123.png\" \n"
+                      "\"background\" : \"123.png\"; \n"
+                      "\"size\" : \"1000 x 1000\", \n"
                       "}";
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);

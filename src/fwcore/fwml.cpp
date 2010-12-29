@@ -33,6 +33,7 @@ namespace
         C_RCu,     //End-object, right curly bracket (})
         C_Poi,     //Decimal point (.)
         C_Uni,     //Unicode symbol
+        C_Sep,     //Items separator: Comma (,) or (;)
         C_Err,     //Unknow
         C_MAX = C_Err + 1
     };
@@ -47,9 +48,9 @@ namespace
 /* 24 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
 
 /* 32 */  C_Sp,  C_Err, C_Str, C_Err, C_Err, C_Err, C_Err, C_Err,
-/* 40 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Poi,  C_Err,
+/* 40 */  C_Err, C_Err, C_Err, C_Err, C_Sep, C_Err, C_Poi,  C_Err,
 /* 48 */  C_Num, C_Num, C_Num, C_Num, C_Num, C_Num, C_Num, C_Num,
-/* 56 */  C_Num, C_Num, C_Col, C_Err, C_Err, C_Err, C_Err, C_Err,
+/* 56 */  C_Num, C_Num, C_Col, C_Sep, C_Err, C_Err, C_Err, C_Err,
 
 /* 64 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 72 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
@@ -91,19 +92,21 @@ namespace
         X_VAL = 4,
         X_NUM = 5,
         X_OBJ = 6,
-        X_MAX = 7
+        X_ATR = 7,
+        X_MAX = 8
     };
 
     //Parse command or parse state
     const CommandFunc parse_commands[X_MAX][C_MAX] = {
-/*            C_AZ,  C_Num,   C_Sp,  C_Str,  C_Col,  C_LCu,  C_RCu,  C_Poi,  C_Uni,  C_Err */
-/*X_DOC*/{  &x_var, &x_err,      0, &x_bst, &x_err, &x_doc, &x_err, &x_err, &x_err, &x_err  },
-/*X_VAR*/{  &x_str, &x_str, &x_sep, &x_err, &x_atr, &x_obj, &x_eob,      0,      0, &x_err  },
-/*X_STR*/{  &x_str, &x_str, &x_str, &x_sep, &x_str, &x_str, &x_str, &x_str, &x_str, &x_err  },
-/*X_SEP*/{  &x_err, &x_err,      0, &x_err, &x_atr, &x_obj, &x_eob, &x_err, &x_err, &x_err  },
-/*X_VAL*/{  &x_var, &x_num,      0, &x_bst, &x_atr, &x_obj, &x_err, &x_err, &x_err, &x_err  },
-/*X_NUM*/{  &x_err, &x_num, &x_sep, &x_err, &x_err, &x_err, &x_eob, &x_err, &x_err, &x_err  },
-/*X_OBJ*/{  &x_var, &x_err,      0, &x_bst, &x_err, &x_err, &x_eob, &x_err, &x_err, &x_err  },
+/*            C_AZ,  C_Num,   C_Sp,  C_Str,  C_Col,  C_LCu,  C_RCu,  C_Poi,  C_Uni,  C_Sep, C_Err */
+/*X_DOC*/{  &x_var, &x_err,      0, &x_bst, &x_err, &x_doc, &x_err, &x_err, &x_err, &x_err, &x_err  },
+/*X_VAR*/{  &x_str, &x_str, &x_sep, &x_err, &x_atr, &x_obj, &x_eob,      0,      0, &x_val, &x_err  },
+/*X_STR*/{  &x_str, &x_str, &x_str, &x_sep, &x_str, &x_str, &x_str, &x_str, &x_str, &x_str, &x_err  },
+/*X_SEP*/{  &x_err, &x_err,      0, &x_err, &x_atr, &x_obj, &x_eob, &x_err, &x_err, &x_val, &x_err  },
+/*X_VAL*/{  &x_var, &x_num,      0, &x_bst, &x_atr, &x_obj, &x_err, &x_err, &x_err, &x_val, &x_err  },
+/*X_NUM*/{  &x_err, &x_num, &x_sep, &x_err, &x_err, &x_err, &x_eob, &x_err, &x_err, &x_val, &x_err  },
+/*X_OBJ*/{  &x_var, &x_err,      0, &x_bst, &x_err, &x_err, &x_eob, &x_err, &x_err, &x_err, &x_err  },
+/*X_ATR*/{  &x_var, &x_err,      0, &x_bst, &x_err, &x_err, &x_err, &x_err, &x_err, &x_err, &x_err  },
     };
 
     struct ParseData
@@ -296,6 +299,7 @@ namespace
             data->stringNode->value = data->buffer;
             data->stringNode = 0;
             data->buffer = QByteArray();
+            data->xcmd = X_ATR;
             return;
         }
         throw FwMLParserException(c, data);
