@@ -34,11 +34,11 @@ namespace
         C_Poi,     //Decimal point (.)
         C_Uni,     //Unicode symbol
         C_Err,     //Unknow
-        C_MAX = C_Err
+        C_MAX = C_Err + 1
     };
 
     //Types of ASCII chars
-    const char chars_type[128] = {
+    const quint8 chars_type[128] = {
 
           /*0 */ /*1 */ /*2 */ /*3 */ /*4 */ /*5 */ /*6 */ /*7 */
 /*  0 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
@@ -65,52 +65,84 @@ namespace
 
     typedef void(*CommandFunc)(char c, ParseData* data);
 
+    void x_doc(char c, ParseData* data) throw(FwMLParserException&);
     void x_var(char c, ParseData* data) throw(FwMLParserException&);
-    void x_nva(char c, ParseData* data) throw(FwMLParserException&);
-    void x_bob(char c, ParseData* data) throw(FwMLParserException&);
-    void x_val(ParseData* data);
-    void x_str(ParseData* data);
-    void x_bst(ParseData* data);
+    void x_bst(char c, ParseData* data) throw(FwMLParserException&);
+    void x_str(char c, ParseData* data) throw(FwMLParserException&);
+    void x_sep(char c, ParseData* data) throw(FwMLParserException&);
+    void x_atr(char c, ParseData* data) throw(FwMLParserException&);
+    void x_num(char c, ParseData* data) throw(FwMLParserException&);
+    void x_err(char c, ParseData* data) throw(FwMLParserException&);
+    void x_obj(char c, ParseData* data) throw(FwMLParserException&);
+    void x_eob(char c, ParseData* data) throw(FwMLParserException&);
+    void x_val(char c, ParseData* data) throw(FwMLParserException&);
+    /*void x_val(ParseData* data);
+
     void x_est(ParseData* data);
-    void x_num(ParseData* data);
     void x_rnu(ParseData* data);
-    void x_err(ParseData* data);
-    void x_obj(ParseData* data);
-    void x_eob(ParseData* data);
+    void x_eob(ParseData* data);*/
 
     enum
     {
-        X_VAR = 0,
-        X_MAX = 2
+        X_DOC = 0,
+        X_VAR = 1,
+        X_STR = 2,
+        X_SEP = 3,
+        X_VAL = 4,
+        X_NUM = 5,
+        X_OBJ = 6,
+        X_MAX = 7
     };
 
     //Parse command or parse state
     const CommandFunc parse_commands[X_MAX][C_MAX] = {
-/*            C_AZ,  C_Num,   C_Sp,  C_Str,  C_Col,  C_LCu,  C_RCu,  C_Poi, C_Uni     */
-/*X_VAR*/{  &x_var, &x_nva,      0,      0,      0, &x_bob,      0,      0,     0  },
+/*            C_AZ,  C_Num,   C_Sp,  C_Str,  C_Col,  C_LCu,  C_RCu,  C_Poi,  C_Uni,  C_Err */
+/*X_DOC*/{  &x_var, &x_err,      0, &x_bst, &x_err, &x_doc, &x_err, &x_err, &x_err, &x_err  },
+/*X_VAR*/{  &x_str, &x_str, &x_sep, &x_err, &x_atr, &x_obj, &x_eob,      0,      0, &x_err  },
+/*X_STR*/{  &x_str, &x_str, &x_str, &x_sep, &x_str, &x_str, &x_str, &x_str, &x_str, &x_err  },
+/*X_SEP*/{  &x_err, &x_err,      0, &x_err, &x_atr, &x_obj, &x_eob, &x_err, &x_err, &x_err  },
+/*X_VAL*/{  &x_var, &x_num,      0, &x_bst, &x_atr, &x_obj, &x_err, &x_err, &x_err, &x_err  },
+/*X_NUM*/{  &x_err, &x_num, &x_sep, &x_err, &x_err, &x_err, &x_eob, &x_err, &x_err, &x_err  },
+/*X_OBJ*/{  &x_var, &x_err,      0, &x_bst, &x_err, &x_err, &x_eob, &x_err, &x_err, &x_err  },
     };
 
     struct ParseData
     {
         ParseData();
 
-        QByteArray attribute;
         FwMLObject* object;
+        FwMLArray* array;
+
+        QByteArray attribute;
 
         bool specialChar;
-        QByteArray string;
+        QByteArray buffer;
+
         int xcmd;
 
         int line;
         int column;
+
+        quint32 uintNumber;
+
+        quint8 charType;
+
+        bool declareRoot;
+
+        FwMLString* stringNode;
     };
 
     ParseData::ParseData() :
         specialChar(false),
-        xcmd(X_VAR),
+        xcmd(X_DOC),
         line(0),
         column(0),
-        object(0)
+        object(0),
+        array(0),
+        charType(C_Err),
+        uintNumber(0),
+        declareRoot(false),
+        stringNode(0)
     {
     }
 
@@ -139,42 +171,133 @@ namespace
     {
     }
 
+    void x_doc(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        data->xcmd = X_OBJ;
+        data->declareRoot = true;
+    }
+
     void x_var(char c, ParseData* data) throw(FwMLParserException&)
     {
         data->xcmd = X_VAR;
-        data->string += c;
+        data->buffer += c;
     }
 
-    void x_nva(char c, ParseData* data) throw(FwMLParserException&)
+    void x_bst(char c, ParseData* data) throw(FwMLParserException&)
     {
-        if(data->string.isEmpty())
+        if(!data->stringNode)
         {
-            throw FwMLParserException(c, data);
+            if(!data->attribute.isEmpty())
+            {
+                data->stringNode = new FwMLString("", data->attribute, data->object);
+                data->attribute = QByteArray();
+            }
+            data->xcmd = X_STR;
             return;
         }
-        data->xcmd = X_VAR;
-        data->string += c;
+
+        throw FwMLParserException(c, data);
     }
 
-    void x_bob(char c, ParseData* data) throw(FwMLParserException&)
+    void x_str(char c, ParseData* data) throw(FwMLParserException&)
     {
-        if(!data->string.isEmpty())
+        data->buffer += c;
+    }
+
+    void x_sep(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        data->xcmd = X_SEP;
+    }
+
+    void x_atr(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        if(data->object && !data->buffer.isEmpty() && data->attribute.isEmpty())
         {
-            data->attribute = data->string;
-            data->string = "";
+            data->xcmd = X_VAL;
+            data->attribute = data->buffer;
+            data->buffer = QByteArray();
+            return;
+        }
+        throw FwMLParserException(c, data);
+    }
+
+    void x_num(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        data->xcmd = X_NUM;
+        if(data->uintNumber > (UINT_MAX / 10))
+        {
+            throw FwMLParserException(c, data);
+        }
+        data->uintNumber = data->uintNumber * 10 + c - 48; //48 - '0'
+    }
+
+    void x_obj(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        if(!data->buffer.isEmpty())
+        {
+            data->attribute = data->buffer;
+            data->buffer = "";
+        }
+        else if(data->attribute.isEmpty())
+        {
+            throw FwMLParserException(c, data);
         }
 
-        if(data->object && !data->attribute.isEmpty())
+        if(data->object)
         {
-            FwMLObject* newObject = new FwMLObject();
-
-            data->xcmd = X_VAR;
-            data->object->addAttribute(data->attribute, newObject);
-            data->object = newObject;
+            data->xcmd = X_OBJ;
+            data->object = new FwMLObject(data->attribute, data->object);
             data->attribute = "";
             return;
         }
 
+        throw FwMLParserException(c, data);
+    }
+
+    void x_eob(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        if(data->object)
+        {
+            x_val(c, data);
+
+            FwMLNode* parent = data->object->parent();
+            if(parent->type() == FwMLNode::T_Object)
+            {
+                data->object = parent->toObject();
+                data->array = 0;
+            }
+            else if(parent->type() == FwMLNode::T_Array)
+            {
+                data->array = parent->toArray();
+                data->object = 0;
+            }
+            else
+            {
+                Q_ASSERT(false);
+            }
+
+            data->xcmd = 0;
+
+            return;
+        }
+
+        throw FwMLParserException(c, data);
+    }
+
+    void x_err(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        throw FwMLParserException(c, data);
+    }
+
+    void x_val(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        if(data->stringNode)
+        {
+            data->stringNode->value = data->buffer;
+            data->stringNode = 0;
+            data->buffer = QByteArray();
+            return;
+        }
         throw FwMLParserException(c, data);
     }
 }
@@ -182,12 +305,43 @@ namespace
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLNode::FwMLNode(Type type) :
-    m_type(type)
+    m_type(type),
+    m_parent(0)
 {
+}
+
+FwMLNode::FwMLNode(Type type, const QByteArray& attrName, FwMLObject* parent) :
+    m_type(type),
+    m_parent(0)
+{
+   parent->addAttribute(attrName, this);
 }
 
 FwMLNode::~FwMLNode()
 {
+    takeFromParent();
+}
+
+void FwMLNode::takeFromParent()
+{
+    if(m_parent)
+    {
+        if(m_parent->m_type == FwMLNode::T_Object)
+        {
+            FwMLObject* object = static_cast<FwMLObject*>(m_parent);
+            object->m_attributes.remove(object->m_attributes.key(this));
+        }
+        else if(m_parent->m_type == FwMLNode::T_Array)
+        {
+            FwMLArray* array = static_cast<FwMLArray*>(m_parent);
+            array->data.remove(array->data.indexOf(this));
+        }
+        else
+        {
+            Q_ASSERT(false);
+        }
+        m_parent = 0;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -199,6 +353,12 @@ FwMLString::FwMLString() :
 
 FwMLString::FwMLString(const QByteArray& str) :
     BaseClass(FwMLNode::T_String),
+    value(str)
+{
+}
+
+FwMLString::FwMLString(const QByteArray &str, const QByteArray& attr, FwMLObject* parent) :
+    BaseClass(FwMLNode::T_String, attr, parent),
     value(str)
 {
 }
@@ -242,10 +402,17 @@ FwMLObject::FwMLObject() :
 {
 }
 
+FwMLObject::FwMLObject(const QByteArray& attrName, FwMLObject* parent) :
+    BaseClass(FwMLNode::T_Object, attrName, parent)
+{
+}
+
 FwMLObject::~FwMLObject()
 {
     foreach(FwMLNode* node, m_attributes.values())
     {
+        Q_ASSERT(node->m_parent == this);
+        node->m_parent = 0;
         delete node;
     }
     m_attributes.clear();
@@ -263,6 +430,9 @@ FwMLObject::~FwMLObject()
 */
 FwMLNode* FwMLObject::addAttribute(const QByteArray& name, FwMLNode* value, bool replace)
 {
+    value->takeFromParent();
+    value->m_parent = this;
+
     if(m_attributes.contains(name))
     {
         if(replace)
@@ -348,6 +518,7 @@ bool FwMLObject::parse(QIODevice* ioDevice)
         }
 
         ParseData data;
+        data.object = this;
         CommandFunc cmd = 0;
         while(!ioDevice->atEnd())
         {
@@ -361,13 +532,10 @@ bool FwMLObject::parse(QIODevice* ioDevice)
                 for(;data.column < line_size; data.column++, c_ptr++)
                 {
                     char& c = (*c_ptr);
-                    char type = c > 0 ? chars_type[c] : C_Uni;
-                    if(type != C_Err)
+                    data.charType = c > 0 ? chars_type[c] : C_Uni;
+                    if(cmd = parse_commands[data.xcmd][data.charType])
                     {
-                        if(cmd = parse_commands[data.xcmd][type])
-                        {
-                            cmd(c, &data);
-                        }
+                        cmd(c, &data);
                     }
                 }
             }
@@ -393,6 +561,8 @@ FwMLArray::~FwMLArray()
 {
     foreach(FwMLNode* node, data)
     {
+        Q_ASSERT(node->m_parent == this);
+        node->m_parent = 0;
         delete node;
     }
     data.clear();

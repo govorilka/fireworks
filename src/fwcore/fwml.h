@@ -17,6 +17,10 @@ class FwMLArray;
 class FwMLNode
 {
 public:
+
+    friend class FwMLObject;
+    friend class FwMLArray;
+
     enum Type
     {
         T_Null,
@@ -27,6 +31,7 @@ public:
     };
 
     FwMLNode(Type type);
+    FwMLNode(Type type, const QByteArray& attrName, FwMLObject* parent);
     virtual ~FwMLNode();
 
     inline Type type() const;
@@ -39,8 +44,13 @@ public:
 
     virtual QByteArray toUtf8() const = 0;
 
+    inline FwMLNode* parent() const;
+
+    void takeFromParent();
+
 private:
     Type m_type;
+    FwMLNode* m_parent;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +60,8 @@ class FwMLString : public FwMLNode
     typedef FwMLNode BaseClass;
 public:
     explicit FwMLString();
-    explicit FwMLString(const QByteArray& str);
+    explicit FwMLString(const QByteArray& value);
+    FwMLString(const QByteArray &value, const QByteArray& attr, FwMLObject* parent);
 
     QByteArray value;
 
@@ -80,7 +91,10 @@ class FwMLObject : public FwMLNode
     typedef FwMLNode BaseClass;
 public:
 
+    friend class FwMLNode;
+
     FwMLObject();
+    FwMLObject(const QByteArray& attrName, FwMLObject* parent);
     ~FwMLObject();
 
     FwMLNode* addAttribute(const QByteArray& name, FwMLNode* value, bool replace = true);
@@ -93,6 +107,7 @@ public:
     inline FwMLArray* addAttribute(const QByteArray& name, const QVector<FwMLNode*> array);
 
     inline FwMLNode* attribute(const QByteArray& name) const;
+    inline QHash<QByteArray, FwMLNode*> attributes() const;
 
     inline void removeAttribute(const QByteArray& name);
 

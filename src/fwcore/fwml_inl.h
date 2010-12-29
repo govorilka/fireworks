@@ -49,6 +49,11 @@ FwMLArray* FwMLNode::toArray()
     return 0;
 }
 
+FwMLNode* FwMLNode::parent() const
+{
+    return m_parent;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLString* FwMLObject::addAttribute(const QByteArray& name, const QByteArray& value)
@@ -103,6 +108,11 @@ FwMLArray* FwMLObject::addAttribute(const QByteArray& name, const QVector<FwMLNo
 FwMLNode* FwMLObject::attribute(const QByteArray& name) const
 {
     return m_attributes.value(name, 0);
+}
+
+QHash<QByteArray, FwMLNode*> FwMLObject::attributes() const
+{
+    return m_attributes;
 }
 
 void FwMLObject::removeAttribute(const QByteArray& name)

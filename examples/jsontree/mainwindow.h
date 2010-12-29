@@ -4,8 +4,10 @@
 #include <QtGui/QMainWindow>
 
 class QTreeWidget;
+class QTreeWidgetItem;
 
 class FwMLObject;
+class FwMLNode;
 
 class MainWindow : public QMainWindow
 {
@@ -15,6 +17,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    void addNode(QTreeWidgetItem* parent, FwMLNode* node);
 
 private:
     QTreeWidget* m_treeView;

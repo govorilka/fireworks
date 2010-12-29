@@ -10,26 +10,55 @@ MainWindow::MainWindow(QWidget *parent) :
     m_rootObject(0)
 {
     m_treeView = new QTreeWidget(this);
-
-    QTreeWidgetItem* itemScene = new QTreeWidgetItem(m_treeView);
-    itemScene->setText(0, "Scene");
-
-    QTreeWidgetItem* itemSize = new QTreeWidgetItem(itemScene);
-    itemSize->setText(0, "size");
-
-    QTreeWidgetItem* itemBackground = new QTreeWidgetItem(itemScene);
-    itemBackground->setText(0, "background");
+    m_treeView->setColumnCount(2);
+    m_treeView->setHeaderLabels(QStringList() << "Node" << "Value");
 
     setCentralWidget(m_treeView);
 
     QByteArray fwml = "\"Scene\" : {\n"
-                      "\"background\" : \"1.png\" \n"
+                      "\"background\" : \"123.png\" \n"
                       "}";
+
+    QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);
+    rootItem->setText(0, "root");
 
     m_rootObject = new FwMLObject();
     m_rootObject->parse(fwml);
+
+    addNode(rootItem, m_rootObject);
 }
 
 MainWindow::~MainWindow()
 {
+}
+
+void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
+{
+    switch(node->type())
+    {
+    case FwMLNode::T_Object:
+        {
+            FwMLObject* object = node->toObject();
+            QHash<QByteArray, FwMLNode*> attributes = object->attributes();
+            for(QHash<QByteArray, FwMLNode*>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter)
+            {
+                QTreeWidgetItem* childItem = new QTreeWidgetItem(parent);
+                childItem->setText(0, QString::fromUtf8(iter.key()));
+                addNode(childItem, iter.value());
+            }
+        }
+        break;
+
+    case FwMLNode::T_String:
+        {
+            FwMLString* string = node->toString();
+            parent->setText(1, QString::fromUtf8(string->value));
+        }
+        break;
+
+    default:
+        break;
+
+    }
+
 }
