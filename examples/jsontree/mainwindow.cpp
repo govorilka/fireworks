@@ -17,20 +17,30 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QByteArray fwml = "\"Scene\" : {\n"
                       "\"background\" : \"123.png\"; \n"
-                      "\"size\" : \"1000 x 1000\", \n"
+                      "\"size\" : \"1000 x 1000\" \n"
                       "}";
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);
     rootItem->setText(0, "root");
 
     m_rootObject = new FwMLObject();
-    m_rootObject->parse(fwml);
 
-    addNode(rootItem, m_rootObject);
+    QString error;
+    if(m_rootObject->parse(fwml, &error))
+    {
+        addNode(rootItem, m_rootObject);
+    }
+    else
+    {
+        QTreeWidgetItem* errorItem = new QTreeWidgetItem(rootItem);
+        errorItem->setText(0, "Error");
+        errorItem->setText(1, error);
+    }
 }
 
 MainWindow::~MainWindow()
 {
+    delete m_rootObject;
 }
 
 void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)

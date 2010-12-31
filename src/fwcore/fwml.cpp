@@ -25,16 +25,27 @@ namespace
     enum CharType
     {
         C_AZ,      //Alpha (A..Z, a..z)
+        C_Uni,     //Unicode symbol
+
         C_Num,     //Numbers (0..9)
+        C_Fra,     //Decimal point (.)
+
         C_Sp,      //Space (' ')
+
         C_Str,     //Quotation mark (")
+        C_Esc,     //Escape
+
+        //These are the six structural characters
         C_Col,     //Name separator, colon (:)
         C_LCu,     //Begin-object, left curly bracket ({)
         C_RCu,     //End-object, right curly bracket (})
-        C_Poi,     //Decimal point (.)
-        C_Uni,     //Unicode symbol
+        C_LSq,     //Left square bracket ([)
+        C_RSq,     //Right square bracket (])
         C_Sep,     //Items separator: Comma (,) or (;)
+
+        //Error
         C_Err,     //Unknow
+
         C_MAX = C_Err + 1
     };
 
@@ -48,14 +59,14 @@ namespace
 /* 24 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
 
 /* 32 */  C_Sp,  C_Err, C_Str, C_Err, C_Err, C_Err, C_Err, C_Err,
-/* 40 */  C_Err, C_Err, C_Err, C_Err, C_Sep, C_Err, C_Poi,  C_Err,
+/* 40 */  C_Err, C_Err, C_Err, C_Err, C_Sep, C_Err, C_Fra,  C_Err,
 /* 48 */  C_Num, C_Num, C_Num, C_Num, C_Num, C_Num, C_Num, C_Num,
 /* 56 */  C_Num, C_Num, C_Col, C_Sep, C_Err, C_Err, C_Err, C_Err,
 
 /* 64 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 72 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 80 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
-/* 88 */  C_AZ,  C_AZ,  C_AZ,  C_Err, C_Err, C_Err, C_Err, C_Err,
+/* 88 */  C_AZ,  C_AZ,  C_AZ,  C_LSq, C_Esc, C_LSq, C_Err, C_Err,
 
 /* 96 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 104*/  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
@@ -69,7 +80,6 @@ namespace
     void x_doc(char c, ParseData* data) throw(FwMLParserException&);
     void x_var(char c, ParseData* data) throw(FwMLParserException&);
     void x_bst(char c, ParseData* data) throw(FwMLParserException&);
-    void x_str(char c, ParseData* data) throw(FwMLParserException&);
     void x_sep(char c, ParseData* data) throw(FwMLParserException&);
     void x_atr(char c, ParseData* data) throw(FwMLParserException&);
     void x_num(char c, ParseData* data) throw(FwMLParserException&);
@@ -77,6 +87,7 @@ namespace
     void x_obj(char c, ParseData* data) throw(FwMLParserException&);
     void x_eob(char c, ParseData* data) throw(FwMLParserException&);
     void x_val(char c, ParseData* data) throw(FwMLParserException&);
+    void x_ign(char c, ParseData* data) throw(FwMLParserException&);
     /*void x_val(ParseData* data);
 
     void x_est(ParseData* data);
@@ -98,15 +109,15 @@ namespace
 
     //Parse command or parse state
     const CommandFunc parse_commands[X_MAX][C_MAX] = {
-/*            C_AZ,  C_Num,   C_Sp,  C_Str,  C_Col,  C_LCu,  C_RCu,  C_Poi,  C_Uni,  C_Sep, C_Err */
-/*X_DOC*/{  &x_var, &x_err,      0, &x_bst, &x_err, &x_doc, &x_err, &x_err, &x_err, &x_err, &x_err  },
-/*X_VAR*/{  &x_str, &x_str, &x_sep, &x_err, &x_atr, &x_obj, &x_eob,      0,      0, &x_val, &x_err  },
-/*X_STR*/{  &x_str, &x_str, &x_str, &x_sep, &x_str, &x_str, &x_str, &x_str, &x_str, &x_str, &x_err  },
-/*X_SEP*/{  &x_err, &x_err,      0, &x_err, &x_atr, &x_obj, &x_eob, &x_err, &x_err, &x_val, &x_err  },
-/*X_VAL*/{  &x_var, &x_num,      0, &x_bst, &x_atr, &x_obj, &x_err, &x_err, &x_err, &x_val, &x_err  },
-/*X_NUM*/{  &x_err, &x_num, &x_sep, &x_err, &x_err, &x_err, &x_eob, &x_err, &x_err, &x_val, &x_err  },
-/*X_OBJ*/{  &x_var, &x_err,      0, &x_bst, &x_err, &x_err, &x_eob, &x_err, &x_err, &x_err, &x_err  },
-/*X_ATR*/{  &x_var, &x_err,      0, &x_bst, &x_err, &x_err, &x_err, &x_err, &x_err, &x_err, &x_err  },
+/*            C_AZ,  C_Uni,  C_Num,  C_Fra,   C_Sp,  C_Str,  C_Esc,  C_Col,            C_LCu,  C_RCu,  C_LSq,  C_RSq,  C_Sep,  C_Err */
+/*X_DOC*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_DOC*/ &x_doc, &x_err, &x_err, &x_err, &x_err, &x_err  },
+/*X_VAR*/{       0, &x_err,      0, &x_err, &x_sep, &x_err, &x_err, &x_atr, /*X_VAR*/ &x_obj, &x_eob, &x_err, &x_err, &x_val, &x_err  },
+/*X_STR*/{       0,      0,      0,      0,      0, &x_sep, &x_err,      0, /*X_STR*/      0,      0,      0,      0,      0, &x_err  },
+/*X_SEP*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_atr, /*X_SEP*/ &x_obj, &x_eob, &x_err, &x_err, &x_val, &x_err  },
+/*X_VAL*/{  &x_var, &x_err, &x_num, &x_err, &x_ign, &x_bst, &x_err, &x_atr, /*X_VAL*/ &x_obj, &x_err, &x_err, &x_err, &x_val, &x_err  },
+/*X_NUM*/{  &x_err, &x_err, &x_num, &x_err, &x_sep, &x_err, &x_err, &x_err, /*X_NUM*/ &x_err, &x_eob, &x_err, &x_err, &x_val, &x_err  },
+/*X_OBJ*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_OBJ*/ &x_err, &x_eob, &x_err, &x_err, &x_err, &x_err  },
+/*X_ATR*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_ATR*/ &x_err, &x_err, &x_err, &x_err, &x_err, &x_err  },
     };
 
     struct ParseData
@@ -200,11 +211,6 @@ namespace
         }
 
         throw FwMLParserException(c, data);
-    }
-
-    void x_str(char c, ParseData* data) throw(FwMLParserException&)
-    {
-        data->buffer += c;
     }
 
     void x_sep(char c, ParseData* data) throw(FwMLParserException&)
@@ -303,6 +309,12 @@ namespace
             return;
         }
         throw FwMLParserException(c, data);
+    }
+
+    void x_ign(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        Q_UNUSED(c);
+        Q_UNUSED(data);
     }
 }
 
@@ -413,13 +425,7 @@ FwMLObject::FwMLObject(const QByteArray& attrName, FwMLObject* parent) :
 
 FwMLObject::~FwMLObject()
 {
-    foreach(FwMLNode* node, m_attributes.values())
-    {
-        Q_ASSERT(node->m_parent == this);
-        node->m_parent = 0;
-        delete node;
-    }
-    m_attributes.clear();
+    removeAttributes();
 }
 
 /*!
@@ -495,13 +501,13 @@ QByteArray FwMLObject::toUtf8() const
 \sa FwMLObject::parse(const QIODevice* ioDevice)
 \note Если функцию передана пустая строка функция вернёт false
 */
-bool FwMLObject::parse(const QByteArray& utf8String)
+bool FwMLObject::parse(const QByteArray& utf8String, QString* error)
 {
     if(!utf8String.isEmpty())
     {
         QByteArray tmpStr = utf8String;
         QBuffer buffer(&tmpStr);
-        return parse(&buffer);
+        return parse(&buffer, error);
     }
     return false;
 }
@@ -512,7 +518,7 @@ bool FwMLObject::parse(const QByteArray& utf8String)
 \return Возвращает true, если данные разобраны успешно
 \sa FwMLObject::parse(const QByteArray& utf8String)
 */
-bool FwMLObject::parse(QIODevice* ioDevice)
+bool FwMLObject::parse(QIODevice* ioDevice, QString* error)
 {
     try
     {
@@ -541,6 +547,10 @@ bool FwMLObject::parse(QIODevice* ioDevice)
                     {
                         cmd(c, &data);
                     }
+                    else
+                    {
+                        data.buffer += c;
+                    }
                 }
             }
         }
@@ -548,10 +558,29 @@ bool FwMLObject::parse(QIODevice* ioDevice)
     catch(FwMLParserException& e)
     {
         qDebug() << e.what();
+        if(error)
+        {
+            (*error) = e.message;
+        }
+        removeAttributes();
         return false;
     }
 
     return true;
+}
+
+/*!
+Удаляет все атрибуты из объекта
+*/
+void FwMLObject::removeAttributes()
+{
+    foreach(FwMLNode* node, m_attributes.values())
+    {
+        Q_ASSERT(node->m_parent == this);
+        node->m_parent = 0;
+        delete node;
+    }
+    m_attributes.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

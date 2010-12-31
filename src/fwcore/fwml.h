@@ -110,11 +110,12 @@ public:
     inline QHash<QByteArray, FwMLNode*> attributes() const;
 
     inline void removeAttribute(const QByteArray& name);
+    void removeAttributes();
 
     QByteArray toUtf8() const;
 
-    bool parse(const QByteArray& utf8String);
-    bool parse(QIODevice* ioDevice);
+    bool parse(const QByteArray& utf8String, QString* error = 0);
+    bool parse(QIODevice* ioDevice, QString* error = 0);
 
 private:
     QHash<QByteArray, FwMLNode*> m_attributes;
