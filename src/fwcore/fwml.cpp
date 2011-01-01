@@ -66,7 +66,7 @@ namespace
 /* 64 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 72 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 80 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
-/* 88 */  C_AZ,  C_AZ,  C_AZ,  C_LSq, C_Esc, C_LSq, C_Err, C_Err,
+/* 88 */  C_AZ,  C_AZ,  C_AZ,  C_LSq, C_Esc, C_RSq, C_Err, C_Err,
 
 /* 96 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 104*/  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
@@ -84,10 +84,14 @@ namespace
     void x_atr(char c, ParseData* data) throw(FwMLParserException&);
     void x_num(char c, ParseData* data) throw(FwMLParserException&);
     void x_err(char c, ParseData* data) throw(FwMLParserException&);
-    void x_obj(char c, ParseData* data) throw(FwMLParserException&);
+    void x_ob1(char c, ParseData* data) throw(FwMLParserException&);
+    void x_ob2(char c, ParseData* data) throw(FwMLParserException&);
     void x_eob(char c, ParseData* data) throw(FwMLParserException&);
     void x_val(char c, ParseData* data) throw(FwMLParserException&);
     void x_ign(char c, ParseData* data) throw(FwMLParserException&);
+    void x_ar1(char c, ParseData* data) throw(FwMLParserException&);
+    void x_ar2(char c, ParseData* data) throw(FwMLParserException&);
+    void x_ear(char c, ParseData* data) throw(FwMLParserException&);
     /*void x_val(ParseData* data);
 
     void x_est(ParseData* data);
@@ -102,30 +106,38 @@ namespace
         X_SEP = 3,
         X_VAL = 4,
         X_NUM = 5,
-        X_OBJ = 6,
-        X_ATR = 7,
-        X_MAX = 8
+        X_ATR = 6,
+        X_SEO = 7,
+        X_SEA = 8,
+        X_MAX = 9
     };
 
     //Parse command or parse state
     const CommandFunc parse_commands[X_MAX][C_MAX] = {
 /*            C_AZ,  C_Uni,  C_Num,  C_Fra,   C_Sp,  C_Str,  C_Esc,  C_Col,            C_LCu,  C_RCu,  C_LSq,  C_RSq,  C_Sep,  C_Err */
 /*X_DOC*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_DOC*/ &x_doc, &x_err, &x_err, &x_err, &x_err, &x_err  },
-/*X_VAR*/{       0, &x_err,      0, &x_err, &x_sep, &x_err, &x_err, &x_atr, /*X_VAR*/ &x_obj, &x_eob, &x_err, &x_err, &x_val, &x_err  },
+/*X_VAR*/{       0, &x_err,      0, &x_err, &x_sep, &x_err, &x_err, &x_atr, /*X_VAR*/ &x_ob2, &x_eob, &x_ar2, &x_ear, &x_val, &x_err  },
 /*X_STR*/{       0,      0,      0,      0,      0, &x_sep, &x_err,      0, /*X_STR*/      0,      0,      0,      0,      0, &x_err  },
-/*X_SEP*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_atr, /*X_SEP*/ &x_obj, &x_eob, &x_err, &x_err, &x_val, &x_err  },
-/*X_VAL*/{  &x_var, &x_err, &x_num, &x_err, &x_ign, &x_bst, &x_err, &x_atr, /*X_VAL*/ &x_obj, &x_err, &x_err, &x_err, &x_val, &x_err  },
-/*X_NUM*/{  &x_err, &x_err, &x_num, &x_err, &x_sep, &x_err, &x_err, &x_err, /*X_NUM*/ &x_err, &x_eob, &x_err, &x_err, &x_val, &x_err  },
-/*X_OBJ*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_OBJ*/ &x_err, &x_eob, &x_err, &x_err, &x_err, &x_err  },
-/*X_ATR*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_ATR*/ &x_err, &x_err, &x_err, &x_err, &x_err, &x_err  },
+/*X_SEP*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_atr, /*X_SEP*/ &x_ob2, &x_eob, &x_ar2, &x_ear, &x_val, &x_err  },
+/*X_VAL*/{  &x_var, &x_err, &x_num, &x_err, &x_ign, &x_bst, &x_err, &x_atr, /*X_VAL*/ &x_ob1, &x_err, &x_ar1, &x_ear, &x_val, &x_err  },
+/*X_NUM*/{  &x_err, &x_err, &x_num, &x_err, &x_sep, &x_err, &x_err, &x_err, /*X_NUM*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
+/*X_ATR*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_ATR*/ &x_err, &x_eob, &x_err, &x_err, &x_err, &x_err  },
+/*X_SEO*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEO*/ &x_err, &x_eob, &x_err, &x_err, &x_val, &x_err  },
+/*X_SEA*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEA*/ &x_err, &x_err, &x_err, &x_ear, &x_val, &x_err  },
     };
 
     struct ParseData
     {
         ParseData();
+        inline bool setupAttributeName();
+        inline void structureUp();
 
-        FwMLObject* object;
-        FwMLArray* array;
+        void setupValue();
+        inline void setupAttributeValue();
+        inline void setupArrayValue();
+
+
+        FwMLNode* parent;
 
         QByteArray attribute;
 
@@ -143,7 +155,7 @@ namespace
 
         bool declareRoot;
 
-        FwMLString* stringNode;
+        FwMLNode::Type type;
     };
 
     ParseData::ParseData() :
@@ -151,15 +163,120 @@ namespace
         xcmd(X_DOC),
         line(0),
         column(0),
-        object(0),
-        array(0),
+        parent(0),
         charType(C_Err),
         uintNumber(0),
         declareRoot(false),
-        stringNode(0)
+        type(FwMLNode::T_Null)
     {
     }
 
+    bool ParseData::setupAttributeName()
+    {
+        if(attribute.isEmpty())
+        {
+            if(!buffer.isEmpty())
+            {
+                attribute = buffer;
+                buffer = QByteArray();
+                return true;
+            }
+        }
+        return buffer.isEmpty();
+    }
+
+    void ParseData::structureUp()
+    {
+        setupValue();
+        parent = parent->parent();
+        switch(parent->type())
+        {
+        case FwMLNode::T_Array:
+            xcmd = X_SEA;
+            return;
+
+        case FwMLObject::T_Object:
+            xcmd = X_SEO;
+            return;
+
+        default:
+            Q_ASSERT(false);
+            break;
+        }
+    }
+
+    void ParseData::setupValue()
+    {
+        switch(parent->type())
+        {
+        case FwMLNode::T_Array:
+            setupArrayValue();
+            return;
+
+        case FwMLObject::T_Object:
+            setupAttributeValue();
+            return;
+
+        default:
+            Q_ASSERT(false);
+            break;
+        }
+    }
+
+    void ParseData::setupAttributeValue()
+    {
+        switch(type)
+        {
+        case FwMLNode::T_String:
+            new FwMLString(buffer, attribute, static_cast<FwMLObject*>(parent));
+            buffer = QByteArray();
+            break;
+
+        case FwMLNode::T_Array:
+            parent = new FwMLArray(attribute, static_cast<FwMLObject*>(parent));
+            break;
+
+        case FwMLNode::T_Object:
+            parent = new FwMLObject(attribute, static_cast<FwMLObject*>(parent));
+            break;
+
+        case FwMLNode::T_Null:
+            break;
+
+        default:
+            Q_ASSERT(false);
+            return;
+        }
+        attribute = "";
+        type = FwMLNode::T_Null;
+    }
+
+    void ParseData::setupArrayValue()
+    {
+        switch(type)
+        {
+        case FwMLNode::T_String:
+            new FwMLString(buffer, static_cast<FwMLArray*>(parent));
+            buffer = QByteArray();
+            break;
+
+        case FwMLNode::T_Array:
+            parent = new FwMLArray(static_cast<FwMLArray*>(parent));
+            break;
+
+        case FwMLNode::T_Object:
+            parent = new FwMLObject(static_cast<FwMLArray*>(parent));
+            break;
+
+        case FwMLNode::T_Null:
+            break;
+
+        default:
+            Q_ASSERT(false);
+            return;
+        }
+        type = FwMLNode::T_Null;
+    }
 
     FwMLParserException::FwMLParserException(char c, ParseData* data) :
         BaseClass()
@@ -187,29 +304,30 @@ namespace
 
     void x_doc(char c, ParseData* data) throw(FwMLParserException&)
     {
-        data->xcmd = X_OBJ;
+        data->xcmd = X_ATR;
         data->declareRoot = true;
     }
 
     void x_var(char c, ParseData* data) throw(FwMLParserException&)
     {
-        data->xcmd = X_VAR;
-        data->buffer += c;
+        if(data->parent)
+        {
+            data->type = FwMLNode::T_String;
+            data->xcmd = X_VAR;
+            data->buffer += c;
+            return;
+        }
+        throw FwMLParserException(c, data);
     }
 
     void x_bst(char c, ParseData* data) throw(FwMLParserException&)
     {
-        if(!data->stringNode)
+        if(data->parent)
         {
-            if(!data->attribute.isEmpty())
-            {
-                data->stringNode = new FwMLString("", data->attribute, data->object);
-                data->attribute = QByteArray();
-            }
+            data->type = FwMLNode::T_String;
             data->xcmd = X_STR;
             return;
         }
-
         throw FwMLParserException(c, data);
     }
 
@@ -220,7 +338,7 @@ namespace
 
     void x_atr(char c, ParseData* data) throw(FwMLParserException&)
     {
-        if(data->object && !data->buffer.isEmpty() && data->attribute.isEmpty())
+        if(data->parent->type() == FwMLNode::T_Object && !data->buffer.isEmpty() && data->attribute.isEmpty())
         {
             data->xcmd = X_VAL;
             data->attribute = data->buffer;
@@ -240,56 +358,55 @@ namespace
         data->uintNumber = data->uintNumber * 10 + c - 48; //48 - '0'
     }
 
-    void x_obj(char c, ParseData* data) throw(FwMLParserException&)
+    void x_ob1(char c, ParseData* data) throw(FwMLParserException&)
     {
-        if(!data->buffer.isEmpty())
-        {
-            data->attribute = data->buffer;
-            data->buffer = "";
-        }
-        else if(data->attribute.isEmpty())
+        data->type = FwMLNode::T_Object;
+        data->setupValue();
+        data->xcmd = X_ATR;
+    }
+
+    void x_ob2(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        if(!data->setupAttributeName())
         {
             throw FwMLParserException(c, data);
         }
-
-        if(data->object)
-        {
-            data->xcmd = X_OBJ;
-            data->object = new FwMLObject(data->attribute, data->object);
-            data->attribute = "";
-            return;
-        }
-
-        throw FwMLParserException(c, data);
+        x_ob1(c, data);
     }
 
     void x_eob(char c, ParseData* data) throw(FwMLParserException&)
     {
-        if(data->object)
+        if(data->parent->type() == FwMLNode::T_Object)
         {
-            x_val(c, data);
-
-            FwMLNode* parent = data->object->parent();
-            if(parent->type() == FwMLNode::T_Object)
-            {
-                data->object = parent->toObject();
-                data->array = 0;
-            }
-            else if(parent->type() == FwMLNode::T_Array)
-            {
-                data->array = parent->toArray();
-                data->object = 0;
-            }
-            else
-            {
-                Q_ASSERT(false);
-            }
-
-            data->xcmd = 0;
-
+            data->structureUp();
             return;
         }
+        throw FwMLParserException(c, data);
+    }
 
+    void x_ar1(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        data->type = FwMLNode::T_Array;
+        data->setupValue();
+        data->xcmd = X_VAL;
+    }
+
+    void x_ar2(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        if(!data->setupAttributeName())
+        {
+            throw FwMLParserException(c, data);
+        }
+        x_ar1(c, data);
+    }
+
+    void x_ear(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        if(data->parent->type() == FwMLNode::T_Array)
+        {
+            data->structureUp();
+            return;
+        }
         throw FwMLParserException(c, data);
     }
 
@@ -300,12 +417,23 @@ namespace
 
     void x_val(char c, ParseData* data) throw(FwMLParserException&)
     {
-        if(data->stringNode)
+        if(data->parent)
         {
-            data->stringNode->value = data->buffer;
-            data->stringNode = 0;
-            data->buffer = QByteArray();
-            data->xcmd = X_ATR;
+            data->setupValue();
+            switch(data->parent->type())
+            {
+            case FwMLNode::T_Array:
+                data->xcmd = X_VAL;
+                break;
+
+            case FwMLObject::T_Object:
+                data->xcmd = X_ATR;
+                break;
+
+            default:
+                Q_ASSERT(false);
+                break;
+            }
             return;
         }
         throw FwMLParserException(c, data);
@@ -328,9 +456,16 @@ FwMLNode::FwMLNode(Type type) :
 
 FwMLNode::FwMLNode(Type type, const QByteArray& attrName, FwMLObject* parent) :
     m_type(type),
-    m_parent(0)
+    m_parent(parent)
 {
    parent->addAttribute(attrName, this);
+}
+
+FwMLNode::FwMLNode(Type type, FwMLArray* parent) :
+    m_type(type),
+    m_parent(parent)
+{
+    parent->data.append(this);
 }
 
 FwMLNode::~FwMLNode()
@@ -379,6 +514,12 @@ FwMLString::FwMLString(const QByteArray &str, const QByteArray& attr, FwMLObject
 {
 }
 
+FwMLString::FwMLString(const QByteArray &str, FwMLArray* parent) :
+    BaseClass(FwMLNode::T_String, parent),
+    value(str)
+{
+}
+
 QByteArray FwMLString::toUtf8() const
 {
     return "\"" + value + "\"";
@@ -420,6 +561,11 @@ FwMLObject::FwMLObject() :
 
 FwMLObject::FwMLObject(const QByteArray& attrName, FwMLObject* parent) :
     BaseClass(FwMLNode::T_Object, attrName, parent)
+{
+}
+
+FwMLObject::FwMLObject(FwMLArray* parent) :
+   BaseClass(FwMLNode::T_Object, parent)
 {
 }
 
@@ -528,7 +674,7 @@ bool FwMLObject::parse(QIODevice* ioDevice, QString* error)
         }
 
         ParseData data;
-        data.object = this;
+        data.parent = this;
         CommandFunc cmd = 0;
         while(!ioDevice->atEnd())
         {
@@ -587,6 +733,16 @@ void FwMLObject::removeAttributes()
 
 FwMLArray::FwMLArray() :
     BaseClass(FwMLNode::T_Array)
+{
+}
+
+FwMLArray::FwMLArray(const QByteArray& attrName, FwMLObject* parent) :
+   BaseClass(FwMLNode::T_Array, attrName, parent)
+{
+}
+
+FwMLArray::FwMLArray(FwMLArray* parent) :
+    BaseClass(FwMLNode::T_Array, parent)
 {
 }
 

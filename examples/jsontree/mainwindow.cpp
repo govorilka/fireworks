@@ -16,8 +16,11 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(m_treeView);
 
     QByteArray fwml = "\"Scene\" : {\n"
-                      "\"background\" : \"123.png\"; \n"
-                      "\"size\" : \"1000 x 1000\" \n"
+                      "\"background\" : \"123.png\", \n"
+                      "\"size\" : { \n"
+                      "\"width\" : \"100\", \n"
+                      "\"height\" : \"100\" }, \n"
+                      "array[\"1\", \"2\", \"3\"] \n"
                       "}";
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);
@@ -64,6 +67,19 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
         {
             FwMLString* string = node->toString();
             parent->setText(1, QString::fromUtf8(string->value));
+        }
+        break;
+
+    case FwMLNode::T_Array:
+        {
+            FwMLArray* array = node->toArray();
+            int i = 0;
+            foreach(FwMLNode* child, array->data)
+            {
+                QTreeWidgetItem* childItem = new QTreeWidgetItem(parent);
+                childItem->setText(0, QString::number(i++));
+                addNode(childItem, child);
+            }
         }
         break;
 

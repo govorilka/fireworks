@@ -32,6 +32,7 @@ public:
 
     FwMLNode(Type type);
     FwMLNode(Type type, const QByteArray& attrName, FwMLObject* parent);
+    FwMLNode(Type type, FwMLArray* parent);
     virtual ~FwMLNode();
 
     inline Type type() const;
@@ -62,6 +63,7 @@ public:
     explicit FwMLString();
     explicit FwMLString(const QByteArray& value);
     FwMLString(const QByteArray &value, const QByteArray& attr, FwMLObject* parent);
+    FwMLString(const QByteArray &str, FwMLArray* parent);
 
     QByteArray value;
 
@@ -95,6 +97,7 @@ public:
 
     FwMLObject();
     FwMLObject(const QByteArray& attrName, FwMLObject* parent);
+    FwMLObject(FwMLArray* parent);
     ~FwMLObject();
 
     FwMLNode* addAttribute(const QByteArray& name, FwMLNode* value, bool replace = true);
@@ -128,6 +131,8 @@ class FwMLArray : public FwMLNode
     typedef FwMLNode BaseClass;
 public:
     FwMLArray();
+    FwMLArray(const QByteArray& attrName, FwMLObject* parent);
+    FwMLArray(FwMLArray* parent);
     ~FwMLArray();
 
     QVector<FwMLNode*> data;
