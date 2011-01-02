@@ -80,9 +80,10 @@ namespace
     void x_doc(char c, ParseData* data) throw(FwMLParserException&);
     void x_var(char c, ParseData* data) throw(FwMLParserException&);
     void x_bst(char c, ParseData* data) throw(FwMLParserException&);
-    void x_sep(char c, ParseData* data) throw(FwMLParserException&);
+    void x_est(char c, ParseData* data) throw(FwMLParserException&);
     void x_atr(char c, ParseData* data) throw(FwMLParserException&);
     void x_num(char c, ParseData* data) throw(FwMLParserException&);
+    void x_enu(char c, ParseData* data) throw(FwMLParserException&);
     void x_err(char c, ParseData* data) throw(FwMLParserException&);
     void x_ob1(char c, ParseData* data) throw(FwMLParserException&);
     void x_ob2(char c, ParseData* data) throw(FwMLParserException&);
@@ -103,12 +104,12 @@ namespace
         X_DOC = 0,
         X_VAR = 1,
         X_STR = 2,
-        X_SEP = 3,
-        X_VAL = 4,
-        X_NUM = 5,
-        X_ATR = 6,
-        X_SEO = 7,
-        X_SEA = 8,
+        X_VAL = 3,
+        X_NUM = 4,
+        X_ATR = 5,
+        X_SEO = 6,
+        X_SEA = 7,
+        X_EAT = 8,
         X_MAX = 9
     };
 
@@ -116,22 +117,22 @@ namespace
     const CommandFunc parse_commands[X_MAX][C_MAX] = {
 /*            C_AZ,  C_Uni,  C_Num,  C_Fra,   C_Sp,  C_Str,  C_Esc,  C_Col,            C_LCu,  C_RCu,  C_LSq,  C_RSq,  C_Sep,  C_Err */
 /*X_DOC*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_DOC*/ &x_doc, &x_err, &x_err, &x_err, &x_err, &x_err  },
-/*X_VAR*/{       0, &x_err,      0, &x_err, &x_sep, &x_err, &x_err, &x_atr, /*X_VAR*/ &x_ob2, &x_eob, &x_ar2, &x_ear, &x_val, &x_err  },
-/*X_STR*/{       0,      0,      0,      0,      0, &x_sep, &x_err,      0, /*X_STR*/      0,      0,      0,      0,      0, &x_err  },
-/*X_SEP*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_atr, /*X_SEP*/ &x_ob2, &x_eob, &x_ar2, &x_ear, &x_val, &x_err  },
-/*X_VAL*/{  &x_var, &x_err, &x_num, &x_err, &x_ign, &x_bst, &x_err, &x_atr, /*X_VAL*/ &x_ob1, &x_err, &x_ar1, &x_ear, &x_val, &x_err  },
-/*X_NUM*/{  &x_err, &x_err, &x_num, &x_err, &x_sep, &x_err, &x_err, &x_err, /*X_NUM*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
+/*X_VAR*/{       0, &x_err,      0, &x_err, &x_est, &x_err, &x_err, &x_atr, /*X_VAR*/ &x_ob2, &x_eob, &x_ar2, &x_ear, &x_val, &x_err  },
+/*X_STR*/{       0,      0,      0,      0,      0, &x_est, &x_err,      0, /*X_STR*/      0,      0,      0,      0,      0, &x_err  },
+/*X_VAL*/{  &x_var, &x_err, &x_num, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_VAL*/ &x_ob1, &x_err, &x_ar1, &x_ear, &x_val, &x_err  },
+/*X_NUM*/{  &x_err, &x_err, &x_num, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_NUM*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
 /*X_ATR*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_ATR*/ &x_err, &x_eob, &x_err, &x_err, &x_err, &x_err  },
 /*X_SEO*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEO*/ &x_err, &x_eob, &x_err, &x_err, &x_val, &x_err  },
 /*X_SEA*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEA*/ &x_err, &x_err, &x_err, &x_ear, &x_val, &x_err  },
+/*X_EAT*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_atr, /*X_EAT*/ &x_ob2, &x_err, &x_ar2, &x_err, &x_err, &x_err  },
     };
 
     struct ParseData
     {
         ParseData();
-        inline bool setupAttributeName();
-        inline void structureUp();
 
+        inline void setupAttributeName();
+        inline void structureUp();
         void setupValue();
         inline void setupAttributeValue();
         inline void setupArrayValue();
@@ -171,18 +172,10 @@ namespace
     {
     }
 
-    bool ParseData::setupAttributeName()
+    void ParseData::setupAttributeName()
     {
-        if(attribute.isEmpty())
-        {
-            if(!buffer.isEmpty())
-            {
-                attribute = buffer;
-                buffer = QByteArray();
-                return true;
-            }
-        }
-        return buffer.isEmpty();
+        attribute = buffer;
+        buffer = QByteArray();
     }
 
     void ParseData::structureUp()
@@ -331,21 +324,32 @@ namespace
         throw FwMLParserException(c, data);
     }
 
-    void x_sep(char c, ParseData* data) throw(FwMLParserException&)
+    void x_est(char c, ParseData* data) throw(FwMLParserException&)
     {
-        data->xcmd = X_SEP;
+        switch(data->parent->type())
+        {
+        case FwMLNode::T_Array:
+            data->xcmd = X_SEA;
+            return;
+
+        case FwMLNode::T_Object:
+            data->xcmd = data->attribute.isEmpty() ? X_EAT : X_SEO;
+            return;
+
+        default:
+            Q_ASSERT(false);
+            return;
+        }
     }
 
     void x_atr(char c, ParseData* data) throw(FwMLParserException&)
     {
-        if(data->parent->type() == FwMLNode::T_Object && !data->buffer.isEmpty() && data->attribute.isEmpty())
+        if(data->parent->type() != FwMLNode::T_Object)
         {
-            data->xcmd = X_VAL;
-            data->attribute = data->buffer;
-            data->buffer = QByteArray();
-            return;
+            throw FwMLParserException(c, data);
         }
-        throw FwMLParserException(c, data);
+        data->setupAttributeName();
+        data->xcmd = X_VAL;
     }
 
     void x_num(char c, ParseData* data) throw(FwMLParserException&)
@@ -358,6 +362,24 @@ namespace
         data->uintNumber = data->uintNumber * 10 + c - 48; //48 - '0'
     }
 
+    void x_enu(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        switch(data->parent->type())
+        {
+        case FwMLNode::T_Array:
+            data->xcmd = X_SEA;
+            return;
+
+        case FwMLNode::T_Object:
+            data->xcmd = X_SEO;
+            return;
+
+        default:
+            Q_ASSERT(false);
+            return;
+        }
+    }
+
     void x_ob1(char c, ParseData* data) throw(FwMLParserException&)
     {
         data->type = FwMLNode::T_Object;
@@ -367,11 +389,8 @@ namespace
 
     void x_ob2(char c, ParseData* data) throw(FwMLParserException&)
     {
-        if(!data->setupAttributeName())
-        {
-            throw FwMLParserException(c, data);
-        }
-        x_ob1(c, data);
+        data->setupAttributeName();
+        x_ob1(c,data);
     }
 
     void x_eob(char c, ParseData* data) throw(FwMLParserException&)
@@ -393,10 +412,7 @@ namespace
 
     void x_ar2(char c, ParseData* data) throw(FwMLParserException&)
     {
-        if(!data->setupAttributeName())
-        {
-            throw FwMLParserException(c, data);
-        }
+        data->setupAttributeName();
         x_ar1(c, data);
     }
 

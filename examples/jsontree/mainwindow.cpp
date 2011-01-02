@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
                       "\"size\" : { \n"
                       "\"width\" : \"100\", \n"
                       "\"height\" : \"100\" }, \n"
-                      "array[\"1\", \"2\", \"3\"] \n"
+                      "array[\"1\", \"2\", \"3\", \"5\"] \n"
                       "}";
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);
