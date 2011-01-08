@@ -56,6 +56,79 @@ FwMLNode* FwMLNode::parent() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
+FwMLNumber::NumberType FwMLNumber::numberType() const
+{
+    return m_numberType;
+}
+
+qint32 FwMLNumber::toInt() const
+{
+    switch(m_numberType)
+    {
+    case NT_Int:
+        return m_intValue;
+
+    case NT_UInt:
+        return m_uintValue < INT_MAX ? m_intValue : 0;
+
+    case NT_Real:
+        return m_realValue < INT_MAX ? qRound(m_realValue) : 0;
+    }
+    return 0;
+}
+
+void FwMLNumber::setIntValue(qint32 intValue)
+{
+    m_numberType = NT_Int;
+    m_intValue = intValue;
+}
+
+quint32 FwMLNumber::toUInt() const
+{
+    switch(m_numberType)
+    {
+    case NT_Int:
+        return m_intValue > 0 ? m_uintValue : 0;
+
+    case NT_UInt:
+        return m_uintValue;
+
+    case NT_Real:
+        return m_realValue < UINT_MAX ? qRound(m_realValue) : 0;
+    }
+    return 0;
+}
+
+void FwMLNumber::setUIntValue(quint32 uintValue)
+{
+    m_numberType = NT_UInt;
+    m_uintValue = uintValue;
+}
+
+qreal FwMLNumber::toReal() const
+{
+    switch(m_numberType)
+    {
+    case NT_Int:
+        return m_intValue;
+
+    case NT_UInt:
+        return m_uintValue;
+
+    case NT_Real:
+        return m_realValue;
+    }
+    return 0;
+}
+
+void FwMLNumber::setRealValue(qreal realValue)
+{
+    m_numberType = NT_Real;
+    m_realValue = realValue;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 FwMLString* FwMLObject::addAttribute(const QByteArray& name, const QByteArray& value)
 {
     FwMLString* string = new FwMLString(value);
@@ -71,30 +144,6 @@ FwMLString* FwMLObject::addAttribute(const QByteArray& name, const QString& valu
 FwMLString* FwMLObject::addAttribute(const QByteArray &name, const QUrl& url)
 {
     return addAttribute(name, url.toEncoded());
-}
-
-FwMLNumber* FwMLObject::addAttribute(const QByteArray& name, int value)
-{
-    FwMLNumber* number = new FwMLNumber();
-    number->intValue = value;
-    addAttribute(name, number);
-    return number;
-}
-
-FwMLNumber* FwMLObject::addAttribute(const QByteArray &name, quint32 value)
-{
-    FwMLNumber* number = new FwMLNumber();
-    number->uintValue = value;
-    addAttribute(name, number);
-    return number;
-}
-
-FwMLNumber* FwMLObject::addAttribute(const QByteArray& name, qreal value)
-{
-    FwMLNumber* number = new FwMLNumber();
-    number->intValue = value;
-    addAttribute(name, number);
-    return number;
 }
 
 FwMLArray* FwMLObject::addAttribute(const QByteArray& name, const QVector<FwMLNode*> array)

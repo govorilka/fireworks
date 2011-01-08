@@ -76,14 +76,38 @@ class FwMLNumber : public FwMLNode
 {
     typedef FwMLNode BaseClass;
 
-public:
-    FwMLNumber();
+public:   
+    enum NumberType
+    {
+        NT_Int,
+        NT_UInt,
+        NT_Real,
+    };
 
-    int intValue;
-    quint32 uintValue;
-    qreal realValue;
+    FwMLNumber();
+    FwMLNumber(const QByteArray& attrName, FwMLObject* parent);
+    FwMLNumber(FwMLArray* parent);
+
+    inline NumberType numberType() const;
+
+    bool setStringValue(const QByteArray& string, NumberType type);
 
     QByteArray toUtf8() const;
+
+    inline qint32 toInt() const;
+    inline void setIntValue(qint32 intValue);
+
+    inline quint32 toUInt() const;
+    inline void setUIntValue(quint32 uintValue);
+
+    inline qreal toReal() const;
+    inline void setRealValue(qreal realValue);
+
+private:
+    NumberType m_numberType;
+    qint32 m_intValue;
+    quint32 m_uintValue;
+    qreal m_realValue;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,9 +128,6 @@ public:
     inline FwMLString* addAttribute(const QByteArray& name, const QByteArray& value);
     inline FwMLString* addAttribute(const QByteArray& name, const QString& value);
     inline FwMLString* addAttribute(const QByteArray &name, const QUrl& url);
-    inline FwMLNumber* addAttribute(const QByteArray& name, int value);
-    inline FwMLNumber* addAttribute(const QByteArray &name, quint32 value);
-    inline FwMLNumber* addAttribute(const QByteArray& name, qreal value);
     inline FwMLArray* addAttribute(const QByteArray& name, const QVector<FwMLNode*> array);
 
     inline FwMLNode* attribute(const QByteArray& name) const;

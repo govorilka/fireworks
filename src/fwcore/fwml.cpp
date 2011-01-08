@@ -15,6 +15,7 @@ namespace
     public:
         FwMLParserException(const QString& err);
         FwMLParserException(char c, ParseData* data);
+        FwMLParserException(const QString& err, ParseData* data);
         ~FwMLParserException() throw();
 
         const char* what() const throw();
@@ -120,7 +121,7 @@ namespace
 /*X_VAR*/{       0, &x_err,      0, &x_err, &x_est, &x_err, &x_err, &x_atr, /*X_VAR*/ &x_ob2, &x_eob, &x_ar2, &x_ear, &x_val, &x_err  },
 /*X_STR*/{       0,      0,      0,      0,      0, &x_est, &x_err,      0, /*X_STR*/      0,      0,      0,      0,      0, &x_err  },
 /*X_VAL*/{  &x_var, &x_err, &x_num, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_VAL*/ &x_ob1, &x_err, &x_ar1, &x_ear, &x_val, &x_err  },
-/*X_NUM*/{  &x_err, &x_err, &x_num, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_NUM*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
+/*X_NUM*/{  &x_err, &x_err,      0, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_NUM*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
 /*X_ATR*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_ATR*/ &x_err, &x_eob, &x_err, &x_err, &x_err, &x_err  },
 /*X_SEO*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEO*/ &x_err, &x_eob, &x_err, &x_err, &x_val, &x_err  },
 /*X_SEA*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEA*/ &x_err, &x_err, &x_err, &x_ear, &x_val, &x_err  },
@@ -157,6 +158,7 @@ namespace
         bool declareRoot;
 
         FwMLNode::Type type;
+        FwMLNumber::NumberType numberType;
     };
 
     ParseData::ParseData() :
@@ -168,7 +170,8 @@ namespace
         charType(C_Err),
         uintNumber(0),
         declareRoot(false),
-        type(FwMLNode::T_Null)
+        type(FwMLNode::T_Null),
+        numberType(FwMLNumber::NT_Int)
     {
     }
 
@@ -225,6 +228,18 @@ namespace
             buffer = QByteArray();
             break;
 
+        case FwMLNode::T_Number:
+            {
+                FwMLNumber* number = new FwMLNumber(attribute, static_cast<FwMLObject*>(parent));
+                if(!number->setStringValue(buffer, numberType))
+                {
+                    throw FwMLParserException(QString("Invalid number value"), this);
+                }
+                buffer = QByteArray();
+                numberType = FwMLNumber::NT_Int;
+            }
+            break;
+
         case FwMLNode::T_Array:
             parent = new FwMLArray(attribute, static_cast<FwMLObject*>(parent));
             break;
@@ -251,6 +266,18 @@ namespace
         case FwMLNode::T_String:
             new FwMLString(buffer, static_cast<FwMLArray*>(parent));
             buffer = QByteArray();
+            break;
+
+        case FwMLNode::T_Number:
+            {
+                FwMLNumber* number = new FwMLNumber(static_cast<FwMLArray*>(parent));
+                if(!number->setStringValue(buffer, numberType))
+                {
+                    throw FwMLParserException(QString("Invalid number value"), this);
+                }
+                buffer = QByteArray();
+                numberType = FwMLNumber::NT_Int;
+            }
             break;
 
         case FwMLNode::T_Array:
@@ -284,6 +311,15 @@ namespace
         BaseClass(),
         message(err)
     {
+    }
+
+    FwMLParserException::FwMLParserException(const QString& err, ParseData* data) :
+        BaseClass()
+    {
+        message = QString("%1, line %2, column %3")
+                  .arg(err)
+                  .arg(data->line)
+                  .arg(data->column);
     }
 
     const char* FwMLParserException::what() const throw()
@@ -355,11 +391,9 @@ namespace
     void x_num(char c, ParseData* data) throw(FwMLParserException&)
     {
         data->xcmd = X_NUM;
-        if(data->uintNumber > (UINT_MAX / 10))
-        {
-            throw FwMLParserException(c, data);
-        }
-        data->uintNumber = data->uintNumber * 10 + c - 48; //48 - '0'
+        data->type = FwMLNode::T_Number;
+        data->numberType = FwMLNumber::NT_UInt;
+        data->buffer += c;
     }
 
     void x_enu(char c, ParseData* data) throw(FwMLParserException&)
@@ -545,27 +579,74 @@ QByteArray FwMLString::toUtf8() const
 
 FwMLNumber::FwMLNumber() :
     BaseClass(FwMLNode::T_Number),
-    intValue(0),
-    uintValue(0),
-    realValue(0)
+    m_numberType(NT_Int),
+    m_intValue(0),
+    m_uintValue(0),
+    m_realValue(0)
+{
+}
+
+FwMLNumber::FwMLNumber(const QByteArray& attrName, FwMLObject* parent) :
+    BaseClass(FwMLNode::T_Number, attrName, parent),
+    m_numberType(NT_Int),
+    m_intValue(0),
+    m_uintValue(0),
+    m_realValue(0)
+{
+}
+
+FwMLNumber::FwMLNumber(FwMLArray* parent) :
+    BaseClass(FwMLNode::T_Number, parent),
+    m_numberType(NT_Int),
+    m_intValue(0),
+    m_uintValue(0),
+    m_realValue(0)
 {
 }
 
 QByteArray FwMLNumber::toUtf8() const
 {
-    if(uintValue)
+    switch(m_numberType)
     {
-        return QByteArray::number(uintValue);
-    }
-    else if(intValue)
-    {
-        return QByteArray::number(intValue);
-    }
-    else if(realValue)
-    {
-        return QByteArray::number(realValue);
+    case NT_Int:
+        return QByteArray::number(m_intValue);
+
+    case NT_UInt:
+        return QByteArray::number(m_uintValue);
+
+    case NT_Real:
+        return QByteArray::number(m_realValue);
     }
     return "0";
+}
+
+bool FwMLNumber::setStringValue(const QByteArray& string, NumberType type)
+{
+    bool bOk = false;
+
+    switch(m_numberType)
+    {
+    case NT_Int:
+        {
+            qint32 intValue = string.toInt(&bOk);
+            setIntValue(bOk ? intValue : 0);
+        }
+        break;
+
+    case NT_UInt:
+        {
+            quint32 uintValue = string.toUInt(&bOk);
+            setUIntValue(bOk ? uintValue : 0);
+        }
+        break;
+
+    case NT_Real:
+        {
+            qreal realValue = string.toDouble(&bOk);
+            setRealValue(bOk ? realValue : 0);
+        }
+    }
+    return bOk;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
