@@ -10,7 +10,7 @@
 
 class FwMLNode;
 class FwMLString;
-class FwMLNumber;
+class FwMLUIntNumber;
 class FwMLObject;
 class FwMLArray;
 
@@ -25,7 +25,7 @@ public:
     {
         T_Null,
         T_String,
-        T_Number,
+        T_UIntNumber,
         T_Object,
         T_Array,
     };
@@ -39,7 +39,7 @@ public:
     inline bool isNull() const;
 
     inline FwMLString* toString();
-    inline FwMLNumber* toNumber();
+    inline FwMLUIntNumber* toUIntNumber();
     inline FwMLObject* toObject();
     inline FwMLArray* toArray();
 
@@ -72,42 +72,22 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLNumber : public FwMLNode
+class FwMLUIntNumber : public FwMLNode
 {
     typedef FwMLNode BaseClass;
 
 public:   
-    enum NumberType
-    {
-        NT_Int,
-        NT_UInt,
-        NT_Real,
-    };
-
-    FwMLNumber();
-    FwMLNumber(const QByteArray& attrName, FwMLObject* parent);
-    FwMLNumber(FwMLArray* parent);
-
-    inline NumberType numberType() const;
-
-    bool setStringValue(const QByteArray& string, NumberType type);
+    FwMLUIntNumber();
+    FwMLUIntNumber(quint32 value, const QByteArray& attrName, FwMLObject* parent);
+    FwMLUIntNumber(quint32 value, FwMLArray* parent);
 
     QByteArray toUtf8() const;
 
-    inline qint32 toInt() const;
-    inline void setIntValue(qint32 intValue);
-
-    inline quint32 toUInt() const;
-    inline void setUIntValue(quint32 uintValue);
-
-    inline qreal toReal() const;
-    inline void setRealValue(qreal realValue);
+    inline quint32 value() const;
+    inline void setValue(quint32 value);
 
 private:
-    NumberType m_numberType;
-    qint32 m_intValue;
-    quint32 m_uintValue;
-    qreal m_realValue;
+   quint32 m_value;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -155,6 +135,8 @@ public:
     FwMLArray(const QByteArray& attrName, FwMLObject* parent);
     FwMLArray(FwMLArray* parent);
     ~FwMLArray();
+
+    inline int size() const;
 
     QVector<FwMLNode*> data;
 

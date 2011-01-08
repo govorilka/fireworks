@@ -158,7 +158,6 @@ namespace
         bool declareRoot;
 
         FwMLNode::Type type;
-        FwMLNumber::NumberType numberType;
     };
 
     ParseData::ParseData() :
@@ -170,8 +169,7 @@ namespace
         charType(C_Err),
         uintNumber(0),
         declareRoot(false),
-        type(FwMLNode::T_Null),
-        numberType(FwMLNumber::NT_Int)
+        type(FwMLNode::T_Null)
     {
     }
 
@@ -228,15 +226,16 @@ namespace
             buffer = QByteArray();
             break;
 
-        case FwMLNode::T_Number:
+        case FwMLNode::T_UIntNumber:
             {
-                FwMLNumber* number = new FwMLNumber(attribute, static_cast<FwMLObject*>(parent));
-                if(!number->setStringValue(buffer, numberType))
+                bool bOk = false;
+                quint32 value = buffer.toUInt(&bOk);
+                if(!bOk)
                 {
                     throw FwMLParserException(QString("Invalid number value"), this);
                 }
+                new FwMLUIntNumber(value, attribute, static_cast<FwMLObject*>(parent));
                 buffer = QByteArray();
-                numberType = FwMLNumber::NT_Int;
             }
             break;
 
@@ -268,15 +267,16 @@ namespace
             buffer = QByteArray();
             break;
 
-        case FwMLNode::T_Number:
+        case FwMLNode::T_UIntNumber:
             {
-                FwMLNumber* number = new FwMLNumber(static_cast<FwMLArray*>(parent));
-                if(!number->setStringValue(buffer, numberType))
+                bool bOk = false;
+                quint32 value = buffer.toUInt(&bOk);
+                if(!bOk)
                 {
                     throw FwMLParserException(QString("Invalid number value"), this);
                 }
+                new FwMLUIntNumber(value, static_cast<FwMLArray*>(parent));
                 buffer = QByteArray();
-                numberType = FwMLNumber::NT_Int;
             }
             break;
 
@@ -391,8 +391,7 @@ namespace
     void x_num(char c, ParseData* data) throw(FwMLParserException&)
     {
         data->xcmd = X_NUM;
-        data->type = FwMLNode::T_Number;
-        data->numberType = FwMLNumber::NT_UInt;
+        data->type = FwMLNode::T_UIntNumber;
         data->buffer += c;
     }
 
@@ -577,76 +576,27 @@ QByteArray FwMLString::toUtf8() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-FwMLNumber::FwMLNumber() :
-    BaseClass(FwMLNode::T_Number),
-    m_numberType(NT_Int),
-    m_intValue(0),
-    m_uintValue(0),
-    m_realValue(0)
+FwMLUIntNumber::FwMLUIntNumber() :
+    BaseClass(FwMLNode::T_UIntNumber),
+    m_value(0)
 {
 }
 
-FwMLNumber::FwMLNumber(const QByteArray& attrName, FwMLObject* parent) :
-    BaseClass(FwMLNode::T_Number, attrName, parent),
-    m_numberType(NT_Int),
-    m_intValue(0),
-    m_uintValue(0),
-    m_realValue(0)
+FwMLUIntNumber::FwMLUIntNumber(quint32 value, const QByteArray& attrName, FwMLObject* parent) :
+   BaseClass(FwMLNode::T_UIntNumber, attrName, parent),
+   m_value(value)
 {
 }
 
-FwMLNumber::FwMLNumber(FwMLArray* parent) :
-    BaseClass(FwMLNode::T_Number, parent),
-    m_numberType(NT_Int),
-    m_intValue(0),
-    m_uintValue(0),
-    m_realValue(0)
+FwMLUIntNumber::FwMLUIntNumber(quint32 value, FwMLArray* parent) :
+    BaseClass(FwMLNode::T_UIntNumber, parent),
+    m_value(value)
 {
 }
 
-QByteArray FwMLNumber::toUtf8() const
+QByteArray FwMLUIntNumber::toUtf8() const
 {
-    switch(m_numberType)
-    {
-    case NT_Int:
-        return QByteArray::number(m_intValue);
-
-    case NT_UInt:
-        return QByteArray::number(m_uintValue);
-
-    case NT_Real:
-        return QByteArray::number(m_realValue);
-    }
-    return "0";
-}
-
-bool FwMLNumber::setStringValue(const QByteArray& string, NumberType type)
-{
-    bool bOk = false;
-
-    switch(m_numberType)
-    {
-    case NT_Int:
-        {
-            qint32 intValue = string.toInt(&bOk);
-            setIntValue(bOk ? intValue : 0);
-        }
-        break;
-
-    case NT_UInt:
-        {
-            quint32 uintValue = string.toUInt(&bOk);
-            setUIntValue(bOk ? uintValue : 0);
-        }
-        break;
-
-    case NT_Real:
-        {
-            qreal realValue = string.toDouble(&bOk);
-            setRealValue(bOk ? realValue : 0);
-        }
-    }
-    return bOk;
+    return QByteArray::number(m_value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

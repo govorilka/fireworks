@@ -57,7 +57,15 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
             for(QHash<QByteArray, FwMLNode*>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter)
             {
                 QTreeWidgetItem* childItem = new QTreeWidgetItem(parent);
-                childItem->setText(0, QString::fromUtf8(iter.key()));
+                if(iter.value()->type() == FwMLNode::T_Array)
+                {
+                    FwMLArray* array = iter.value()->toArray();
+                    childItem->setText(0, QString("%1 [%2]").arg(QString::fromUtf8(iter.key())).arg(array->size()));
+                }
+                else
+                {
+                    childItem->setText(0, QString::fromUtf8(iter.key()));
+                }
                 addNode(childItem, iter.value());
             }
         }
@@ -70,9 +78,9 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
         }
         break;
 
-    case FwMLNode::T_Number:
+    case FwMLNode::T_UIntNumber:
         {
-            FwMLNumber* number = node->toNumber();
+            FwMLUIntNumber* number = node->toUIntNumber();
             parent->setText(1, QString::fromUtf8(number->toUtf8()));
         }
         break;
@@ -84,7 +92,7 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
             foreach(FwMLNode* child, array->data)
             {
                 QTreeWidgetItem* childItem = new QTreeWidgetItem(parent);
-                childItem->setText(0, QString::number(i++));
+                childItem->setText(0, QString("[%1]").arg(i++));
                 addNode(childItem, child);
             }
         }

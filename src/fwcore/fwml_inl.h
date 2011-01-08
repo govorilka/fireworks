@@ -22,11 +22,11 @@ FwMLString* FwMLNode::toString()
     return 0;
 }
 
-FwMLNumber* FwMLNode::toNumber()
+FwMLUIntNumber* FwMLNode::toUIntNumber()
 {
-    if(m_type == T_Number)
+    if(m_type == T_UIntNumber)
     {
-        return static_cast<FwMLNumber*>(this);
+        return static_cast<FwMLUIntNumber*>(this);
     }
     return 0;
 }
@@ -56,75 +56,14 @@ FwMLNode* FwMLNode::parent() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-FwMLNumber::NumberType FwMLNumber::numberType() const
+quint32 FwMLUIntNumber::value() const
 {
-    return m_numberType;
+    return m_value;
 }
 
-qint32 FwMLNumber::toInt() const
+void FwMLUIntNumber::setValue(quint32 value)
 {
-    switch(m_numberType)
-    {
-    case NT_Int:
-        return m_intValue;
-
-    case NT_UInt:
-        return m_uintValue < INT_MAX ? m_intValue : 0;
-
-    case NT_Real:
-        return m_realValue < INT_MAX ? qRound(m_realValue) : 0;
-    }
-    return 0;
-}
-
-void FwMLNumber::setIntValue(qint32 intValue)
-{
-    m_numberType = NT_Int;
-    m_intValue = intValue;
-}
-
-quint32 FwMLNumber::toUInt() const
-{
-    switch(m_numberType)
-    {
-    case NT_Int:
-        return m_intValue > 0 ? m_uintValue : 0;
-
-    case NT_UInt:
-        return m_uintValue;
-
-    case NT_Real:
-        return m_realValue < UINT_MAX ? qRound(m_realValue) : 0;
-    }
-    return 0;
-}
-
-void FwMLNumber::setUIntValue(quint32 uintValue)
-{
-    m_numberType = NT_UInt;
-    m_uintValue = uintValue;
-}
-
-qreal FwMLNumber::toReal() const
-{
-    switch(m_numberType)
-    {
-    case NT_Int:
-        return m_intValue;
-
-    case NT_UInt:
-        return m_uintValue;
-
-    case NT_Real:
-        return m_realValue;
-    }
-    return 0;
-}
-
-void FwMLNumber::setRealValue(qreal realValue)
-{
-    m_numberType = NT_Real;
-    m_realValue = realValue;
+    m_value = value;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -170,6 +109,14 @@ void FwMLObject::removeAttribute(const QByteArray& name)
     {
         delete m_attributes.take(name);
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+int FwMLArray::size() const
+{
+    return data.size();
 }
 
 #endif // FIREWORKS_ML_INL_H
