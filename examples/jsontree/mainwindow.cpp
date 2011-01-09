@@ -10,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_rootObject(0)
 {
     m_treeView = new QTreeWidget(this);
-    m_treeView->setColumnCount(2);
-    m_treeView->setHeaderLabels(QStringList() << "Node" << "Value");
+    m_treeView->setColumnCount(3);
+    m_treeView->setHeaderLabels(QStringList() << "Node" << "Type" << "Value");
 
     setCentralWidget(m_treeView);
 
@@ -52,20 +52,14 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
     {
     case FwMLNode::T_Object:
         {
+            parent->setText(1, "object");
+
             FwMLObject* object = node->toObject();
             QHash<QByteArray, FwMLNode*> attributes = object->attributes();
             for(QHash<QByteArray, FwMLNode*>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter)
             {
                 QTreeWidgetItem* childItem = new QTreeWidgetItem(parent);
-                if(iter.value()->type() == FwMLNode::T_Array)
-                {
-                    FwMLArray* array = iter.value()->toArray();
-                    childItem->setText(0, QString("%1 [%2]").arg(QString::fromUtf8(iter.key())).arg(array->size()));
-                }
-                else
-                {
-                    childItem->setText(0, QString::fromUtf8(iter.key()));
-                }
+                childItem->setText(0, QString::fromUtf8(iter.key()));
                 addNode(childItem, iter.value());
             }
         }
@@ -74,20 +68,25 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
     case FwMLNode::T_String:
         {
             FwMLString* string = node->toString();
-            parent->setText(1, QString::fromUtf8(string->value));
+            parent->setText(1, "string");
+            parent->setText(2, QString::fromUtf8(string->value));
         }
         break;
 
     case FwMLNode::T_UIntNumber:
         {
             FwMLUIntNumber* number = node->toUIntNumber();
-            parent->setText(1, QString::fromUtf8(number->toUtf8()));
+            parent->setText(1, "uint");
+            parent->setText(2, QString::fromUtf8(number->toUtf8()));
         }
         break;
 
     case FwMLNode::T_Array:
         {
             FwMLArray* array = node->toArray();
+
+            parent->setText(1, QString("array[%1]").arg(array->size()));
+
             int i = 0;
             foreach(FwMLNode* child, array->data)
             {
