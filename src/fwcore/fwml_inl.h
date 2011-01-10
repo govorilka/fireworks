@@ -3,52 +3,6 @@
 
 #include "fwcore/fwml.h"
 
-FwMLNode::Type FwMLNode::type() const
-{
-    return m_type;
-}
-
-bool FwMLNode::isNull() const
-{
-    return m_type == T_Null;
-}
-
-FwMLString* FwMLNode::toString()
-{
-    if(m_type == T_String)
-    {
-        return static_cast<FwMLString*>(const_cast<FwMLNode*>(this));
-    }
-    return 0;
-}
-
-FwMLUIntNumber* FwMLNode::toUIntNumber()
-{
-    if(m_type == T_UIntNumber)
-    {
-        return static_cast<FwMLUIntNumber*>(this);
-    }
-    return 0;
-}
-
-FwMLObject* FwMLNode::toObject()
-{
-    if(m_type == T_Object)
-    {
-        return static_cast<FwMLObject*>(this);
-    }
-    return 0;
-}
-
-FwMLArray* FwMLNode::toArray()
-{
-    if(m_type == T_Array)
-    {
-        return static_cast<FwMLArray*>(this);
-    }
-    return 0;
-}
-
 FwMLNode* FwMLNode::parent() const
 {
     return m_parent;
@@ -62,6 +16,18 @@ quint32 FwMLUIntNumber::value() const
 }
 
 void FwMLUIntNumber::setValue(quint32 value)
+{
+    m_value = value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+int FwMLIntNumber::value() const
+{
+    return m_value;
+}
+
+void FwMLIntNumber::setValue(int value)
 {
     m_value = value;
 }

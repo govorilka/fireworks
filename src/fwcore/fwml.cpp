@@ -497,21 +497,18 @@ namespace
 
 ////////////////////////////////////////////////////////////////////////////////
 
-FwMLNode::FwMLNode(Type type) :
-    m_type(type),
+FwMLNode::FwMLNode() :
     m_parent(0)
 {
 }
 
-FwMLNode::FwMLNode(Type type, const QByteArray& attrName, FwMLObject* parent) :
-    m_type(type),
+FwMLNode::FwMLNode(const QByteArray& attrName, FwMLObject* parent) :
     m_parent(parent)
 {
    parent->addAttribute(attrName, this);
 }
 
-FwMLNode::FwMLNode(Type type, FwMLArray* parent) :
-    m_type(type),
+FwMLNode::FwMLNode(FwMLArray* parent) :
     m_parent(parent)
 {
     parent->data.append(this);
@@ -526,12 +523,12 @@ void FwMLNode::takeFromParent()
 {
     if(m_parent)
     {
-        if(m_parent->m_type == FwMLNode::T_Object)
+        if(m_parent->type() == FwMLNode::T_Object)
         {
             FwMLObject* object = static_cast<FwMLObject*>(m_parent);
             object->m_attributes.remove(object->m_attributes.key(this));
         }
-        else if(m_parent->m_type == FwMLNode::T_Array)
+        else if(m_parent->type() == FwMLNode::T_Array)
         {
             FwMLArray* array = static_cast<FwMLArray*>(m_parent);
             array->data.remove(array->data.indexOf(this));
@@ -547,24 +544,24 @@ void FwMLNode::takeFromParent()
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLString::FwMLString() :
-    BaseClass(FwMLNode::T_String)
+    BaseClass()
 {
 }
 
 FwMLString::FwMLString(const QByteArray& str) :
-    BaseClass(FwMLNode::T_String),
+    BaseClass(),
     value(str)
 {
 }
 
 FwMLString::FwMLString(const QByteArray &str, const QByteArray& attr, FwMLObject* parent) :
-    BaseClass(FwMLNode::T_String, attr, parent),
+    BaseClass(attr, parent),
     value(str)
 {
 }
 
 FwMLString::FwMLString(const QByteArray &str, FwMLArray* parent) :
-    BaseClass(FwMLNode::T_String, parent),
+    BaseClass(parent),
     value(str)
 {
 }
@@ -577,19 +574,19 @@ QByteArray FwMLString::toUtf8() const
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLUIntNumber::FwMLUIntNumber() :
-    BaseClass(FwMLNode::T_UIntNumber),
+    BaseClass(),
     m_value(0)
 {
 }
 
 FwMLUIntNumber::FwMLUIntNumber(quint32 value, const QByteArray& attrName, FwMLObject* parent) :
-   BaseClass(FwMLNode::T_UIntNumber, attrName, parent),
+   BaseClass(attrName, parent),
    m_value(value)
 {
 }
 
 FwMLUIntNumber::FwMLUIntNumber(quint32 value, FwMLArray* parent) :
-    BaseClass(FwMLNode::T_UIntNumber, parent),
+    BaseClass(parent),
     m_value(value)
 {
 }
@@ -602,17 +599,17 @@ QByteArray FwMLUIntNumber::toUtf8() const
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLObject::FwMLObject() :
-    BaseClass(FwMLNode::T_Object)
+    BaseClass()
 {
 }
 
 FwMLObject::FwMLObject(const QByteArray& attrName, FwMLObject* parent) :
-    BaseClass(FwMLNode::T_Object, attrName, parent)
+    BaseClass(attrName, parent)
 {
 }
 
 FwMLObject::FwMLObject(FwMLArray* parent) :
-   BaseClass(FwMLNode::T_Object, parent)
+   BaseClass(parent)
 {
 }
 
@@ -644,7 +641,7 @@ FwMLNode* FwMLObject::addAttribute(const QByteArray& name, FwMLNode* value, bool
         }
         else
         {
-            FwMLArray* addArray = m_attributes.value(name)->toArray();
+            FwMLArray* addArray = m_attributes.value(name)->cast<FwMLArray>();
             if(!addArray)
             {
                 addArray = new FwMLArray();
@@ -779,17 +776,17 @@ void FwMLObject::removeAttributes()
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLArray::FwMLArray() :
-    BaseClass(FwMLNode::T_Array)
+    BaseClass()
 {
 }
 
 FwMLArray::FwMLArray(const QByteArray& attrName, FwMLObject* parent) :
-   BaseClass(FwMLNode::T_Array, attrName, parent)
+   BaseClass(attrName, parent)
 {
 }
 
 FwMLArray::FwMLArray(FwMLArray* parent) :
-    BaseClass(FwMLNode::T_Array, parent)
+    BaseClass(parent)
 {
 }
 

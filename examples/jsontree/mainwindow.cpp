@@ -54,7 +54,7 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
         {
             parent->setText(1, "object");
 
-            FwMLObject* object = node->toObject();
+            FwMLObject* object = node->cast<FwMLObject>();
             QHash<QByteArray, FwMLNode*> attributes = object->attributes();
             for(QHash<QByteArray, FwMLNode*>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter)
             {
@@ -67,7 +67,7 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
 
     case FwMLNode::T_String:
         {
-            FwMLString* string = node->toString();
+            FwMLString* string = node->cast<FwMLString>();
             parent->setText(1, "string");
             parent->setText(2, QString::fromUtf8(string->value));
         }
@@ -75,15 +75,14 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
 
     case FwMLNode::T_UIntNumber:
         {
-            FwMLUIntNumber* number = node->toUIntNumber();
             parent->setText(1, "uint");
-            parent->setText(2, QString::fromUtf8(number->toUtf8()));
+            parent->setText(2, QString::fromUtf8(node->toUtf8()));
         }
         break;
 
     case FwMLNode::T_Array:
         {
-            FwMLArray* array = node->toArray();
+            FwMLArray* array = node->cast<FwMLArray>();
 
             parent->setText(1, QString("array[%1]").arg(array->size()));
 

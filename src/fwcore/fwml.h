@@ -26,22 +26,23 @@ public:
         T_Null,
         T_String,
         T_UIntNumber,
+        T_IntNumber,
         T_Object,
         T_Array,
     };
 
-    FwMLNode(Type type);
-    FwMLNode(Type type, const QByteArray& attrName, FwMLObject* parent);
-    FwMLNode(Type type, FwMLArray* parent);
+    FwMLNode();
+    FwMLNode(const QByteArray& attrName, FwMLObject* parent);
+    FwMLNode(FwMLArray* parent);
     virtual ~FwMLNode();
 
-    inline Type type() const;
+    virtual int type() const = 0;
     inline bool isNull() const;
 
-    inline FwMLString* toString();
-    inline FwMLUIntNumber* toUIntNumber();
-    inline FwMLObject* toObject();
-    inline FwMLArray* toArray();
+    template <class T> T* cast()
+    {
+        return type() == T::typeID ? static_cast<T*>(this) : 0;
+    }
 
     virtual QByteArray toUtf8() const = 0;
 
@@ -50,15 +51,48 @@ public:
     void takeFromParent();
 
 private:
-    Type m_type;
     FwMLNode* m_parent;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLString : public FwMLNode
+template <int type_id> class FwMLBase : public FwMLNode
 {
     typedef FwMLNode BaseClass;
+public:
+
+    FwMLBase() :
+        BaseClass()
+    {
+    }
+
+    FwMLBase(const QByteArray& attrName, FwMLObject* parent) :
+        BaseClass(attrName, parent)
+    {
+    }
+
+    FwMLBase(FwMLArray* parent) :
+        BaseClass(parent)
+    {
+    }
+
+    ~FwMLBase()
+    {
+    }
+
+    static const int typeID = type_id;
+
+    virtual int type() const
+    {
+        return typeID;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+class FwMLString : public FwMLBase<FwMLNode::T_String>
+{
+    typedef FwMLBase<FwMLNode::T_String> BaseClass;
 public:
     explicit FwMLString();
     explicit FwMLString(const QByteArray& value);
@@ -72,10 +106,9 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLUIntNumber : public FwMLNode
+class FwMLUIntNumber : public FwMLBase<FwMLNode::T_UIntNumber>
 {
-    typedef FwMLNode BaseClass;
-
+    typedef FwMLBase<FwMLNode::T_UIntNumber> BaseClass;
 public:   
     FwMLUIntNumber();
     FwMLUIntNumber(quint32 value, const QByteArray& attrName, FwMLObject* parent);
@@ -92,9 +125,29 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLObject : public FwMLNode
+class FwMLIntNumber : public FwMLBase<FwMLNode::T_IntNumber>
 {
-    typedef FwMLNode BaseClass;
+    typedef FwMLBase<FwMLNode::T_IntNumber> BaseClass;
+
+public:
+    FwMLIntNumber();
+    FwMLIntNumber(int value, const QByteArray& attrName, FwMLObject* parent);
+    FwMLIntNumber(int value, FwMLArray* parent);
+
+    QByteArray toUtf8() const;
+
+    inline int value() const;
+    inline void setValue(int value);
+
+private:
+   int m_value;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+class FwMLObject : public FwMLBase<FwMLNode::T_Object>
+{
+    typedef FwMLBase<FwMLNode::T_Object> BaseClass;
 public:
 
     friend class FwMLNode;
@@ -127,9 +180,9 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLArray : public FwMLNode
+class FwMLArray : public FwMLBase<FwMLNode::T_Array>
 {
-    typedef FwMLNode BaseClass;
+    typedef FwMLBase<FwMLNode::T_Array> BaseClass;
 public:
     FwMLArray();
     FwMLArray(const QByteArray& attrName, FwMLObject* parent);
