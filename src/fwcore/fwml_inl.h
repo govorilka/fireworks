@@ -10,18 +10,6 @@ FwMLNode* FwMLNode::parent() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-quint32 FwMLUIntNumber::value() const
-{
-    return m_value;
-}
-
-void FwMLUIntNumber::setValue(quint32 value)
-{
-    m_value = value;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
 int FwMLIntNumber::value() const
 {
     return m_value;

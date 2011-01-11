@@ -67,9 +67,8 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
 
     case FwMLNode::T_String:
         {
-            FwMLString* string = node->cast<FwMLString>();
             parent->setText(1, "string");
-            parent->setText(2, QString::fromUtf8(string->value));
+            parent->setText(2, QString::fromUtf8(node->cast<FwMLString>()->value()));
         }
         break;
 

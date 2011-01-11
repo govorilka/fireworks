@@ -90,37 +90,73 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLString : public FwMLBase<FwMLNode::T_String>
+template <int type_id, typename value_type> class FwMLValue : public FwMLBase<type_id>
 {
-    typedef FwMLBase<FwMLNode::T_String> BaseClass;
+    typedef FwMLBase<type_id> BaseClass;
+
+protected:
+    value_type m_value;
+
+public:
+
+    FwMLValue(const value_type& defValue) :
+        BaseClass(),
+        m_value(defValue)
+    {
+    }
+
+    FwMLValue(const value_type& defValue, const QByteArray& attrName, FwMLObject* parent) :
+        BaseClass(attrName, parent),
+        m_value(defValue)
+    {
+    }
+
+    FwMLValue(const value_type& defValue, FwMLArray* parent) :
+        BaseClass(parent),
+        m_value(defValue)
+    {
+    }
+
+    ~FwMLValue()
+    {
+    }
+
+    inline value_type value() const
+    {
+        return m_value;
+    }
+
+    inline void setValue(value_type value)
+    {
+        m_value = value;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+class FwMLString : public FwMLValue<FwMLNode::T_String, QByteArray>
+{
+    typedef FwMLValue<FwMLNode::T_String, QByteArray> BaseClass;
 public:
     explicit FwMLString();
     explicit FwMLString(const QByteArray& value);
     FwMLString(const QByteArray &value, const QByteArray& attr, FwMLObject* parent);
-    FwMLString(const QByteArray &str, FwMLArray* parent);
-
-    QByteArray value;
+    FwMLString(const QByteArray &value, FwMLArray* parent);
 
     QByteArray toUtf8() const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLUIntNumber : public FwMLBase<FwMLNode::T_UIntNumber>
+class FwMLUIntNumber : public FwMLValue<FwMLNode::T_UIntNumber, quint32>
 {
-    typedef FwMLBase<FwMLNode::T_UIntNumber> BaseClass;
+    typedef FwMLValue<FwMLNode::T_UIntNumber, quint32> BaseClass;
 public:   
     FwMLUIntNumber();
     FwMLUIntNumber(quint32 value, const QByteArray& attrName, FwMLObject* parent);
     FwMLUIntNumber(quint32 value, FwMLArray* parent);
 
     QByteArray toUtf8() const;
-
-    inline quint32 value() const;
-    inline void setValue(quint32 value);
-
-private:
-   quint32 m_value;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

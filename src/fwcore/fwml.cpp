@@ -544,50 +544,44 @@ void FwMLNode::takeFromParent()
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLString::FwMLString() :
-    BaseClass()
+    BaseClass(QByteArray())
 {
 }
 
-FwMLString::FwMLString(const QByteArray& str) :
-    BaseClass(),
-    value(str)
+FwMLString::FwMLString(const QByteArray& value) :
+    BaseClass(value)
 {
 }
 
-FwMLString::FwMLString(const QByteArray &str, const QByteArray& attr, FwMLObject* parent) :
-    BaseClass(attr, parent),
-    value(str)
+FwMLString::FwMLString(const QByteArray &value, const QByteArray& attr, FwMLObject* parent) :
+    BaseClass(value, attr, parent)
 {
 }
 
-FwMLString::FwMLString(const QByteArray &str, FwMLArray* parent) :
-    BaseClass(parent),
-    value(str)
+FwMLString::FwMLString(const QByteArray &value, FwMLArray* parent) :
+    BaseClass(value, parent)
 {
 }
 
 QByteArray FwMLString::toUtf8() const
 {
-    return "\"" + value + "\"";
+    return "\"" + m_value + "\"";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLUIntNumber::FwMLUIntNumber() :
-    BaseClass(),
-    m_value(0)
+    BaseClass(0)
 {
 }
 
 FwMLUIntNumber::FwMLUIntNumber(quint32 value, const QByteArray& attrName, FwMLObject* parent) :
-   BaseClass(attrName, parent),
-   m_value(value)
+   BaseClass(value, attrName, parent)
 {
 }
 
 FwMLUIntNumber::FwMLUIntNumber(quint32 value, FwMLArray* parent) :
-    BaseClass(parent),
-    m_value(value)
+    BaseClass(value, parent)
 {
 }
 
