@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
                       "\"size\" : { \n"
                       "\"width\" : \"100\", \n"
                       "\"height\" : \"100\" }, \n"
-                      "array[1, 2.25, 3, 5.] \n"
+                      "array[-56, 1, 2.25, 3e-3, 5.] \n"
                       "}";
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);
@@ -75,6 +75,13 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
     case FwMLNode::T_UIntNumber:
         {
             parent->setText(1, "uint");
+            parent->setText(2, QString::fromUtf8(node->toUtf8()));
+        }
+        break;
+
+    case FwMLNode::T_IntNumber:
+        {
+            parent->setText(1, "int");
             parent->setText(2, QString::fromUtf8(node->toUtf8()));
         }
         break;

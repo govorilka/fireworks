@@ -26,10 +26,12 @@ namespace
     enum CharType
     {
         C_AZ,      //Alpha (A..Z, a..z)
+        C_Ee,      //Char 'E' and 'e'
         C_Uni,     //Unicode symbol
 
         C_Num,     //Numbers (0..9)
         C_Fra,     //Decimal point (.)
+        C_Sig,     //Char '+' and '-'
 
         C_Sp,      //Space (' ')
 
@@ -60,16 +62,16 @@ namespace
 /* 24 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
 
 /* 32 */  C_Sp,  C_Err, C_Str, C_Err, C_Err, C_Err, C_Err, C_Err,
-/* 40 */  C_Err, C_Err, C_Err, C_Err, C_Sep, C_Err, C_Fra,  C_Err,
+/* 40 */  C_Err, C_Err, C_Err, C_Sig, C_Sep, C_Sig, C_Fra, C_Err,
 /* 48 */  C_Num, C_Num, C_Num, C_Num, C_Num, C_Num, C_Num, C_Num,
 /* 56 */  C_Num, C_Num, C_Col, C_Sep, C_Err, C_Err, C_Err, C_Err,
 
-/* 64 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
+/* 64 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_Ee,  C_AZ,  C_AZ,
 /* 72 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 80 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 88 */  C_AZ,  C_AZ,  C_AZ,  C_LSq, C_Esc, C_RSq, C_Err, C_Err,
 
-/* 96 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
+/* 96 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_Ee,  C_AZ,  C_AZ,
 /* 104*/  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 112*/  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 120*/  C_AZ,  C_AZ,  C_AZ,  C_LCu, C_Err, C_RCu, C_Err, C_Err,
@@ -85,7 +87,11 @@ namespace
     void x_atr(char c, ParseData* data) throw(FwMLParserException&);
     void x_int(char c, ParseData* data) throw(FwMLParserException&);
     void x_re1(char c, ParseData* data) throw(FwMLParserException&);
+    void x_re2(char c, ParseData* data) throw(FwMLParserException&);
     void x_enu(char c, ParseData* data) throw(FwMLParserException&);
+    void x_sg1(char c, ParseData* data) throw(FwMLParserException&);
+    void x_rn3(char c, ParseData* data) throw(FwMLParserException&);
+    void x_rs3(char c, ParseData* data) throw(FwMLParserException&);
     void x_err(char c, ParseData* data) throw(FwMLParserException&);
     void x_ob1(char c, ParseData* data) throw(FwMLParserException&);
     void x_ob2(char c, ParseData* data) throw(FwMLParserException&);
@@ -110,27 +116,29 @@ namespace
         X_INT = 4,
         X_RE1 = 5,
         X_RE2 = 6,
-        X_ATR = 7,
-        X_SEO = 8,
-        X_SEA = 9,
-        X_EAT = 10,
-        X_MAX = 11
+        X_RE3 = 7,
+        X_ATR = 8,
+        X_SEO = 9,
+        X_SEA = 10,
+        X_EAT = 11,
+        X_MAX = 12
     };
 
     //Parse command or parse state
     const CommandFunc parse_commands[X_MAX][C_MAX] = {
-/*            C_AZ,  C_Uni,  C_Num,  C_Fra,   C_Sp,  C_Str,  C_Esc,  C_Col,            C_LCu,  C_RCu,  C_LSq,  C_RSq,  C_Sep,  C_Err */
-/*X_DOC*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_DOC*/ &x_doc, &x_err, &x_err, &x_err, &x_err, &x_err  },
-/*X_VAR*/{       0, &x_err,      0, &x_err, &x_est, &x_err, &x_err, &x_atr, /*X_VAR*/ &x_ob2, &x_eob, &x_ar2, &x_ear, &x_val, &x_err  },
-/*X_STR*/{       0,      0,      0,      0,      0, &x_est, &x_err,      0, /*X_STR*/      0,      0,      0,      0,      0, &x_err  },
-/*X_VAL*/{  &x_var, &x_err, &x_int, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_VAL*/ &x_ob1, &x_err, &x_ar1, &x_ear, &x_val, &x_err  },
-/*X_INT*/{  &x_err, &x_err,      0, &x_re1, &x_enu, &x_err, &x_err, &x_err, /*X_INT*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
-/*X_RE1*/{  &x_err, &x_err,      0, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_RE1*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
-/*X_RE2*/{  &x_err, &x_err,      0, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_RE2*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
-/*X_ATR*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_ATR*/ &x_err, &x_eob, &x_err, &x_err, &x_err, &x_err  },
-/*X_SEO*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEO*/ &x_err, &x_eob, &x_err, &x_err, &x_val, &x_err  },
-/*X_SEA*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEA*/ &x_err, &x_err, &x_err, &x_ear, &x_val, &x_err  },
-/*X_EAT*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_atr, /*X_EAT*/ &x_ob2, &x_err, &x_ar2, &x_err, &x_err, &x_err  },
+/*            C_AZ,   C_Ee,  C_Uni,  C_Num,  C_Fra, C_Sig,    C_Sp,  C_Str,  C_Esc,  C_Col,            C_LCu,  C_RCu,  C_LSq,  C_RSq,  C_Sep,  C_Err */
+/*X_DOC*/{  &x_var, &x_var, &x_err, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_DOC*/ &x_doc, &x_err, &x_err, &x_err, &x_err, &x_err  },
+/*X_VAR*/{       0,      0, &x_err,      0, &x_err, &x_err, &x_est, &x_err, &x_err, &x_atr, /*X_VAR*/ &x_ob2, &x_eob, &x_ar2, &x_ear, &x_val, &x_err  },
+/*X_STR*/{       0,      0,      0,      0,      0,      0,      0, &x_est, &x_err,      0, /*X_STR*/      0,      0,      0,      0,      0, &x_err  },
+/*X_VAL*/{  &x_var, &x_var, &x_err, &x_int, &x_err, &x_sg1, &x_ign, &x_bst, &x_err, &x_err, /*X_VAL*/ &x_ob1, &x_err, &x_ar1, &x_ear, &x_val, &x_err  },
+/*X_INT*/{  &x_err, &x_re2, &x_err,      0, &x_re1, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_INT*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
+/*X_RE1*/{  &x_err, &x_re2, &x_err,      0, &x_err, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_RE1*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
+/*X_RE2*/{  &x_err, &x_err, &x_err, &x_rn3, &x_err, &x_rn3, &x_err, &x_err, &x_err, &x_err, /*X_RE2*/ &x_err, &x_err, &x_err, &x_err, &x_err, &x_err  },
+/*X_RE3*/{  &x_err, &x_err, &x_err,      0, &x_err, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_RE3*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
+/*X_ATR*/{  &x_var, &x_var, &x_err, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_ATR*/ &x_err, &x_eob, &x_err, &x_err, &x_err, &x_err  },
+/*X_SEO*/{  &x_err, &x_err, &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEO*/ &x_err, &x_eob, &x_err, &x_err, &x_val, &x_err  },
+/*X_SEA*/{  &x_err, &x_err, &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEA*/ &x_err, &x_err, &x_err, &x_ear, &x_val, &x_err  },
+/*X_EAT*/{  &x_err, &x_err, &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_atr, /*X_EAT*/ &x_ob2, &x_err, &x_ar2, &x_err, &x_err, &x_err  },
     };
 
     struct ParseData
@@ -244,6 +252,19 @@ namespace
             }
             break;
 
+        case FwMLNode::T_IntNumber:
+            {
+                bool bOk = false;
+                int value = buffer.toInt(&bOk);
+                if(!bOk)
+                {
+                    throw FwMLParserException(QString("Invalid number value"), this);
+                }
+                new FwMLIntNumber(value, attribute, static_cast<FwMLObject*>(parent));
+                buffer = QByteArray();
+            }
+            break;
+
         case FwMLNode::T_DoubleNumber:
             {
                 bool bOk = false;
@@ -294,6 +315,19 @@ namespace
                     throw FwMLParserException(QString("Invalid number value"), this);
                 }
                 new FwMLUIntNumber(value, static_cast<FwMLArray*>(parent));
+                buffer = QByteArray();
+            }
+            break;
+
+        case FwMLNode::T_IntNumber:
+            {
+                bool bOk = false;
+                int value = buffer.toInt(&bOk);
+                if(!bOk)
+                {
+                    throw FwMLParserException(QString("Invalid number value"), this);
+                }
+                new FwMLIntNumber(value, static_cast<FwMLArray*>(parent));
                 buffer = QByteArray();
             }
             break;
@@ -433,6 +467,13 @@ namespace
         data->buffer += c;
     }
 
+    void x_re2(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        data->xcmd = X_RE2;
+        data->type = FwMLNode::T_DoubleNumber;
+        data->buffer += c;
+    }
+
     void x_enu(char c, ParseData* data) throw(FwMLParserException&)
     {
         switch(data->parent->type())
@@ -449,6 +490,27 @@ namespace
             Q_ASSERT(false);
             return;
         }
+    }
+
+    void x_sg1(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        if(c == '+')
+        {
+            data->xcmd = X_INT;
+            data->type = FwMLNode::T_UIntNumber;
+        }
+        else if(c == '-')
+        {
+            data->xcmd = X_INT;
+            data->type = FwMLNode::T_IntNumber;
+            data->buffer += c;
+        }
+    }
+
+    void x_rn3(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        data->xcmd = X_RE3;
+        data->buffer += c;
     }
 
     void x_ob1(char c, ParseData* data) throw(FwMLParserException&)
