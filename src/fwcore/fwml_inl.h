@@ -10,12 +10,48 @@ FwMLNode* FwMLNode::parent() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
+QByteArray FwMLString::value() const
+{
+    return m_value;
+}
+
+void FwMLString::setValue(const QByteArray& value)
+{
+    m_value = value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+quint32 FwMLUIntNumber::value() const
+{
+    return m_value;
+}
+
+void FwMLUIntNumber::setValue(quint32 value)
+{
+    m_value = value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 int FwMLIntNumber::value() const
 {
     return m_value;
 }
 
 void FwMLIntNumber::setValue(int value)
+{
+    m_value = value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+double FwMLDoubleNumber::value() const
+{
+    return m_value;
+}
+
+void FwMLDoubleNumber::setValue(double value)
 {
     m_value = value;
 }

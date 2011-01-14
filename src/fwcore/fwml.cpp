@@ -83,7 +83,8 @@ namespace
     void x_bst(char c, ParseData* data) throw(FwMLParserException&);
     void x_est(char c, ParseData* data) throw(FwMLParserException&);
     void x_atr(char c, ParseData* data) throw(FwMLParserException&);
-    void x_num(char c, ParseData* data) throw(FwMLParserException&);
+    void x_int(char c, ParseData* data) throw(FwMLParserException&);
+    void x_re1(char c, ParseData* data) throw(FwMLParserException&);
     void x_enu(char c, ParseData* data) throw(FwMLParserException&);
     void x_err(char c, ParseData* data) throw(FwMLParserException&);
     void x_ob1(char c, ParseData* data) throw(FwMLParserException&);
@@ -106,12 +107,14 @@ namespace
         X_VAR = 1,
         X_STR = 2,
         X_VAL = 3,
-        X_NUM = 4,
-        X_ATR = 5,
-        X_SEO = 6,
-        X_SEA = 7,
-        X_EAT = 8,
-        X_MAX = 9
+        X_INT = 4,
+        X_RE1 = 5,
+        X_RE2 = 6,
+        X_ATR = 7,
+        X_SEO = 8,
+        X_SEA = 9,
+        X_EAT = 10,
+        X_MAX = 11
     };
 
     //Parse command or parse state
@@ -120,8 +123,10 @@ namespace
 /*X_DOC*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_DOC*/ &x_doc, &x_err, &x_err, &x_err, &x_err, &x_err  },
 /*X_VAR*/{       0, &x_err,      0, &x_err, &x_est, &x_err, &x_err, &x_atr, /*X_VAR*/ &x_ob2, &x_eob, &x_ar2, &x_ear, &x_val, &x_err  },
 /*X_STR*/{       0,      0,      0,      0,      0, &x_est, &x_err,      0, /*X_STR*/      0,      0,      0,      0,      0, &x_err  },
-/*X_VAL*/{  &x_var, &x_err, &x_num, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_VAL*/ &x_ob1, &x_err, &x_ar1, &x_ear, &x_val, &x_err  },
-/*X_NUM*/{  &x_err, &x_err,      0, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_NUM*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
+/*X_VAL*/{  &x_var, &x_err, &x_int, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_VAL*/ &x_ob1, &x_err, &x_ar1, &x_ear, &x_val, &x_err  },
+/*X_INT*/{  &x_err, &x_err,      0, &x_re1, &x_enu, &x_err, &x_err, &x_err, /*X_INT*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
+/*X_RE1*/{  &x_err, &x_err,      0, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_RE1*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
+/*X_RE2*/{  &x_err, &x_err,      0, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_RE2*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
 /*X_ATR*/{  &x_var, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_ATR*/ &x_err, &x_eob, &x_err, &x_err, &x_err, &x_err  },
 /*X_SEO*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEO*/ &x_err, &x_eob, &x_err, &x_err, &x_val, &x_err  },
 /*X_SEA*/{  &x_err, &x_err, &x_err, &x_err, &x_ign, &x_err, &x_err, &x_err, /*X_SEA*/ &x_err, &x_err, &x_err, &x_ear, &x_val, &x_err  },
@@ -239,6 +244,19 @@ namespace
             }
             break;
 
+        case FwMLNode::T_DoubleNumber:
+            {
+                bool bOk = false;
+                double value = buffer.toDouble(&bOk);
+                if(!bOk)
+                {
+                    throw FwMLParserException(QString("Invalid number value"), this);
+                }
+                new FwMLDoubleNumber(value, attribute, static_cast<FwMLObject*>(parent));
+                buffer = QByteArray();
+            }
+            break;
+
         case FwMLNode::T_Array:
             parent = new FwMLArray(attribute, static_cast<FwMLObject*>(parent));
             break;
@@ -276,6 +294,19 @@ namespace
                     throw FwMLParserException(QString("Invalid number value"), this);
                 }
                 new FwMLUIntNumber(value, static_cast<FwMLArray*>(parent));
+                buffer = QByteArray();
+            }
+            break;
+
+        case FwMLNode::T_DoubleNumber:
+            {
+                bool bOk = false;
+                double value = buffer.toDouble(&bOk);
+                if(!bOk)
+                {
+                    throw FwMLParserException(QString("Invalid number value"), this);
+                }
+                new FwMLDoubleNumber(value, static_cast<FwMLArray*>(parent));
                 buffer = QByteArray();
             }
             break;
@@ -388,10 +419,17 @@ namespace
         data->xcmd = X_VAL;
     }
 
-    void x_num(char c, ParseData* data) throw(FwMLParserException&)
+    void x_int(char c, ParseData* data) throw(FwMLParserException&)
     {
-        data->xcmd = X_NUM;
+        data->xcmd = X_INT;
         data->type = FwMLNode::T_UIntNumber;
+        data->buffer += c;
+    }
+
+    void x_re1(char c, ParseData* data) throw(FwMLParserException&)
+    {
+        data->xcmd = X_RE1;
+        data->type = FwMLNode::T_DoubleNumber;
         data->buffer += c;
     }
 
@@ -544,22 +582,26 @@ void FwMLNode::takeFromParent()
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLString::FwMLString() :
-    BaseClass(QByteArray())
+    BaseClass(),
+    m_value(QByteArray())
 {
 }
 
 FwMLString::FwMLString(const QByteArray& value) :
-    BaseClass(value)
+   BaseClass(),
+   m_value(value)
 {
 }
 
 FwMLString::FwMLString(const QByteArray &value, const QByteArray& attr, FwMLObject* parent) :
-    BaseClass(value, attr, parent)
+    BaseClass(attr, parent),
+    m_value(value)
 {
 }
 
 FwMLString::FwMLString(const QByteArray &value, FwMLArray* parent) :
-    BaseClass(value, parent)
+    BaseClass(parent),
+    m_value(value)
 {
 }
 
@@ -571,21 +613,80 @@ QByteArray FwMLString::toUtf8() const
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLUIntNumber::FwMLUIntNumber() :
-    BaseClass(0)
+    BaseClass(),
+    m_value(0)
 {
 }
 
 FwMLUIntNumber::FwMLUIntNumber(quint32 value, const QByteArray& attrName, FwMLObject* parent) :
-   BaseClass(value, attrName, parent)
+   BaseClass(attrName, parent),
+   m_value(value)
 {
 }
 
 FwMLUIntNumber::FwMLUIntNumber(quint32 value, FwMLArray* parent) :
-    BaseClass(value, parent)
+    BaseClass(parent),
+    m_value(value)
 {
 }
 
 QByteArray FwMLUIntNumber::toUtf8() const
+{
+    return QByteArray::number(m_value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+FwMLIntNumber::FwMLIntNumber() :
+    BaseClass(),
+    m_value(0)
+{
+}
+
+FwMLIntNumber::FwMLIntNumber(int value, const QByteArray& attrName, FwMLObject* parent) :
+    BaseClass(attrName, parent),
+    m_value(value)
+{
+}
+
+FwMLIntNumber::FwMLIntNumber(int value, FwMLArray* parent) :
+    BaseClass(parent),
+    m_value(value)
+{
+}
+
+QByteArray FwMLIntNumber::toUtf8() const
+{
+    return QByteArray::number(m_value);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+FwMLDoubleNumber::FwMLDoubleNumber() :
+    BaseClass(),
+    m_value(0.)
+{
+}
+
+FwMLDoubleNumber::FwMLDoubleNumber(double value) :
+    BaseClass(),
+    m_value(value)
+{
+}
+
+FwMLDoubleNumber::FwMLDoubleNumber(double value, const QByteArray& attrName, FwMLObject* parent) :
+   BaseClass(attrName, parent),
+   m_value(value)
+{
+}
+
+FwMLDoubleNumber::FwMLDoubleNumber(double value, FwMLArray* parent) :
+   BaseClass(parent),
+   m_value(value)
+{
+}
+
+QByteArray FwMLDoubleNumber::toUtf8() const
 {
     return QByteArray::number(m_value);
 }
