@@ -7,6 +7,9 @@
 #include <QtCore/qhash.h>
 #include <QtCore/qvector.h>
 #include <QtCore/qurl.h>
+#include <QtCore/qrect.h>
+
+#include "fwcore/fwcolor.h"
 
 class FwMLNode;
 class FwMLString;
@@ -43,7 +46,11 @@ public:
 
     template <class T> T* cast()
     {
-        return type() == T::typeID ? static_cast<T*>(this) : 0;
+        if(this)
+        {
+            return type() == T::typeID ? static_cast<T*>(this) : 0;
+        }
+        return 0;
     }
 
     virtual QByteArray toUtf8() const = 0;
@@ -51,6 +58,10 @@ public:
     inline FwMLNode* parent() const;
 
     void takeFromParent();
+
+    virtual int toInt(bool* bOk) const = 0;
+    virtual bool toBool(bool* bOk) const = 0;
+    virtual FwColor toColor(bool* bOk) const = 0;
 
 private:
     FwMLNode* m_parent;
@@ -106,6 +117,11 @@ public:
     inline QByteArray value() const;
     inline void setValue(const QByteArray& value);
 
+    int toInt(bool* bOk) const;
+    bool toBool(bool* bOk) const;
+    FwColor toColor(bool* bOk) const;
+    quint32 toUInt(bool* bOk) const;
+
 private:
     QByteArray m_value;
 };
@@ -124,6 +140,10 @@ public:
     inline void setValue(quint32 value);
 
     QByteArray toUtf8() const;
+
+    int toInt(bool* bOk) const;
+    bool toBool(bool* bOk) const;
+    FwColor toColor(bool* bOk) const;
 
 private:
     quint32 m_value;
@@ -145,6 +165,10 @@ public:
     inline int value() const;
     inline void setValue(int value);
 
+    int toInt(bool* bOk) const;
+    bool toBool(bool* bOk) const;
+    FwColor toColor(bool* bOk) const;
+
 private:
    int m_value;
 };
@@ -164,6 +188,10 @@ public:
     inline void setValue(double value);
 
     QByteArray toUtf8() const;
+
+    int toInt(bool* bOk) const;
+    bool toBool(bool* bOk) const;
+    FwColor toColor(bool* bOk) const;
 
 private:
     double m_value;
@@ -200,6 +228,13 @@ public:
     bool parse(const QByteArray& utf8String, QString* error = 0);
     bool parse(QIODevice* ioDevice, QString* error = 0);
 
+    QRect toRect(bool* bOk) const;
+    int toInt(bool* bOk) const;
+    bool toBool(bool* bOk) const;
+    QSize toSize(bool* bOk) const;
+    QPoint toPoint(bool* bOk, const QByteArray& xName = "x", const QByteArray& yName = "y") const;
+    FwColor toColor(bool* bOk) const;
+
 private:
     QHash<QByteArray, FwMLNode*> m_attributes;
 };
@@ -220,6 +255,10 @@ public:
     QVector<FwMLNode*> data;
 
     QByteArray toUtf8() const;
+
+    int toInt(bool* bOk) const;
+    bool toBool(bool* bOk) const;
+    FwColor toColor(bool* bOk) const;
 };
 
 #include "fwml_inl.h"

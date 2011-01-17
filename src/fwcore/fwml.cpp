@@ -61,20 +61,20 @@ namespace
 /* 16 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
 /* 24 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
 
-/* 32 */  C_Sp,  C_Err, C_Str, C_Err, C_Err, C_Err, C_Err, C_Err,
-/* 40 */  C_Err, C_Err, C_Err, C_Sig, C_Sep, C_Sig, C_Fra, C_Err,
+/* 32 */  C_Sp,  C_Uni, C_Str, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 40 */  C_Uni, C_Uni, C_Uni, C_Sig, C_Sep, C_Sig, C_Fra, C_Uni,
 /* 48 */  C_Num, C_Num, C_Num, C_Num, C_Num, C_Num, C_Num, C_Num,
-/* 56 */  C_Num, C_Num, C_Col, C_Sep, C_Err, C_Err, C_Err, C_Err,
+/* 56 */  C_Num, C_Num, C_Col, C_Sep, C_Uni, C_Uni, C_Uni, C_Uni,
 
-/* 64 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_Ee,  C_AZ,  C_AZ,
+/* 64 */  C_Uni, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_Ee,  C_AZ,  C_AZ,
 /* 72 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 80 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
-/* 88 */  C_AZ,  C_AZ,  C_AZ,  C_LSq, C_Esc, C_RSq, C_Err, C_Err,
+/* 88 */  C_AZ,  C_AZ,  C_AZ,  C_LSq, C_Esc, C_RSq, C_Uni, C_Uni,
 
-/* 96 */  C_Err, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_Ee,  C_AZ,  C_AZ,
+/* 96 */  C_Uni, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_Ee,  C_AZ,  C_AZ,
 /* 104*/  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 112*/  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
-/* 120*/  C_AZ,  C_AZ,  C_AZ,  C_LCu, C_Err, C_RCu, C_Err, C_Err,
+/* 120*/  C_AZ,  C_AZ,  C_AZ,  C_LCu, C_Uni, C_RCu, C_Uni, C_Err,
 
     };
 
@@ -672,6 +672,69 @@ QByteArray FwMLString::toUtf8() const
     return "\"" + m_value + "\"";
 }
 
+int FwMLString::toInt(bool* bOk) const
+{
+    return m_value.toInt(bOk);
+}
+
+/*!
+Функция преобразует значение данного элемента к значению типа bool.
+Если строка содержит слово "true" или "yes", то функция вернет true,
+в противном случае функция возвращает значение false.
+\param bOk Успешность выполнения операции, значение переменной после
+ыполнения функции равно true, если строка равна одному из ключевых слов:
+"false", "no", "true", "yes".
+\return Результат преобразования строки к типу bool
+\note Сравнение строк происходит без учета регистра, "TrUe" и "true" одно
+и тоже слово
+*/
+bool FwMLString::toBool(bool* bOk) const
+{
+    QByteArray lowerValue = m_value.toLower();
+    if(lowerValue == "true" || lowerValue == "yes")
+    {
+        (*bOk) = true;
+        return true;
+    }
+    (*bOk) = (lowerValue == "false" || lowerValue == "no");
+    return false;
+}
+
+FwColor FwMLString::toColor(bool* bOk) const
+{
+    if(!m_value.isEmpty())
+    {
+        quint32 rgba = FwColor::nameToRGBA(m_value, bOk);
+        if(*bOk)
+        {
+            return FwColor(rgba);
+        }
+
+        rgba = toUInt(bOk);
+        if(*bOk)
+        {
+            return FwColor(rgba);
+        }
+    }
+
+    (*bOk) = false;
+    return FwColor();
+}
+
+quint32 FwMLString::toUInt(bool* bOk) const
+{
+    if(!m_value.isEmpty())
+    {
+        if(m_value.at(0) == '#')
+        {
+            return m_value.right(m_value.length() - 1).toUInt(bOk, 16);
+        }
+        return m_value.toUInt(bOk);
+    }
+    (*bOk) = false;
+    return 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLUIntNumber::FwMLUIntNumber() :
@@ -697,6 +760,35 @@ QByteArray FwMLUIntNumber::toUtf8() const
     return QByteArray::number(m_value);
 }
 
+int FwMLUIntNumber::toInt(bool* bOk) const
+{
+    if(m_value <= INT_MAX)
+    {
+        (*bOk) = true;
+        return m_value;
+    }
+    (*bOk) = false;
+    return 0;
+}
+
+/*!
+Функция преобразует значение данного элемента к значению типа bool
+\param bOk Успешность выполнения операции, значение переменной после
+ыполнения функции всегда равно true
+\return Результат выражения value() == 0
+*/
+bool FwMLUIntNumber::toBool(bool* bOk) const
+{
+   (*bOk) = true;
+   return m_value == 0;
+}
+
+FwColor FwMLUIntNumber::toColor(bool* bOk) const
+{
+    (*bOk) = true;
+    return FwColor(m_value);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLIntNumber::FwMLIntNumber() :
@@ -720,6 +812,35 @@ FwMLIntNumber::FwMLIntNumber(int value, FwMLArray* parent) :
 QByteArray FwMLIntNumber::toUtf8() const
 {
     return QByteArray::number(m_value);
+}
+
+int FwMLIntNumber::toInt(bool* bOk) const
+{
+   (*bOk) = true;
+   return m_value;
+}
+
+/*!
+Функция преобразует значение данного элемента к значению типа bool
+\param bOk Успешность выполнения операции, значение переменной после
+ыполнения функции всегда равно true
+\return Результат выражения value() == 0
+*/
+bool FwMLIntNumber::toBool(bool* bOk) const
+{
+   (*bOk) = true;
+   return m_value == 0;
+}
+
+FwColor FwMLIntNumber::toColor(bool* bOk) const
+{
+    if(m_value < 0)
+    {
+        (*bOk) = false;
+        return FwColor();
+    }
+    (*bOk) = true;
+    return FwColor(m_value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -751,6 +872,35 @@ FwMLDoubleNumber::FwMLDoubleNumber(double value, FwMLArray* parent) :
 QByteArray FwMLDoubleNumber::toUtf8() const
 {
     return QByteArray::number(m_value);
+}
+
+int FwMLDoubleNumber::toInt(bool* bOk) const
+{
+    if(qAbs(m_value) > 0. && (qAbs(m_value) - INT_MAX) < 0.)
+    {
+        (*bOk) = true;
+        return m_value;
+    }
+    (*bOk) = false;
+    return 0;
+}
+
+/*!
+Функция преобразует значение данного элемента к значению типа bool
+\param bOk Успешность выполнения операции, значение переменной после
+ыполнения функции всегда равно true
+\return Результат выражения qFuzzyCompare(value(), 0.)
+*/
+bool FwMLDoubleNumber::toBool(bool* bOk) const
+{
+   (*bOk) = true;
+   return qFuzzyCompare(m_value, 0.);
+}
+
+FwColor FwMLDoubleNumber::toColor(bool* bOk) const
+{
+    (*bOk) = false;
+    return FwColor();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -930,6 +1080,111 @@ void FwMLObject::removeAttributes()
     m_attributes.clear();
 }
 
+QSize FwMLObject::toSize(bool* bOk) const
+{
+    FwMLNode* node = attribute("width");
+    if(node)
+    {
+        int width = node->toInt(bOk);
+        if((*bOk) && (node = attribute("height")))
+        {
+            int height = node->toInt(bOk);
+            if((*bOk))
+            {
+                return QSize(width, height);
+            }
+        }
+    }
+    (*bOk) = false;
+    return QSize();
+}
+
+QPoint FwMLObject::toPoint(bool* bOk, const QByteArray& xName, const QByteArray& yName) const
+{
+    FwMLNode* node = attribute(xName);
+    if(node)
+    {
+        int x = node->toInt(bOk);
+        if((*bOk) && (node = attribute(yName)))
+        {
+            int y = node->toInt(bOk);
+            if(*bOk)
+            {
+                return QPoint(x, y);
+            }
+        }
+    }
+    (*bOk) = false;
+    return QPoint();
+}
+
+QRect FwMLObject::toRect(bool* bOk) const
+{
+    QPoint pos = toPoint(bOk);
+    if(*bOk)
+    {
+        QSize size = toSize(bOk);
+        if(*bOk)
+        {
+            return QRect(pos, size);
+        }
+    }
+    (*bOk) = false;
+    return QRect();
+}
+
+/*!
+Функция всегда возвращает 0!
+\param bOk Успешность выполнения операции, значение переменной после
+ыполнения функции всегда равно false
+\return Всегда возвращает 0
+*/
+int FwMLObject::toInt(bool* bOk) const
+{
+    (*bOk) = false;
+    return 0;
+}
+
+/*!
+Функция всегда возвращает false!
+\param bOk Успешность выполнения операции, значение переменной после
+ыполнения функции всегда равно false
+\return Всегда возвращает false
+*/
+bool FwMLObject::toBool(bool* bOk) const
+{
+   (*bOk) = false;
+   return false;
+}
+
+FwColor FwMLObject::toColor(bool* bOk) const
+{
+    FwMLNode* name = attribute("name");
+    if(name)
+    {
+        FwColor color = name->toColor(bOk);
+        if(*bOk)
+        {
+            FwMLNode* blendingNode = attribute("blending");
+            if(blendingNode)
+            {
+                bool blending = blendingNode->toBool(bOk);
+                if(*bOk)
+                {
+                    color.blending = blending;
+                    return color;
+                }
+            }
+            else
+            {
+                return color;
+            }
+        }
+    }
+    (*bOk) = false;
+    return FwColor();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLArray::FwMLArray() :
@@ -974,4 +1229,48 @@ QByteArray FwMLArray::toUtf8() const
         return QByteArray();
     }
     return "[" + items + "]";
+}
+
+/*!
+Если массив содержит равно(!!!) один элемент, функция вернет результат
+преобразования значения этого элемента к типу int, в противном случае
+функция возвращает 0
+\param bOk Успешность выполнения операции
+\return Результат преобразования значения первого элемента к int
+*/
+int FwMLArray::toInt(bool* bOk) const
+{
+    if(size() == 1)
+    {
+        return data.at(0)->toInt(bOk);
+    }
+    (*bOk) = false;
+    return 0;
+}
+
+/*!
+Если массив содержит равно(!!!) один элемент, функция вернет результат
+преобразования значения этого элемента к типу bool, в противном случае
+функция возвращает false
+\param bOk Успешность выполнения операции
+\return Результат преобразования значения первого элемента к bool
+*/
+bool FwMLArray::toBool(bool* bOk) const
+{
+    if(size() == 1)
+    {
+        return data.at(0)->toBool(bOk);
+    }
+    (*bOk) = false;
+    return false;
+}
+
+FwColor FwMLArray::toColor(bool* bOk) const
+{
+    if(size() == 1)
+    {
+        return data.at(0)->toColor(bOk);
+    }
+    (*bOk) = false;
+    return false;
 }
