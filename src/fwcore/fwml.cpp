@@ -1171,7 +1171,7 @@ FwColor FwMLObject::toColor(bool* bOk) const
                 bool blending = blendingNode->toBool(bOk);
                 if(*bOk)
                 {
-                    color.blending = blending;
+                    color.setBlending(blending);
                     return color;
                 }
             }

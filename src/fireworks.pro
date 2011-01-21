@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       -= gui
+QT       += core gui //gui - temporary, for QRegion class
 
 TARGET = ../bin/fireworks
 
@@ -19,3 +19,6 @@ SOURCES += fireworks.cpp
 HEADERS += fireworks.h
 
 include (fwcore/fwcore.pri)
+include (fwtypography/fwtypography.pri)
+include (fwgui/fwgui.pri)
+include (fwprimitives/fwprimitives.pri)

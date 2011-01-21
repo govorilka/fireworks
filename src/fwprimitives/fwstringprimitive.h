@@ -1,0 +1,57 @@
+#ifndef FIREWORKS_GRAPHICSSTRINGITEM_H
+#define FIREWORKS_GRAPHICSSTRINGITEM_H
+
+#include "fwprimitives/fwlineprimitive.h"
+
+#include "fwtypography/fwfont.h"
+
+class FwGraphicsStringItem;
+typedef FwGraphicsStringItem* FwGraphicsStringItemPtr;
+
+class FwGraphicsStringItem : public FwLinePrimitive
+{
+    typedef FwLinePrimitive BaseClass;
+
+public:
+    FwGraphicsStringItem(FwPrimitiveGroup* parent);
+
+    inline QString string() const;
+    void setString(const QString& string);
+
+    inline FwFont font() const;
+    void setFont(const FwFont& font);
+
+    inline bool isShadowEnable() const;
+    void setShadowEnabled(bool enable);
+
+    inline FwColor shadowColor() const;
+    void setShadowColor(const FwColor& color);
+
+    void updatePointer(FwGraphicsStringItemPtr& string,
+                       const FwFont& font,
+                       FwPrimitiveGroup* parent);
+
+    QSize stringSize(const QString& string) const;
+
+    inline bool isFixedSize() const;
+    void setFixedSize(bool enable, const QString& mask = QString());
+
+protected:
+    QRect updateGeometry(const QRect& rect);
+
+    void paint(FwCanvas* canvas);
+
+private:
+    QString m_string;
+    QByteArray m_utf8String;
+    FwFont m_font;
+    QPoint m_textPos;
+    bool m_shadow;
+    FwColor m_shadowColor;
+    bool m_fixedSize;
+    QString m_mask;
+};
+
+#include "fwprimitives/fwstringprimitive_inl.h"
+
+#endif // FIREWORKS_GRAPHICSSTRINGITEM_H
