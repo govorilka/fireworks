@@ -5,7 +5,7 @@
 #include <QtCore/qmetatype.h>
 #include <QtCore/qsize.h>
 
-class FwMLObject;
+class FwMLNode;
 
 class FwFontDescription
 {
@@ -22,7 +22,7 @@ public:
 
     inline bool operator !=(const FwFontDescription& other) const;
 
-    bool apply(FwMLObject* object);
+    bool apply(FwMLNode* node);
 
     inline bool isNull() const;
 

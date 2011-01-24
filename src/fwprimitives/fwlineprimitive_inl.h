@@ -12,8 +12,9 @@ void FwLinePrimitive::setPen(const FwPenPtr& pen)
 {
     if(m_pen != pen)
     {
+        prepareGeometryChanged();
         m_pen = pen;
-        invalidate();
+        update();
     }
 }
 

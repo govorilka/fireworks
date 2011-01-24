@@ -30,6 +30,8 @@ public:
     inline int orientation() const;
     inline int length() const;
 
+    void apply(FwMLObject *object);
+
 protected:
     virtual QRect updateGeometry(const QRect& rect);
 

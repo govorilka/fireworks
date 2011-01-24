@@ -3,27 +3,27 @@
 
 #include "fwprimitives/fwstringprimitive.h"
 
-QString FwGraphicsStringItem::string() const
+QString FwStringPrimitive::string() const
 {
     return m_string;
 }
 
-FwFont FwGraphicsStringItem::font() const
+FwFont FwStringPrimitive::font() const
 {
     return m_font;
 }
 
-bool FwGraphicsStringItem::isShadowEnable() const
+bool FwStringPrimitive::isShadowEnable() const
 {
     return m_shadow;
 }
 
-FwColor FwGraphicsStringItem::shadowColor() const
+FwColor FwStringPrimitive::shadowColor() const
 {
     return m_shadowColor;
 }
 
-bool FwGraphicsStringItem::isFixedSize() const
+bool FwStringPrimitive::isFixedSize() const
 {
     return m_fixedSize;
 }

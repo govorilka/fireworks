@@ -10,8 +10,8 @@ class FwColor
 {
 public:
     FwColor();
-    FwColor(quint32 rgba);
-    FwColor(quint8 r, quint8 g, quint8 b, quint8 a);
+    FwColor(quint32 argb);
+    FwColor(quint8 a, quint8 r, quint8 g, quint8 b);
 
     inline quint8 red() const;
     inline void setRed(quint8 red);
@@ -36,10 +36,10 @@ private:
 
     union {
         struct {
+            quint8 m_alpha;
             quint8 m_red;
             quint8 m_green;
             quint8 m_blue;
-            quint8 m_alpha;
         };
         quint32 m_allChannel;
     };
@@ -84,7 +84,7 @@ quint8 FwColor::alpha() const
 
 void FwColor::setAlpha(quint8 alpha)
 {
-    m_alpha =alpha;
+    m_alpha = alpha;
 }
 
 bool FwColor::blending() const

@@ -301,3 +301,38 @@ FwPixmap FwPrimitive::createPixmap(FwMLNode* node)
     }
     return FwPixmap();
 }
+
+FwFont FwPrimitive::createFont(const FwFontDescription& desc)
+{
+    return m_scene->view()->font(desc);
+}
+
+FwFont FwPrimitive::createFont(FwMLObject* object, const QByteArray& attribute)
+{
+    FwMLNode* fontNode = object->attribute(attribute);
+    if(fontNode)
+    {
+        FwFontDescription desc;
+        if(desc.apply(fontNode))
+        {
+            return createFont(desc);
+        }
+    }
+    return FwFont();
+}
+
+FwPenPtr FwPrimitive::createPen(FwMLObject* object, const QByteArray& attribute)
+{
+    FwMLNode* colorNode = object->attribute(attribute);
+    if(colorNode)
+    {
+        bool bOk = false;
+        FwColor color = colorNode->toColor(&bOk);
+        if(bOk)
+        {
+            return FwPenPtr(new FwPen(1, color));
+        }
+    }
+
+    return FwPenPtr();
+}

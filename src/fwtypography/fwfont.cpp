@@ -27,22 +27,37 @@ QString FwFontDescription::fileName() const
     return QString("./resources/fonts/%1.ttf").arg(m_family.simplified().replace(" ", "_"));
 }
 
-bool FwFontDescription::apply(FwMLObject* object)
+bool FwFontDescription::apply(FwMLNode* node)
 {
     QString family;
     int pixcelSize = 12;
 
-    FwMLString* familyNode = object->attribute("family")->cast<FwMLString>();
-    if(familyNode)
+    if(node->type() == FwMLNode::T_String)
     {
-        family = QString::fromUtf8(familyNode->value());
+        family = node->cast<FwMLString>()->value();
     }
-
-    FwMLNode* pixcelSizeNode = object->attribute("pixelSize");
-    if(pixcelSizeNode)
+    else
     {
-        bool bOk = false;
-        pixcelSize = pixcelSizeNode->toInt(&bOk);
+        FwMLObject* fontObject = node->cast<FwMLObject>();
+        if(fontObject)
+        {
+            FwMLString* familyNode = fontObject->attribute("family")->cast<FwMLString>();
+            if(familyNode)
+            {
+                family = QString::fromUtf8(familyNode->value());
+            }
+
+            FwMLNode* pixcelSizeNode = fontObject->attribute("pixelSize");
+            if(pixcelSizeNode)
+            {
+                bool bOk = false;
+                pixcelSize = pixcelSizeNode->toInt(&bOk);
+                if(!bOk)
+                {
+                    pixcelSize = 0;
+                }
+            }
+        }
     }
 
     if(!family.isEmpty() && pixcelSize)

@@ -4,6 +4,7 @@
 #include "fwgui/fwscene.h"
 
 class FwRectPrimitive;
+class FwStringPrimitive;
 
 class PlayerScene : public FwScene
 {
@@ -16,6 +17,7 @@ public:
 
 private:
     FwRectPrimitive* m_rectPrimitive;
+    FwStringPrimitive* m_stringPrimitive;
 };
 
 #endif // PLAYERSCENE_H

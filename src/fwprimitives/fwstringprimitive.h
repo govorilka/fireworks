@@ -5,15 +5,15 @@
 
 #include "fwtypography/fwfont.h"
 
-class FwGraphicsStringItem;
-typedef FwGraphicsStringItem* FwGraphicsStringItemPtr;
+class FwStringPrimitive;
+typedef FwStringPrimitive* FwStringPrimitivePtr;
 
-class FwGraphicsStringItem : public FwLinePrimitive
+class FwStringPrimitive : public FwLinePrimitive
 {
     typedef FwLinePrimitive BaseClass;
 
 public:
-    FwGraphicsStringItem(FwPrimitiveGroup* parent);
+    FwStringPrimitive(FwPrimitiveGroup* parent);
 
     inline QString string() const;
     void setString(const QString& string);
@@ -27,14 +27,12 @@ public:
     inline FwColor shadowColor() const;
     void setShadowColor(const FwColor& color);
 
-    void updatePointer(FwGraphicsStringItemPtr& string,
-                       const FwFont& font,
-                       FwPrimitiveGroup* parent);
-
     QSize stringSize(const QString& string) const;
 
     inline bool isFixedSize() const;
     void setFixedSize(bool enable, const QString& mask = QString());
+
+    void apply(FwMLObject *object);
 
 protected:
     QRect updateGeometry(const QRect& rect);

@@ -2,10 +2,13 @@
 
 #include "fwstringprimitive.h"
 
+#include "fwcore/fwml.h"
+
 #include "fwgui/fwcanvas.h"
 #include "fwgui/fwscene.h"
+#include "fwgui/fwgraphicsview.h"
 
-FwGraphicsStringItem::FwGraphicsStringItem(FwPrimitiveGroup* parent) :
+FwStringPrimitive::FwStringPrimitive(FwPrimitiveGroup* parent) :
     BaseClass(parent),
     m_textPos(0, 0),
     m_shadow(false),
@@ -14,7 +17,7 @@ FwGraphicsStringItem::FwGraphicsStringItem(FwPrimitiveGroup* parent) :
 {
 }
 
-void FwGraphicsStringItem::setString(const QString& string)
+void FwStringPrimitive::setString(const QString& string)
 {
     if(m_string != string)
     {
@@ -29,7 +32,7 @@ void FwGraphicsStringItem::setString(const QString& string)
     }
 }
 
-void FwGraphicsStringItem::setFont(const FwFont& font)
+void FwStringPrimitive::setFont(const FwFont& font)
 {
     if(m_font != font)
     {
@@ -38,6 +41,10 @@ void FwGraphicsStringItem::setFont(const FwFont& font)
         if(m_fixedSize && !m_mask.isEmpty())
         {
             setSize(stringSize(m_mask));
+        }
+        else
+        {
+            setSize(stringSize(m_string));
         }
         update();
     }
@@ -48,7 +55,7 @@ void FwGraphicsStringItem::setFont(const FwFont& font)
 \param enable Если true, то для текста будет отображаться тень
 \sa void StringPrimitive::setShadowEnabled(bool enable)
 */
-void FwGraphicsStringItem::setShadowEnabled(bool enable)
+void FwStringPrimitive::setShadowEnabled(bool enable)
 {
     if(m_shadow != enable)
     {
@@ -64,7 +71,7 @@ void FwGraphicsStringItem::setShadowEnabled(bool enable)
 \note По умолчанию для тени установлен цвет 0x00000066 (40% черный).
 \sa void StringPrimitive::setShadowColor(const FwColor& color)
 */
-void FwGraphicsStringItem::setShadowColor(const FwColor &color)
+void FwStringPrimitive::setShadowColor(const FwColor &color)
 {
     if(m_shadowColor != color)
     {
@@ -73,14 +80,14 @@ void FwGraphicsStringItem::setShadowColor(const FwColor &color)
     }
 }
 
-QRect FwGraphicsStringItem::updateGeometry(const QRect& rect)
+QRect FwStringPrimitive::updateGeometry(const QRect& rect)
 {
     m_textPos = rect.topLeft();
     m_textPos.setY(m_textPos.y() + m_font.ascender());
     return rect;
 }
 
-void FwGraphicsStringItem::paint(FwCanvas* canvas)
+void FwStringPrimitive::paint(FwCanvas* canvas)
 {
     canvas->setFont(m_font);
 
@@ -97,29 +104,7 @@ void FwGraphicsStringItem::paint(FwCanvas* canvas)
     }
 }
 
-void FwGraphicsStringItem::updatePointer(FwGraphicsStringItemPtr& string,
-                                    const FwFont& font,
-                                    FwPrimitiveGroup* parent)
-{
-    if(font.isNull())
-    {
-        if(string)
-        {
-            delete string;
-            string = 0;
-        }
-    }
-    else
-    {
-        if(!string)
-        {
-            string = new FwGraphicsStringItem(parent);
-        }
-        string->setFont(font);
-    }
-}
-
-QSize FwGraphicsStringItem::stringSize(const QString& string) const
+QSize FwStringPrimitive::stringSize(const QString& string) const
 {
     QSize size = m_font.stringSize(string);
     size.setHeight(m_font.height());
@@ -131,7 +116,7 @@ QSize FwGraphicsStringItem::stringSize(const QString& string) const
     return size;
 }
 
-void FwGraphicsStringItem::setFixedSize(bool enable, const QString& mask)
+void FwStringPrimitive::setFixedSize(bool enable, const QString& mask)
 {
     if(m_fixedSize != enable)
     {
@@ -149,4 +134,25 @@ void FwGraphicsStringItem::setFixedSize(bool enable, const QString& mask)
             setSize(stringSize(m_string));
         }
     }
+}
+
+void FwStringPrimitive::apply(FwMLObject *object)
+{
+    prepareGeometryChanged();
+
+    FwFont font = createFont(object, "font");
+    if(!font.isNull())
+    {
+        setFont(font);
+    }
+
+    FwMLString* stringNode = object->attribute("string")->cast<FwMLString>();
+    if(stringNode)
+    {
+        setString(QString::fromUtf8(stringNode->value()));
+    }
+
+    BaseClass::apply(object);
+
+    update();
 }

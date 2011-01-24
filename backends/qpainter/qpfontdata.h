@@ -20,8 +20,15 @@ public:
 
     int height() const;
 
+    inline QFont qfont() const;
+
 private:
     QFont m_font;
 };
+
+QFont QPFontData::qfont() const
+{
+    return m_font;
+}
 
 #endif // FIREWORKS_QPFONTDATA_H

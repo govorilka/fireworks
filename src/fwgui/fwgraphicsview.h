@@ -33,7 +33,6 @@ public:
     virtual ~FwGraphicsView();
 
     FwFont font(const FwFontDescription& desc);
-    FwFont font(FwMLNode* node);
 
     FwPixmap pixmap(const FwPixmapDescription& desc);
     FwPixmap pixmap(const QSize& size);

@@ -70,3 +70,18 @@ void FwLinePrimitive::paint(FwCanvas* canvas)
         m_pen->drawLine(canvas, line());
     }
 }
+
+void FwLinePrimitive::apply(FwMLObject *object)
+{
+    prepareGeometryChanged();
+
+    FwPenPtr pen = createPen(object, "color");
+    if(!pen.isNull())
+    {
+         setPen(pen);
+    }
+
+    BaseClass::apply(object);
+
+    update();
+}

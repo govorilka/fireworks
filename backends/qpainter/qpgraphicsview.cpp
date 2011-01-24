@@ -15,10 +15,16 @@ QPWidget::QPWidget(QPGraphicsView* view) :
 
 QPWidget::~QPWidget()
 {
+    if(m_view)
+    {
+        m_view->widget = 0;
+    }
 }
 
 void QPWidget::resizeEvent(QResizeEvent *e)
 {
+    m_view->setSize(e->size());
+    e->accept();
 }
 
 void QPWidget::paintEvent(QPaintEvent *e)
@@ -26,6 +32,7 @@ void QPWidget::paintEvent(QPaintEvent *e)
     FwCanvas canvas(new QPRender(this));
     canvas.setRect(e->rect());
     m_view->invalidateView(e->rect(), &canvas);
+    e->accept();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -40,7 +47,11 @@ QPGraphicsView::QPGraphicsView() :
 
 QPGraphicsView::~QPGraphicsView()
 {
-    delete widget;
+    if(widget)
+    {
+        widget->m_view = 0;
+        delete widget;
+    }
 }
 
 FwFontData* QPGraphicsView::createFontData(const FwFontDescription& desc)

@@ -50,18 +50,6 @@ FwFont FwGraphicsView::font(const FwFontDescription& desc)
     return FwFont();
 }
 
-FwFont FwGraphicsView::font(FwMLNode* node)
-{
-    FwFontDescription desc;
-    FwMLObject* object = node->cast<FwMLObject>();
-    if(object && desc.apply(object))
-    {
-        return font(desc);
-    }
-
-    return FwFont();
-}
-
 FwPixmap FwGraphicsView::pixmap(const FwPixmapDescription& desc)
 {
     if(!desc.isNull())
@@ -105,6 +93,10 @@ void FwGraphicsView::setSize(const QSize& size)
     if(m_size != size)
     {
         m_size = size;
+        if(m_activeScene)
+        {
+            m_activeScene->setSize(m_size);
+        }
     }
 }
 

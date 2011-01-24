@@ -82,26 +82,16 @@ void FwGraphicsTextItem::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
 
-    FwMLNode* colorNode = object->attribute("color");
-    if(colorNode)
+    FwPenPtr pen = createPen(object, "color");
+    if(!pen.isNull())
     {
-        bool bOk = false;
-        FwColor color = colorNode->toColor(&bOk);
-        if(bOk)
-        {
-            setPen(FwPenPtr(new FwPen(1, color)));
-        }
+         setPen(pen);
     }
 
-    FwMLObject* fontNode = object->attribute("font")->cast<FwMLObject>();
-    if(fontNode)
+    FwFont font = createFont(object, "font");
+    if(!font.isNull())
     {
-        FwFont font = scene()->view()->font(fontNode);
-        qDebug() << "FwGraphicsTextItem::apply" <<font.height();
-        if(!font.isNull())
-        {
-            setFont(font);
-        }
+        setFont(font);
     }
 
     BaseClass::apply(object);

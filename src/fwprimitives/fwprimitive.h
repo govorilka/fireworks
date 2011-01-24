@@ -5,6 +5,9 @@
 
 #include "fwgui/fwanchor.h"
 #include "fwgui/fwpixmap.h"
+#include "fwgui/fwpen.h"
+
+#include "fwtypography/fwfont.h"
 
 class FwScene;
 class FwAnchor;
@@ -13,6 +16,7 @@ class FwPrimitiveGroup;
 class FwSceneGraphicsItem;
 class FwWidget;
 class FwMLObject;
+class FwPen;
 
 class FwPixmapData;
 
@@ -81,6 +85,11 @@ public:
     FwPixmap createPixmap(const QSize& size);
     FwPixmap createPixmap(const FwPixmapDescription& desc);
     FwPixmap createPixmap(FwMLNode* node);
+
+    FwFont createFont(const FwFontDescription& desc);
+    FwFont createFont(FwMLObject* object, const QByteArray& attribute);
+
+    FwPenPtr createPen(FwMLObject* object, const QByteArray& attribute);
 
 protected:
     virtual QRect updateGeometry(const QRect& rect);

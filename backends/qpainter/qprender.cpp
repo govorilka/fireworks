@@ -2,6 +2,7 @@
 
 #include "qprender.h"
 #include "qpgraphicsview.h"
+#include "qpfontdata.h"
 
 QPRender::QPRender(QPWidget* w) :
     BaseClass(),
@@ -17,6 +18,7 @@ void QPRender::setColor(const FwColor& color)
 
 void QPRender::setFont(const FwFont& font)
 {
+    m_painter.setFont(static_cast<QPFontData*>(font.data())->qfont());
 }
 
 void QPRender::drawFillRect(int x, int y, int w, int h)
@@ -52,10 +54,13 @@ void QPRender::flip(int x, int y, int w, int h)
 
 void QPRender::drawString(int x, int y, const QString& string)
 {
+    m_painter.drawText(x, y, string);
 }
 
 void QPRender::drawString(int x, int y, const char* str, int strSize)
 {
+    m_painter.setPen(m_color);
+    m_painter.drawText(x, y, QString::fromUtf8(str, strSize));
 }
 
 void QPRender::updateClipRect(const QRect& rect)
