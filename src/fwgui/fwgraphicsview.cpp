@@ -3,6 +3,7 @@
 
 #include "fwgraphicsview.h"
 #include "fwscene.h"
+#include "fwrender.h"
 
 #include "fwcore/fwml.h"
 
@@ -185,5 +186,13 @@ void FwGraphicsView::keyEvent(QKeyEvent* event)
     if(m_activeScene)
     {
         QCoreApplication::sendEvent(m_activeScene, event);
+    }
+}
+
+void FwGraphicsView::invalidateView(const QRect& rect, FwCanvas* canvas)
+{
+    if(m_activeScene)
+    {
+        m_activeScene->paint(canvas);
     }
 }

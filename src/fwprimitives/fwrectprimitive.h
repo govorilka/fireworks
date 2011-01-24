@@ -10,13 +10,13 @@
 
 class FwBrush;
 
-class FwGraphicsRectItem : public FwPrimitive
+class FwRectPrimitive : public FwPrimitive
 {
     typedef FwPrimitive BaseClass;
 
 public:
-    FwGraphicsRectItem(FwPrimitiveGroup* parent);
-    ~FwGraphicsRectItem();
+    FwRectPrimitive(FwPrimitiveGroup* parent);
+    ~FwRectPrimitive();
 
     inline FwBrushPtr brush() const;
     void setBrush(FwBrushPtr brush);
@@ -33,7 +33,7 @@ private:
     FwBrushPtr m_brush;
 };
 
-FwBrushPtr FwGraphicsRectItem::brush() const
+FwBrushPtr FwRectPrimitive::brush() const
 {
     return m_brush;
 }

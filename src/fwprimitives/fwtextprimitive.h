@@ -10,9 +10,9 @@
 
 #include "fwgui/fwpen.h"
 
-class FwGraphicsTextItem : public FwGraphicsRectItem
+class FwGraphicsTextItem : public FwRectPrimitive
 {
-    typedef FwGraphicsRectItem BaseClass;
+    typedef FwRectPrimitive BaseClass;
 
 public:
     FwGraphicsTextItem(FwPrimitiveGroup* parent);

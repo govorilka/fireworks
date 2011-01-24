@@ -1,7 +1,11 @@
 #include <QtGui/qwidget.h>
 #include <QtGui/qevent.h>
 
+#include "fwgui/fwcanvas.h"
+
 #include "qpgraphicsview.h"
+#include "qpfontdata.h"
+#include "qprender.h"
 
 QPWidget::QPWidget(QPGraphicsView* view) :
     BaseClass(),
@@ -17,6 +21,13 @@ void QPWidget::resizeEvent(QResizeEvent *e)
 {
 }
 
+void QPWidget::paintEvent(QPaintEvent *e)
+{
+    FwCanvas canvas(new QPRender(this));
+    canvas.setRect(e->rect());
+    m_view->invalidateView(e->rect(), &canvas);
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 QPGraphicsView::QPGraphicsView() :
@@ -30,6 +41,34 @@ QPGraphicsView::QPGraphicsView() :
 QPGraphicsView::~QPGraphicsView()
 {
     delete widget;
+}
+
+FwFontData* QPGraphicsView::createFontData(const FwFontDescription& desc)
+{
+    return new QPFontData(desc.family(), desc.pixcelSize());
+}
+
+FwPixmapData* QPGraphicsView::createBuffer(const FwPixmapDescription& desc)
+{
+    return 0;
+}
+
+FwPixmapData* QPGraphicsView::createBuffer(Fw::BufferMode mode, const QSize& size)
+{
+    return 0;
+}
+
+FwRender* QPGraphicsView::createRender(const QRect& rect)
+{
+    return 0;
+}
+
+void QPGraphicsView::bufferFlip(const QRegion& region)
+{
+}
+
+void QPGraphicsView::clearBackground()
+{
 }
 
 Q_EXPORT_PLUGIN2(backends_qp, QPGraphicsView)

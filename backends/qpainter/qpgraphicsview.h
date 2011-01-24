@@ -21,6 +21,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *e);
+    void paintEvent(QPaintEvent *e);
 
 private:
     QPGraphicsView* m_view;
@@ -38,6 +39,17 @@ public:
 
     QPGraphicsView();
     virtual ~QPGraphicsView();
+
+protected:
+    FwFontData* createFontData(const FwFontDescription& desc);
+
+    FwPixmapData* createBuffer(const FwPixmapDescription& desc);
+    FwPixmapData* createBuffer(Fw::BufferMode mode, const QSize& size);
+    FwRender* createRender(const QRect& rect);
+
+    void bufferFlip(const QRegion& region);
+
+    void clearBackground();
 
 private:
     QPWidget* widget;

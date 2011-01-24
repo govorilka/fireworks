@@ -14,8 +14,10 @@ LIBS += -L../../bin \
 
 INCLUDEPATH += ../../src/
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    playerscene.cpp
 
-HEADERS  +=
+HEADERS  += \
+    playerscene.h
 
 FORMS    +=

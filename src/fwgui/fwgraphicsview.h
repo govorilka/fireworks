@@ -32,9 +32,6 @@ public:
     explicit FwGraphicsView(QObject *parent = 0);
     virtual ~FwGraphicsView();
 
-    virtual void suspend() = 0;
-    virtual void resume() = 0;
-
     FwFont font(const FwFontDescription& desc);
     FwFont font(FwMLNode* node);
 
@@ -67,6 +64,8 @@ protected:
     virtual void bufferFlip(const QRegion& region) = 0;
 
     virtual void clearBackground() = 0;
+
+    void invalidateView(const QRect& rect, FwCanvas* canvas);
 
 private:
     QSize m_size;

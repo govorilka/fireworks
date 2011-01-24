@@ -7,9 +7,9 @@
 
 class FwGraphicsProgressAnimation;
 
-class FwGraphicsProgressItem : public FwGraphicsRectItem
+class FwGraphicsProgressItem : public FwRectPrimitive
 {
-    typedef FwGraphicsRectItem BaseClass;
+    typedef FwRectPrimitive BaseClass;
 
 public:
     friend class FwGraphicsProgressAnimation;

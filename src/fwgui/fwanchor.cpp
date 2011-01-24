@@ -40,6 +40,10 @@ void FwAnchor::updateRect(const QRect& parentRect, QRect currentRect)
 {
     switch(m_horizontalPolicy)
     {
+    case HP_Unchanged:
+        currentRect.setLeft(parentRect.x() + m_primitive->m_x);
+        break;
+
     case HP_BeforeLeft:
         currentRect.moveLeft(parentRect.x() - currentRect.width() + m_primitive->m_x);
         break;
@@ -71,6 +75,10 @@ void FwAnchor::updateRect(const QRect& parentRect, QRect currentRect)
 
     switch(m_verticalPolicy)
     {
+    case VP_Unchanged:
+        currentRect.setTop(parentRect.y() + m_primitive->m_y);
+        break;
+
     case VP_BeforeTop:
         currentRect.moveTop(parentRect.y() - currentRect.height() + m_primitive->m_y);
         break;

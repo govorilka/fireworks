@@ -16,7 +16,11 @@ LIBS += -L../../bin \
 INCLUDEPATH += ../../src/
 
 SOURCES += qpainterbackend.cpp \
-    qpgraphicsview.cpp
+    qpgraphicsview.cpp \
+    qpfontdata.cpp \
+    qprender.cpp
 
 HEADERS += qpainterbackend.h \
-    qpgraphicsview.h
+    qpgraphicsview.h \
+    qpfontdata.h \
+    qprender.h

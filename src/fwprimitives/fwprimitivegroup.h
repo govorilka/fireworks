@@ -6,9 +6,9 @@
 
 #include "fwprimitives/fwrectprimitive.h"
 
-class FwPrimitiveGroup : public FwGraphicsRectItem
+class FwPrimitiveGroup : public FwRectPrimitive
 {
-    typedef FwGraphicsRectItem BaseClass;
+    typedef FwRectPrimitive BaseClass;
 
 public:
     friend class FwPrimitive;

@@ -6,9 +6,9 @@
 class FwGraphicsTableItem;
 class FwGraphicsCellItem;
 
-class FwGraphicsCellItem : public FwGraphicsRectItem
+class FwGraphicsCellItem : public FwRectPrimitive
 {
-    typedef FwGraphicsRectItem BaseClass;
+    typedef FwRectPrimitive BaseClass;
 
 public:
     friend class FwGraphicsTableItem;

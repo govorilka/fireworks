@@ -22,7 +22,6 @@ public:
     explicit FwRender();
     virtual ~FwRender();
 
-protected:
     virtual void setColor(const FwColor& color) = 0;
     virtual void setFont(const FwFont& font) = 0;
 
@@ -51,6 +50,7 @@ protected:
 
     inline void updateColor();
 
+protected:
     int startX;
     int startY;
     QPoint nullPos;

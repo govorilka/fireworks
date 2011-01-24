@@ -113,11 +113,15 @@ void FwPrimitive::setRect(const QRect& rect)
 {
     if(m_anchor && m_anchor->geometry())
     {
+        m_x = rect.x();
+        m_y = rect.y();
         m_anchor->updateRect(m_anchor->geometry()->rect(),
-                             rect);
+                             QRect(QPoint(m_x, m_y), rect.size()));
     }
     else
     {
+        m_x = 0;
+        m_y = 0;
         setGeometryRect(rect);
     }
 }

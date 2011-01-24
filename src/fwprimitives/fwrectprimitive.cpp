@@ -9,16 +9,16 @@
 #include "fwgui/fwgraphicsview.h"
 #include "fwgui/fwscene.h"
 
-FwGraphicsRectItem::FwGraphicsRectItem(FwPrimitiveGroup* parent) :
+FwRectPrimitive::FwRectPrimitive(FwPrimitiveGroup* parent) :
     BaseClass(parent)
 {
 }
 
-FwGraphicsRectItem::~FwGraphicsRectItem()
+FwRectPrimitive::~FwRectPrimitive()
 {
 }
 
-void FwGraphicsRectItem::setBrush(FwBrushPtr brush)
+void FwRectPrimitive::setBrush(FwBrushPtr brush)
 {
     if(m_brush != brush)
     {
@@ -31,12 +31,12 @@ void FwGraphicsRectItem::setBrush(FwBrushPtr brush)
     }
 }
 
-void FwGraphicsRectItem::paint(FwCanvas* canvas)
+void FwRectPrimitive::paint(FwCanvas* canvas)
 {
     paint(canvas, rect());
 }
 
-void FwGraphicsRectItem::paint(FwCanvas* canvas, const QRect& rect)
+void FwRectPrimitive::paint(FwCanvas* canvas, const QRect& rect)
 {
     if(!m_brush.isNull())
     {
@@ -44,7 +44,7 @@ void FwGraphicsRectItem::paint(FwCanvas* canvas, const QRect& rect)
     }
 }
 
-QRect FwGraphicsRectItem::updateGeometry(const QRect& rect)
+QRect FwRectPrimitive::updateGeometry(const QRect& rect)
 {
     if(m_brush)
     {
@@ -53,7 +53,7 @@ QRect FwGraphicsRectItem::updateGeometry(const QRect& rect)
     return rect;
 }
 
-void FwGraphicsRectItem::apply(FwMLObject *object)
+void FwRectPrimitive::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
 
@@ -73,7 +73,7 @@ void FwGraphicsRectItem::apply(FwMLObject *object)
         {
             bool bOk = false;
             FwColor bgColor = bgColorNode->toColor(&bOk);
-            qDebug() << "FwGraphicsRectItem::apply(FwMLObject *object)" << bOk;
+            qDebug() << "FwRectPrimitive::apply(FwMLObject *object)" << bOk;
             if(bOk && !bgColor.isNull())
             {
                 setBrush(FwBrushPtr(new FwBrushSolid(bgColor)));
