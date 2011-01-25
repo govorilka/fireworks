@@ -44,12 +44,8 @@ FwPixmapData* QPPixmapData::resized(const QSize& size) const
 
 FwPixmapData* QPPixmapData::scaled(const QSize& size) const
 {
-    QPixmap newPixmap(size);
-    newPixmap.fill(Qt::transparent);
-
-    QPainter painter(&newPixmap);
-    painter.drawPixmap(0, 0, size.width(), size.height(), m_pixmap);
-
+    QPixmap newPixmap = m_pixmap.scaled(size);
+    newPixmap.save("/home/user/buffer.png");
     return new QPPixmapData(newPixmap, "");
 }
 

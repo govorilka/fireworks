@@ -15,13 +15,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(m_treeView);
 
-    QByteArray fwml = "\"Scene\" : {\n"
+    /*QByteArray fwml = "\"Scene\" : {\n"
                       "\"background\" : \"123.png\", \n"
                       "\"size\" : { \n"
                       "\"width\" : \"100\", \n"
                       "\"height\" : \"100\" }, \n"
                       "array[-56, 1, 2.25, 3e-3, 5.] \n"
-                      "}";
+                      "}";*/
+
+    QByteArray fwml = "bgcolor : \"orange\"";
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);
     rootItem->setText(0, "root");

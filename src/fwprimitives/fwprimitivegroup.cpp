@@ -35,10 +35,13 @@ void FwPrimitiveGroup::removeItems()
 QRect FwPrimitiveGroup::updateGeometry(const QRect& rect)
 {
     QRegion region;
-    if(brush())
+
+    QRect baseRect = BaseClass::updateGeometry(rect);
+    if(!baseRect.isNull())
     {
-        region = QRegion(rect);
-    } 
+        region = region.united(baseRect);
+    }
+
     foreach(FwPrimitive* item , m_items)
     {
         if(item->m_boundingRectDirty)
@@ -48,6 +51,7 @@ QRect FwPrimitiveGroup::updateGeometry(const QRect& rect)
         }
         region = region.united(item->m_boundingRect);
     }
+
     return region.boundingRect();
 }
 

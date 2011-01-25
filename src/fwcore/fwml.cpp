@@ -1051,6 +1051,11 @@ bool FwMLObject::parse(QIODevice* ioDevice, QString* error)
                 }
             }
         }
+
+        if(!data.buffer.isEmpty())
+        {
+            data.setupValue();
+        }
     }
     catch(FwMLParserException& e)
     {

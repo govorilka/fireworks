@@ -16,7 +16,7 @@ class QPWidget : public QWidget
 public:
     friend class QPGraphicsView;
 
-    QPWidget(QPGraphicsView* view);
+    QPWidget(QPGraphicsView* view, QWidget* parent = 0);
     virtual ~QPWidget();
 
 protected:
@@ -37,8 +37,12 @@ class QPGraphicsView : public FwGraphicsView
 public:
     friend class QPWidget;
 
-    QPGraphicsView();
+    QPGraphicsView(QObject* parent = 0);
     virtual ~QPGraphicsView();
+
+    QWidget* createWidget(QWidget* parent);
+
+    inline QWidget* widget() const;
 
 protected:
     FwFontData* createFontData(const FwFontDescription& desc);
@@ -52,7 +56,12 @@ protected:
     void clearBackground();
 
 private:
-    QPWidget* widget;
+    QPWidget* m_widget;
 };
+
+QWidget* QPGraphicsView::widget() const
+{
+    return m_widget;
+}
 
 #endif // FIREWORKS_QPGRAPHICSVIEW_H

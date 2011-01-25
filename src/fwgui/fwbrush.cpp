@@ -64,17 +64,24 @@ void FwBrushTexture::drawBackground(FwCanvas* canvas, const QRect& rect)
 
 void FwBrushTexture::setSourceRect(const QRect& rect)
 {
-    if(rect != m_sourceRect)
+    if(rect != m_sourceRect && !m_pixmap.isNull())
     {
         if(rect.size() != m_sourceRect.size())
         {
-            if(rect.size() != m_pixmap.size())
+            if(!m_pixmap.isNull() && rect.size().isValid())
             {
-                m_displayPixmap = m_pixmap.resized(rect.size(), FwPixmap::RM_Scale);
+                if(rect.size() != m_pixmap.size())
+                {
+                    m_displayPixmap = m_pixmap.resized(rect.size(), FwPixmap::RM_Scale);
+                }
+                else
+                {
+                    m_displayPixmap = m_pixmap;
+                }
             }
             else
             {
-                m_displayPixmap = m_pixmap;
+                m_displayPixmap = FwPixmap();
             }
         }
         m_sourceRect = rect;

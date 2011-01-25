@@ -49,8 +49,9 @@ QRect FwRectPrimitive::updateGeometry(const QRect& rect)
     if(m_brush)
     {
         m_brush->setSourceRect(rect);
-    }
-    return rect;
+        return rect;
+    }   
+    return QRect(rect.topLeft(), rect.topLeft());
 }
 
 void FwRectPrimitive::apply(FwMLObject *object)

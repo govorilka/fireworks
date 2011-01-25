@@ -10,8 +10,8 @@
 #include "qprender.h"
 #include "qppixmapdata.h"
 
-QPWidget::QPWidget(QPGraphicsView* view) :
-    BaseClass(),
+QPWidget::QPWidget(QPGraphicsView* view, QWidget* parent) :
+    BaseClass(parent),
     m_view(view)
 {
 }
@@ -20,12 +20,13 @@ QPWidget::~QPWidget()
 {
     if(m_view)
     {
-        m_view->widget = 0;
+        m_view->m_widget = 0;
     }
 }
 
 void QPWidget::resizeEvent(QResizeEvent *e)
 {
+    qDebug() << "QPWidget::resizeEvent" << e->size();
     m_view->setSize(e->size());
     e->accept();
 }
@@ -40,21 +41,28 @@ void QPWidget::paintEvent(QPaintEvent *e)
 
 ///////////////////////////////////////////////////////////////////////
 
-QPGraphicsView::QPGraphicsView() :
-    BaseClass(),
-    widget(0)
+QPGraphicsView::QPGraphicsView(QObject* parent) :
+    BaseClass(parent),
+    m_widget(0)
 {
-    widget = new QPWidget(this);
-    widget->show();
 }
 
 QPGraphicsView::~QPGraphicsView()
 {
-    if(widget)
+    if(m_widget)
     {
-        widget->m_view = 0;
-        delete widget;
+        m_widget->m_view = 0;
+        delete m_widget;
     }
+}
+
+QWidget* QPGraphicsView::createWidget(QWidget* parent)
+{
+    if(!m_widget)
+    {
+        return new QPWidget(this, parent);
+    }
+    return m_widget;
 }
 
 FwFontData* QPGraphicsView::createFontData(const FwFontDescription& desc)
