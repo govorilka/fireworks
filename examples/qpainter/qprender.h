@@ -5,14 +5,14 @@
 
 #include "fwgui/fwrender.h"
 
-class QPWidget;
+class QPaintDevice;
 
 class QPRender : public FwRender
 {
     typedef FwRender BaseClass;
 
 public:
-    QPRender(QPWidget* w);
+    QPRender(QPaintDevice* device);
 
 protected:
     void setColor(const FwColor& color);
@@ -21,8 +21,8 @@ protected:
     void drawFillRect(int x, int y, int w, int h);
 
     void prepareDrawSurface(FwPixmapData* surface);
-    void drawSurface(int x, int y, FwPixmapData* surface, const QRect* srcRect);
-    void drawSurface(const QRect& rect, FwPixmapData* surface, const QRect* srcRect);
+    void drawPixmap(int x, int y, FwPixmapData* pixmap);
+    void drawPixmap(const QRect& rect, FwPixmapData* pixmap, const QRect* srcRect);
 
     void drawRect(int x, int y, int w, int h);
 

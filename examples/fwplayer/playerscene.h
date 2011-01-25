@@ -5,6 +5,7 @@
 
 class FwRectPrimitive;
 class FwStringPrimitive;
+class FwPixmapPrimitive;
 
 class PlayerScene : public FwScene
 {
@@ -18,6 +19,7 @@ public:
 private:
     FwRectPrimitive* m_rectPrimitive;
     FwStringPrimitive* m_stringPrimitive;
+    FwPixmapPrimitive* m_pixmapPrimitive;
 };
 
 #endif // PLAYERSCENE_H

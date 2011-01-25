@@ -94,12 +94,10 @@ public:
     virtual FwPixmapData* resized(const QSize& size) const = 0;
     virtual FwPixmapData* scaled(const QSize& size) const = 0;
 
-    virtual FwPixmapData* chromaKey(int x, int y, int w, int h) const = 0;
-
     inline bool isBlendEnabled() const;
     void setBlendingEnable(bool enable);
 
-    virtual FwRender* createRender() const = 0;
+    virtual FwRender* createRender() = 0;
 
 private:
     bool blend;
@@ -156,14 +154,12 @@ public:
     inline FwPixmap scaled(const QSize& size) const;
     FwPixmap resized(const QSize& size, ResizeMode mode = RM_None) const;
 
-    FwPixmap chromaKey(const QRect& rect) const;
-
     inline void clear();
 
     bool isBlendEnabled() const;
     void setBlendEnabled(bool enable);
 
-    FwCanvas* createCanvas() const;
+    FwCanvas* createCanvas();
 };
 
 Q_DECLARE_METATYPE(FwPixmap);

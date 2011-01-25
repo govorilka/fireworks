@@ -5,15 +5,17 @@
 
 #include "fwgui/fwpixmap.h"
 
-class FwGraphicsPixmapItem : public FwPrimitive
+class FwPixmapPrimitive : public FwPrimitive
 {
     typedef FwPrimitive BaseClass;
 
 public:
-    FwGraphicsPixmapItem(FwPrimitiveGroup* parent);
+    FwPixmapPrimitive(FwPrimitiveGroup* parent);
 
     inline FwPixmap pixmap() const;
     void setPixmap(const FwPixmap& pixmap);
+
+    void apply(FwMLObject *object);
 
 protected:
     QRect updateGeometry(const QRect &rect);
@@ -24,7 +26,7 @@ private:
     FwPixmap m_pixmap;
 };
 
-FwPixmap FwGraphicsPixmapItem::pixmap() const
+FwPixmap FwPixmapPrimitive::pixmap() const
 {
     return m_pixmap;
 }

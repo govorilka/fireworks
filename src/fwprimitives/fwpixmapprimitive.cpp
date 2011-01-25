@@ -2,14 +2,16 @@
 
 #include "fwpixmapprimitive.h"
 
+#include "fwcore/fwml.h"
+
 #include "fwgui/fwcanvas.h"
 
-FwGraphicsPixmapItem::FwGraphicsPixmapItem(FwPrimitiveGroup* parent) :
+FwPixmapPrimitive::FwPixmapPrimitive(FwPrimitiveGroup* parent) :
     BaseClass(parent)
 {
 }
 
-void FwGraphicsPixmapItem::setPixmap(const FwPixmap& pixmap)
+void FwPixmapPrimitive::setPixmap(const FwPixmap& pixmap)
 {
     if(m_pixmap != pixmap)
     {
@@ -28,14 +30,28 @@ void FwGraphicsPixmapItem::setPixmap(const FwPixmap& pixmap)
     }
 }
 
-QRect FwGraphicsPixmapItem::updateGeometry(const QRect &rect)
+QRect FwPixmapPrimitive::updateGeometry(const QRect &rect)
 {
     return QRect(rect.topLeft(), m_pixmap.size());
 }
 
-void FwGraphicsPixmapItem::paint(FwCanvas *canvas)
+void FwPixmapPrimitive::paint(FwCanvas *canvas)
 {
-    qDebug() << "FwGraphicsPixmapItem::paint" << boundingRect();
     QPoint pos = boundingRect().topLeft();
     canvas->drawPixmap(pos.x(), pos.y(), m_pixmap);
+}
+
+void FwPixmapPrimitive::apply(FwMLObject *object)
+{
+    prepareGeometryChanged();
+
+    FwPixmap pixmap = createPixmap(object);
+    if(!pixmap.isNull())
+    {
+        setPixmap(pixmap);
+    }
+
+    BaseClass::apply(object);
+
+    update();
 }

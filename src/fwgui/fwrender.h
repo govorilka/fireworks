@@ -28,8 +28,8 @@ public:
     virtual void drawFillRect(int x, int y, int w, int h) = 0;
 
     virtual void prepareDrawSurface(FwPixmapData* surface);
-    virtual void drawSurface(int x, int y, FwPixmapData* surface, const QRect* srcRect) = 0;
-    virtual void drawSurface(const QRect& rect, FwPixmapData* surface, const QRect* srcRect) = 0;
+    virtual void drawPixmap(int x, int y, FwPixmapData* pixmap) = 0;
+    virtual void drawPixmap(const QRect& rect, FwPixmapData* pixmap, const QRect* srcRect) = 0;
 
     virtual void drawRect(int x, int y, int w, int h) = 0;
 
@@ -50,9 +50,12 @@ public:
 
     inline void updateColor();
 
+    inline int startX() const;
+    inline int startY() const;
+
 protected:
-    int startX;
-    int startY;
+    int m_startX;
+    int m_startY;
     QPoint nullPos;
     QRect rect;
     qreal opacity;
@@ -70,7 +73,7 @@ QRect FwRender::saveClip() const
 QRect FwRender::setClip(const QRect& rect)
 {
     QRect oldRect = m_clipRect;
-    restoreClip(rect.isNull() ? rect : rect.translated(startX, startY));
+    restoreClip(rect.isNull() ? rect : rect.translated(m_startX, m_startY));
     return oldRect;
 }
 
@@ -88,6 +91,16 @@ void FwRender::updateColor()
     FwColor displayColor = colorBuffer;
     displayColor.setAlpha(displayColor.alpha() * opacity);
     setColor(displayColor);
+}
+
+int FwRender::startX() const
+{
+    return m_startX;
+}
+
+int FwRender::startY() const
+{
+    return m_startY;
 }
 
 #endif //FIREWORKS_RENDER_H

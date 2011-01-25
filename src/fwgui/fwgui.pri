@@ -1,6 +1,5 @@
 
 HEADERS += \
-    fwgui/fwbackendloader.h \
     fwgui/fwgraphicsview.h \
     fwgui/fwgraphicsview_inl.h \
     fwgui/fwpixmap.h \
@@ -17,7 +16,6 @@ HEADERS += \
     fwgui/fwrender.h
 
 SOURCES += \
-    fwgui/fwbackendloader.cpp \
     fwgui/fwgraphicsview.cpp \
     fwgui/fwpixmap.cpp \
     fwgui/fwscene.cpp \

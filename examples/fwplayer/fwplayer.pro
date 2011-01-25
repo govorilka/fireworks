@@ -12,7 +12,8 @@ TEMPLATE = app
 LIBS += -L../../bin \
         -lfireworks
 
-INCLUDEPATH += ../../src/
+INCLUDEPATH += ../../src/ \
+               ../qpainter/
 
 SOURCES += main.cpp \
     playerscene.cpp
@@ -21,3 +22,6 @@ HEADERS  += \
     playerscene.h
 
 FORMS    +=
+
+include(../qpainter/qpainter.pri)
+

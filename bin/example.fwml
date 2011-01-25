@@ -1,3 +1,5 @@
+bgcolor : "black",
+
 rectItem {
   zindex :1,
   bgcolor : "purple",
@@ -6,8 +8,13 @@ rectItem {
   }
 },
 
-stringItem {
+pixmapItem {
    zindex : 2,
+   source : "./images/browser.png"
+},
+
+stringItem {
+   zindex : 3,
    font {
       family : "Arial",
       pixelSize : 48

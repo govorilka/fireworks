@@ -72,8 +72,7 @@ void FwRectPrimitive::apply(FwMLObject *object)
         if(bgColorNode)
         {
             bool bOk = false;
-            FwColor bgColor = bgColorNode->toColor(&bOk);
-            qDebug() << "FwRectPrimitive::apply(FwMLObject *object)" << bOk;
+            FwColor bgColor = bgColorNode->toColor(&bOk);;
             if(bOk && !bgColor.isNull())
             {
                 setBrush(FwBrushPtr(new FwBrushSolid(bgColor)));

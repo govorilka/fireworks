@@ -6,8 +6,8 @@
 */
 
 FwRender::FwRender() :
-    startX(0),
-    startY(0),
+    m_startX(0),
+    m_startY(0),
     nullPos(0, 0),
     rect(0, 0, 0, 0),
     opacity(1.0),

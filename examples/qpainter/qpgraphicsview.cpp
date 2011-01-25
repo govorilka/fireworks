@@ -1,3 +1,5 @@
+#include <QtCore/qdebug.h>
+
 #include <QtGui/qwidget.h>
 #include <QtGui/qevent.h>
 
@@ -6,6 +8,7 @@
 #include "qpgraphicsview.h"
 #include "qpfontdata.h"
 #include "qprender.h"
+#include "qppixmapdata.h"
 
 QPWidget::QPWidget(QPGraphicsView* view) :
     BaseClass(),
@@ -61,12 +64,21 @@ FwFontData* QPGraphicsView::createFontData(const FwFontDescription& desc)
 
 FwPixmapData* QPGraphicsView::createBuffer(const FwPixmapDescription& desc)
 {
+    QPixmap pixmap;
+    if(pixmap.load(desc.source()))
+    {
+        return new QPPixmapData(pixmap, desc.source());
+    }
+
     return 0;
 }
 
 FwPixmapData* QPGraphicsView::createBuffer(Fw::BufferMode mode, const QSize& size)
 {
-    return 0;
+    Q_UNUSED(mode);
+    QPixmap pixmap(size);
+    pixmap.fill(Qt::transparent);
+    return new QPPixmapData(pixmap, "");
 }
 
 FwRender* QPGraphicsView::createRender(const QRect& rect)

@@ -74,7 +74,11 @@ void FwPrimitiveGroup::paint(FwCanvas* canvas)
                         item->updateBuffer();
                     }
                 }
-                canvas->drawSurface(item->boundingRect(), item->m_buffer);
+
+                FwRender* render = canvas->render();
+                render->drawPixmap(render->startX() + item->m_boundingRect.x(),
+                                   render->startY() + item->m_boundingRect.y(),
+                                   item->m_buffer);
             }
             else
             {

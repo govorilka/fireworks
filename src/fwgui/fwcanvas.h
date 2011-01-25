@@ -8,6 +8,7 @@
 #include <QtCore/qsharedpointer.h>
 
 #include "fwgui/fwrender.h"
+#include "fwgui/fwpixmap.h"
 
 class FwPixmap;
 class FwPixmapData;
@@ -32,6 +33,7 @@ public:
     void setNullPos(const QPoint& nullPos);
 
     void setColor(const FwColor& color);
+
     void setFont(const FwFont& font);
 
     void drawFillRect(const QRect& rect);
@@ -40,12 +42,8 @@ public:
     void drawRect(const QRect& rect);
     void drawLine(const QLine& line);
 
-    void drawPixmap(int x, int y, const FwPixmap& pixmap, const QRect& srcRect = QRect());
-    void drawPixmap(const QRect& rect, const FwPixmap& pixmap, const QRect& srcRect = QRect());
-
-    inline void drawSurface(const QPoint& pos, FwPixmapData* surface, const QRect* srcRect = 0);
-    void drawSurface(int x, int y, FwPixmapData* surface, const QRect* scrRect = 0);
-    void drawSurface(const QRect& rect, FwPixmapData* surface, const QRect* srcRect = 0);
+    inline void drawPixmap(int x, int y, const FwPixmap& pixmap);
+    inline void drawPixmap(const QRect& rect, const FwPixmap& pixmap, const QRect* srcRect = 0);
 
     void drawString(int x, int y, const QString& string);
     void drawUtf8String(int x, int y, const QByteArray& utf8String);
@@ -62,26 +60,28 @@ public:
 
     void clear();
 
+    inline FwRender* render();
+
 protected:
     void updateStartPos();
 
 private:
-    QSharedPointer<FwRender> render;
+    QSharedPointer<FwRender> m_render;
 };
 
 bool FwCanvas::isNull() const
 {
-    return render == 0;
+    return m_render == 0;
 }
 
 qreal FwCanvas::opacity() const
 {
-    return render->opacity;
+    return m_render->opacity;
 }
 
 QRect FwCanvas::saveClip() const
 {
-    return render->saveClip();
+    return m_render->saveClip();
 }
 
 QRect FwCanvas::resetClip()
@@ -91,17 +91,39 @@ QRect FwCanvas::resetClip()
 
 QRect FwCanvas::setClip(const QRect& clipRect)
 {
-    return render->setClip(clipRect);
+    return m_render->setClip(clipRect);
 }
 
 void FwCanvas::restoreClip(const QRect& rect)
 {
-    render->restoreClip(rect);
+    m_render->restoreClip(rect);
 }
 
-void FwCanvas::drawSurface(const QPoint& pos, FwPixmapData* surface, const QRect* srcRect)
+FwRender* FwCanvas::render()
 {
-    render->drawSurface(pos.x(), pos.y(), surface, srcRect);
+    return m_render.data();
+}
+
+void FwCanvas::drawPixmap(int x, int y, const FwPixmap& pixmap)
+{
+    if(!pixmap.isNull())
+    {
+        m_render->drawPixmap(m_render->startX() + x, m_render->startY() + y, pixmap.surface());
+    }
+}
+
+void FwCanvas::drawPixmap(const QRect& rect, const FwPixmap& pixmap, const QRect* srcRect)
+{
+    if(srcRect && rect.size() == pixmap.size() && (*srcRect).size() == rect.size())
+    {
+        drawPixmap(rect.x(), rect.y(), pixmap);
+        return;
+    }
+    if(!pixmap.isNull())
+    {
+        QRect r = rect.translated(m_render->startX(), m_render->startY());
+        m_render->drawPixmap(r, pixmap.surface(), srcRect);
+    }
 }
 
 #endif // FWCANVAS_H

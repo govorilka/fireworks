@@ -1,12 +1,13 @@
 #include <QtGui/qbrush.h>
+#include <QtGui/qpaintdevice.h>
 
 #include "qprender.h"
-#include "qpgraphicsview.h"
 #include "qpfontdata.h"
+#include "qppixmapdata.h"
 
-QPRender::QPRender(QPWidget* w) :
+QPRender::QPRender(QPaintDevice* device) :
     BaseClass(),
-    m_painter(w),
+    m_painter(device),
     m_color(0x00, 0x00, 0x00, 0x00)
 {
 }
@@ -30,14 +31,26 @@ void QPRender::drawFillRect(int x, int y, int w, int h)
 
 void QPRender::prepareDrawSurface(FwPixmapData* surface)
 {
+    Q_UNUSED(surface);
 }
 
-void QPRender::drawSurface(int x, int y, FwPixmapData* surface, const QRect* srcRect)
+void QPRender::drawPixmap(int x, int y, FwPixmapData* pixmap)
 {
+    m_painter.drawPixmap(x, y, static_cast<QPPixmapData*>(pixmap)->qpixmap());
 }
 
-void QPRender::drawSurface(const QRect& rect, FwPixmapData* surface, const QRect* srcRect)
+void QPRender::drawPixmap(const QRect& rect, FwPixmapData* pixmap, const QRect* srcRect)
 {
+    if(srcRect)
+    {
+        m_painter.drawPixmap(rect,
+                             static_cast<QPPixmapData*>(pixmap)->qpixmap(),
+                             (*srcRect));
+    }
+    else
+    {
+        m_painter.drawPixmap(rect, static_cast<QPPixmapData*>(pixmap)->qpixmap());
+    }
 }
 
 void QPRender::drawRect(int x, int y, int w, int h)

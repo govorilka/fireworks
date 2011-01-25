@@ -167,27 +167,6 @@ FwPixmap FwPixmap::resized(const QSize& size, ResizeMode mode) const
 }
 
 /*!
-Функция возвращает копию текущей картинки с вераззной прямоугольной областью,
-заданной параметром rect.
-\param rect Прямоугольная область, которая будет вырезана на результирующей
-картинке
-*/
-FwPixmap FwPixmap::chromaKey(const QRect& rect) const
-{
-    FwPixmapData* data = this->data();
-    if(data)
-    {
-        QRect r = rect.normalized();
-        FwPixmapData* newData = data->chromaKey(r.x(), r.y(), r.width(), r.height());
-        if(newData)
-        {
-            return FwPixmap(newData);
-        }
-    }
-    return FwPixmap();
-}
-
-/*!
 Возращает значение флага blend. Если функци вернулf true, то при рисование
 картинки на экране (используя функции Canvas), цвета картинки будут смешиваться
 с цветами заднего фона. Если false. Картинка будет рисоваться по верх.
@@ -220,7 +199,7 @@ void FwPixmap::setBlendEnabled(bool enable)
     }
 }
 
-FwCanvas* FwPixmap::createCanvas() const
+FwCanvas* FwPixmap::createCanvas()
 {
     FwPixmapData* data = this->data();
     if(data)
