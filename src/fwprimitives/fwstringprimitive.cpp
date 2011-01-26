@@ -4,9 +4,9 @@
 
 #include "fwcore/fwml.h"
 
-#include "fwgui/fwcanvas.h"
 #include "fwgui/fwscene.h"
 #include "fwgui/fwgraphicsview.h"
+#include "fwgui/fwpainter.h"
 
 FwStringPrimitive::FwStringPrimitive(FwPrimitiveGroup* parent) :
     BaseClass(parent),
@@ -87,20 +87,20 @@ QRect FwStringPrimitive::updateGeometry(const QRect& rect)
     return rect;
 }
 
-void FwStringPrimitive::paint(FwCanvas* canvas)
+void FwStringPrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
-    canvas->setFont(m_font);
+    painter->setFont(m_font);
 
     if(m_shadow)
     {
-        canvas->setColor(m_shadowColor);
-        canvas->drawUtf8String(m_textPos.x() + 2, m_textPos.y() + 2, m_utf8String);
+        painter->setColor(m_shadowColor);
+        painter->drawString(m_textPos.x() + 2, m_textPos.y() + 2, m_utf8String);
     }
 
     FwPenPtr pen = this->pen();
     if(pen)
     {
-        pen->drawString(canvas, m_textPos, m_utf8String);
+        pen->drawString(painter, clipRect, m_textPos, m_utf8String);
     }
 }
 

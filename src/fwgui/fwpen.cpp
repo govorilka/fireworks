@@ -1,5 +1,5 @@
 #include "fwpen.h"
-#include "fwcanvas.h"
+#include "fwpainter.h"
 
 FwPen::FwPen(int width, const FwColor& color) :
     m_width(width),
@@ -7,37 +7,40 @@ FwPen::FwPen(int width, const FwColor& color) :
 {
 }
 
-void FwPen::drawLine(FwCanvas* canvas, const QLine& line)
+void FwPen::drawLine(FwPainter* painter, const QRect& clipRect, const QLine& line)
 {
-    canvas->setColor(m_color);
+    painter->setColor(m_color);
+
     if(!line.dx())
     {
-        canvas->drawFillRect(QRect(line.p1(), QSize(m_width, line.dy())));
+        painter->drawFillRect(QRect(line.p1(), QSize(m_width, line.dy())).intersected(clipRect));
     }
     else if(!line.dy())
     {
-        canvas->drawFillRect(QRect(line.p1(), QSize(line.dx(), m_width)));
+        painter->drawFillRect(QRect(line.p1(), QSize(line.dx(), m_width)).intersected(clipRect));
     }
     else
     {
-        canvas->drawLine(line); //TODO!!!
+        painter->drawLine(line); //TODO!!!
     }
 }
 
-QRect FwPen::drawStroke(FwCanvas* canvas, const QRect& rect)
+QRect FwPen::drawStroke(FwPainter* painter, const QRect& clipRect)
 {
-    canvas->setColor(m_color);
-    QRect r = rect;
+    painter->setColor(m_color);
+
+    QRect r = clipRect;
     for(int i = 0; i < m_width; i++)
     {
-        canvas->drawRect(r);
+        painter->drawRect(r);
         r.adjust(1, 1, -1, -1);
     }
+
     return r;
 }
 
-void FwPen::drawString(FwCanvas* canvas, const QPoint& pos, const QByteArray& utf8String)
+void FwPen::drawString(FwPainter* painter, const QRect& clipRect, const QPoint& pos, const QByteArray& utf8String)
 {
-    canvas->setColor(m_color);
-    canvas->drawUtf8String(pos.x(), pos.y(), utf8String);
+    painter->setColor(m_color);
+    painter->drawString(pos.x(), pos.y(), utf8String);
 }

@@ -21,6 +21,9 @@ int main(int argc, char *argv[])
     PlayerScene* playerScene = new PlayerScene(1, &view);
     view.setActiveScene(playerScene);
 
+    QWidget* widget = view.createWidget(0);
+    widget->show();
+
     QFile fwmlFile(a.applicationDirPath() + QDir::separator() + "example.fwml");
     if(fwmlFile.exists())
     {

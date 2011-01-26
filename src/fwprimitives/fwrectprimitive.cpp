@@ -4,7 +4,7 @@
 
 #include "fwcore/fwml.h"
 
-#include "fwgui/fwcanvas.h"
+#include "fwgui/fwpainter.h"
 #include "fwgui/fwbrush.h"
 #include "fwgui/fwgraphicsview.h"
 #include "fwgui/fwscene.h"
@@ -31,16 +31,11 @@ void FwRectPrimitive::setBrush(FwBrushPtr brush)
     }
 }
 
-void FwRectPrimitive::paint(FwCanvas* canvas)
-{
-    paint(canvas, rect());
-}
-
-void FwRectPrimitive::paint(FwCanvas* canvas, const QRect& rect)
+void FwRectPrimitive::paint(FwPainter* painter, const QRect& clipRect)
 {
     if(!m_brush.isNull())
     {
-        m_brush->drawRect(canvas, rect);
+        m_brush->drawRect(painter, clipRect);
     }
 }
 

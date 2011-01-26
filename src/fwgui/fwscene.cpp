@@ -5,7 +5,6 @@
 #include <QtGui/qevent.h>
 
 #include "fwscene.h"
-#include "fwcanvas.h"
 #include "fwwidget.h"
 #include "fwgraphicsview.h"
 
@@ -119,37 +118,9 @@ void FwScene::invalidateDirtyRegion()
 {
     if(!m_dirtyRegion.isEmpty())
     {
-        invalidateRegion(m_dirtyRegion);
+        //invalidateRegion(m_dirtyRegion);
         m_dirtyRegion = QRegion();
         needPostUpdateEvent = true;
-    }
-}
-
-/*!
-Перерисовает заданный регион в окне
-\param rgn Регион, который необходимо перерисовать
-\sa FwScene::invalidateDirtyRegion()
-*/
-void FwScene::invalidateRegion(const QRegion& rgn)
-{
-    if(m_boundingRectDirty)
-    {
-        m_boundingRect = updateGeometry(rect());
-        m_boundingRectDirty = false;
-    }
-
-    foreach(QRect rect, rgn.rects())
-    {
-        FwRender* render = m_view->createRender(rect);
-        if(render)
-        {
-            FwCanvas canvas(render);
-            canvas.setRect(rect);
-            canvas.setColor(FwColor(0x00, 0x00, 0x00, 0x00));
-            canvas.drawFillRect(rect);
-            paint(&canvas);
-            canvas.flip(rect);
-        }
     }
 }
 
@@ -168,6 +139,16 @@ void FwScene::hideEventProcessed(FwSceneHideEvent* e)
 {
     setVisible(false);
     hideEvent(e);
+}
+
+void FwScene::paint(FwPainter *painter, const QRect &clipRect)
+{
+    if(m_boundingRectDirty)
+    {
+        m_boundingRect = updateGeometry(rect());
+        m_boundingRectDirty = false;
+    }
+    BaseClass::paint(painter, clipRect);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

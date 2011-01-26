@@ -4,7 +4,7 @@
 
 #include "fwcore/fwml.h"
 
-#include "fwgui/fwcanvas.h"
+#include "fwgui/fwpainter.h"
 
 FwPixmapPrimitive::FwPixmapPrimitive(FwPrimitiveGroup* parent) :
     BaseClass(parent)
@@ -35,10 +35,9 @@ QRect FwPixmapPrimitive::updateGeometry(const QRect &rect)
     return QRect(rect.topLeft(), m_pixmap.size());
 }
 
-void FwPixmapPrimitive::paint(FwCanvas *canvas)
+void FwPixmapPrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
-    QPoint pos = boundingRect().topLeft();
-    canvas->drawPixmap(pos.x(), pos.y(), m_pixmap);
+    painter->drawPixmap(clipRect, m_pixmap, &clipRect.translated(boundingRect().topLeft()));
 }
 
 void FwPixmapPrimitive::apply(FwMLObject *object)

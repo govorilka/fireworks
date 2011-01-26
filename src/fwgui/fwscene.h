@@ -54,7 +54,8 @@ protected:
     void hideAnimationFinished();
 
     void invalidateDirtyRegion();
-    void invalidateRegion(const QRegion& rgn);
+
+    void paint(FwPainter *painter, const QRect &clipRect);
 
 private:
     FwGraphicsView* m_view;

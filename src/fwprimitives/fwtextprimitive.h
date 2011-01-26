@@ -10,12 +10,12 @@
 
 #include "fwgui/fwpen.h"
 
-class FwGraphicsTextItem : public FwRectPrimitive
+class FwTextPrimitive : public FwRectPrimitive
 {
     typedef FwRectPrimitive BaseClass;
 
 public:
-    FwGraphicsTextItem(FwPrimitiveGroup* parent);
+    FwTextPrimitive(FwPrimitiveGroup* parent);
 
     inline QString text() const;
     void setText(const QString& text);
@@ -31,7 +31,7 @@ public:
 protected:
     QRect updateGeometry(const QRect &rect);
 
-    void paint(FwCanvas *canvas);
+    void paint(FwPainter *painter, const QRect &clipRect);
 
 private:
     QString m_text;
@@ -40,17 +40,17 @@ private:
     QVector<FwTextString> m_strings;
 };
 
-QString FwGraphicsTextItem::text() const
+QString FwTextPrimitive::text() const
 {
     return m_text;
 }
 
-FwFont FwGraphicsTextItem::font() const
+FwFont FwTextPrimitive::font() const
 {
     return m_font;
 }
 
-FwPenPtr FwGraphicsTextItem::pen() const
+FwPenPtr FwTextPrimitive::pen() const
 {
     return m_pen;
 }

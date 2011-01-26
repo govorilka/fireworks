@@ -19,6 +19,7 @@ class QKeyEvent;
 class FwScene;
 class FwMLNode;
 class FwRender;
+class FwPainter;
 
 class FwGraphicsView : public QObject
 {
@@ -64,7 +65,7 @@ protected:
 
     virtual void clearBackground() = 0;
 
-    void invalidateView(const QRect& rect, FwCanvas* canvas);
+    void render(FwPainter* painter);
 
 private:
     QSize m_size;

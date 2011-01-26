@@ -32,6 +32,8 @@ public:
     inline bool operator!=(const FwColor& rhs) const;
     inline bool operator==(const FwColor& rhs) const;
 
+    inline FwColor& operator=(const FwColor& rhs);
+
 private:
 
     union {
@@ -110,6 +112,16 @@ bool FwColor::operator!=(const FwColor& rhs) const
 bool FwColor::operator==(const FwColor& rhs) const
 {
     return m_allChannel == rhs.m_allChannel && m_blending == rhs.m_blending;
+}
+
+FwColor& FwColor::operator=(const FwColor& rhs)
+{
+    if(this != &rhs)
+    {
+        m_allChannel = rhs.m_allChannel;
+        m_blending = rhs.m_blending;
+    }
+    return *this;
 }
 
 #endif // FIREWORKS_COLOR_H

@@ -1,7 +1,7 @@
 #include <QtCore/qdebug.h>
 
 #include "fwbrush.h"
-#include "fwcanvas.h"
+#include "fwpainter.h"
 
 FwBrush::FwBrush()
 {
@@ -11,16 +11,9 @@ FwBrush::~FwBrush()
 {
 }
 
-void FwBrush::drawRect(FwCanvas* canvas, const QRect& rect)
+void FwBrush::drawRect(FwPainter* painter, const QRect& clipRect)
 {
-    if(m_border)
-    {
-        drawBackground(canvas, m_border->drawStroke(canvas, rect));
-    }
-    else
-    {
-        drawBackground(canvas, rect);
-    }
+    drawBackground(painter, m_border ? m_border->drawStroke(painter, clipRect) : clipRect);
 }
 
 void FwBrush::setSourceRect(const QRect& rect)
@@ -41,10 +34,10 @@ FwBrushSolid::FwBrushSolid(const FwColor& color) :
 {
 }
 
-void FwBrushSolid::drawBackground(FwCanvas* canvas, const QRect& rect)
+void FwBrushSolid::drawBackground(FwPainter* painter, const QRect& clipRect)
 {
-    canvas->setColor(m_color);
-    canvas->drawFillRect(rect);
+    painter->setColor(m_color);
+    painter->drawFillRect(clipRect);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,9 +50,11 @@ FwBrushTexture::FwBrushTexture(const FwPixmap& pixmap) :
     m_displayPixmap = pixmap;
 }
 
-void FwBrushTexture::drawBackground(FwCanvas* canvas, const QRect& rect)
+void FwBrushTexture::drawBackground(FwPainter* painter, const QRect& clipRect)
 {
-    canvas->drawPixmap(rect, m_displayPixmap);
+    painter->drawPixmap(clipRect,
+                        m_displayPixmap,
+                        &clipRect.translated(m_sourceRect.topLeft()));
 }
 
 void FwBrushTexture::setSourceRect(const QRect& rect)

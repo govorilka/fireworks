@@ -3,7 +3,7 @@
 #include <QtGui/qwidget.h>
 #include <QtGui/qevent.h>
 
-#include "fwgui/fwcanvas.h"
+#include "fwgui/fwpainter.h"
 
 #include "qpgraphicsview.h"
 #include "qpfontdata.h"
@@ -33,9 +33,8 @@ void QPWidget::resizeEvent(QResizeEvent *e)
 
 void QPWidget::paintEvent(QPaintEvent *e)
 {
-    FwCanvas canvas(new QPRender(this));
-    canvas.setRect(e->rect());
-    m_view->invalidateView(e->rect(), &canvas);
+    FwPainter painter(QRect(QPoint(0, 0), size()), e->rect(), new QPRender(this));
+    m_view->render(&painter);
     e->accept();
 }
 

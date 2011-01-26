@@ -9,7 +9,7 @@
 
 #include "fwcore/fwcolor.h"
 
-class FwCanvas;
+class FwPainter;
 
 class FwPen
 {
@@ -19,9 +19,9 @@ public:
     inline int width() const;
     inline FwColor color() const;
 
-    void drawLine(FwCanvas* canvas, const QLine& line);
-    QRect drawStroke(FwCanvas* canvas, const QRect& rect);
-    void drawString(FwCanvas* canvas, const QPoint& pos, const QByteArray& utf8String);
+    void drawLine(FwPainter* painter, const QRect& clipRect, const QLine& line);
+    QRect drawStroke(FwPainter* painter, const QRect& clipRect);
+    void drawString(FwPainter* painter, const QRect& clipRect, const QPoint& pos, const QByteArray& utf8String);
 
 private:
     int m_width;

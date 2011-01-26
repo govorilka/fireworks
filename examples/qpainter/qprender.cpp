@@ -12,26 +12,53 @@ QPRender::QPRender(QPaintDevice* device) :
 {
 }
 
+void QPRender::setClipRect(const QRect& rect)
+{
+    m_painter.setClipping(true);
+    m_painter.setClipRect(rect);
+}
+
+void QPRender::resetClipRect()
+{
+    m_painter.setClipping(false);
+}
+
 void QPRender::setColor(const FwColor& color)
 {
     m_color = QColor(color.red(), color.green(), color.blue(), color.alpha());
-}
-
-void QPRender::setFont(const FwFont& font)
-{
-    m_painter.setFont(static_cast<QPFontData*>(font.data())->qfont());
-}
-
-void QPRender::drawFillRect(int x, int y, int w, int h)
-{
     m_painter.setPen(m_color);
-    m_painter.setBrush(QBrush(m_color));
-    m_painter.drawRect(x, y, w, h);
 }
 
-void QPRender::prepareDrawSurface(FwPixmapData* surface)
+void QPRender::setOpacity(float opacity)
 {
-    Q_UNUSED(surface);
+    m_painter.setOpacity(opacity);
+}
+
+void QPRender::setFont(FwFontData* font)
+{
+    m_painter.setFont(static_cast<QPFontData*>(font)->qfont());
+}
+
+void QPRender::resetFont()
+{
+    m_painter.setFont(QFont());
+}
+
+void QPRender::drawRect(const QRect& rect)
+{
+    m_painter.drawRect(rect);
+}
+
+void QPRender::drawFillRect(const QRect& rect)
+{
+    m_painter.setBrush(QBrush(m_color));
+    m_painter.drawRect(rect);
+    m_painter.setBrush(QBrush());
+}
+
+void QPRender::drawLine(const QLine& line)
+{
+    m_painter.drawLine(line);
 }
 
 void QPRender::drawPixmap(int x, int y, FwPixmapData* pixmap)
@@ -53,33 +80,7 @@ void QPRender::drawPixmap(const QRect& rect, FwPixmapData* pixmap, const QRect* 
     }
 }
 
-void QPRender::drawRect(int x, int y, int w, int h)
+void QPRender::drawString(int x, int y, const QByteArray& utf8String)
 {
-}
-
-void QPRender::drawLine(int x1, int y1, int x2, int y2)
-{
-}
-
-void QPRender::flip(int x, int y, int w, int h)
-{
-}
-
-void QPRender::drawString(int x, int y, const QString& string)
-{
-    m_painter.drawText(x, y, string);
-}
-
-void QPRender::drawString(int x, int y, const char* str, int strSize)
-{
-    m_painter.setPen(m_color);
-    m_painter.drawText(x, y, QString::fromUtf8(str, strSize));
-}
-
-void QPRender::updateClipRect(const QRect& rect)
-{
-}
-
-void QPRender::clear()
-{
+    m_painter.drawText(x, y, QString::fromUtf8(utf8String));
 }

@@ -334,9 +334,3 @@ void FwGraphicsTableItem::setColumnsWidth(QVector<qreal> widths)
         updateTable();
     }
 }
-
-void FwGraphicsTableItem::paint(FwCanvas *canvas)
-{
-    qDebug() << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&";
-    BaseClass::paint(canvas);
-}

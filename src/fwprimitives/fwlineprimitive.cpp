@@ -1,6 +1,6 @@
 #include "fwlineprimitive.h"
 
-#include "fwgui/fwcanvas.h"
+#include "fwgui/fwpainter.h"
 
 FwLinePrimitive::FwLinePrimitive(FwPrimitiveGroup* parent) :
     BaseClass(parent),
@@ -63,11 +63,11 @@ QRect FwLinePrimitive::updateGeometry(const QRect& rect)
     return QRect();
 }
 
-void FwLinePrimitive::paint(FwCanvas* canvas)
+void FwLinePrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
     if(m_lenght && m_pen)
     {
-        m_pen->drawLine(canvas, line());
+        m_pen->drawLine(painter, clipRect, line());
     }
 }
 

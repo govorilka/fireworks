@@ -5,7 +5,6 @@
 #include "fwcore/fwml.h"
 
 #include "fwgui/fwrender.h"
-#include "fwgui/fwcanvas.h"
 
 FwPixmapDescription::FwPixmapDescription() :
     m_source(QString()),
@@ -197,18 +196,4 @@ void FwPixmap::setBlendEnabled(bool enable)
     {
         data->blend = enable;
     }
-}
-
-FwCanvas* FwPixmap::createCanvas()
-{
-    FwPixmapData* data = this->data();
-    if(data)
-    {
-        FwRender* render = data->createRender();
-        if(render)
-        {
-            return new FwCanvas(render);
-        }
-    }
-    return 0;
 }

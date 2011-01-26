@@ -9,7 +9,7 @@
 #include "fwgui/fwpen.h"
 #include "fwgui/fwpixmap.h"
 
-class FwCanvas;
+class FwPainter;
 
 class FwBrush
 {
@@ -20,13 +20,13 @@ public:
     inline FwPenPtr border() const;
     inline void setBorder(FwPenPtr border);
 
-    void drawRect(FwCanvas* canvas, const QRect& rect);
+    void drawRect(FwPainter* painter, const QRect& clipRect);
 
     virtual void setSourceRect(const QRect& rect);
     virtual QRect sourceRect() const;
 
 protected:
-    virtual void drawBackground(FwCanvas* canvas, const QRect& rect) = 0;
+    virtual void drawBackground(FwPainter* painter, const QRect& clipRect) = 0;
 
 private:
     FwPenPtr m_border;
@@ -53,7 +53,7 @@ public:
     inline FwColor color() const;
 
 protected:
-    void drawBackground(FwCanvas* canvas, const QRect& rect);
+    void drawBackground(FwPainter* painter, const QRect& clipRect);
 
 private:
     FwColor m_color;
@@ -74,7 +74,7 @@ public:
     QRect sourceRect() const;
 
 protected:
-    void drawBackground(FwCanvas* canvas, const QRect& rect);
+    void drawBackground(FwPainter* painter, const QRect& clipRect);
 
 private:
     FwPixmap m_pixmap;

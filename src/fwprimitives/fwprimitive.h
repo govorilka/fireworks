@@ -17,11 +17,9 @@ class FwSceneGraphicsItem;
 class FwWidget;
 class FwMLObject;
 class FwPen;
+class FwPainter;
 
 class FwPixmapData;
-
-class FwPrimitive;
-typedef FwPrimitive* FwPrimitivePtr;
 
 class FwPrimitive
 {
@@ -94,7 +92,7 @@ public:
 protected:
     virtual QRect updateGeometry(const QRect& rect);
 
-    virtual void paint(FwCanvas* canvas);
+    virtual void paint(FwPainter* painter, const QRect& clipRect) = 0;
 
     virtual void visibleChangedEvent();
 

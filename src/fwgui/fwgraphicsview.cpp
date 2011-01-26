@@ -3,7 +3,7 @@
 
 #include "fwgraphicsview.h"
 #include "fwscene.h"
-#include "fwrender.h"
+#include "fwpainter.h"
 
 #include "fwcore/fwml.h"
 
@@ -181,10 +181,10 @@ void FwGraphicsView::keyEvent(QKeyEvent* event)
     }
 }
 
-void FwGraphicsView::invalidateView(const QRect& rect, FwCanvas* canvas)
+void FwGraphicsView::render(FwPainter* painter)
 {
     if(m_activeScene)
     {
-        m_activeScene->paint(canvas);
+        m_activeScene->paint(painter, painter->clipRect());
     }
 }

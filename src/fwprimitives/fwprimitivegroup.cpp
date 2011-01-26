@@ -4,7 +4,7 @@
 
 #include "fwprimitivegroup.h"
 
-#include "fwgui/fwcanvas.h"
+#include "fwgui/fwpainter.h"
 
 FwPrimitiveGroup::FwPrimitiveGroup(FwPrimitiveGroup* parent) :
     BaseClass(parent)
@@ -55,38 +55,38 @@ QRect FwPrimitiveGroup::updateGeometry(const QRect& rect)
     return region.boundingRect();
 }
 
-void FwPrimitiveGroup::paint(FwCanvas* canvas)
+void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
 {
-    BaseClass::paint(canvas);
-
-    QRect canvasRect = canvas->rect();
+    BaseClass::paint(painter, clipRect);
 
     foreach(FwPrimitive* item, m_items)
     {
-        if(item->visibleOnScreen && canvasRect.intersects(item->m_boundingRect))
+        if(item->visibleOnScreen)
         {
-            if(item->m_bufferMode)
+            QRect newClipRect = clipRect.intersected(item->m_boundingRect);
+            if(!newClipRect.isNull())
             {
-                if(item->bufferDirty)
+                if(item->m_bufferMode)
                 {
-                    if(!item->m_buffer)
+                    if(item->bufferDirty)
                     {
-                        item->createNewBuffer();
+                        if(!item->m_buffer)
+                        {
+                            item->createNewBuffer();
+                        }
+                        else
+                        {
+                            item->updateBuffer();
+                        }
                     }
-                    else
-                    {
-                        item->updateBuffer();
-                    }
+                    painter->drawBuffer(newClipRect,
+                                        item->m_buffer,
+                                        newClipRect.translated(item->m_boundingRect.topLeft()));
                 }
-
-                FwRender* render = canvas->render();
-                render->drawPixmap(render->startX() + item->m_boundingRect.x(),
-                                   render->startY() + item->m_boundingRect.y(),
-                                   item->m_buffer);
-            }
-            else
-            {
-                item->paint(canvas);
+                else
+                {
+                    item->paint(painter, newClipRect);
+                }
             }
         }
     }

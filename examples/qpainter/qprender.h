@@ -15,27 +15,22 @@ public:
     QPRender(QPaintDevice* device);
 
 protected:
+
+    void setClipRect(const QRect& rect);
+    void resetClipRect();
+
     void setColor(const FwColor& color);
-    void setFont(const FwFont& font);
+    void setOpacity(float opacity);
 
-    void drawFillRect(int x, int y, int w, int h);
+    void setFont(FwFontData* font);
+    void resetFont();
 
-    void prepareDrawSurface(FwPixmapData* surface);
+    void drawRect(const QRect& rect);
+    void drawFillRect(const QRect& rect);
+    void drawLine(const QLine& line);
     void drawPixmap(int x, int y, FwPixmapData* pixmap);
     void drawPixmap(const QRect& rect, FwPixmapData* pixmap, const QRect* srcRect);
-
-    void drawRect(int x, int y, int w, int h);
-
-    void drawLine(int x1, int y1, int x2, int y2);
-
-    void flip(int x, int y, int w, int h);
-
-    void drawString(int x, int y, const QString& string);
-    void drawString(int x, int y, const char* str, int strSize);
-
-    void updateClipRect(const QRect& rect);
-
-    void clear();
+    void drawString(int x, int y, const QByteArray& utf8String);
 
 private:
     QPainter m_painter;

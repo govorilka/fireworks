@@ -2,7 +2,7 @@
 
 #include "fwtextprimitive.h"
 
-#include "fwgui/fwcanvas.h"
+#include "fwgui/fwpainter.h"
 #include "fwgui/fwscene.h"
 #include "fwgui/fwgraphicsview.h"
 
@@ -10,13 +10,13 @@
 
 #include "fwtypography/fwjustification.h"
 
-FwGraphicsTextItem::FwGraphicsTextItem(FwPrimitiveGroup* parent) :
+FwTextPrimitive::FwTextPrimitive(FwPrimitiveGroup* parent) :
     BaseClass(parent),
     m_pen(FwPenPtr(new FwPen(1, FwColor(0xFFFFFFFF))))
 {
 }
 
-void FwGraphicsTextItem::setText(const QString& text)
+void FwTextPrimitive::setText(const QString& text)
 {
     if(m_text != text)
     {
@@ -26,7 +26,7 @@ void FwGraphicsTextItem::setText(const QString& text)
     }
 }
 
-void FwGraphicsTextItem::setFont(const FwFont& font)
+void FwTextPrimitive::setFont(const FwFont& font)
 {
     if(m_font != font)
     {
@@ -36,7 +36,7 @@ void FwGraphicsTextItem::setFont(const FwFont& font)
     }
 }
 
-void FwGraphicsTextItem::setPen(const FwPenPtr& pen)
+void FwTextPrimitive::setPen(const FwPenPtr& pen)
 {
     if(m_pen != pen)
     {
@@ -45,7 +45,7 @@ void FwGraphicsTextItem::setPen(const FwPenPtr& pen)
     }
 }
 
-QRect FwGraphicsTextItem::updateGeometry(const QRect &rect)
+QRect FwTextPrimitive::updateGeometry(const QRect &rect)
 {
     if(m_text.isEmpty())
     {
@@ -61,24 +61,24 @@ QRect FwGraphicsTextItem::updateGeometry(const QRect &rect)
     return BaseClass::updateGeometry(rect);
 }
 
-void FwGraphicsTextItem::paint(FwCanvas *canvas)
+void FwTextPrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
-    BaseClass::paint(canvas);
+    BaseClass::paint(painter, clipRect);
 
     if(!m_strings.isEmpty() && m_pen)
     {
-        canvas->setColor(m_pen->color());
-        canvas->setFont(m_font);
+        painter->setColor(m_pen->color());
+        painter->setFont(m_font);
 
         FwTextString* string = m_strings.data();
         for(int i = 0; i < m_strings.count(); i++, string++)
         {
-            canvas->drawUtf8String(string->x(), string->y(), string->utf8());
+            painter->drawString(string->x(), string->y(), string->utf8());
         }
     }
 }
 
-void FwGraphicsTextItem::apply(FwMLObject *object)
+void FwTextPrimitive::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
 

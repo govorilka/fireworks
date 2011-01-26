@@ -26,8 +26,7 @@ public:
 protected:
     QRect updateGeometry(const QRect& rect);
 
-    void paint(FwCanvas* canvas);
-    void paint(FwCanvas* canvas, const QRect& rect);
+    void paint(FwPainter* painter, const QRect& clipRect);
 
 private:
     FwBrushPtr m_brush;

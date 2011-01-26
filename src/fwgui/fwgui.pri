@@ -10,10 +10,11 @@ HEADERS += \
     fwgui/fwbrush.h \
     fwgui/fwpen.h \
     fwgui/fwanchor.h \
-    fwgui/fwcanvas.h \
     fwgui/fwwidget_inl.h \
     fwgui/fwwidget.h \
-    fwgui/fwrender.h
+    fwgui/fwrender.h \
+    fwgui/fwpainter.h \
+    fwgui/fwpainter_inl.h
 
 SOURCES += \
     fwgui/fwgraphicsview.cpp \
@@ -23,6 +24,6 @@ SOURCES += \
     fwgui/fwbrush.cpp \
     fwgui/fwpen.cpp \
     fwgui/fwanchor.cpp \
-    fwgui/fwcanvas.cpp \
     fwgui/fwwidget.cpp \
-    fwgui/fwrender.cpp
+    fwgui/fwrender.cpp \
+    fwgui/fwpainter.cpp

@@ -20,7 +20,7 @@ public:
 protected:
     QRect updateGeometry(const QRect &rect);
 
-    void paint(FwCanvas *canvas);
+    void paint(FwPainter *painter, const QRect &clipRect);
 
 private:
     FwPixmap m_pixmap;

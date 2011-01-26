@@ -158,8 +158,6 @@ public:
 
     bool isBlendEnabled() const;
     void setBlendEnabled(bool enable);
-
-    FwCanvas* createCanvas();
 };
 
 Q_DECLARE_METATYPE(FwPixmap);

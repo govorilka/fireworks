@@ -26,7 +26,7 @@ protected:
 
     QRect updateGeometry(const QRect& rect);
 
-    void paint(FwCanvas* canvas);
+    void paint(FwPainter *painter, const QRect &clipRect);
 
     virtual void visibleChangedEvent();
 

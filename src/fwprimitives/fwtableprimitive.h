@@ -85,8 +85,6 @@ public:
 protected:
     QRect updateGeometry(const QRect &rect);
 
-    void paint(FwCanvas *canvas);
-
     void updateRealSizes();
     void updateCellGeometry();
 

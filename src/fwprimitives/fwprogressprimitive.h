@@ -41,7 +41,7 @@ public:
 protected:
     QRect updateGeometry(const QRect &rect);
 
-    void paint(FwCanvas *canvas);
+    void paint(FwPainter *painter, const QRect &clipRect);
 
     void updateProgressRect(bool byUser);
     void updateProgressRect(const QRect& rect);
@@ -58,6 +58,7 @@ private:
     int m_minProgressWidth;
     qreal normalMinProgressWidth;
     FwGeometry* m_progressRect;
+    QRect m_backgroundRect;
 };
 
 FwBrushPtr FwGraphicsProgressItem::progressBrush() const

@@ -10,7 +10,8 @@ FwGraphicsProgressItem::FwGraphicsProgressItem(FwPrimitiveGroup* parent) :
     m_animation(0),
     m_minProgressWidth(0),
     normalMinProgressWidth(0),
-    m_progressRect(new FwGeometry())
+    m_progressRect(new FwGeometry()),
+    m_backgroundRect(0, 0, 0, 0)
 {
 }
 
@@ -66,18 +67,25 @@ QRect FwGraphicsProgressItem::updateGeometry(const QRect &rect)
     return BaseClass::updateGeometry(rect);
 }
 
-void FwGraphicsProgressItem::paint(FwCanvas *canvas)
+void FwGraphicsProgressItem::paint(FwPainter *painter, const QRect &clipRect)
 {
-    QRect rect = this->rect();
+    QRect r = clipRect;
+
     if(m_progressRect->rect().width())
     {
         if(m_progressBrush)
         {
-            m_progressBrush->drawRect(canvas, m_progressRect->rect());
+            m_progressBrush->drawRect(painter, m_progressRect->rect().intersect(r));
         }
-        rect.adjust(m_progressRect->rect().width(), 0, 0, 0);
+
+        r = r.intersected(m_backgroundRect);
     }
-    BaseClass::paint(canvas, rect);
+
+    FwBrushPtr bgBrush = brush();
+    if(bgBrush && !r.isNull())
+    {
+        bgBrush->drawRect(painter, r);
+    }
 }
 
 void FwGraphicsProgressItem::updateProgressRect(bool byUser)
@@ -115,6 +123,7 @@ void FwGraphicsProgressItem::updateProgressRect(const QRect& rect)
     if(m_progressRect->rect() != rect)
     {
         m_progressRect->setRect(rect);
+        m_backgroundRect = this->rect().intersected(rect);
         invalidate();
     }
 }

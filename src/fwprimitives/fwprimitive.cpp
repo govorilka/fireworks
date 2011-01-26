@@ -4,10 +4,10 @@
 #include "fwprimitivegroup.h"
 
 #include "fwgui/fwscene.h"
-#include "fwgui/fwcanvas.h"
 #include "fwgui/fwwidget.h"
 #include "fwgui/fwgraphicsview.h"
 #include "fwgui/fwpixmap.h"
+#include "fwgui/fwpainter.h"
 
 #include "fwcore/fwml.h"
 
@@ -140,12 +140,9 @@ void FwPrimitive::updateBuffer()
         FwRender* render = m_buffer->createRender();
         if(render)
         {
-            FwCanvas canvas(render);
-            canvas.setNullPos(-m_boundingRect.topLeft());
-            canvas.clear();
-            paint(&canvas);
+            FwPainter painter(m_boundingRect, m_boundingRect, render);
+            paint(&painter, m_boundingRect);
             bufferDirty = false;
-            //canvas.flip(m_boundingRect);
         }
     }
 }
@@ -247,10 +244,6 @@ void FwPrimitive::visibleChangedEvent()
 QRect FwPrimitive::updateGeometry(const QRect& rect)
 {
     return rect;
-}
-
-void FwPrimitive::paint(FwCanvas* canvas)
-{
 }
 
 void FwPrimitive::apply(FwMLObject* object)

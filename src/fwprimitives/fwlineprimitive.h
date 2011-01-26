@@ -35,7 +35,7 @@ public:
 protected:
     virtual QRect updateGeometry(const QRect& rect);
 
-    virtual void paint(FwCanvas* canvas);
+    virtual void paint(FwPainter *painter, const QRect &clipRect);
 
 private:
     FwPenPtr m_pen;
