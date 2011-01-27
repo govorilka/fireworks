@@ -6,8 +6,8 @@
 
 #include "fwcore/fwcolor.h"
 
-#include "fwgui/fwpen.h"
 #include "fwgui/fwpixmap.h"
+#include "fwgui/fwpen.h"
 
 class FwPainter;
 
@@ -17,29 +17,41 @@ public:
     FwBrush();
     virtual ~FwBrush();
 
-    inline FwPenPtr border() const;
-    inline void setBorder(FwPenPtr border);
+    inline FwPen* border() const;
+    void setBorder(FwPen* border);
 
     void drawRect(FwPainter* painter, const QRect& clipRect);
 
-    virtual void setSourceRect(const QRect& rect);
-    virtual QRect sourceRect() const;
+    inline QRect sourceRect() const;
+    void setSourceRect(const QRect& rect);
 
 protected:
     virtual void drawBackground(FwPainter* painter, const QRect& clipRect) = 0;
 
+    virtual void updateSourceRect(const QRect& rect) = 0;
+
+    inline void updateGeometry();
+
 private:
-    FwPenPtr m_border;
+    QRect m_sourceRect;
+    QRect m_backgroundRect;
+    FwPen* m_border;
 };
 
-FwPenPtr FwBrush::border() const
+FwPen* FwBrush::border() const
 {
     return m_border;
 }
 
-void FwBrush::setBorder(FwPenPtr border)
+QRect FwBrush::sourceRect() const
 {
-    m_border = border;
+    return m_sourceRect;
+}
+
+void FwBrush::updateGeometry()
+{
+    m_backgroundRect = m_border ? m_border->clientArea(m_sourceRect) : m_sourceRect;
+    updateSourceRect(m_backgroundRect);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -54,6 +66,8 @@ public:
 
 protected:
     void drawBackground(FwPainter* painter, const QRect& clipRect);
+
+    void updateSourceRect(const QRect& rect);
 
 private:
     FwColor m_color;
@@ -70,16 +84,14 @@ public:
 
     inline FwPixmap pixmap() const;
 
-    void setSourceRect(const QRect& rect);
-    QRect sourceRect() const;
-
 protected:
     void drawBackground(FwPainter* painter, const QRect& clipRect);
+
+    void updateSourceRect(const QRect& rect);
 
 private:
     FwPixmap m_pixmap;
     FwPixmap m_displayPixmap;
-    QRect m_sourceRect;
 };
 
 FwPixmap FwBrushTexture::pixmap() const

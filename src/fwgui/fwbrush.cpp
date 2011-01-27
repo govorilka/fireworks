@@ -3,27 +3,51 @@
 #include "fwbrush.h"
 #include "fwpainter.h"
 
-FwBrush::FwBrush()
+FwBrush::FwBrush() :
+   m_sourceRect(0, 0, 0, 0),
+   m_backgroundRect(0, 0, 0, 0),
+   m_border(0)
 {
 }
 
 FwBrush::~FwBrush()
 {
+    if(m_border)
+    {
+        delete m_border;
+    }
 }
 
 void FwBrush::drawRect(FwPainter* painter, const QRect& clipRect)
 {
-    drawBackground(painter, m_border ? m_border->drawStroke(painter, clipRect) : clipRect);
+    drawBackground(painter, m_backgroundRect.intersected(clipRect));
+    if(m_border)
+    {
+       m_border->drawStroke(painter, m_sourceRect);
+    }
+}
+
+void FwBrush::setBorder(FwPen* border)
+{
+    if(m_border != border)
+    {
+        if(m_border)
+        {
+            delete m_border;
+        }
+        m_border = border;
+        updateGeometry();
+    }
+    m_border = border;
 }
 
 void FwBrush::setSourceRect(const QRect& rect)
 {
-    Q_UNUSED(rect);
-}
-
-QRect FwBrush::sourceRect() const
-{
-    return QRect();
+    if(m_sourceRect != rect)
+    {
+        m_sourceRect = rect;
+        updateGeometry();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,12 +64,16 @@ void FwBrushSolid::drawBackground(FwPainter* painter, const QRect& clipRect)
     painter->drawFillRect(clipRect);
 }
 
+void FwBrushSolid::updateSourceRect(const QRect& rect)
+{
+    Q_UNUSED(rect);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 FwBrushTexture::FwBrushTexture(const FwPixmap& pixmap) :
     BaseClass(),
-    m_pixmap(pixmap),
-    m_sourceRect(0, 0, 0, 0)
+    m_pixmap(pixmap)
 {
     m_displayPixmap = pixmap;
 }
@@ -54,36 +82,17 @@ void FwBrushTexture::drawBackground(FwPainter* painter, const QRect& clipRect)
 {
     painter->drawPixmap(clipRect,
                         m_displayPixmap,
-                        &clipRect.translated(m_sourceRect.topLeft()));
+                        &clipRect.translated(sourceRect().topLeft()));
 }
 
-void FwBrushTexture::setSourceRect(const QRect& rect)
+void FwBrushTexture::updateSourceRect(const QRect& rect)
 {
-    if(rect != m_sourceRect && !m_pixmap.isNull())
+    if(!m_pixmap.isNull() && rect.size().isValid())
     {
-        if(rect.size() != m_sourceRect.size())
-        {
-            if(!m_pixmap.isNull() && rect.size().isValid())
-            {
-                if(rect.size() != m_pixmap.size())
-                {
-                    m_displayPixmap = m_pixmap.resized(rect.size(), FwPixmap::RM_Scale);
-                }
-                else
-                {
-                    m_displayPixmap = m_pixmap;
-                }
-            }
-            else
-            {
-                m_displayPixmap = FwPixmap();
-            }
-        }
-        m_sourceRect = rect;
+        m_displayPixmap = rect.size() != m_pixmap.size() ? m_pixmap.resized(rect.size(), FwPixmap::RM_Scale) : m_pixmap;
     }
-}
-
-QRect FwBrushTexture::sourceRect() const
-{
-    return m_sourceRect;
+    else
+    {
+        m_displayPixmap = FwPixmap();
+    }
 }

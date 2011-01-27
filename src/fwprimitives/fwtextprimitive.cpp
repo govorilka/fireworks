@@ -5,6 +5,7 @@
 #include "fwgui/fwpainter.h"
 #include "fwgui/fwscene.h"
 #include "fwgui/fwgraphicsview.h"
+#include "fwgui/fwpen.h"
 
 #include "fwcore/fwml.h"
 
@@ -12,8 +13,13 @@
 
 FwTextPrimitive::FwTextPrimitive(FwPrimitiveGroup* parent) :
     BaseClass(parent),
-    m_pen(FwPenPtr(new FwPen(1, FwColor(0xFFFFFFFF))))
+    m_pen(new FwPen(1, FwColor(0xFFFFFFFF)))
 {
+}
+
+FwTextPrimitive::~FwTextPrimitive()
+{
+    delete m_pen;
 }
 
 void FwTextPrimitive::setText(const QString& text)
@@ -36,10 +42,11 @@ void FwTextPrimitive::setFont(const FwFont& font)
     }
 }
 
-void FwTextPrimitive::setPen(const FwPenPtr& pen)
+void FwTextPrimitive::setPen(FwPen* pen)
 {
     if(m_pen != pen)
     {
+        delete m_pen;
         m_pen = pen;
         invalidate();
     }
@@ -82,8 +89,8 @@ void FwTextPrimitive::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
 
-    FwPenPtr pen = createPen(object, "color");
-    if(!pen.isNull())
+    FwPen* pen = createPen(object, "pen");
+    if(pen)
     {
          setPen(pen);
     }

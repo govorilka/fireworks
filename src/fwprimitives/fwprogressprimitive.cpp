@@ -81,10 +81,10 @@ void FwGraphicsProgressItem::paint(FwPainter *painter, const QRect &clipRect)
         r = r.intersected(m_backgroundRect);
     }
 
-    FwBrushPtr bgBrush = brush();
-    if(bgBrush && !r.isNull())
+    FwBrush* brush = this->brush();
+    if(brush && !r.isNull())
     {
-        bgBrush->drawRect(painter, r);
+        brush->drawRect(painter, r);
     }
 }
 

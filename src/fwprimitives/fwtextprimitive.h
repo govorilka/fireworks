@@ -8,7 +8,7 @@
 #include "fwtypography/fwfont.h"
 #include "fwtypography/fwtextstring.h"
 
-#include "fwgui/fwpen.h"
+class FwPen;
 
 class FwTextPrimitive : public FwRectPrimitive
 {
@@ -16,6 +16,7 @@ class FwTextPrimitive : public FwRectPrimitive
 
 public:
     FwTextPrimitive(FwPrimitiveGroup* parent);
+    ~FwTextPrimitive();
 
     inline QString text() const;
     void setText(const QString& text);
@@ -23,8 +24,8 @@ public:
     inline FwFont font() const;
     void setFont(const FwFont& font);
 
-    inline FwPenPtr pen() const;
-    void setPen(const FwPenPtr& pen);
+    inline FwPen* pen() const;
+    void setPen(FwPen* pen);
 
     void apply(FwMLObject *object);
 
@@ -36,7 +37,7 @@ protected:
 private:
     QString m_text;
     FwFont m_font;
-    FwPenPtr m_pen;
+    FwPen* m_pen;
     QVector<FwTextString> m_strings;
 };
 
@@ -50,7 +51,7 @@ FwFont FwTextPrimitive::font() const
     return m_font;
 }
 
-FwPenPtr FwTextPrimitive::pen() const
+FwPen* FwTextPrimitive::pen() const
 {
     return m_pen;
 }

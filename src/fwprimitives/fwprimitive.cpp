@@ -8,6 +8,7 @@
 #include "fwgui/fwgraphicsview.h"
 #include "fwgui/fwpixmap.h"
 #include "fwgui/fwpainter.h"
+#include "fwgui/fwpen.h"
 
 #include "fwcore/fwml.h"
 
@@ -314,18 +315,75 @@ FwFont FwPrimitive::createFont(FwMLObject* object, const QByteArray& attribute)
     return FwFont();
 }
 
-FwPenPtr FwPrimitive::createPen(FwMLObject* object, const QByteArray& attribute)
+FwPen* FwPrimitive::createPen(FwMLObject* object, const QByteArray& penAttr)
 {
-    FwMLNode* colorNode = object->attribute(attribute);
+    int width = 1;
+    bool bOk = false;
+    FwMLNode* colorNode = 0;
+
+    FwMLObject* penNode = object->attribute(penAttr)->cast<FwMLObject>();
+    if(penNode)
+    {
+        FwMLNode* widthNode = penNode->attribute("width");
+        if(widthNode)
+        {
+            width = widthNode->toInt(&bOk);
+            if(!bOk)
+            {
+                return 0;
+            }
+        }
+
+        colorNode = penNode->attribute("color");
+    }
+    else
+    {
+        colorNode = object->attribute("color");
+    }
+
     if(colorNode)
     {
-        bool bOk = false;
         FwColor color = colorNode->toColor(&bOk);
         if(bOk)
         {
-            return FwPenPtr(new FwPen(1, color));
+            return new FwPen(width, color);
         }
     }
 
-    return FwPenPtr();
+    return 0;
+}
+
+FwBrush* FwPrimitive::createBrush(FwMLObject* object)
+{
+    FwBrush* brush = 0;
+
+    FwMLObject* background = object->attribute("background")->cast<FwMLObject>();
+    if(background)
+    {
+        FwPixmap px = createPixmap(background);
+        if(!px.isNull())
+        {
+            brush = new FwBrushTexture(px);
+        }
+    }
+    else
+    {
+        FwMLNode* bgColorNode = object->attribute("bgcolor");
+        if(bgColorNode)
+        {
+            bool bOk = false;
+            FwColor bgColor = bgColorNode->toColor(&bOk);;
+            if(bOk && !bgColor.isNull())
+            {
+                brush = new FwBrushSolid(bgColor);
+            }
+        }
+    }
+
+    if(brush)
+    {
+        brush->setBorder(createPen(object, "border"));
+    }
+
+    return brush;
 }

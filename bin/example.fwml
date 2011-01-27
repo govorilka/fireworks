@@ -3,6 +3,10 @@ bgcolor : "black",
 rectItem {
   zindex :1,
   bgcolor : "purple",
+  border {
+    color : "red",
+    width : 2
+  },
   rect {
     x : 0, y : 0, width : 640, height : 480
   }

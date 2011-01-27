@@ -3,19 +3,9 @@
 
 #include "fwprimitives/fwlineprimitive.h"
 
-FwPenPtr FwLinePrimitive::pen() const
+FwPen* FwLinePrimitive::pen() const
 {
     return m_pen;
-}
-
-void FwLinePrimitive::setPen(const FwPenPtr& pen)
-{
-    if(m_pen != pen)
-    {
-        prepareGeometryChanged();
-        m_pen = pen;
-        update();
-    }
 }
 
 QLine FwLinePrimitive::line() const

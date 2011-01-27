@@ -3,6 +3,8 @@
 
 #include "fwprimitives/fwlineprimitive.h"
 
+#include "fwcore/fwcolor.h"
+
 #include "fwtypography/fwfont.h"
 
 class FwStringPrimitive;

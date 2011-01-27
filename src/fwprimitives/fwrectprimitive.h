@@ -18,8 +18,8 @@ public:
     FwRectPrimitive(FwPrimitiveGroup* parent);
     ~FwRectPrimitive();
 
-    inline FwBrushPtr brush() const;
-    void setBrush(FwBrushPtr brush);
+    inline FwBrush* brush() const;
+    void setBrush(FwBrush* brush);
 
     virtual void apply(FwMLObject *object);
 
@@ -29,10 +29,10 @@ protected:
     void paint(FwPainter* painter, const QRect& clipRect);
 
 private:
-    FwBrushPtr m_brush;
+    FwBrush* m_brush;
 };
 
-FwBrushPtr FwRectPrimitive::brush() const
+FwBrush* FwRectPrimitive::brush() const
 {
     return m_brush;
 }

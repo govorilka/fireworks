@@ -3,15 +3,9 @@
 
 #include <QtCore/qline.h>
 
-#include "fireworks.h"
-
-#include "fwgui/fwpen.h"
-
 #include "fwprimitives/fwprimitive.h"
 
-class FwLinePrimitive;
-
-typedef FwLinePrimitive* FwLinePrimitivePtr;
+class FwPen;
 
 class FwLinePrimitive : public FwPrimitive
 {
@@ -19,9 +13,10 @@ class FwLinePrimitive : public FwPrimitive
 
 public:
     FwLinePrimitive(FwPrimitiveGroup* parent);
+    ~FwLinePrimitive();
 
-    inline FwPenPtr pen() const;
-    inline void setPen(const FwPenPtr& pen);
+    inline FwPen* pen() const;
+    void setPen(FwPen* pen);
 
     inline QLine line() const;
     inline void setLine(int x1, int y1, int x2, int y2);
@@ -38,7 +33,7 @@ protected:
     virtual void paint(FwPainter *painter, const QRect &clipRect);
 
 private:
-    FwPenPtr m_pen;
+    FwPen* m_pen;
     QPoint m_p2;
     int m_lenght;
     int m_orientation;

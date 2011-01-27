@@ -1,12 +1,36 @@
 #include "fwlineprimitive.h"
 
+#include "fwgui/fwpen.h"
 #include "fwgui/fwpainter.h"
 
 FwLinePrimitive::FwLinePrimitive(FwPrimitiveGroup* parent) :
     BaseClass(parent),
     m_lenght(0),
-    m_orientation(0)
+    m_orientation(0),
+    m_pen(0)
 {
+}
+
+FwLinePrimitive::~FwLinePrimitive()
+{
+    if(m_pen)
+    {
+        delete m_pen;
+    }
+}
+
+void FwLinePrimitive::setPen(FwPen* pen)
+{
+    if(m_pen != pen)
+    {
+        prepareGeometryChanged();
+        if(m_pen)
+        {
+            delete m_pen;
+        }
+        m_pen = pen;
+        update();
+    }
 }
 
 void FwLinePrimitive::setLine(const QLine& line)
@@ -67,7 +91,7 @@ void FwLinePrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
     if(m_lenght && m_pen)
     {
-        m_pen->drawLine(painter, clipRect, line());
+        m_pen->drawLine(painter, line());
     }
 }
 
@@ -75,8 +99,8 @@ void FwLinePrimitive::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
 
-    FwPenPtr pen = createPen(object, "color");
-    if(!pen.isNull())
+    FwPen* pen = createPen(object, "pen");
+    if(pen)
     {
          setPen(pen);
     }

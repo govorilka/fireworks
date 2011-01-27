@@ -10,20 +10,23 @@
 #include "fwgui/fwscene.h"
 
 FwRectPrimitive::FwRectPrimitive(FwPrimitiveGroup* parent) :
-    BaseClass(parent)
+    BaseClass(parent),
+    m_brush(0)
 {
 }
 
 FwRectPrimitive::~FwRectPrimitive()
 {
+    delete m_brush;
 }
 
-void FwRectPrimitive::setBrush(FwBrushPtr brush)
+void FwRectPrimitive::setBrush(FwBrush* brush)
 {
     if(m_brush != brush)
     {
+        delete m_brush;
         m_brush = brush;
-        if(!m_brush.isNull())
+        if(m_brush)
         {
             m_brush->setSourceRect(rect());
         }
@@ -33,7 +36,7 @@ void FwRectPrimitive::setBrush(FwBrushPtr brush)
 
 void FwRectPrimitive::paint(FwPainter* painter, const QRect& clipRect)
 {
-    if(!m_brush.isNull())
+    if(m_brush)
     {
         m_brush->drawRect(painter, clipRect);
     }
@@ -53,27 +56,10 @@ void FwRectPrimitive::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
 
-    FwMLObject* background = object->attribute("background")->cast<FwMLObject>();
-    if(background)
+    FwBrush* brush = createBrush(object);
+    if(brush)
     {
-        FwPixmap px = createPixmap(background);
-        if(!px.isNull())
-        {
-            setBrush(FwBrushPtr(new FwBrushTexture(px)));
-        }
-    }
-    else
-    {
-        FwMLNode* bgColorNode = object->attribute("bgcolor");
-        if(bgColorNode)
-        {
-            bool bOk = false;
-            FwColor bgColor = bgColorNode->toColor(&bOk);;
-            if(bOk && !bgColor.isNull())
-            {
-                setBrush(FwBrushPtr(new FwBrushSolid(bgColor)));
-            }
-        }
+        setBrush(brush);
     }
 
     BaseClass::apply(object);

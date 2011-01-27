@@ -97,10 +97,10 @@ void FwStringPrimitive::paint(FwPainter *painter, const QRect &clipRect)
         painter->drawString(m_textPos.x() + 2, m_textPos.y() + 2, m_utf8String);
     }
 
-    FwPenPtr pen = this->pen();
+    FwPen* pen = this->pen();
     if(pen)
     {
-        pen->drawString(painter, clipRect, m_textPos, m_utf8String);
+        pen->drawString(painter, m_textPos, m_utf8String);
     }
 }
 
