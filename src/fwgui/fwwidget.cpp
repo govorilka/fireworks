@@ -11,12 +11,12 @@
 \class FwWidget
 Класс реализует различные элементы пользовательского интерфейса.
 */
-FwWidget::FwWidget(FwScene* scene) :
-    BaseClass(scene, scene),
+FwWidget::FwWidget(const QByteArray& name, FwPrimitiveGroup* parent) :
+    BaseClass(name, parent),
     m_visibleTime(0),
     m_visibleTimerId(0)
 {
-    scene->m_widgets.append(this);
+    m_scene->m_widgets.append(this);
 }
 
 FwWidget::~FwWidget()

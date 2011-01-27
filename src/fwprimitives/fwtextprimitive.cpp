@@ -11,8 +11,8 @@
 
 #include "fwtypography/fwjustification.h"
 
-FwTextPrimitive::FwTextPrimitive(FwPrimitiveGroup* parent) :
-    BaseClass(parent),
+FwTextPrimitive::FwTextPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
+    BaseClass(name, parent),
     m_pen(new FwPen(1, FwColor(0xFFFFFFFF)))
 {
 }

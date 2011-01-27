@@ -14,7 +14,7 @@ class FwGraphicsProgressItem : public FwRectPrimitive
 public:
     friend class FwGraphicsProgressAnimation;
 
-    FwGraphicsProgressItem(FwPrimitiveGroup* parent);
+    FwGraphicsProgressItem(const QByteArray& name, FwPrimitiveGroup* parent);
     ~FwGraphicsProgressItem();
 
     inline FwBrushPtr progressBrush() const;

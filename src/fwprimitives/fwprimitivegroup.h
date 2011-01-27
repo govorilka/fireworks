@@ -14,12 +14,14 @@ public:
     friend class FwPrimitive;
     friend class FwScene;
 
-    FwPrimitiveGroup(FwPrimitiveGroup* parent);
+    FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* parent);
     virtual ~FwPrimitiveGroup();
 
-    inline QVector<FwPrimitive*> items() const;
+    inline QVector<FwPrimitive*> primitives() const;
 
     void removeItems();
+
+    void apply(FwMLObject *object);
 
 protected:
     inline void sortZIndex();
@@ -31,7 +33,7 @@ protected:
     virtual void visibleChangedEvent();
 
 private:
-    QVector<FwPrimitive*> m_items;
+    QVector<FwPrimitive*> m_primitives;
 };
 
 #include "fwprimitives/fwprimitivegroup_inl.h"

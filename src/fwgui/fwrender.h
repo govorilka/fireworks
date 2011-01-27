@@ -11,16 +11,10 @@
 
 class FwFontData;
 class FwPixmapData;
-class GuiShell;
-
-class FwCanvas;
 
 class FwRender
 {
 public:
-    friend class FwCanvas;
-    friend class GuiShell;
-
     explicit FwRender();
     virtual ~FwRender();
 

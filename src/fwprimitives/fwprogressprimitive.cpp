@@ -2,8 +2,8 @@
 
 #include "fwgui/fwscene.h"
 
-FwGraphicsProgressItem::FwGraphicsProgressItem(FwPrimitiveGroup* parent) :
-    BaseClass(parent),
+FwGraphicsProgressItem::FwGraphicsProgressItem(const QByteArray& name, FwPrimitiveGroup* parent) :
+    BaseClass(name, parent),
     m_minValue(0),
     m_maxValue(0),
     m_value(0),

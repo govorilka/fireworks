@@ -11,7 +11,6 @@
 #include "fwgui/fwgraphicsobject.h"
 
 class FwScene;
-class FwWidgetGraphicsItem;
 
 class Primitive;
 class PrimitiveGroup;
@@ -33,11 +32,7 @@ class FwWidget : public FwGraphicsObject
 
 public:
 
-    friend class FwWidgetGraphicsItem;
-    friend class MwSceneManager;
-    friend class MwScene;
-
-    explicit FwWidget(FwScene* scene);
+    explicit FwWidget(const QByteArray& name, FwPrimitiveGroup* parent);
     virtual ~FwWidget();
 
     inline int visibleTime() const;

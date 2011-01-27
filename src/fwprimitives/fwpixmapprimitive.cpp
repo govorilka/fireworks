@@ -6,8 +6,8 @@
 
 #include "fwgui/fwpainter.h"
 
-FwPixmapPrimitive::FwPixmapPrimitive(FwPrimitiveGroup* parent) :
-    BaseClass(parent)
+FwPixmapPrimitive::FwPixmapPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
+    BaseClass(name, parent)
 {
 }
 

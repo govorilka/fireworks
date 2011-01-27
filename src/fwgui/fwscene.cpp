@@ -9,11 +9,13 @@
 #include "fwgraphicsview.h"
 
 FwScene::FwScene(int id, FwGraphicsView* view) :
-    BaseClass(0, view),
+    BaseClass("scene", 0),
     m_view(view),
     m_id(id),
     needPostUpdateEvent(true)
 {
+    setParent(m_view);
+
     Q_ASSERT(!m_view->scene(id));
     m_view->m_scenes.append(this);
     m_scene = this;

@@ -3,16 +3,16 @@
 
 #include "fwprimitives/fwprimitivegroup.h"
 
-QVector<FwPrimitive*> FwPrimitiveGroup::items() const
+QVector<FwPrimitive*> FwPrimitiveGroup::primitives() const
 {
-    return m_items;
+    return m_primitives;
 }
 
 void FwPrimitiveGroup::sortZIndex()
 {
-    if(m_items.size() > 1)
+    if(m_primitives.size() > 1)
     {
-        qSort(m_items.begin(),m_items.end(), FwPrimitive::zIndexLessThan);
+        qSort(m_primitives.begin(), m_primitives.end(), FwPrimitive::zIndexLessThan);
     }
 }
 

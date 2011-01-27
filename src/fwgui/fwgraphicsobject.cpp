@@ -6,14 +6,20 @@
 #include <QtGui/qevent.h>
 
 #include "fwgraphicsobject.h"
+#include "fwscene.h"
 
-FwGraphicsObject::FwGraphicsObject(FwPrimitiveGroup* root, QObject *parent) :
-    QObject(parent),
-    BaseClass(root),
+FwGraphicsObject::FwGraphicsObject(const QByteArray& name, FwPrimitiveGroup* parent) :
+    QObject(),
+    BaseClass(name, parent),
     m_showAnimation(0),
     m_hideAnimation(0),
     m_oldSize(0, 0)
 {
+    if(parent)
+    {
+        setParent(parent->m_scene);
+    }
+
     delete m_anchor;
     m_anchor = 0;
 

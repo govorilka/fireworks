@@ -4,10 +4,12 @@
 
 #include "fwprimitivegroup.h"
 
+#include "fwcore/fwml.h"
+
 #include "fwgui/fwpainter.h"
 
-FwPrimitiveGroup::FwPrimitiveGroup(FwPrimitiveGroup* parent) :
-    BaseClass(parent)
+FwPrimitiveGroup::FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* parent) :
+    BaseClass(name, parent)
 {
 }
 
@@ -18,13 +20,13 @@ FwPrimitiveGroup::~FwPrimitiveGroup()
 
 void FwPrimitiveGroup::removeItems()
 {
-    foreach(FwPrimitive* item, m_items)
+    foreach(FwPrimitive* item, m_primitives)
     {
         Q_ASSERT(item->m_parent == this);
         item->m_parent = 0;
         delete item;
     }
-    m_items.clear();
+    m_primitives.clear();
 
     if(scene())
     {
@@ -42,7 +44,7 @@ QRect FwPrimitiveGroup::updateGeometry(const QRect& rect)
         region = region.united(baseRect);
     }
 
-    foreach(FwPrimitive* item , m_items)
+    foreach(FwPrimitive* item , m_primitives)
     {
         if(item->m_boundingRectDirty)
         {
@@ -59,7 +61,7 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
 {
     BaseClass::paint(painter, clipRect);
 
-    foreach(FwPrimitive* item, m_items)
+    foreach(FwPrimitive* item, m_primitives)
     {
         if(item->visibleOnScreen)
         {
@@ -94,7 +96,7 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
 
 void FwPrimitiveGroup::visibleChangedEvent()
 {
-    foreach(FwPrimitive* item, m_items)
+    foreach(FwPrimitive* item, m_primitives)
     {
         if(item->visibleOnScreen != (visibleOnScreen && item->m_visible))
         {
@@ -102,4 +104,25 @@ void FwPrimitiveGroup::visibleChangedEvent()
             item->visibleChangedEvent();
         }
     }
+}
+
+void FwPrimitiveGroup::apply(FwMLObject *object)
+{
+    prepareGeometryChanged();
+
+    foreach(FwPrimitive* primitive, m_primitives)
+    {
+        if(!primitive->name().isEmpty())
+        {
+            FwMLObject* childObject = object->attribute(primitive->name())->cast<FwMLObject>();
+            if(childObject)
+            {
+                primitive->apply(childObject);
+            }
+        }
+    }
+
+    BaseClass::apply(object);
+
+    update();
 }

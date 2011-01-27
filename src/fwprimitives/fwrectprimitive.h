@@ -15,7 +15,7 @@ class FwRectPrimitive : public FwPrimitive
     typedef FwPrimitive BaseClass;
 
 public:
-    FwRectPrimitive(FwPrimitiveGroup* parent);
+    FwRectPrimitive(const QByteArray& name, FwPrimitiveGroup* parent);
     ~FwRectPrimitive();
 
     inline FwBrush* brush() const;

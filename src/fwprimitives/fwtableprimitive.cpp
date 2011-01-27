@@ -3,7 +3,7 @@
 #include "fwtableprimitive.h"
 
 FwGraphicsCellItem::FwGraphicsCellItem(int row, int column, FwGraphicsTableItem* parent) :
-    BaseClass(parent),
+    BaseClass("R" + QByteArray::number(row) + "C" + QByteArray::number(column), parent),
     m_row(row),
     m_column(column),
     m_rowSpan(1),
@@ -64,8 +64,8 @@ QRect FwGraphicsCellItem::updateGeometry(const QRect &rect)
 
 //////////////////////////////////////////////////////////////////////////////////
 
-FwGraphicsTableItem::FwGraphicsTableItem(FwPrimitiveGroup* parent) :
-    BaseClass(parent),
+FwGraphicsTableItem::FwGraphicsTableItem(const QByteArray& name, FwPrimitiveGroup* parent) :
+    BaseClass(name, parent),
     m_rowCount(0),
     m_columnCount(0),
     m_gridSizeDirty(false),

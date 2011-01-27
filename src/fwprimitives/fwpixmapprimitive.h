@@ -10,7 +10,7 @@ class FwPixmapPrimitive : public FwPrimitive
     typedef FwPrimitive BaseClass;
 
 public:
-    FwPixmapPrimitive(FwPrimitiveGroup* parent);
+    FwPixmapPrimitive(const QByteArray& name, FwPrimitiveGroup* parent);
 
     inline FwPixmap pixmap() const;
     void setPixmap(const FwPixmap& pixmap);

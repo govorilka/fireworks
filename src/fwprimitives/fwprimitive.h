@@ -10,7 +10,6 @@
 
 class FwScene;
 class FwAnchor;
-class FwCanvas;
 class FwPrimitiveGroup;
 class FwSceneGraphicsItem;
 class FwWidget;
@@ -29,7 +28,7 @@ public:
     friend class FwScene;
     friend class FwWidget;
 
-    FwPrimitive(FwPrimitiveGroup* parent);
+    FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent);
     virtual ~FwPrimitive();
 
     inline FwPrimitiveGroup* parent() const;
@@ -90,6 +89,9 @@ public:
 
     FwBrush* createBrush(FwMLObject* object);
 
+    inline QByteArray name() const;
+    inline void setName(const QByteArray& name);
+
 protected:
     virtual QRect updateGeometry(const QRect& rect);
 
@@ -125,6 +127,8 @@ private:
     int m_zIndex;
 
     int _startChanged;
+
+    QByteArray m_name;
 };
 
 #include "fwprimitives/fwprimitive_inl.h"

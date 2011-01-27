@@ -166,4 +166,14 @@ FwAnchor* FwPrimitive::anchor() const
     return m_anchor;
 }
 
+QByteArray FwPrimitive::name() const
+{
+    return m_name;
+}
+
+void FwPrimitive::setName(const QByteArray& name)
+{
+    m_name = name;
+}
+
 #endif // FIREWORKS_GRAPHICSITEM_INL_H

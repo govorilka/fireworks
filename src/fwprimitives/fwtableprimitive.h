@@ -64,7 +64,7 @@ class FwGraphicsTableItem : public FwPrimitiveGroup
 public:
     friend class FwGraphicsCellItem;
 
-    FwGraphicsTableItem(FwPrimitiveGroup* parent);
+    FwGraphicsTableItem(const QByteArray& name, FwPrimitiveGroup* parent);
 
     void apply(FwMLObject *object);
 

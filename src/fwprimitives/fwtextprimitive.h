@@ -15,7 +15,7 @@ class FwTextPrimitive : public FwRectPrimitive
     typedef FwRectPrimitive BaseClass;
 
 public:
-    FwTextPrimitive(FwPrimitiveGroup* parent);
+    FwTextPrimitive(const QByteArray& name, FwPrimitiveGroup* parent);
     ~FwTextPrimitive();
 
     inline QString text() const;

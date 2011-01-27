@@ -9,8 +9,8 @@
 #include "fwgui/fwgraphicsview.h"
 #include "fwgui/fwscene.h"
 
-FwRectPrimitive::FwRectPrimitive(FwPrimitiveGroup* parent) :
-    BaseClass(parent),
+FwRectPrimitive::FwRectPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
+    BaseClass(name, parent),
     m_brush(0)
 {
 }

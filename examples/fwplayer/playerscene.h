@@ -14,8 +14,6 @@ class PlayerScene : public FwScene
 public:
     PlayerScene(int id, FwGraphicsView* view);
 
-    void apply(FwMLObject *object);
-
 private:
     FwRectPrimitive* m_rectPrimitive;
     FwStringPrimitive* m_stringPrimitive;

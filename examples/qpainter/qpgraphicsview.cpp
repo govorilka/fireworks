@@ -26,7 +26,6 @@ QPWidget::~QPWidget()
 
 void QPWidget::resizeEvent(QResizeEvent *e)
 {
-    qDebug() << "QPWidget::resizeEvent" << e->size();
     m_view->setSize(e->size());
     e->accept();
 }

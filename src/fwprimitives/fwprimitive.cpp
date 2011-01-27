@@ -12,7 +12,7 @@
 
 #include "fwcore/fwml.h"
 
-FwPrimitive::FwPrimitive(FwPrimitiveGroup* parent) :
+FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_parent(parent),
     m_scene(0),
 
@@ -34,14 +34,16 @@ FwPrimitive::FwPrimitive(FwPrimitiveGroup* parent) :
 
     m_zIndex(0),
 
-    _startChanged(0)
+    _startChanged(0),
+
+    m_name(name)
 {
     if(m_parent)
     {
         visibleOnScreen = m_parent->visibleOnScreen;
         m_scene = m_parent->m_scene;
         m_parent->prepareGeometryChanged();
-        m_parent->m_items.append(this);
+        m_parent->m_primitives.append(this);
         m_parent->sortZIndex();
         m_parent->update();
         setPosition(Fw::P_Relative);
@@ -52,7 +54,7 @@ FwPrimitive::~FwPrimitive()
 {
     if(m_parent)
     {
-        m_parent->m_items.remove(m_parent->m_items.indexOf(this));
+        m_parent->m_primitives.remove(m_parent->m_primitives.indexOf(this));
         if(m_visible)
         {
             m_parent->prepareGeometryChanged();

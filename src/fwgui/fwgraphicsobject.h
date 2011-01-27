@@ -25,7 +25,7 @@ public:
     friend class FwWidget;
     friend class FwPrimitive;
 
-    explicit FwGraphicsObject(FwPrimitiveGroup* root, QObject *parent);
+    explicit FwGraphicsObject(const QByteArray& name, FwPrimitiveGroup* parent);
 
     inline FwFont font() const;
     void setFont(const FwFont& font);

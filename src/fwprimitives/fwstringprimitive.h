@@ -15,7 +15,7 @@ class FwStringPrimitive : public FwLinePrimitive
     typedef FwLinePrimitive BaseClass;
 
 public:
-    FwStringPrimitive(FwPrimitiveGroup* parent);
+    FwStringPrimitive(const QByteArray& name, FwPrimitiveGroup* parent);
 
     inline QString string() const;
     void setString(const QString& string);

@@ -12,7 +12,7 @@ class FwLinePrimitive : public FwPrimitive
     typedef FwPrimitive BaseClass;
 
 public:
-    FwLinePrimitive(FwPrimitiveGroup* parent);
+    FwLinePrimitive(const QByteArray& name, FwPrimitiveGroup* parent);
     ~FwLinePrimitive();
 
     inline FwPen* pen() const;

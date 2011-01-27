@@ -8,8 +8,8 @@
 #include "fwgui/fwgraphicsview.h"
 #include "fwgui/fwpainter.h"
 
-FwStringPrimitive::FwStringPrimitive(FwPrimitiveGroup* parent) :
-    BaseClass(parent),
+FwStringPrimitive::FwStringPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
+    BaseClass(name, parent),
     m_textPos(0, 0),
     m_shadow(false),
     m_shadowColor(0x00, 0x00, 0x00, 0x66), //40% black

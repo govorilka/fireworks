@@ -7,10 +7,7 @@
 
 class FwPixmap;
 class FwPixmapDescription;
-
 class FwRender;
-class FwCanvas;
-
 class FwMLNode;
 
 class FwPixmapDescription

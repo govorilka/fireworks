@@ -5,7 +5,7 @@ rectItem {
   bgcolor : "purple",
   border {
     color : "red",
-    width : 2
+    width : 5
   },
   rect {
     x : 0, y : 0, width : 640, height : 480

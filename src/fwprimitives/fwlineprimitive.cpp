@@ -3,8 +3,8 @@
 #include "fwgui/fwpen.h"
 #include "fwgui/fwpainter.h"
 
-FwLinePrimitive::FwLinePrimitive(FwPrimitiveGroup* parent) :
-    BaseClass(parent),
+FwLinePrimitive::FwLinePrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
+    BaseClass(name, parent),
     m_lenght(0),
     m_orientation(0),
     m_pen(0)
