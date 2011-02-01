@@ -8,7 +8,9 @@ SOURCES += \
     fwprimitives/fwprogressprimitive.cpp \
     fwprimitives/fwprimitivegroup.cpp \
     fwprimitives/fwprimitive.cpp \
-    fwprimitives/fwpixmapprimitive.cpp
+    fwprimitives/fwpixmapprimitive.cpp \
+    fwprimitives/fwslidingframeprimitive.cpp \
+    fwprimitives/fwgeometry.cpp
 
 HEADERS += \
     fwprimitives/fwtextprimitive.h \
@@ -23,4 +25,6 @@ HEADERS += \
     fwprimitives/fwprimitive.h \
     fwprimitives/fwpixmapprimitive.h \
     fwprimitives/fwlineprimitive_inl.h \
-    fwprimitives/fwlineprimitive.h
+    fwprimitives/fwlineprimitive.h \
+    fwprimitives/fwslidingframeprimitive.h \
+    fwprimitives/fwgeometry.h

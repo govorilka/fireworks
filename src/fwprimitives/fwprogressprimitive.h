@@ -36,7 +36,7 @@ public:
     inline int minProgressWidth() const;
     void setMinProgressWidth(int width);
 
-    inline void linkProgressRect(FwAnchor* anchor);
+    inline FwGeometry* progressRect() const;
 
 protected:
     QRect updateGeometry(const QRect &rect);
@@ -101,12 +101,9 @@ FwGraphicsProgressAnimation* FwGraphicsProgressItem::animation() const
     return m_animation;
 }
 
-void FwGraphicsProgressItem::linkProgressRect(FwAnchor* anchor)
+FwGeometry* FwGraphicsProgressItem::progressRect() const
 {
-    if(anchor && anchor != this->anchor())
-    {
-        m_progressRect->addAnchor(anchor);
-    }
+    return m_progressRect;
 }
 
 //////////////////////////////////////////////////////////////////////////////////

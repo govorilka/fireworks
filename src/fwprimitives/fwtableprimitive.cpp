@@ -297,7 +297,7 @@ void FwGraphicsTableItem::updateCellGeometry()
                         width += m_realColumnsWidth[iColumn];
                     }
                     cell->prepareGeometryChanged();
-                    cell->setXY(x, y);
+                    cell->setPos(x, y);
                     cell->setSize(width, height);
                     cell->update();
                     cell->needGeometryProcessed = false;

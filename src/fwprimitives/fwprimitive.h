@@ -1,15 +1,16 @@
 #ifndef FIREWORKS_GRAPHICSITEM_H
 #define FIREWORKS_GRAPHICSITEM_H
 
+#include <QtCore/qrect.h>
+
 #include "fireworks.h"
 
-#include "fwgui/fwanchor.h"
 #include "fwgui/fwpixmap.h"
 
 #include "fwtypography/fwfont.h"
 
 class FwScene;
-class FwAnchor;
+class FwGeometry;
 class FwPrimitiveGroup;
 class FwSceneGraphicsItem;
 class FwWidget;
@@ -24,7 +25,7 @@ class FwPrimitive
 public:
     friend class FwPrimitiveGroup;
     friend class FwGraphicsObject;
-    friend class FwAnchor;
+    friend class FwGeometry;
     friend class FwScene;
     friend class FwWidget;
 
@@ -41,19 +42,12 @@ public:
     inline void show();
     inline void hide();
 
-    Fw::Position position() const;
-    void setPosition(Fw::Position position);
-
     inline Fw::BufferMode bufferMode() const;
     void setBufferMode(Fw::BufferMode mode);
 
-    inline QPoint xy() const;
-    inline void setXY(int x, int y);
-    inline void setXY(const QPoint& pos);
-
-    inline QRect rect() const;
-    inline void setRect(const QRect& rect);
-    inline QRect boundingRect() const;
+    inline QPoint pos() const;
+    inline void setPos(int x, int y);
+    void setPos(const QPoint& pos);
 
     inline int x() const;
     inline void setX(int x);
@@ -62,7 +56,22 @@ public:
 
     inline QSize size() const;
     inline void setSize(int w, int h);
-    inline void setSize(const QSize& size);
+    void setSize(const QSize& size);
+
+    inline int width() const;
+    inline void setWidth(int width);
+    inline int height() const;
+    inline void setHeight(int height);
+
+    inline QRect rect() const;
+    void setRect(const QRect& rect);
+
+    inline FwGeometry* geometry() const;
+
+    inline QRect geometryRect() const;
+    inline void setGeometryRect(const QRect& rect);
+
+    inline QRect boundingRect() const;
 
     inline void prepareGeometryChanged();
     void invalidate();
@@ -72,9 +81,6 @@ public:
     void setZIndex(int zIndex);
 
     inline static bool zIndexLessThan(FwPrimitive* p1, FwPrimitive* p2);
-
-    inline FwAnchor* anchor() const;
-    inline void linkAnchor(FwAnchor *anchor);
 
     virtual void apply(FwMLObject* object);
 
@@ -92,10 +98,23 @@ public:
     inline QByteArray name() const;
     inline void setName(const QByteArray& name);
 
+    inline bool isLinked() const;
+    void link(FwGeometry* parentGeometry);
+
+    inline Fw::HorizontalPosition hPosition() const;
+    inline void setHPosition(Fw::HorizontalPosition position);
+
+    inline Fw::VerticalPosition vPosition() const;
+    inline void setVPosition(Fw::VerticalPosition position);
+
+    void setPosition(Fw::HorizontalPosition hPosition, Fw::VerticalPosition vPosition);
+
 protected:
     virtual QRect updateGeometry(const QRect& rect);
 
     virtual void paint(FwPainter* painter, const QRect& clipRect) = 0;
+
+    void updateGeometryRect(const QRect& parentRect, QRect currentRect);
 
     virtual void visibleChangedEvent();
 
@@ -104,15 +123,14 @@ private:
     void releaseBuffer();
     void updateBuffer();
 
-    void setGeometryRect(const QRect& rect);
-
     FwPrimitiveGroup* m_parent;
     FwScene* m_scene;
 
-    int m_x;
-    int m_y;
-    FwAnchor* m_anchor;
+    QPoint m_pos;
     FwGeometry* m_geometry;
+    Fw::HorizontalPosition m_hPosition;
+    Fw::VerticalPosition m_vPosition;
+    FwGeometry* m_parentGeometry;
 
     QRect m_boundingRect;
     bool m_boundingRectDirty;

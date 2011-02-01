@@ -20,10 +20,6 @@ FwGraphicsObject::FwGraphicsObject(const QByteArray& name, FwPrimitiveGroup* par
         setParent(parent->m_scene);
     }
 
-    delete m_anchor;
-    m_anchor = 0;
-
-    m_geometry->setRect(0, 0, 0, 0);
     m_visible = false;
     visibleOnScreen = false;
 }

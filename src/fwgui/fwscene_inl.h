@@ -15,7 +15,7 @@ FwGraphicsView* FwScene::view() const
 
 void FwScene::invalidate()
 {
-    m_dirtyRegion = QRegion(rect());
+    m_dirtyRegion = QRegion(geometryRect());
     invalidateDirtyRegion();
 }
 

@@ -1,0 +1,64 @@
+bgcolor : "black",
+
+slidingFrame {
+  rect {
+     x : 0, y : 0, width : 0, height : 78  
+  },
+
+  bgcolor : "red",
+
+  item1 {
+     font {
+        family : "Arial",
+        pixelSize : 48
+     },
+     color : "white",
+     string : "Первый элемент"
+  },
+
+  item2 {
+     font {
+        family : "Arial",
+        pixelSize : 48
+     },
+     color : "white",
+     string : "Второй элемент"
+  },
+
+  item3 {
+     font {
+        family : "Arial",
+        pixelSize : 48
+     },
+     color : "white",
+     string : "Третий элемент"
+  },
+
+  item4 {
+     font {
+        family : "Arial",
+        pixelSize : 48
+     },
+     color : "white",
+     string : "Четверый элемент"
+  },
+
+  item5 {
+     font {
+        family : "Arial",
+        pixelSize : 48
+     },
+     color : "white",
+     string : "Пятый элемент"
+  },
+
+  item6 {
+     font {
+        family : "Arial",
+        pixelSize : 48
+     },
+     color : "white",
+     string : "Шестой элемент"
+  }
+},
+

@@ -10,7 +10,7 @@ FwPen* FwLinePrimitive::pen() const
 
 QLine FwLinePrimitive::line() const
 {
-    return QLine(xy(), m_p2);
+    return QLine(pos(), m_p2);
 }
 
 void FwLinePrimitive::setLine(int x1, int y1, int x2, int y2)

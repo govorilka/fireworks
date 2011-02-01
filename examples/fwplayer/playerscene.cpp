@@ -12,7 +12,7 @@ PlayerScene::PlayerScene(int id, FwGraphicsView* view) :
     m_stringPrimitive(new FwStringPrimitive("stringItem", this)),
     m_pixmapPrimitive(new FwPixmapPrimitive("pixmapItem", this))
 {
-    m_rectPrimitive->anchor()->setPolicy(FwAnchor::HP_Center, FwAnchor::VP_Middle);
-    m_pixmapPrimitive->anchor()->setPolicy(FwAnchor::HP_Center, FwAnchor::VP_Middle);
-    m_stringPrimitive->anchor()->setPolicy(FwAnchor::HP_Center, FwAnchor::VP_Middle);
+    m_rectPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
+    m_pixmapPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
+    m_stringPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
 }

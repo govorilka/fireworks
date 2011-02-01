@@ -2,6 +2,7 @@
 #define FIREWORKS_GRAPHICSITEM_INL_H
 
 #include "fwprimitives/fwprimitive.h"
+#include "fwprimitives/fwgeometry.h"
 
 FwPrimitiveGroup* FwPrimitive::parent() const
 {
@@ -11,14 +12,6 @@ FwPrimitiveGroup* FwPrimitive::parent() const
 FwScene* FwPrimitive::scene() const
 {
     return m_scene;
-}
-
-void FwPrimitive::linkAnchor(FwAnchor* anchor)
-{
-    if(anchor)
-    {
-        m_geometry->addAnchor(anchor);
-    }
 }
 
 Fw::BufferMode FwPrimitive::bufferMode() const
@@ -35,53 +28,39 @@ void FwPrimitive::prepareGeometryChanged()
     _startChanged++;
 }
 
-QPoint FwPrimitive::xy() const
+QPoint FwPrimitive::pos() const
 {
-    return QPoint(m_x, m_y);
+    return m_pos;
 }
 
-void FwPrimitive::setXY(int x, int y)
+void FwPrimitive::setPos(int x, int y)
 {
-    m_x = x;
-    m_y = y;
-    if(m_anchor && m_anchor->geometry())
-    {
-        m_anchor->updateRect(m_anchor->geometry()->rect(), m_geometry->rect());
-    }
-    else
-    {
-        setGeometryRect(QRect(QPoint(m_x, m_y), m_geometry->size()));
-    }
-}
-
-void FwPrimitive::setXY(const QPoint& pos)
-{
-    setXY(pos.x(), pos.y());
+    setPos(QPoint(x, y));
 }
 
 int FwPrimitive::x() const
 {
-    return xy().x();
+    return m_pos.x();
 }
 
 void FwPrimitive::setX(int x)
 {
-    setXY(x, y());
+    setPos(x, m_pos.y());
 }
 
 int FwPrimitive::y() const
 {
-    return xy().y();
+    return m_pos.y();
 }
 
 void FwPrimitive::setY(int y)
 {
-    setXY(x(), y);
+    setPos(m_pos.x(), y);
 }
 
 QSize FwPrimitive::size() const
 {
-    return m_geometry->rect().size();
+    return m_geometry->size();
 }
 
 void FwPrimitive::setSize(int w, int h)
@@ -89,40 +68,48 @@ void FwPrimitive::setSize(int w, int h)
     setSize(QSize(w, h));
 }
 
-void FwPrimitive::setSize(const QSize& size)
+int FwPrimitive::width() const
 {
-    QRect rect = m_geometry->rect();
-    rect.setSize(size);
-    if(m_anchor && m_anchor->geometry())
-    {
-        m_anchor->updateRect(m_anchor->geometry()->rect(),
-                             rect);
-    }
-    else
-    {
-        setGeometryRect(rect);
-    }
+    return m_geometry->size().width();
+}
+
+void FwPrimitive::setWidth(int width)
+{
+    setSize(width, height());
+}
+
+int FwPrimitive::height() const
+{
+    return m_geometry->size().height();
+}
+
+void FwPrimitive::setHeight(int height)
+{
+    setSize(width(), height);
 }
 
 QRect FwPrimitive::rect() const
 {
+    return QRect(m_pos, m_geometry->size());
+}
+
+FwGeometry* FwPrimitive::geometry() const
+{
+    return m_geometry;
+}
+
+QRect FwPrimitive::geometryRect() const
+{
     return m_geometry->rect();
 }
 
-void FwPrimitive::setRect(const QRect& rect)
+void FwPrimitive::setGeometryRect(const QRect& rect)
 {
-    if(m_anchor && m_anchor->geometry())
+    if(m_geometry->rect() != rect)
     {
-        m_x = rect.x();
-        m_y = rect.y();
-        m_anchor->updateRect(m_anchor->geometry()->rect(),
-                             QRect(QPoint(m_x, m_y), rect.size()));
-    }
-    else
-    {
-        m_x = 0;
-        m_y = 0;
-        setGeometryRect(rect);
+        prepareGeometryChanged();
+        m_geometry->setRect(rect);
+        update();
     }
 }
 
@@ -161,11 +148,6 @@ bool FwPrimitive::zIndexLessThan(FwPrimitive* p1, FwPrimitive* p2)
     return p1->zIndex() < p2->zIndex();
 }
 
-FwAnchor* FwPrimitive::anchor() const
-{
-    return m_anchor;
-}
-
 QByteArray FwPrimitive::name() const
 {
     return m_name;
@@ -174,6 +156,31 @@ QByteArray FwPrimitive::name() const
 void FwPrimitive::setName(const QByteArray& name)
 {
     m_name = name;
+}
+
+bool FwPrimitive::isLinked() const
+{
+    return m_parentGeometry;
+}
+
+Fw::HorizontalPosition FwPrimitive::hPosition() const
+{
+    return m_hPosition;
+}
+
+void FwPrimitive::setHPosition(Fw::HorizontalPosition position)
+{
+    setPosition(position, m_vPosition);
+}
+
+Fw::VerticalPosition FwPrimitive::vPosition() const
+{
+    return m_vPosition;
+}
+
+void FwPrimitive::setVPosition(Fw::VerticalPosition position)
+{
+    setPosition(m_hPosition, position);
 }
 
 #endif // FIREWORKS_GRAPHICSITEM_INL_H

@@ -1,7 +1,6 @@
 #include <QtCore/qdebug.h>
 
 #include "fwprimitive.h"
-#include "fwprimitivegroup.h"
 
 #include "fwgui/fwscene.h"
 #include "fwgui/fwwidget.h"
@@ -16,11 +15,11 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_parent(parent),
     m_scene(0),
 
-    m_x(0),
-    m_y(0),
-
-    m_anchor(0),
+    m_pos(0, 0),
     m_geometry(new FwGeometry()),
+    m_hPosition(Fw::HP_Unchanged),
+    m_vPosition(Fw::VP_Unchanged),
+    m_parentGeometry(0),
 
     m_boundingRect(0, 0, 0, 0),
     m_boundingRectDirty(false),
@@ -46,7 +45,7 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
         m_parent->m_primitives.append(this);
         m_parent->sortZIndex();
         m_parent->update();
-        setPosition(Fw::P_Relative);
+        link(m_parent->m_geometry);
     }
 }
 
@@ -63,54 +62,19 @@ FwPrimitive::~FwPrimitive()
         }
         m_parent = 0;
     }
-    if(m_anchor)
+
+    if(m_parentGeometry)
     {
-        delete m_anchor;
-        m_anchor = 0;
+        link(0);
     }
+
     if(m_geometry)
     {
         delete m_geometry;
         m_geometry = 0;
     }
+
     releaseBuffer();
-}
-
-Fw::Position FwPrimitive::position() const
-{
-    if(m_anchor && m_parent)
-    {
-        return m_anchor->geometry() == m_parent->m_geometry
-                    ? Fw::P_Relative : Fw::P_Absolute;
-    }
-    return Fw::P_Fixed;
-}
-
-void FwPrimitive::setPosition(Fw::Position position)
-{
-    if(this->position() != position)
-    {
-        if(position == Fw::P_Fixed)
-        {
-            if(m_anchor)
-            {
-                delete m_anchor;
-                m_anchor = 0;
-            }
-        }
-        else
-        {
-            if(!m_anchor)
-            {
-                m_anchor = new FwAnchor(this);
-                m_anchor->setPolicy(FwAnchor::HP_Left, FwAnchor::VP_Top);
-            }
-            if(position == Fw::P_Relative && m_parent)
-            {
-                m_parent->linkAnchor(m_anchor);
-            }
-        }
-    }
 }
 
 void FwPrimitive::createNewBuffer()
@@ -161,20 +125,10 @@ void FwPrimitive::setBufferMode(Fw::BufferMode mode)
     }
 }
 
-void FwPrimitive::setGeometryRect(const QRect& rect)
-{
-    if(m_geometry->rect() != rect)
-    {
-        prepareGeometryChanged();
-        m_geometry->setRect(rect);
-        update(false);
-    }
-}
-
 void FwPrimitive::update(bool needUpdateBuffer)
 {
     if(_startChanged > 0 && ((--_startChanged) == 0))
-    {        
+    {
         QRect oldBoundingRect = m_boundingRect;
 
         m_boundingRect = updateGeometry(m_geometry->rect());
@@ -195,13 +149,17 @@ void FwPrimitive::update(bool needUpdateBuffer)
                 }
             }
 
-            FwPrimitiveGroup* parent = m_parent;
-            while(parent)
+            if(m_parent)
             {
-                parent->m_boundingRectDirty = true;
-                parent = parent->m_parent;
+                FwPrimitiveGroup* parent = m_parent;
+                while(parent)
+                {
+                    parent->m_boundingRectDirty = true;
+                    parent = parent->m_parent;
+                }
             }
         }
+
         invalidate();
     }
 }
@@ -388,4 +346,179 @@ FwBrush* FwPrimitive::createBrush(FwMLObject* object)
     }
 
     return brush;
+}
+
+void FwPrimitive::setPosition(Fw::HorizontalPosition hPosition, Fw::VerticalPosition vPosition)
+{
+    if(m_hPosition != hPosition || m_vPosition != vPosition)
+    {
+        m_hPosition = hPosition;
+        m_vPosition = vPosition;
+        if(m_parentGeometry)
+        {
+            updateGeometryRect(m_geometry->rect(), rect());
+        }
+    }
+}
+
+void FwPrimitive::updateGeometryRect(const QRect& parentRect, QRect currentRect)
+{
+    switch(m_hPosition)
+    {
+    case Fw::HP_Unchanged:
+        currentRect.moveLeft(parentRect.x() + m_pos.x());
+        break;
+
+    case Fw::HP_BeforeLeft:
+        currentRect.moveLeft(parentRect.x() - currentRect.width() + m_pos.x());
+        break;
+
+    case Fw::HP_Left:
+        currentRect.moveLeft(parentRect.x() + m_pos.x());
+        break;
+
+    case Fw::HP_Center:
+        currentRect.moveLeft(parentRect.x() + (parentRect.width() - currentRect.width()) * 0.5 + m_pos.x());
+        break;
+
+    case Fw::HP_CenterDock:
+        currentRect.moveLeft(parentRect.x() + m_pos.x());
+        currentRect.setWidth(parentRect.width());
+        break;
+
+    case Fw::HP_Right:
+        currentRect.moveLeft(parentRect.right() + 1 - currentRect.width() + m_pos.x());
+        break;
+
+    case Fw::HP_AfterRight:
+        currentRect.moveLeft(parentRect.right() + m_pos.x());
+        break;
+
+    default:
+        break;
+    }
+
+    switch(m_vPosition)
+    {
+    case Fw::VP_Unchanged:
+        currentRect.moveTop(parentRect.y() + m_pos.y());
+        break;
+
+    case Fw::VP_BeforeTop:
+        currentRect.moveTop(parentRect.y() - currentRect.height() + m_pos.y());
+        break;
+
+    case Fw::VP_Top:
+        currentRect.moveTop(parentRect.y() + m_pos.y());
+        break;
+
+    case Fw::VP_Middle:
+        currentRect.moveTop(parentRect.y() + (parentRect.height() - currentRect.height()) * 0.5 + m_pos.y());
+        break;
+
+    case Fw::VP_MiddleDock:
+        currentRect.moveTop(parentRect.y()+ m_pos.y());
+        currentRect.setHeight(parentRect.height());
+        break;
+
+    case Fw::VP_Bottom:
+        currentRect.moveTop(parentRect.bottom() - currentRect.height() + m_pos.y());
+        break;
+
+    case Fw::VP_AfterBottom:
+        currentRect.moveTop(parentRect.bottom() + m_pos.y());
+        break;
+
+    default:
+        break;
+    }
+
+    setGeometryRect(currentRect);
+}
+
+void FwPrimitive::link(FwGeometry* parentGeometry)
+{
+    if(m_parentGeometry != parentGeometry)
+    {
+        if(m_parentGeometry)
+        {
+            Q_ASSERT(m_parentGeometry->contains(this));
+
+            int array_size = m_parentGeometry->anchors.size();
+            if(array_size > 1)
+            {
+                QVarLengthArray<FwPrimitive*> newAnchors(array_size - 1);
+                FwPrimitive** iterAnchor = m_parentGeometry->anchors.data();
+                for(int i = 0, j = 0; i < array_size; i++, iterAnchor++)
+                {
+                    if((*iterAnchor) != this)
+                    {
+                        newAnchors[j] = (*iterAnchor);
+                        j++;
+                    }
+                }
+                m_parentGeometry->anchors = newAnchors;
+            }
+            else
+            {
+                m_parentGeometry->anchors.clear();
+            }
+
+            m_parentGeometry = 0;
+        }
+
+        if(parentGeometry)
+        {
+            m_parentGeometry = parentGeometry;
+            m_parentGeometry->anchors.append(this);
+            updateGeometryRect(m_parentGeometry->rect(), rect());
+        }
+    }
+}
+
+void FwPrimitive::setPos(const QPoint& pos)
+{
+    if(m_pos != pos)
+    {
+        m_pos = pos;
+        if(m_parentGeometry)
+        {
+            updateGeometryRect(m_parentGeometry->rect(), QRect(QPoint(0, 0), size()));
+        }
+        else
+        {
+            setGeometryRect(QRect(m_pos, size()));
+        }
+    }
+}
+
+void FwPrimitive::setSize(const QSize& size)
+{
+    if(size != m_geometry->size())
+    {
+        if(m_parentGeometry)
+        {
+            updateGeometryRect(m_parentGeometry->rect(), QRect(QPoint(0, 0), size));
+        }
+        else
+        {
+            setGeometryRect(QRect(m_pos, size));
+        }
+    }
+}
+
+void FwPrimitive::setRect(const QRect& rect)
+{
+    if(rect != QRect(m_pos, m_geometry->size()))
+    {
+        m_pos = rect.topLeft();
+        if(m_parentGeometry)
+        {
+            updateGeometryRect(m_parentGeometry->rect(), QRect(QPoint(0, 0), rect.size()));
+        }
+        else
+        {
+            setGeometryRect(rect);
+        }
+    }
 }
