@@ -80,8 +80,6 @@ QRect FwSlidingFramePrimitive::updateGeometry(const QRect &rect)
 {
     if(m_current)
     {
-        static int evalCount = 0;
-        qDebug() << "FwSlidingFramePrimitive::updateGeometry" << ++evalCount << rect;
         updateLayout(m_items, m_current);
     }
     return BaseClass::updateGeometry(rect);

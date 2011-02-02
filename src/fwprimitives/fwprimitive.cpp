@@ -185,7 +185,7 @@ void FwPrimitive::setVisible(bool visible)
         visibleChangedEvent();
         if(_startChanged == 0)
         {
-            m_scene->update(m_boundingRect);
+            m_scene->updateCanvas(m_boundingRect);
         }
     }
 }
@@ -194,7 +194,7 @@ void FwPrimitive::invalidate()
 {
     if(_startChanged == 0 && visibleOnScreen)
     {
-        m_scene->update(m_boundingRect);
+        m_scene->updateCanvas(m_boundingRect);
     }
 }
 

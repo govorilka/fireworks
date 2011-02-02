@@ -7,6 +7,7 @@
 
 #include "fwgraphicsobject.h"
 #include "fwscene.h"
+#include "fwguievent.h"
 
 FwGraphicsObject::FwGraphicsObject(const QByteArray& name, FwPrimitiveGroup* parent) :
     QObject(),
@@ -91,15 +92,23 @@ QRect FwGraphicsObject::updateGeometry(const QRect &rect)
 
 bool FwGraphicsObject::event(QEvent *e)
 {
+    if(e->type() == FwGuiEvent::qtTypeID())
+    {
+        FwGuiEvent* fwEvent = static_cast<FwGuiEvent*>(e);
+        switch(fwEvent->eventType())
+        {
+        case Fw::E_KeyPress:
+            keyPressEvent(static_cast<FwKeyPressEvent*>(fwEvent));
+            return true;
+        default:
+            break;
+        }
+    }
+
     switch(e->type())
     {
     case QEvent::Resize:
         resizeEvent(static_cast<QResizeEvent*>(e));
-        e->accept();
-        return true;
-
-    case QEvent::KeyPress:
-        keyPressEvent(static_cast<QKeyEvent*>(e));
         e->accept();
         return true;
 
@@ -110,7 +119,7 @@ bool FwGraphicsObject::event(QEvent *e)
     return QObject::event(e);
 }
 
-void FwGraphicsObject::keyPressEvent(QKeyEvent* event)
+void FwGraphicsObject::keyPressEvent(FwKeyPressEvent* event)
 {
     Q_UNUSED(event);
 }
@@ -119,4 +128,3 @@ void FwGraphicsObject::resizeEvent(QResizeEvent* event)
 {
     Q_UNUSED(event);
 }
-

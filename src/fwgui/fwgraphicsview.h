@@ -14,12 +14,11 @@
 
 #include "fwtypography/fwfont.h"
 
-class QKeyEvent;
-
 class FwScene;
 class FwMLNode;
 class FwRender;
 class FwPainter;
+class FwKeyPressEvent;
 
 class FwGraphicsView : public QObject
 {
@@ -53,17 +52,15 @@ public:
     bool event(QEvent *e);
 
 protected:
-    virtual void keyEvent(QKeyEvent* event);
+    virtual void keyPressEvent(FwKeyPressEvent* event);
+
+    virtual void updateCanvas(const QRect& rect) = 0;
 
     virtual FwFontData* createFontData(const FwFontDescription& desc) = 0;
 
     virtual FwPixmapData* createBuffer(const FwPixmapDescription& desc) = 0;
     virtual FwPixmapData* createBuffer(Fw::BufferMode mode, const QSize& size) = 0;
     virtual FwRender* createRender(const QRect& rect) = 0;
-
-    virtual void bufferFlip(const QRegion& region) = 0;
-
-    virtual void clearBackground() = 0;
 
     void render(FwPainter* painter);
 
@@ -75,9 +72,12 @@ private:
     FwScene* m_activeScene;
     FwScene* m_prevActiveScene;
     QList<FwScene*> m_scenes;
+    bool m_needPostUpdateEvent;
+    QRegion m_dirtyRegion;
 };
 
 Q_DECLARE_INTERFACE(FwGraphicsView, "com.fireworks.fwgraphicsview/0.1")
+
 
 #include "fwgui/fwgraphicsview_inl.h"
 

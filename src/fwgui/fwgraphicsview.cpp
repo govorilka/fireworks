@@ -1,16 +1,17 @@
 #include <QtCore/qcoreapplication.h>
-#include <QtGui/qevent.h>
 
 #include "fwgraphicsview.h"
 #include "fwscene.h"
 #include "fwpainter.h"
+#include "fwguievent.h"
 
 #include "fwcore/fwml.h"
 
 FwGraphicsView::FwGraphicsView(QObject *parent) :
     BaseClass(parent),
     m_activeScene(0),
-    m_prevActiveScene(0)
+    m_prevActiveScene(0),
+    m_needPostUpdateEvent(false)
 {
 }
 
@@ -155,29 +156,29 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
 
         m_activeScene->invalidate();
     }
-    else
-    {
-        clearBackground();
-    }
 }
 
 bool FwGraphicsView::event(QEvent *e)
 {
-    if(e->type() == QEvent::KeyPress)
+    if(e->type() == FwGuiEvent::qtTypeID())
     {
-        keyEvent(static_cast<QKeyEvent*>(e));
-        e->accept();
-        return true;
+        FwGuiEvent* fwEvent = static_cast<FwGuiEvent*>(e);
+        switch(fwEvent->eventType())
+        {
+        case Fw::E_KeyPress:
+            keyPressEvent(static_cast<FwKeyPressEvent*>(fwEvent));
+            return true;
+        }
     }
 
     return BaseClass::event(e);
 }
 
-void FwGraphicsView::keyEvent(QKeyEvent* event)
+void FwGraphicsView::keyPressEvent(FwKeyPressEvent* event)
 {
     if(m_activeScene)
     {
-        QCoreApplication::sendEvent(m_activeScene, event);
+        m_activeScene->keyPressEvent(event);
     }
 }
 

@@ -61,23 +61,6 @@ void FwScene::hideAnimationFinished()
 {
 }
 
-void FwScene::update(const QRect& rect)
-{
-    if(m_view && m_view->m_activeScene == this)
-    {
-        QRect displayRect = this->rect().intersected(rect);
-        if(!displayRect.isEmpty())
-        {
-            m_dirtyRegion = m_dirtyRegion.united(displayRect);
-            if(needPostUpdateEvent)
-            {
-                QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateLater));
-                needPostUpdateEvent = false;
-            }
-        }
-    }
-}
-
 bool FwScene::event(QEvent * e)
 {
     if(e->type() == FwSceneShowEvent::typeID())
@@ -94,36 +77,8 @@ bool FwScene::event(QEvent * e)
         e->accept();
         return true;
     }
-    else
-    {
-        switch(e->type())
-        {
-        case QEvent::UpdateLater:
-            invalidateDirtyRegion();
-            e->accept();
-            return true;
-
-        default:
-            break;
-        }
-    }
 
     return BaseClass::event(e);
-}
-
-/*!
-Перерисовывает регион, заданный переменной m_dirtyRegion. После выполнения,
-функция очищает значение m_dirtyRegion.
-\note Рисование происходит вызовом функции
-*/
-void FwScene::invalidateDirtyRegion()
-{
-    if(!m_dirtyRegion.isEmpty())
-    {
-        //invalidateRegion(m_dirtyRegion);
-        m_dirtyRegion = QRegion();
-        needPostUpdateEvent = true;
-    }
 }
 
 FwFont FwScene::font(const FwFontDescription& description)
@@ -151,6 +106,18 @@ void FwScene::paint(FwPainter *painter, const QRect &clipRect)
         m_boundingRectDirty = false;
     }
     BaseClass::paint(painter, clipRect);
+}
+
+void FwScene::updateCanvas(const QRect& rect)
+{
+    if(m_view && m_view->m_activeScene == this)
+    {
+        QRect displayRect = this->rect().intersected(rect);
+        if(!displayRect.isEmpty())
+        {
+            m_view->updateCanvas(displayRect);
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

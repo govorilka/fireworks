@@ -1,4 +1,8 @@
+#include <QtCore/qdebug.h>
+
 #include "menuscene.h"
+
+#include "fwgui/fwguievent.h"
 
 #include "fwprimitives/fwslidingframeprimitive.h"
 #include "fwprimitives/fwstringprimitive.h"
@@ -19,12 +23,23 @@ MenuScene::MenuScene(int id, FwGraphicsView* view) :
     m_slidingFrame->addItem(m_item3);
     m_slidingFrame->addItem(m_item4);
     m_slidingFrame->addItem(m_item5);
-    m_item5->setString("12312312");
-    m_item5->setString("12312312");
-    m_item5->setString("123112");
-    m_item5->setString("1212");
-    m_item5->setString("12");
     m_slidingFrame->update();
 
     m_slidingFrame->setCurrent(m_item3);
+}
+
+void MenuScene::keyPressEvent(FwKeyPressEvent *event)
+{
+    switch(event->key())
+    {
+    case Qt::Key_Left:
+        m_slidingFrame->setCurrent(Fw::goPtr(m_slidingFrame->items(), Fw::Go_Previous, m_slidingFrame->current()));
+        event->accept();
+        break;
+
+    case Qt::Key_Right:
+        m_slidingFrame->setCurrent(Fw::goPtr(m_slidingFrame->items(), Fw::Go_Next, m_slidingFrame->current()));
+        event->accept();
+        break;
+     }
 }

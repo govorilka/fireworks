@@ -9,10 +9,10 @@
 
 #include "fwtypography/fwfont.h"
 
-class QKeyEvent;
 class QResizeEvent;
 class QPropertyAnimation;
 
+class FwKeyPressEvent;
 class FwObjectGraphicsItem;
 
 class FwGraphicsObject : public QObject, public FwPrimitiveGroup
@@ -41,7 +41,7 @@ public:
 protected:
     QRect updateGeometry(const QRect &rect);
 
-    virtual void keyPressEvent(QKeyEvent* event);
+    virtual void keyPressEvent(FwKeyPressEvent* event);
     virtual void resizeEvent(QResizeEvent* event);
 
 protected slots:

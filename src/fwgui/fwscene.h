@@ -33,15 +33,13 @@ public:
 
     inline int id() const;
 
-    void update(const QRect& rect);
-
     bool event(QEvent* event);
 
     FwFont font(const FwFontDescription& description);
 
     inline FwGraphicsView* view() const;
 
-    inline void invalidate();
+    void updateCanvas(const QRect& rect);
 
 protected:
     void showEventProcessed(FwSceneShowEvent* e);
@@ -53,8 +51,6 @@ protected:
     void showAnimationFinished();
     void hideAnimationFinished();
 
-    void invalidateDirtyRegion();
-
     void paint(FwPainter *painter, const QRect &clipRect);
 
 private:
@@ -63,7 +59,6 @@ private:
 
     QList<FwWidget*> m_widgets;
 
-    QRegion m_dirtyRegion;
     bool needPostUpdateEvent;
 };
 

@@ -13,6 +13,9 @@ class MenuScene : public FwScene
 public:
     MenuScene(int id, FwGraphicsView* view);
 
+protected:
+    void keyPressEvent(FwKeyPressEvent *event);
+
 private:
     FwSlidingFramePrimitive* m_slidingFrame;
 

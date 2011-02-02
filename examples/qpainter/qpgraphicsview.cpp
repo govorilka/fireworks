@@ -2,8 +2,10 @@
 
 #include <QtGui/qwidget.h>
 #include <QtGui/qevent.h>
+#include <QtGui/qapplication.h>
 
 #include "fwgui/fwpainter.h"
+#include "fwgui/fwguievent.h"
 
 #include "qpgraphicsview.h"
 #include "qpfontdata.h"
@@ -37,6 +39,11 @@ void QPWidget::paintEvent(QPaintEvent *e)
     e->accept();
 }
 
+void QPWidget::keyPressEvent(QKeyEvent *e)
+{
+    QApplication::postEvent(m_view, new FwKeyPressEvent(e->key(), e->isAutoRepeat()));
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 QPGraphicsView::QPGraphicsView(QObject* parent) :
@@ -58,7 +65,7 @@ QWidget* QPGraphicsView::createWidget(QWidget* parent)
 {
     if(!m_widget)
     {
-        return new QPWidget(this, parent);
+        m_widget = new QPWidget(this, parent);
     }
     return m_widget;
 }
@@ -92,12 +99,10 @@ FwRender* QPGraphicsView::createRender(const QRect& rect)
     return 0;
 }
 
-void QPGraphicsView::bufferFlip(const QRegion& region)
+void QPGraphicsView::updateCanvas(const QRect& rect)
 {
+    if(m_widget)
+    {
+        m_widget->update(rect);
+    }
 }
-
-void QPGraphicsView::clearBackground()
-{
-}
-
-Q_EXPORT_PLUGIN2(backends_qp, QPGraphicsView)

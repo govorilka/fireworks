@@ -13,7 +13,8 @@ HEADERS += \
     fwgui/fwwidget.h \
     fwgui/fwrender.h \
     fwgui/fwpainter.h \
-    fwgui/fwpainter_inl.h
+    fwgui/fwpainter_inl.h \
+    fwgui/fwguievent.h
 
 SOURCES += \
     fwgui/fwgraphicsview.cpp \
@@ -24,4 +25,5 @@ SOURCES += \
     fwgui/fwpen.cpp \
     fwgui/fwwidget.cpp \
     fwgui/fwrender.cpp \
-    fwgui/fwpainter.cpp
+    fwgui/fwpainter.cpp \
+    fwgui/fwguievent.cpp
