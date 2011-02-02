@@ -2,6 +2,8 @@
 
 #include "fwslidingframeprimitive.h"
 
+#include "fwcore/fwml.h"
+
 FwSlidingFramePrimitive::FwSlidingFramePrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_itemMargin(0),
@@ -46,7 +48,7 @@ void FwSlidingFramePrimitive::updateLayout(const QList<FwPrimitive*> items, FwPr
         {
             --iter;
             FwPrimitive* primitive = (*iter);
-            primitive->setPos(currentX -= (primitive->width() - m_itemMargin),
+            primitive->setPos(currentX -= (primitive->width() + m_itemMargin),
                               (height() - primitive->height()) / 2);
         }
         while(iter != items.begin());
@@ -83,4 +85,34 @@ QRect FwSlidingFramePrimitive::updateGeometry(const QRect &rect)
         updateLayout(m_items, m_current);
     }
     return BaseClass::updateGeometry(rect);
+}
+
+void FwSlidingFramePrimitive::setItemMargin(int margin)
+{
+    if(m_itemMargin != margin)
+    {
+        prepareGeometryChanged();
+        m_itemMargin = margin;
+        update();
+    }
+}
+
+void FwSlidingFramePrimitive::apply(FwMLObject *object)
+{
+    prepareGeometryChanged();
+
+    FwMLNode* marginNode = object->attribute("itemMargin");
+    if(marginNode)
+    {
+        bool bOk = false;
+        int margin = marginNode->toInt(&bOk);
+        if(bOk)
+        {
+            setItemMargin(margin);
+        }
+    }
+
+    BaseClass::apply(object);
+
+    update();
 }

@@ -21,6 +21,11 @@ public:
     inline FwPrimitive* current() const;
     void setCurrent(FwPrimitive* primitive);
 
+    inline int itemMargin() const;
+    void setItemMargin(int margin);
+
+    void apply(FwMLObject *object);
+
 protected:
     QRect updateGeometry(const QRect &rect);
 
@@ -41,6 +46,11 @@ QList<FwPrimitive*> FwSlidingFramePrimitive::items() const
 FwPrimitive* FwSlidingFramePrimitive::current() const
 {
     return m_current;
+}
+
+int FwSlidingFramePrimitive::itemMargin() const
+{
+    return m_itemMargin;
 }
 
 #endif // FIREWORKS_SLIDINGFRAMEPRIMITIVE_H
