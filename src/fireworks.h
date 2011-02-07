@@ -3,6 +3,7 @@
 
 #include <QtCore/qglobal.h>
 #include <QtCore/qlist.h>
+#include <QtCore/qdir.h>
 
 #if defined(FIREWORKS_LIBRARY)
 #  define FIREWORKSSHARED_EXPORT Q_DECL_EXPORT
@@ -64,7 +65,7 @@ namespace Fw
         Go_Last,
     };
 
-    int go(Navigation nav, int size, int current, int previous);
+    int go(Navigation nav, int size, int current, int previous = -1);
 
     template <class T> T* goPtr(const QList<T*> list, Navigation nav, T* current, T* previous = 0)
     {
@@ -80,6 +81,12 @@ namespace Fw
 
         return 0;
     }
+
+    QString cacheDirectory(const QString& cacheName);
+    QString tempDirectory();
+    QString dataDirectory();
+
+    bool changedDirectory(QDir* dir, const QString& dirName);
 
 }
 

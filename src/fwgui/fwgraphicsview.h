@@ -60,7 +60,6 @@ protected:
 
     virtual FwPixmapData* createBuffer(const FwPixmapDescription& desc) = 0;
     virtual FwPixmapData* createBuffer(Fw::BufferMode mode, const QSize& size) = 0;
-    virtual FwRender* createRender(const QRect& rect) = 0;
 
     void render(FwPainter* painter);
 

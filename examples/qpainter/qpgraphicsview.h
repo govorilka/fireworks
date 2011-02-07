@@ -53,7 +53,6 @@ protected:
 
     FwPixmapData* createBuffer(const FwPixmapDescription& desc);
     FwPixmapData* createBuffer(Fw::BufferMode mode, const QSize& size);
-    FwRender* createRender(const QRect& rect);
 
 private:
     QPWidget* m_widget;

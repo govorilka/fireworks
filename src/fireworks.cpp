@@ -32,3 +32,50 @@ int Fw::go(Navigation nav, int size, int current, int previous)
     return -1;
 }
 
+QString Fw::cacheDirectory(const QString& cacheName)
+{
+    QDir dir = QDir::home();
+    if(changedDirectory(&dir, ".mw") &&
+       changedDirectory(&dir, "cache") &&
+       changedDirectory(&dir, cacheName))
+    {
+        return dir.canonicalPath();
+    }
+    return "";
+}
+
+QString Fw::tempDirectory()
+{
+    QDir dir = QDir::home();
+    if(changedDirectory(&dir, ".mw") &&
+       changedDirectory(&dir, "temp"))
+    {
+        return dir.canonicalPath();
+    }
+    return "";
+}
+
+QString  Fw::dataDirectory()
+{
+    QDir dir = QDir::home();
+    if(changedDirectory(&dir, ".mw"))
+    {
+        return dir.canonicalPath();
+    }
+    return "";
+}
+
+bool Fw::changedDirectory(QDir* dir, const QString& dirName)
+{
+    if(!dir->cd(dirName))
+    {
+        if(!dir->mkdir(dirName))
+        {
+            QString error = QString("Cannot create %1 directory!").arg(dirName);
+            qFatal(error.toUtf8().data());
+            return false;
+        }
+        dir->cd(dirName);
+    }
+    return true;
+}
