@@ -65,6 +65,12 @@ namespace Fw
         Go_Last,
     };
 
+    enum ModalResult
+    {
+        MR_Ok,
+        MR_Cancel,
+    };
+
     int go(Navigation nav, int size, int current, int previous = -1);
 
     template <class T> T* goPtr(const QList<T*> list, Navigation nav, T* current, T* previous = 0)

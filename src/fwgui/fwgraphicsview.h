@@ -46,6 +46,7 @@ public:
 
     FwScene* scene(int id) const;
 
+    inline FwScene* activeScene() const;
     inline void setActiveScene(int id);
     void setActiveScene(FwScene* scene);
 

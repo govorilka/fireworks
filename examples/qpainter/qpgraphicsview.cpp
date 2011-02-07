@@ -82,7 +82,6 @@ FwPixmapData* QPGraphicsView::createBuffer(const FwPixmapDescription& desc)
     {
         return new QPPixmapData(pixmap, desc.source());
     }
-
     return 0;
 }
 

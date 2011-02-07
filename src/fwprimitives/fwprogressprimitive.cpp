@@ -2,7 +2,7 @@
 
 #include "fwgui/fwscene.h"
 
-FwGraphicsProgressItem::FwGraphicsProgressItem(const QByteArray& name, FwPrimitiveGroup* parent) :
+FwProgressPrimitive::FwProgressPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_minValue(0),
     m_maxValue(0),
@@ -15,7 +15,7 @@ FwGraphicsProgressItem::FwGraphicsProgressItem(const QByteArray& name, FwPrimiti
 {
 }
 
-FwGraphicsProgressItem::~FwGraphicsProgressItem()
+FwProgressPrimitive::~FwProgressPrimitive()
 {
     if(m_animation)
     {
@@ -23,7 +23,7 @@ FwGraphicsProgressItem::~FwGraphicsProgressItem()
     }
 }
 
-void FwGraphicsProgressItem::setProgressBrush(const FwBrushPtr& brush)
+void FwProgressPrimitive::setProgressBrush(const FwBrushPtr& brush)
 {
     if(m_progressBrush != brush)
     {
@@ -32,7 +32,7 @@ void FwGraphicsProgressItem::setProgressBrush(const FwBrushPtr& brush)
     }
 }
 
-void FwGraphicsProgressItem::setValue(int min, int max, int value, bool byUser)
+void FwProgressPrimitive::setValue(int min, int max, int value, bool byUser)
 {
     if(m_minValue != min || m_maxValue != max || m_value != value)
     {
@@ -43,7 +43,7 @@ void FwGraphicsProgressItem::setValue(int min, int max, int value, bool byUser)
     }
 }
 
-void FwGraphicsProgressItem::setAnimation(FwGraphicsProgressAnimation* animation)
+void FwProgressPrimitive::setAnimation(FwProgressAnimation* animation)
 {
     if(m_animation != animation)
     {
@@ -60,14 +60,14 @@ void FwGraphicsProgressItem::setAnimation(FwGraphicsProgressAnimation* animation
     }
 }
 
-QRect FwGraphicsProgressItem::updateGeometry(const QRect &rect)
+QRect FwProgressPrimitive::updateGeometry(const QRect &rect)
 {
     normalMinProgressWidth = qBound(0, m_minProgressWidth, rect.width());
     updateProgressRect(false);
     return BaseClass::updateGeometry(rect);
 }
 
-void FwGraphicsProgressItem::paint(FwPainter *painter, const QRect &clipRect)
+void FwProgressPrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
     QRect r = clipRect;
 
@@ -88,7 +88,7 @@ void FwGraphicsProgressItem::paint(FwPainter *painter, const QRect &clipRect)
     }
 }
 
-void FwGraphicsProgressItem::updateProgressRect(bool byUser)
+void FwProgressPrimitive::updateProgressRect(bool byUser)
 {
     QRect newProgressRect = rect();
     if(m_value == m_minValue)
@@ -118,7 +118,7 @@ void FwGraphicsProgressItem::updateProgressRect(bool byUser)
     }
 }
 
-void FwGraphicsProgressItem::updateProgressRect(const QRect& rect)
+void FwProgressPrimitive::updateProgressRect(const QRect& rect)
 {
     if(m_progressRect->rect() != rect)
     {
@@ -128,7 +128,7 @@ void FwGraphicsProgressItem::updateProgressRect(const QRect& rect)
     }
 }
 
-void FwGraphicsProgressItem::setMinProgressWidth(int width)
+void FwProgressPrimitive::setMinProgressWidth(int width)
 {
     if(m_minProgressWidth != width)
     {
@@ -140,13 +140,13 @@ void FwGraphicsProgressItem::setMinProgressWidth(int width)
 
 //////////////////////////////////////////////////////////////////////////////////
 
-FwGraphicsProgressAnimation::FwGraphicsProgressAnimation(QObject *parent) :
+FwProgressAnimation::FwProgressAnimation(QObject *parent) :
     BaseClass(parent),
     m_item(0)
 {
 }
 
-FwGraphicsProgressAnimation::~FwGraphicsProgressAnimation()
+FwProgressAnimation::~FwProgressAnimation()
 {
     if(m_item)
     {
@@ -154,7 +154,7 @@ FwGraphicsProgressAnimation::~FwGraphicsProgressAnimation()
     }
 }
 
-void FwGraphicsProgressAnimation::updateCurrentValue(const QVariant & value)
+void FwProgressAnimation::updateCurrentValue(const QVariant & value)
 {
     if(m_item)
     {
@@ -162,7 +162,7 @@ void FwGraphicsProgressAnimation::updateCurrentValue(const QVariant & value)
     }
 }
 
-void FwGraphicsProgressAnimation::updateState(QAbstractAnimation::State newState, QAbstractAnimation::State oldState)
+void FwProgressAnimation::updateState(QAbstractAnimation::State newState, QAbstractAnimation::State oldState)
 {
     if(newState == Stopped && oldState == Running)
     {
@@ -171,7 +171,7 @@ void FwGraphicsProgressAnimation::updateState(QAbstractAnimation::State newState
     BaseClass::updateState(newState, oldState);
 }
 
-void FwGraphicsProgressAnimation::complete()
+void FwProgressAnimation::complete()
 {
     if(m_item)
     {
@@ -179,13 +179,13 @@ void FwGraphicsProgressAnimation::complete()
     }
 }
 
-void FwGraphicsProgressAnimation::setGraphicsItem(FwGraphicsProgressItem * item)
+void FwProgressAnimation::setGraphicsItem(FwProgressPrimitive * item)
 {
     resetGraphicsItem();
     m_item = item;
 }
 
-void FwGraphicsProgressAnimation::resetGraphicsItem()
+void FwProgressAnimation::resetGraphicsItem()
 {
     if(m_item)
     {

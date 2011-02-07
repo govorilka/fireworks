@@ -8,6 +8,11 @@ QSize FwGraphicsView::size() const
     return m_size;
 }
 
+FwScene* FwGraphicsView::activeScene() const
+{
+    return m_activeScene;
+}
+
 void FwGraphicsView::setActiveScene(int id)
 {
     setActiveScene(scene(id));

@@ -2,7 +2,7 @@
 
 #include "fwtableprimitive.h"
 
-FwGraphicsCellItem::FwGraphicsCellItem(int row, int column, FwGraphicsTableItem* parent) :
+FwCellPrimitive::FwCellPrimitive(int row, int column, FwTablePrimitive* parent) :
     BaseClass("R" + QByteArray::number(row) + "C" + QByteArray::number(column), parent),
     m_row(row),
     m_column(column),
@@ -21,11 +21,11 @@ FwGraphicsCellItem::FwGraphicsCellItem(int row, int column, FwGraphicsTableItem*
     parent->updateTable();
 }
 
-void FwGraphicsCellItem::setRowSpan(int span)
+void FwCellPrimitive::setRowSpan(int span)
 {
     if(m_rowSpan != span && span > 0)
     {
-        FwGraphicsTableItem* table = static_cast<FwGraphicsTableItem*>(parent());
+        FwTablePrimitive* table = static_cast<FwTablePrimitive*>(parent());
         table->prepareTableChanged();
 
         table->m_cellsGridDirty = true;
@@ -39,11 +39,11 @@ void FwGraphicsCellItem::setRowSpan(int span)
     }
 }
 
-void FwGraphicsCellItem::setColumnSpan(int span)
+void FwCellPrimitive::setColumnSpan(int span)
 {
     if(m_columnSpan != span && span > 0)
     {
-        FwGraphicsTableItem* table = static_cast<FwGraphicsTableItem*>(parent());
+        FwTablePrimitive* table = static_cast<FwTablePrimitive*>(parent());
         table->prepareTableChanged();
 
         table->m_cellsGridDirty = true;
@@ -57,14 +57,14 @@ void FwGraphicsCellItem::setColumnSpan(int span)
     }
 }
 
-QRect FwGraphicsCellItem::updateGeometry(const QRect &rect)
+QRect FwCellPrimitive::updateGeometry(const QRect &rect)
 {
     return BaseClass::updateGeometry(rect);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 
-FwGraphicsTableItem::FwGraphicsTableItem(const QByteArray& name, FwPrimitiveGroup* parent) :
+FwTablePrimitive::FwTablePrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_rowCount(0),
     m_columnCount(0),
@@ -76,7 +76,7 @@ FwGraphicsTableItem::FwGraphicsTableItem(const QByteArray& name, FwPrimitiveGrou
 {
 }
 
-void FwGraphicsTableItem::apply(FwMLObject *object)
+void FwTablePrimitive::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
 
@@ -92,7 +92,7 @@ void FwGraphicsTableItem::apply(FwMLObject *object)
 \param columnCount Новое количество столбцов
 \sa void FwTableWidget::setMinSize(int rowCount, int columnCount)
 */
-void FwGraphicsTableItem::resize(int rowCount, int columnCount)
+void FwTablePrimitive::resize(int rowCount, int columnCount)
 {
     if(m_rowCount != rowCount || m_columnCount != columnCount)
     {
@@ -107,12 +107,12 @@ void FwGraphicsTableItem::resize(int rowCount, int columnCount)
     }
 }
 
-void FwGraphicsTableItem::prepareTableChanged()
+void FwTablePrimitive::prepareTableChanged()
 {
     m_startTableChanged++;
 }
 
-void FwGraphicsTableItem::updateTable()
+void FwTablePrimitive::updateTable()
 {
     if(m_startTableChanged && (--m_startTableChanged == 0))
     {
@@ -122,8 +122,8 @@ void FwGraphicsTableItem::updateTable()
         {
             m_cellsGridDirty = true;
 
-            QList<FwGraphicsCellItem*> cells = m_cells;
-            foreach(FwGraphicsCellItem* cell, cells)
+            QList<FwCellPrimitive*> cells = m_cells;
+            foreach(FwCellPrimitive* cell, cells)
             {
                 int xRow = cell->row();
                 int yColumn = cell->column();
@@ -152,7 +152,7 @@ void FwGraphicsTableItem::updateTable()
 
         if(m_cellsGridDirty)
         {
-            foreach(FwGraphicsCellItem* cell, m_cells)
+            foreach(FwCellPrimitive* cell, m_cells)
             {
                 for(int i = cell->row(); i < (cell->row() + cell->rowSpan()); i++)
                 {
@@ -189,7 +189,7 @@ void FwGraphicsTableItem::updateTable()
 \param maxValue Максимальная реальная величина измерения (высоты или ширины),
 которой соответствует переданный массив
 */
-QVector<int> FwGraphicsTableItem::realSizeVector(const QVector<qreal>& vector, qreal maxValue)
+QVector<int> FwTablePrimitive::realSizeVector(const QVector<qreal>& vector, qreal maxValue)
 {
     int vectorSize = vector.size();
     QVector<int> realVector(vectorSize, 0);
@@ -227,7 +227,7 @@ QVector<int> FwGraphicsTableItem::realSizeVector(const QVector<qreal>& vector, q
 \param vector Массив, размер которого надо изменить
 \param newSize новый размер массива
 */
-void FwGraphicsTableItem::resizeSizeVector(QVector<qreal>& vector, int newSize)
+void FwTablePrimitive::resizeSizeVector(QVector<qreal>& vector, int newSize)
 {
     if(vector.size() != newSize)
     {
@@ -240,7 +240,7 @@ void FwGraphicsTableItem::resizeSizeVector(QVector<qreal>& vector, int newSize)
     }
 }
 
-QRect FwGraphicsTableItem::updateGeometry(const QRect &rect)
+QRect FwTablePrimitive::updateGeometry(const QRect &rect)
 {
     if(!m_startTableChanged)
     {
@@ -251,7 +251,7 @@ QRect FwGraphicsTableItem::updateGeometry(const QRect &rect)
     return BaseClass::updateGeometry(rect);
 }
 
-void FwGraphicsTableItem::updateRealSizes()
+void FwTablePrimitive::updateRealSizes()
 {
     if(m_realSizeDirty)
     {
@@ -262,11 +262,11 @@ void FwGraphicsTableItem::updateRealSizes()
     }
 }
 
-void FwGraphicsTableItem::updateCellGeometry()
+void FwTablePrimitive::updateCellGeometry()
 {
     if(m_cellGeometryDirty)
     {
-        foreach(FwGraphicsCellItem* cell, m_cells)
+        foreach(FwCellPrimitive* cell, m_cells)
         {
             cell->needGeometryProcessed = true;
         }
@@ -280,7 +280,7 @@ void FwGraphicsTableItem::updateCellGeometry()
             for(int column = 0; column < m_columnCount; column++)
             {
                 int columnWidth = m_realColumnsWidth[column];
-                FwGraphicsCellItem* cell = m_cellsGrid[rowDelta + column];
+                FwCellPrimitive* cell = m_cellsGrid[rowDelta + column];
                 if(cell && cell->needGeometryProcessed)
                 {
                     int iRow = cell->row();
@@ -311,7 +311,7 @@ void FwGraphicsTableItem::updateCellGeometry()
     }
 }
 
-void FwGraphicsTableItem::setRowsHeight(QVector<qreal> heights)
+void FwTablePrimitive::setRowsHeight(QVector<qreal> heights)
 {
     if(m_rowsHeight != heights)
     {
@@ -323,7 +323,7 @@ void FwGraphicsTableItem::setRowsHeight(QVector<qreal> heights)
     }
 }
 
-void FwGraphicsTableItem::setColumnsWidth(QVector<qreal> widths)
+void FwTablePrimitive::setColumnsWidth(QVector<qreal> widths)
 {
     if(m_columnsWidth != widths)
     {

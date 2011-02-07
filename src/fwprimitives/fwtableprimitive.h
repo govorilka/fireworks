@@ -3,17 +3,17 @@
 
 #include "fwprimitives/fwprimitivegroup.h"
 
-class FwGraphicsTableItem;
-class FwGraphicsCellItem;
+class FwTablePrimitive;
+class FwCellPrimitive;
 
-class FwGraphicsCellItem : public FwRectPrimitive
+class FwCellPrimitive : public FwRectPrimitive
 {
     typedef FwRectPrimitive BaseClass;
 
 public:
-    friend class FwGraphicsTableItem;
+    friend class FwTablePrimitive;
 
-    FwGraphicsCellItem(int row, int column, FwGraphicsTableItem* parent);
+    FwCellPrimitive(int row, int column, FwTablePrimitive* parent);
 
     inline int row() const;
     inline int column() const;
@@ -35,36 +35,36 @@ private:
     bool needGeometryProcessed;
 };
 
-int FwGraphicsCellItem::row() const
+int FwCellPrimitive::row() const
 {
     return m_row;
 }
 
-int FwGraphicsCellItem::column() const
+int FwCellPrimitive::column() const
 {
     return m_column;
 }
 
-int FwGraphicsCellItem::rowSpan() const
+int FwCellPrimitive::rowSpan() const
 {
     return m_rowSpan;
 }
 
-int FwGraphicsCellItem::columnSpan() const
+int FwCellPrimitive::columnSpan() const
 {
     return m_columnSpan;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 
-class FwGraphicsTableItem : public FwPrimitiveGroup
+class FwTablePrimitive : public FwPrimitiveGroup
 {
     typedef FwPrimitiveGroup BaseClass;
 
 public:
-    friend class FwGraphicsCellItem;
+    friend class FwCellPrimitive;
 
-    FwGraphicsTableItem(const QByteArray& name, FwPrimitiveGroup* parent);
+    FwTablePrimitive(const QByteArray& name, FwPrimitiveGroup* parent);
 
     void apply(FwMLObject *object);
 
@@ -74,7 +74,7 @@ public:
     void prepareTableChanged();
     void updateTable();
 
-    inline FwGraphicsCellItem* cell(int row, int column);
+    inline FwCellPrimitive* cell(int row, int column);
 
     static QVector<int> realSizeVector(const QVector<qreal>& vector, qreal maxValue);
     static void resizeSizeVector(QVector<qreal>& vector, int newSize);
@@ -89,9 +89,9 @@ protected:
     void updateCellGeometry();
 
 private:
-    QList<FwGraphicsCellItem*> m_cells;
+    QList<FwCellPrimitive*> m_cells;
 
-    QVector<FwGraphicsCellItem*> m_cellsGrid;
+    QVector<FwCellPrimitive*> m_cellsGrid;
     bool m_cellsGridDirty;
 
     int m_rowCount;
@@ -108,12 +108,12 @@ private:
     int m_startTableChanged;
 };
 
-void FwGraphicsTableItem::clear()
+void FwTablePrimitive::clear()
 {
     resize(0, 0);
 }
 
-FwGraphicsCellItem* FwGraphicsTableItem::cell(int row, int column)
+FwCellPrimitive* FwTablePrimitive::cell(int row, int column)
 {
     if(row < m_rowCount && column < m_columnCount)
     {
