@@ -32,6 +32,8 @@ int Fw::go(Navigation nav, int size, int current, int previous)
     return -1;
 }
 
+
+
 QString Fw::cacheDirectory(const QString& cacheName)
 {
     QDir dir = QDir::home();
