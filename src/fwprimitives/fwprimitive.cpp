@@ -317,7 +317,7 @@ FwBrush* FwPrimitive::createBrush(FwMLObject* object)
 {
     FwBrush* brush = 0;
 
-    FwMLObject* background = object->attribute("background")->cast<FwMLObject>();
+    FwMLNode* background = object->attribute("background");
     if(background)
     {
         FwPixmap px = createPixmap(background);
