@@ -221,6 +221,49 @@ void FwPrimitive::apply(FwMLObject* object)
             setRect(rect);
         }
     }
+    else
+    {
+        bool bOk = false;
+        int intValue = 0;
+        QRect currentRect = this->rect();
+        FwMLNode* xNode = object->attribute("x");
+        if(xNode)
+        {
+            intValue = xNode->toInt(&bOk);
+            if(bOk)
+            {
+                currentRect.moveTo(intValue, currentRect.y());
+            }
+        }
+        FwMLNode* yNode = object->attribute("y");
+        if(yNode)
+        {
+            intValue = yNode->toInt(&bOk);
+            if(bOk)
+            {
+                currentRect.moveTo(currentRect.x(), intValue);
+            }
+        }
+        FwMLNode* widthNode = object->attribute("width");
+        if(widthNode)
+        {
+            intValue = widthNode->toInt(&bOk);
+            if(bOk)
+            {
+                currentRect.setWidth(intValue);
+            }
+        }
+        FwMLNode* heightNode = object->attribute("height");
+        if(heightNode)
+        {
+            intValue = heightNode->toInt(&bOk);
+            if(bOk)
+            {
+                currentRect.setHeight(intValue);
+            }
+        }
+        setRect(currentRect);
+    }
 
     FwMLNode* zIndexNode = object->attribute("zindex");
     if(zIndexNode)
