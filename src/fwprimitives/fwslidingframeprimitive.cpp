@@ -2,6 +2,8 @@
 
 #include "fwslidingframeprimitive.h"
 
+#include "fwprimitives/fwstringprimitive.h"
+
 #include "fwcore/fwml.h"
 
 FwSlidingFramePrimitive::FwSlidingFramePrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
@@ -35,35 +37,59 @@ void FwSlidingFramePrimitive::addItem(FwPrimitive* primitive)
 
 void FwSlidingFramePrimitive::updateLayout(const QList<FwPrimitive*> items, FwPrimitive* current)
 {
-    int currentX = (width() - current->width()) / 2;
-    current->setPos(currentX, (height() - current->height()) / 2);
+    int leftNullX = 0;
+    int rightNullX = width();
 
-    QList<FwPrimitive*>::const_iterator currentIter = items.begin();
-    currentIter += items.indexOf(current);
+    int leftX = (width() - current->width()) / 2;
+    int rightX = leftX + current->width() + m_itemMargin;
+    current->setPos(leftX, (height() - current->height()) / 2);
 
-    if(currentIter != items.begin())
+    QList<FwPrimitive*>::const_iterator leftIter = items.begin();
+    leftIter += items.indexOf(current);
+    if(leftIter != items.begin())
     {
-        QList<FwPrimitive*>::const_iterator iter = currentIter;
+        do
+        {
+            --leftIter;
+            FwPrimitive* primitive = (*leftIter);
+            primitive->setPos(leftX -= (primitive->width() + m_itemMargin),
+                              (height() - primitive->height()) / 2);
+        }
+        while(leftIter != items.begin() && leftX >= leftNullX);
+    }
+
+    QList<FwPrimitive*>::const_iterator rightIter = items.begin();
+    rightIter += (items.indexOf(current) + 1);
+    while(rightIter != items.end() && rightX <= rightNullX)
+    {
+        FwPrimitive* primitive = (*rightIter);
+        primitive->setPos(rightX,
+                          (height() - primitive->height()) / 2);
+        rightX += (primitive->width() + m_itemMargin);
+        rightIter++;
+    }
+
+    QList<FwPrimitive*>::const_iterator iter = items.begin();
+    while(iter != leftIter)
+    {
+        FwPrimitive* primitive = (*iter);
+        primitive->setPos(rightX,
+                          (height() - primitive->height()) / 2);
+        rightX += (primitive->width() + m_itemMargin);
+        iter++;
+    }
+
+    if(rightIter != items.end())
+    {
+        QList<FwPrimitive*>::const_iterator iter = items.end();
         do
         {
             --iter;
             FwPrimitive* primitive = (*iter);
-            primitive->setPos(currentX -= (primitive->width() + m_itemMargin),
+            primitive->setPos(leftX -= (primitive->width() + m_itemMargin),
                               (height() - primitive->height()) / 2);
         }
-        while(iter != items.begin());
-    }
-
-    currentX = current->rect().right() + m_itemMargin;
-
-    QList<FwPrimitive*>::const_iterator iter = ++currentIter;
-    while(iter != items.end())
-    {
-        FwPrimitive* primitive = (*iter);
-        primitive->setPos(currentX,
-                          (height() - primitive->height()) / 2);
-        currentX += (primitive->width() + m_itemMargin);
-        iter++;
+        while(iter != rightIter);
     }
 }
 
