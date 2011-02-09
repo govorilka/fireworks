@@ -32,6 +32,8 @@ protected:
 
     virtual void paint(FwPainter *painter, const QRect &clipRect);
 
+    virtual void penChangedEvent(FwPen* pen);
+
 private:
     FwPen* m_pen;
     QPoint m_p2;

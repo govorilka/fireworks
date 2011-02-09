@@ -1085,59 +1085,6 @@ void FwMLObject::removeAttributes()
     m_attributes.clear();
 }
 
-QSize FwMLObject::toSize(bool* bOk) const
-{
-    FwMLNode* node = attribute("width");
-    if(node)
-    {
-        int width = node->toInt(bOk);
-        if((*bOk) && (node = attribute("height")))
-        {
-            int height = node->toInt(bOk);
-            if((*bOk))
-            {
-                return QSize(width, height);
-            }
-        }
-    }
-    (*bOk) = false;
-    return QSize();
-}
-
-QPoint FwMLObject::toPoint(bool* bOk, const QByteArray& xName, const QByteArray& yName) const
-{
-    FwMLNode* node = attribute(xName);
-    if(node)
-    {
-        int x = node->toInt(bOk);
-        if((*bOk) && (node = attribute(yName)))
-        {
-            int y = node->toInt(bOk);
-            if(*bOk)
-            {
-                return QPoint(x, y);
-            }
-        }
-    }
-    (*bOk) = false;
-    return QPoint();
-}
-
-QRect FwMLObject::toRect(bool* bOk) const
-{
-    QPoint pos = toPoint(bOk);
-    if(*bOk)
-    {
-        QSize size = toSize(bOk);
-        if(*bOk)
-        {
-            return QRect(pos, size);
-        }
-    }
-    (*bOk) = false;
-    return QRect();
-}
-
 /*!
 Функция всегда возвращает 0!
 \param bOk Успешность выполнения операции, значение переменной после

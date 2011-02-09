@@ -7,7 +7,6 @@
 #include <QtCore/qhash.h>
 #include <QtCore/qvector.h>
 #include <QtCore/qurl.h>
-#include <QtCore/qrect.h>
 
 #include "fwcore/fwcolor.h"
 
@@ -228,11 +227,8 @@ public:
     bool parse(const QByteArray& utf8String, QString* error = 0);
     bool parse(QIODevice* ioDevice, QString* error = 0);
 
-    QRect toRect(bool* bOk) const;
     int toInt(bool* bOk) const;
     bool toBool(bool* bOk) const;
-    QSize toSize(bool* bOk) const;
-    QPoint toPoint(bool* bOk, const QByteArray& xName = "x", const QByteArray& yName = "y") const;
     FwColor toColor(bool* bOk) const;
 
 private:

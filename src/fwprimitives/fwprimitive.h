@@ -95,6 +95,10 @@ public:
 
     FwBrush* createBrush(FwMLObject* object);
 
+    bool loadPos(FwMLObject* object, QPoint* pos);
+    bool loadSize(FwMLObject* object,QSize* size);
+    bool loadRect(FwMLObject* object, QRect* rect);
+
     inline QByteArray name() const;
     inline void setName(const QByteArray& name);
 

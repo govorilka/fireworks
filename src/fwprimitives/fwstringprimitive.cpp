@@ -13,7 +13,8 @@ FwStringPrimitive::FwStringPrimitive(const QByteArray& name, FwPrimitiveGroup* p
     m_textPos(0, 0),
     m_shadow(false),
     m_shadowColor(0x00, 0x00, 0x00, 0x66), //40% black
-    m_fixedSize(false)
+    m_fixedSize(false),
+    m_stringRect(0, 0, 0, 0)
 {
 }
 
@@ -26,7 +27,7 @@ void FwStringPrimitive::setString(const QString& string)
         m_utf8String = string.toUtf8();
         if(!m_fixedSize)
         {
-            setSize(stringSize(m_string));
+            updateStringRect(m_string);
         }
         update();
     }
@@ -38,14 +39,7 @@ void FwStringPrimitive::setFont(const FwFont& font)
     {
         prepareGeometryChanged();
         m_font = font;
-        if(m_fixedSize && !m_mask.isEmpty())
-        {
-            setSize(stringSize(m_mask));
-        }
-        else
-        {
-            setSize(stringSize(m_string));
-        }
+        updateStringRect(m_fixedSize && !m_mask.isEmpty() ? m_mask : m_string);
         update();
     }
 }
@@ -84,36 +78,24 @@ QRect FwStringPrimitive::updateGeometry(const QRect& rect)
 {
     m_textPos = rect.topLeft();
     m_textPos.setY(m_textPos.y() + m_font.ascender());
-    return rect;
+    return rect.adjusted(m_stringRect.x(), m_stringRect.y(), 0, 0);
 }
 
 void FwStringPrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
-    painter->setFont(m_font);
+    Q_UNUSED(clipRect);
 
-    if(m_shadow)
+    if(pen())
     {
-        painter->setColor(m_shadowColor);
-        painter->drawString(m_textPos.x() + 2, m_textPos.y() + 2, m_utf8String);
-    }
-
-    FwPen* pen = this->pen();
-    if(pen)
-    {
-        pen->drawString(painter, m_textPos, m_utf8String);
+        painter->setFont(m_font);
+        pen()->drawString(painter, m_textPos, m_utf8String);
     }
 }
 
-QSize FwStringPrimitive::stringSize(const QString& string) const
+void FwStringPrimitive::updateStringRect(const QString &string)
 {
-    QSize size = m_font.stringSize(string);
-    size.setHeight(m_font.height());
-    if(m_shadow)
-    {
-        size.setWidth(size.width() + 2);
-        size.setHeight(size.height() + 2);
-    }
-    return size;
+    m_stringRect = pen() ? pen()->stringRect(m_font, string) : QRect(0, 0, 0, 0);
+    setSize(m_stringRect.size() - QSize(m_stringRect.x(), m_stringRect.y()));
 }
 
 void FwStringPrimitive::setFixedSize(bool enable, const QString& mask)
@@ -126,12 +108,12 @@ void FwStringPrimitive::setFixedSize(bool enable, const QString& mask)
             if(!mask.isEmpty())
             {
                 m_mask = mask;
-                setSize(stringSize(m_mask));
+                updateStringRect(m_mask);
             }
         }
         else
         {
-            setSize(stringSize(m_string));
+            updateStringRect(m_string);
         }
     }
 }
@@ -155,4 +137,9 @@ void FwStringPrimitive::apply(FwMLObject *object)
     BaseClass::apply(object);
 
     update();
+}
+
+void FwStringPrimitive::penChangedEvent(FwPen* pen)
+{
+    updateStringRect(m_fixedSize && !m_mask.isEmpty() ? m_mask : m_string);
 }

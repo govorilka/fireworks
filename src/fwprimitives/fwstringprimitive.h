@@ -29,8 +29,6 @@ public:
     inline FwColor shadowColor() const;
     void setShadowColor(const FwColor& color);
 
-    QSize stringSize(const QString& string) const;
-
     inline bool isFixedSize() const;
     void setFixedSize(bool enable, const QString& mask = QString());
 
@@ -39,7 +37,11 @@ public:
 protected:
     QRect updateGeometry(const QRect& rect);
 
+    void updateStringRect(const QString &string);
+
     void paint(FwPainter *painter, const QRect &clipRect);
+
+    void penChangedEvent(FwPen* pen);
 
 private:
     QString m_string;
@@ -50,6 +52,7 @@ private:
     FwColor m_shadowColor;
     bool m_fixedSize;
     QString m_mask;
+    QRect m_stringRect;
 };
 
 #include "fwprimitives/fwstringprimitive_inl.h"

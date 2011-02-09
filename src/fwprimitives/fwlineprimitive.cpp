@@ -24,11 +24,9 @@ void FwLinePrimitive::setPen(FwPen* pen)
     if(m_pen != pen)
     {
         prepareGeometryChanged();
-        if(m_pen)
-        {
-            delete m_pen;
-        }
+        delete m_pen;
         m_pen = pen;
+        penChangedEvent(pen);
         update();
     }
 }
@@ -108,4 +106,9 @@ void FwLinePrimitive::apply(FwMLObject *object)
     BaseClass::apply(object);
 
     update();
+}
+
+void FwLinePrimitive::penChangedEvent(FwPen* pen)
+{
+    Q_UNUSED(pen);
 }

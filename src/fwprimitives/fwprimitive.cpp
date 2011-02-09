@@ -211,58 +211,10 @@ void FwPrimitive::apply(FwMLObject* object)
 {
     prepareGeometryChanged();
 
-    FwMLObject* rectObject = object->attribute("rect")->cast<FwMLObject>();
-    if(rectObject)
+    QRect rect = this->rect();
+    if(loadRect(object, &rect))
     {
-        bool bOk = false;
-        QRect rect = rectObject->toRect(&bOk);
-        if(bOk)
-        {
-            setRect(rect);
-        }
-    }
-    else
-    {
-        bool bOk = false;
-        int intValue = 0;
-        QRect currentRect = this->rect();
-        FwMLNode* xNode = object->attribute("x");
-        if(xNode)
-        {
-            intValue = xNode->toInt(&bOk);
-            if(bOk)
-            {
-                currentRect.moveTo(intValue, currentRect.y());
-            }
-        }
-        FwMLNode* yNode = object->attribute("y");
-        if(yNode)
-        {
-            intValue = yNode->toInt(&bOk);
-            if(bOk)
-            {
-                currentRect.moveTo(currentRect.x(), intValue);
-            }
-        }
-        FwMLNode* widthNode = object->attribute("width");
-        if(widthNode)
-        {
-            intValue = widthNode->toInt(&bOk);
-            if(bOk)
-            {
-                currentRect.setWidth(intValue);
-            }
-        }
-        FwMLNode* heightNode = object->attribute("height");
-        if(heightNode)
-        {
-            intValue = heightNode->toInt(&bOk);
-            if(bOk)
-            {
-                currentRect.setHeight(intValue);
-            }
-        }
-        setRect(currentRect);
+        setRect(rect);
     }
 
     FwMLNode* zIndexNode = object->attribute("zindex");
@@ -320,9 +272,16 @@ FwFont FwPrimitive::createFont(FwMLObject* object, const QByteArray& attribute)
 
 FwPen* FwPrimitive::createPen(FwMLObject* object, const QByteArray& penAttr)
 {
-    int width = 1;
     bool bOk = false;
+
+    int width = 1;
+    FwColor color(0xFF, 0xFF, 0xFF, 0xFF);
+    QPoint shadowPos(0, 0);
+    FwColor shadowColor(0xFF, 0xD0, 0xD0, 0xD0);
+
     FwMLNode* colorNode = 0;
+    FwMLNode* shadowNode = 0;
+    FwMLNode* shadowColorNode = 0;
 
     FwMLObject* penNode = object->attribute(penAttr)->cast<FwMLObject>();
     if(penNode)
@@ -338,22 +297,61 @@ FwPen* FwPrimitive::createPen(FwMLObject* object, const QByteArray& penAttr)
         }
 
         colorNode = penNode->attribute("color");
+        shadowNode = penNode->attribute("shadow");
     }
     else
     {
-        colorNode = object->attribute("color");
+        if(!(colorNode = object->attribute("color")))
+        {
+            return 0;
+        }
+        shadowNode = object->attribute("shadow");
     }
 
     if(colorNode)
     {
-        FwColor color = colorNode->toColor(&bOk);
-        if(bOk)
+        color = colorNode->toColor(&bOk);
+        if(!bOk)
         {
-            return new FwPen(width, color);
+            return 0;
         }
     }
 
-    return 0;
+    if(shadowNode)
+    {
+        FwMLObject* shadowObject = shadowNode->cast<FwMLObject>();
+        if(shadowObject)
+        {
+            if(!loadPos(shadowObject, &shadowPos))
+            {
+                return false;
+            }
+            shadowColorNode = shadowObject->attribute("color");
+        }
+        else
+        {
+            shadowPos.setX(2);
+            shadowPos.setY(2);
+            shadowColorNode = shadowNode;
+        }
+    }
+
+    if(shadowColorNode)
+    {
+        shadowColor = shadowColorNode->toColor(&bOk);
+        if(!bOk)
+        {
+            return 0;
+        }
+    }
+
+    FwPen* pen = new FwPen(width, color);
+    if(shadowPos.x() != 0 || shadowPos.y() != 0)
+    {
+        pen->setShadow(new FwShadow(shadowPos, shadowColor));
+    }
+
+    return pen;
 }
 
 FwBrush* FwPrimitive::createBrush(FwMLObject* object)
@@ -565,3 +563,165 @@ void FwPrimitive::setRect(const QRect& rect)
         }
     }
 }
+
+bool FwPrimitive::loadPos(FwMLObject* object, QPoint* pos)
+{
+    bool bOk = false;
+    int x = pos->x();
+    int y = pos->y();
+    FwMLObject* posObject = object;
+
+    FwMLNode* posNode = object->attribute("pos");
+    if(posNode)
+    {
+        posObject = posNode->cast<FwMLObject>();
+        if(!posObject)
+        {
+            return false;
+        }
+    }
+
+    FwMLNode* xNode = posObject->attribute("x");
+    if(xNode)
+    {
+        x = xNode->toInt(&bOk);
+        if(!bOk)
+        {
+            return false;
+        }
+    }
+    FwMLNode* yNode = posObject->attribute("y");
+    if(yNode)
+    {
+        y = yNode->toInt(&bOk);
+        if(!bOk)
+        {
+            return false;
+        }
+    }
+
+    pos->setX(x);
+    pos->setY(y);
+    return true;
+}
+
+bool FwPrimitive::loadSize(FwMLObject* object,QSize* size)
+{
+    bool bOk = false;
+    int width = size->width();
+    int height = size->height();
+    FwMLObject* sizeObject = object;
+
+    FwMLNode* sizeNode = object->attribute("size");
+    if(sizeNode)
+    {
+        sizeObject = sizeNode->cast<FwMLObject>();
+        if(!sizeObject)
+        {
+            return false;
+        }
+    }
+
+    FwMLNode* widthNode = sizeObject->attribute("width");
+    if(widthNode)
+    {
+        width = widthNode->toInt(&bOk);
+        if(!bOk || width < 0)
+        {
+            return false;
+        }
+    }
+    FwMLNode* heightNode = sizeObject->attribute("height");
+    if(heightNode)
+    {
+        height = heightNode->toInt(&bOk);
+        if(!bOk || height < 0)
+        {
+            return false;
+        }
+    }
+
+    size->setWidth(width);
+    size->setHeight(height);
+    return true;
+}
+
+bool FwPrimitive::loadRect(FwMLObject* object, QRect* rect)
+{
+    FwMLNode* rectNode = object->attribute("rect");
+    if(rectNode)
+    {
+        FwMLObject* rectObject = rectNode->cast<FwMLObject>();
+        if(!rectObject)
+        {
+            return false;
+        }
+
+        FwMLNode* node = rectObject->attribute("x");
+        if(node)
+        {
+            bool bOk = false;
+            int x = node->toInt(&bOk);
+            if(bOk && (node = rectObject->attribute("y")))
+            {
+                int y = node->toInt(&bOk);
+                if(bOk && (node = rectObject->attribute("width")))
+                {
+                    int width = node->toInt(&bOk);
+                    if(bOk && (node = rectObject->attribute("height")))
+                    {
+                        int height = node->toInt(&bOk);
+                        if(bOk)
+                        {
+                            rect->setRect(x, y, width, height);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            FwMLNode* node = rectObject->attribute("x1");
+            if(node)
+            {
+                bool bOk = false;
+                int x1 = node->toInt(&bOk);
+                if(bOk && (node = rectObject->attribute("y1")))
+                {
+                    int y1 = node->toInt(&bOk);
+                    if(bOk && (node = rectObject->attribute("x2")))
+                    {
+                        int x2 = node->toInt(&bOk);
+                        if(bOk && (node = rectObject->attribute("y2")))
+                        {
+                            int y2 = node->toInt(&bOk);
+                            if(bOk)
+                            {
+                                rect->setCoords(x1, y1, x2, y2);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+
+    }
+
+    QPoint pos = rect->topLeft();
+    QSize size = rect->size();
+    if(!loadPos(object, &pos))
+    {
+        return false;
+    }
+    if(!loadSize(object, &size))
+    {
+        return false;
+    }
+    rect->setRect(pos.x(), pos.y(), size.width(), size.height());
+    return true;
+}
+
