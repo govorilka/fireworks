@@ -1,18 +1,15 @@
-#ifndef TREEMODEL_H
-#define TREEMODEL_H
+#ifndef SCRIPTER_TREEMODEL_H
+#define SCRIPTER_TREEMODEL_H
 
-#include <QAbstractItemModel>
+#include <QtGui/qabstractitemview.h>
 
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
+    typedef QAbstractItemModel BaseClass;
+
 public:
     explicit TreeModel(QObject *parent = 0);
-
-signals:
-
-public slots:
-
 };
 
 #endif // TREEMODEL_H
