@@ -11,8 +11,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    treemodel.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    treemodel.h
 
 FORMS    += mainwindow.ui
