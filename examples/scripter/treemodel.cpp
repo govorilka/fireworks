@@ -3,4 +3,5 @@
 TreeModel::TreeModel(QObject *parent) :
     BaseClass(parent)
 {
+    //для тестового коммита
 }
