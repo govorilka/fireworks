@@ -619,6 +619,29 @@ FwMLNode::~FwMLNode()
     takeFromParent();
 }
 
+QByteArray FwMLNode::name() const
+{
+    if(m_parent)
+    {
+        switch(m_parent->type())
+        {
+        case FwMLNode::T_Object:
+            return m_parent->cast<FwMLObject>()->attributeName(const_cast<FwMLNode*>(this));
+
+        case FwMLNode::T_Array:
+            return "[" + QByteArray::number(m_parent->cast<FwMLArray>()->indexOf(const_cast<FwMLNode*>(this))) + "]";
+
+        default:
+            break;
+        }
+    }
+    else if(type() == FwMLNode::T_Object || type() == FwMLNode::T_Array)
+    {
+        return "root";
+    }
+    return "";
+}
+
 void FwMLNode::takeFromParent()
 {
     if(m_parent)

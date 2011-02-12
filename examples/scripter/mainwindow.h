@@ -3,9 +3,12 @@
 
 #include <QMainWindow>
 
-namespace Ui {
+namespace Ui
+{
     class MainWindow;
 }
+
+class TreeModel;
 
 class MainWindow : public QMainWindow
 {
@@ -17,6 +20,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    TreeModel* m_model;
 };
 
 #endif // MAINWINDOW_H

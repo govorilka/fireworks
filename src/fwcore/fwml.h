@@ -43,6 +43,8 @@ public:
     virtual int type() const = 0;
     inline bool isNull() const;
 
+    QByteArray name() const;
+
     template <class T> T* cast()
     {
         if(this)
@@ -211,13 +213,13 @@ public:
     ~FwMLObject();
 
     FwMLNode* addAttribute(const QByteArray& name, FwMLNode* value, bool replace = true);
-    inline FwMLString* addAttribute(const QByteArray& name, const QByteArray& value);
-    inline FwMLString* addAttribute(const QByteArray& name, const QString& value);
-    inline FwMLString* addAttribute(const QByteArray &name, const QUrl& url);
-    inline FwMLArray* addAttribute(const QByteArray& name, const QVector<FwMLNode*> array);
 
     inline FwMLNode* attribute(const QByteArray& name) const;
+    inline QByteArray attributeName(FwMLNode* child) const;
+
     inline QHash<QByteArray, FwMLNode*> attributes() const;
+    inline QList<FwMLNode*> toList() const;
+    inline int attributesCount() const;
 
     inline void removeAttribute(const QByteArray& name);
     void removeAttributes();
@@ -247,6 +249,9 @@ public:
     ~FwMLArray();
 
     inline int size() const;
+
+    inline int indexOf(FwMLNode* item) const;
+    inline FwMLNode* item(int index) const;
 
     QVector<FwMLNode*> data;
 

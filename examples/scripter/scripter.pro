@@ -9,12 +9,16 @@ QT       += core gui
 TARGET = scripter
 TEMPLATE = app
 
+INCLUDEPATH += ../../src/
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    treemodel.cpp
+LIBS     += -L../../bin \
+            -lfireworks
+
+SOURCES  += main.cpp\
+            mainwindow.cpp \
+            treemodel.cpp
 
 HEADERS  += mainwindow.h \
-    treemodel.h
+            treemodel.h
 
 FORMS    += mainwindow.ui

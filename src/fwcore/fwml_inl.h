@@ -58,39 +58,24 @@ void FwMLDoubleNumber::setValue(double value)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-FwMLString* FwMLObject::addAttribute(const QByteArray& name, const QByteArray& value)
-{
-    FwMLString* string = new FwMLString(value);
-    addAttribute(name, string);
-    return string;
-}
-
-FwMLString* FwMLObject::addAttribute(const QByteArray& name, const QString& value)
-{
-    return addAttribute(name, value.toUtf8());
-}
-
-FwMLString* FwMLObject::addAttribute(const QByteArray &name, const QUrl& url)
-{
-    return addAttribute(name, url.toEncoded());
-}
-
-FwMLArray* FwMLObject::addAttribute(const QByteArray& name, const QVector<FwMLNode*> array)
-{
-    FwMLArray* jsonArray = new FwMLArray();
-    jsonArray->data = array;
-    addAttribute(name, jsonArray);
-    return jsonArray;
-}
-
 FwMLNode* FwMLObject::attribute(const QByteArray& name) const
 {
     return m_attributes.value(name, 0);
 }
 
+QByteArray FwMLObject::attributeName(FwMLNode* child) const
+{
+    return m_attributes.key(child, "");
+}
+
 QHash<QByteArray, FwMLNode*> FwMLObject::attributes() const
 {
     return m_attributes;
+}
+
+QList<FwMLNode*> FwMLObject::toList() const
+{
+    return m_attributes.values();
 }
 
 void FwMLObject::removeAttribute(const QByteArray& name)
@@ -101,12 +86,31 @@ void FwMLObject::removeAttribute(const QByteArray& name)
     }
 }
 
+int FwMLObject::attributesCount() const
+{
+    return m_attributes.size();
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
 int FwMLArray::size() const
 {
     return data.size();
+}
+
+int FwMLArray::indexOf(FwMLNode* item) const
+{
+    return data.indexOf(item);
+}
+
+FwMLNode* FwMLArray::item(int index) const
+{
+    if(index >= 0 && index < data.size())
+    {
+        return data.at(index);
+    }
+    return 0;
 }
 
 #endif // FIREWORKS_ML_INL_H
