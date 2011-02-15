@@ -35,7 +35,7 @@ void QPWidget::resizeEvent(QResizeEvent *e)
 void QPWidget::paintEvent(QPaintEvent *e)
 {
     FwPainter painter(QRect(QPoint(0, 0), size()), e->rect(), new QPRender(this));
-    m_view->render(&painter);
+    m_view->render(&painter, e->rect());
     e->accept();
 }
 
