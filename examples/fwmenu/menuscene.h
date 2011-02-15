@@ -8,6 +8,7 @@ class FwStringPrimitive;
 
 class MenuScene : public FwScene
 {
+    Q_OBJECT
     typedef FwScene BaseClass;
 
 public:
@@ -24,6 +25,9 @@ private:
     FwStringPrimitive* m_item3;
     FwStringPrimitive* m_item4;
     FwStringPrimitive* m_item5;
+
+private slots:
+    void testCase1();
 };
 
 #endif // MENUSCENE_H

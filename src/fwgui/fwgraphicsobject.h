@@ -38,8 +38,10 @@ public:
 
     bool event(QEvent *e);
 
+    FwGraphicsObject* object() const;
+
 protected:
-    QRect updateGeometry(const QRect &rect);
+    void updateGeometry(const QRect& rect, QRect& boundingRect);
 
     virtual void keyPressEvent(FwKeyPressEvent* event);
     virtual void resizeEvent(QResizeEvent* event);

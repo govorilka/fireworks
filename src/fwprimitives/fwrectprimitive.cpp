@@ -42,14 +42,17 @@ void FwRectPrimitive::paint(FwPainter* painter, const QRect& clipRect)
     }
 }
 
-QRect FwRectPrimitive::updateGeometry(const QRect& rect)
+void FwRectPrimitive::updateGeometry(const QRect &rect, QRect& boundingRect)
 {
     if(m_brush)
     {
         m_brush->setSourceRect(rect);
-        return rect;
-    }   
-    return QRect(rect.topLeft(), rect.topLeft());
+        boundingRect = rect;
+    }
+    else
+    {
+        boundingRect = QRect();
+    }
 }
 
 void FwRectPrimitive::apply(FwMLObject *object)

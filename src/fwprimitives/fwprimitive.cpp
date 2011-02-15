@@ -130,8 +130,7 @@ void FwPrimitive::update(bool needUpdateBuffer)
     if(_startChanged > 0 && ((--_startChanged) == 0))
     {
         QRect oldBoundingRect = m_boundingRect;
-
-        m_boundingRect = updateGeometry(m_geometry->rect());
+        updateGeometry(m_geometry->rect(), m_boundingRect);
         m_boundingRectDirty = false;
 
         if(oldBoundingRect != m_boundingRect)
@@ -149,14 +148,12 @@ void FwPrimitive::update(bool needUpdateBuffer)
                 }
             }
 
-            if(m_parent)
+
+            FwPrimitiveGroup* parent = m_parent;
+            while(parent)
             {
-                FwPrimitiveGroup* parent = m_parent;
-                while(parent)
-                {
-                    parent->m_boundingRectDirty = true;
-                    parent = parent->m_parent;
-                }
+                parent->m_boundingRectDirty = true;
+                parent = parent->m_parent;
             }
         }
 
@@ -200,11 +197,6 @@ void FwPrimitive::invalidate()
 
 void FwPrimitive::visibleChangedEvent()
 {
-}
-
-QRect FwPrimitive::updateGeometry(const QRect& rect)
-{
-    return rect;
 }
 
 void FwPrimitive::apply(FwMLObject* object)

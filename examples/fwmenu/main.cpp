@@ -9,6 +9,8 @@
 
 #include <QtGui/QApplication>
 
+#include <QtTest/QtTest>
+
 #include "fwcore/fwml.h"
 
 #include "fwgui/fwgraphicsview.h"
@@ -19,7 +21,8 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
+    QTEST_DISABLE_KEYPAD_NAVIGATION
 
     QPGraphicsView view;
 
@@ -29,7 +32,7 @@ int main(int argc, char *argv[])
     QWidget* widget = view.createWidget(0);
     widget->show();
 
-    QFile fwmlFile(a.applicationDirPath() + QDir::separator() + "menu.fwml");
+    QFile fwmlFile(app.applicationDirPath() + QDir::separator() + "menu.fwml");
     if(fwmlFile.exists())
     {
         FwMLObject rootObject;
@@ -39,5 +42,5 @@ int main(int argc, char *argv[])
         }
     }
 
-    return a.exec();
+    return QTest::qExec(menuScene, argc, argv);
 }

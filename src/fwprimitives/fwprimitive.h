@@ -114,13 +114,15 @@ public:
     void setPosition(Fw::HorizontalPosition hPosition, Fw::VerticalPosition vPosition);
 
 protected:
-    virtual QRect updateGeometry(const QRect& rect);
+    virtual void updateGeometry(const QRect& rect, QRect& boundingRect) = 0;
 
     virtual void paint(FwPainter* painter, const QRect& clipRect) = 0;
 
     void updateGeometryRect(const QRect& parentRect, QRect currentRect);
 
     virtual void visibleChangedEvent();
+
+    inline void invalidateBoundingRect();
 
 private:
     void createNewBuffer();

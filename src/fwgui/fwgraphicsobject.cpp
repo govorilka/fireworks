@@ -79,7 +79,7 @@ void FwGraphicsObject::setHideAnimation(QPropertyAnimation* animation)
     }
 }
 
-QRect FwGraphicsObject::updateGeometry(const QRect &rect)
+void FwGraphicsObject::updateGeometry(const QRect& rect, QRect& boundingRect)
 {
     if(m_oldSize != rect.size())
     {
@@ -87,7 +87,15 @@ QRect FwGraphicsObject::updateGeometry(const QRect &rect)
         QCoreApplication::sendEvent(this, &resizeEvent);
         m_oldSize = rect.size();
     }
-    return BaseClass::updateGeometry(rect);
+
+    FwRectPrimitive::updateGeometry(rect, boundingRect);
+
+    foreach(FwPrimitive* primitive, primitives())
+    {
+        primitive->invalidateBoundingRect();
+    }
+
+    boundingRect = rect;
 }
 
 bool FwGraphicsObject::event(QEvent *e)
@@ -127,4 +135,9 @@ void FwGraphicsObject::keyPressEvent(FwKeyPressEvent* event)
 void FwGraphicsObject::resizeEvent(QResizeEvent* event)
 {
     Q_UNUSED(event);
+}
+
+FwGraphicsObject* FwGraphicsObject::object() const
+{
+    return const_cast<FwGraphicsObject*>(this);
 }

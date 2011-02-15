@@ -24,9 +24,6 @@ public:
     inline int columnSpan() const;
     void setColumnSpan(int span);
 
-protected:
-    QRect updateGeometry(const QRect &rect);
-
 private:
     int m_row;
     int m_column;
@@ -83,7 +80,7 @@ public:
     void setColumnsWidth(QVector<qreal> widths);
 
 protected:
-    QRect updateGeometry(const QRect &rect);
+    void updateGeometry(const QRect &rect, QRect& boundingRect);
 
     void updateRealSizes();
     void updateCellGeometry();

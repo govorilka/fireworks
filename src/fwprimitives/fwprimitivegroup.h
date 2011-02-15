@@ -6,6 +6,8 @@
 
 #include "fwprimitives/fwrectprimitive.h"
 
+class FwGraphicsObject;
+
 class FwPrimitiveGroup : public FwRectPrimitive
 {
     typedef FwRectPrimitive BaseClass;
@@ -23,10 +25,12 @@ public:
 
     void apply(FwMLObject *object);
 
+    virtual FwGraphicsObject* object() const;
+
 protected:
     inline void sortZIndex();
 
-    QRect updateGeometry(const QRect& rect);
+    void updateGeometry(const QRect &rect, QRect& boundingRect);
 
     void paint(FwPainter *painter, const QRect &clipRect);
 

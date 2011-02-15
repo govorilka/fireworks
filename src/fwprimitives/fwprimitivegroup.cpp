@@ -7,6 +7,7 @@
 #include "fwcore/fwml.h"
 
 #include "fwgui/fwpainter.h"
+#include "fwgui/fwgraphicsobject.h"
 
 FwPrimitiveGroup::FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent)
@@ -34,27 +35,23 @@ void FwPrimitiveGroup::removeItems()
     }
 }
 
-QRect FwPrimitiveGroup::updateGeometry(const QRect& rect)
+void FwPrimitiveGroup::updateGeometry(const QRect &rect, QRect& boundingRect)
 {
     QRegion region;
 
-    QRect baseRect = BaseClass::updateGeometry(rect);
-    if(!baseRect.isNull())
+    BaseClass::updateGeometry(rect, boundingRect);
+    if(!boundingRect.isNull())
     {
-        region = region.united(baseRect);
+        region = region.united(boundingRect);
     }
 
-    foreach(FwPrimitive* item , m_primitives)
+    foreach(FwPrimitive* primitive, m_primitives)
     {
-        if(item->m_boundingRectDirty)
-        {
-            item->m_boundingRect = item->updateGeometry(item->rect());
-            item->m_boundingRectDirty = false;
-        }
-        region = region.united(item->m_boundingRect);
+        primitive->invalidateBoundingRect();
+        region = region.united(primitive->m_boundingRect);
     }
 
-    return region.boundingRect();
+    boundingRect = region.boundingRect();
 }
 
 void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
@@ -124,4 +121,9 @@ void FwPrimitiveGroup::apply(FwMLObject *object)
     BaseClass::apply(object);
 
     update();
+}
+
+FwGraphicsObject* FwPrimitiveGroup::object() const
+{
+    return m_parent ? m_parent->object() : 0;
 }

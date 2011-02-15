@@ -183,4 +183,13 @@ void FwPrimitive::setVPosition(Fw::VerticalPosition position)
     setPosition(m_hPosition, position);
 }
 
+void FwPrimitive::invalidateBoundingRect()
+{
+    if(m_boundingRectDirty)
+    {
+        updateGeometry(geometryRect(), m_boundingRect);
+        m_boundingRectDirty = false;
+    }
+}
+
 #endif // FIREWORKS_GRAPHICSITEM_INL_H

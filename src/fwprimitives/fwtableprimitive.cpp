@@ -57,11 +57,6 @@ void FwCellPrimitive::setColumnSpan(int span)
     }
 }
 
-QRect FwCellPrimitive::updateGeometry(const QRect &rect)
-{
-    return BaseClass::updateGeometry(rect);
-}
-
 //////////////////////////////////////////////////////////////////////////////////
 
 FwTablePrimitive::FwTablePrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
@@ -240,7 +235,7 @@ void FwTablePrimitive::resizeSizeVector(QVector<qreal>& vector, int newSize)
     }
 }
 
-QRect FwTablePrimitive::updateGeometry(const QRect &rect)
+void FwTablePrimitive::updateGeometry(const QRect &rect, QRect& boundingRect)
 {
     if(!m_startTableChanged)
     {
@@ -248,7 +243,7 @@ QRect FwTablePrimitive::updateGeometry(const QRect &rect)
         updateRealSizes();
         updateCellGeometry();
     }
-    return BaseClass::updateGeometry(rect);
+    updateGeometry(rect, boundingRect);
 }
 
 void FwTablePrimitive::updateRealSizes()

@@ -35,7 +35,7 @@ public:
     void apply(FwMLObject *object);
 
 protected:
-    QRect updateGeometry(const QRect& rect);
+    void updateGeometry(const QRect &rect, QRect& boundingRect);
 
     void updateStringRect(const QString &string);
 

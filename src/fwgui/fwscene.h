@@ -53,8 +53,6 @@ protected:
 
     void paint(FwPainter *painter, const QRect &clipRect);
 
-    QRect updateGeometry(const QRect &rect);
-
 private:
     FwGraphicsView* m_view;
     int m_id;

@@ -1,5 +1,7 @@
 #include <QtCore/qdebug.h>
 
+#include <QtTest/QtTest>
+
 #include "menuscene.h"
 
 #include "fwgui/fwguievent.h"
@@ -42,4 +44,13 @@ void MenuScene::keyPressEvent(FwKeyPressEvent *event)
         event->accept();
         break;
      }
+}
+
+void MenuScene::testCase1()
+{
+    QBENCHMARK
+    {
+        //m_slidingFrame->updateLayout(m_slidingFrame->items(), m_slidingFrame->current());
+        m_slidingFrame->setCurrent(Fw::goPtr(m_slidingFrame->items(), Fw::Go_Previous, m_slidingFrame->current()));
+    }
 }

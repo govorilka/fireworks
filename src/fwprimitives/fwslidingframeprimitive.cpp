@@ -118,18 +118,17 @@ void FwSlidingFramePrimitive::setCurrent(FwPrimitive* primitive)
     {
         prepareGeometryChanged();
         m_current = primitive;
-        updateLayout(m_items, m_current);
         update();
     }
 }
 
-QRect FwSlidingFramePrimitive::updateGeometry(const QRect &rect)
+void FwSlidingFramePrimitive::updateGeometry(const QRect &rect, QRect& boundingRect)
 {
     if(m_current)
     {
         updateLayout(m_items, m_current);
     }
-    return BaseClass::updateGeometry(rect);
+    BaseClass::updateGeometry(rect, boundingRect);
 }
 
 void FwSlidingFramePrimitive::setItemMargin(int margin)

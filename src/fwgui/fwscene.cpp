@@ -100,12 +100,7 @@ void FwScene::hideEventProcessed(FwSceneHideEvent* e)
 
 void FwScene::paint(FwPainter *painter, const QRect &clipRect)
 {
-    if(m_boundingRectDirty)
-    {
-        m_boundingRect = updateGeometry(rect());
-        m_boundingRectDirty = false;
-    }
-
+    invalidateBoundingRect();
     BaseClass::paint(painter, clipRect);
 }
 
@@ -115,12 +110,6 @@ void FwScene::updateCanvas(const QRect& rect)
     {
         m_view->updateCanvas(rect);
     }
-}
-
-QRect FwScene::updateGeometry(const QRect &rect)
-{
-    BaseClass::updateGeometry(rect);
-    return rect;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -58,31 +58,33 @@ void FwLinePrimitive::setLine(const QLine& line)
     }
 }
 
-QRect FwLinePrimitive::updateGeometry(const QRect& rect)
+void FwLinePrimitive::updateGeometry(const QRect &rect, QRect &boundingRect)
 {
     if(m_lenght)
     {
-        QRect r = rect;
+        boundingRect = rect;
         switch(m_orientation)
         {
         case Fw::O_Horizontal:
-            r.setSize(QSize(m_lenght, m_pen->width()));
+            boundingRect.setSize(QSize(m_lenght, m_pen->width()));
             break;
 
         case Fw::O_Vertical:
-            r.setSize(QSize(m_pen->width(), m_lenght));
+            boundingRect.setSize(QSize(m_pen->width(), m_lenght));
             break;
 
         case Fw::O_Diagonal:
-            r.setSize(QSize(m_pen->width() + m_p2.x(), m_pen->width() + m_p2.y()));
+            boundingRect.setSize(QSize(m_pen->width() + m_p2.x(), m_pen->width() + m_p2.y()));
             break;
 
         default:
             break;
         }
-        return r;
     }
-    return QRect();
+    else
+    {
+        boundingRect = QRect();
+    }
 }
 
 void FwLinePrimitive::paint(FwPainter *painter, const QRect &clipRect)
