@@ -2,8 +2,13 @@
 #define FIREWORKS_SLIDINGFRAMEPRIMITIVE_H
 
 #include <QtCore/qlist.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qvariant.h>
 
 #include "fwprimitives/fwprimitivegroup.h"
+
+class FwMLObject;
+class FwStringPrimitive;
 
 class FwSlidingFramePrimitive : public FwPrimitiveGroup
 {
@@ -16,13 +21,17 @@ public:
 
     inline QList<FwPrimitive*> items() const;
 
-    void addItem(FwPrimitive* primitive);
+    void addItem(FwPrimitive* primitive, const QVariant& data = QVariant());
+    FwStringPrimitive* addItem(const QString& text, const QVariant& data = QVariant());
 
     inline FwPrimitive* current() const;
     void setCurrent(FwPrimitive* primitive);
 
     inline int itemMargin() const;
     void setItemMargin(int margin);
+
+    inline FwMLObject* itemTemplate() const;
+    void setItemTemplate(FwMLObject* itemTemplate);
 
     void apply(FwMLObject *object);
 
@@ -36,6 +45,7 @@ private:
     FwPrimitive* m_current;
 
     int m_itemMargin;
+    FwMLObject* m_itemTemplate;
 };
 
 QList<FwPrimitive*> FwSlidingFramePrimitive::items() const
@@ -51,6 +61,11 @@ FwPrimitive* FwSlidingFramePrimitive::current() const
 int FwSlidingFramePrimitive::itemMargin() const
 {
     return m_itemMargin;
+}
+
+FwMLObject* FwSlidingFramePrimitive::itemTemplate() const
+{
+    return m_itemTemplate;
 }
 
 #endif // FIREWORKS_SLIDINGFRAMEPRIMITIVE_H

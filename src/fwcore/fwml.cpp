@@ -758,6 +758,11 @@ quint32 FwMLString::toUInt(bool* bOk) const
     return 0;
 }
 
+FwMLNode* FwMLString::clone() const
+{
+    return new FwMLString(m_value);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLUIntNumber::FwMLUIntNumber() :
@@ -812,6 +817,13 @@ FwColor FwMLUIntNumber::toColor(bool* bOk) const
     return FwColor(m_value);
 }
 
+FwMLNode* FwMLUIntNumber::clone() const
+{
+    FwMLUIntNumber* number = new FwMLUIntNumber();
+    number->m_value = m_value;
+    return number;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLIntNumber::FwMLIntNumber() :
@@ -864,6 +876,13 @@ FwColor FwMLIntNumber::toColor(bool* bOk) const
     }
     (*bOk) = true;
     return FwColor(m_value);
+}
+
+FwMLNode* FwMLIntNumber::clone() const
+{
+    FwMLIntNumber* number = new FwMLIntNumber();
+    number->m_value = m_value;
+    return number;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -924,6 +943,13 @@ FwColor FwMLDoubleNumber::toColor(bool* bOk) const
 {
     (*bOk) = false;
     return FwColor();
+}
+
+FwMLNode* FwMLDoubleNumber::clone() const
+{
+    FwMLDoubleNumber* number = new FwMLDoubleNumber();
+    number->m_value = m_value;
+    return number;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1160,6 +1186,18 @@ FwColor FwMLObject::toColor(bool* bOk) const
     return FwColor();
 }
 
+FwMLNode* FwMLObject::clone() const
+{
+    FwMLObject* newObject = new FwMLObject();
+    for(QHash<QByteArray, FwMLNode*>::const_iterator iter = m_attributes.begin(); iter != m_attributes.end(); ++iter)
+    {
+        FwMLNode* child = iter.value()->clone();
+        child->m_parent = newObject;
+        newObject->m_attributes.insert(iter.key(), child);
+    }
+    return newObject;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLArray::FwMLArray() :
@@ -1248,4 +1286,18 @@ FwColor FwMLArray::toColor(bool* bOk) const
     }
     (*bOk) = false;
     return false;
+}
+
+FwMLNode* FwMLArray::clone() const
+{
+    FwMLArray* newArray = new FwMLArray();
+    int array_size = data.size();
+    newArray->data.resize(array_size);
+    for(int i = 0; i < array_size; i++)
+    {
+        FwMLNode* child = data[i]->clone();
+        child->m_parent = newArray;
+        newArray->data[i] = child;
+    }
+    return newArray;
 }

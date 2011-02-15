@@ -9,21 +9,28 @@
 FwSlidingFramePrimitive::FwSlidingFramePrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_itemMargin(0),
-    m_current(0)
+    m_current(0),
+    m_itemTemplate(0)
 {
 }
 
 FwSlidingFramePrimitive::~FwSlidingFramePrimitive()
 {
+    delete m_itemTemplate;
 }
 
-void FwSlidingFramePrimitive::addItem(FwPrimitive* primitive)
+void FwSlidingFramePrimitive::addItem(FwPrimitive* primitive, const QVariant& data)
 {
+    Q_UNUSED(data);
     if(!m_items.contains(primitive))
     {
         prepareGeometryChanged();
 
         primitive->link(geometry());
+        if(m_itemTemplate)
+        {
+            primitive->apply(m_itemTemplate);
+        }
         m_items.append(primitive);
 
         if(!m_current)
@@ -33,6 +40,18 @@ void FwSlidingFramePrimitive::addItem(FwPrimitive* primitive)
 
         update();
     }
+}
+
+FwStringPrimitive* FwSlidingFramePrimitive::addItem(const QString& text, const QVariant& data)
+{
+    if(!text.isEmpty())
+    {
+        FwStringPrimitive* string = new FwStringPrimitive("", this);
+        string->setString(text);
+        addItem(string, data);
+        return string;
+    }
+    return 0;
 }
 
 void FwSlidingFramePrimitive::updateLayout(const QList<FwPrimitive*> items, FwPrimitive* current)
@@ -138,7 +157,26 @@ void FwSlidingFramePrimitive::apply(FwMLObject *object)
         }
     }
 
+    FwMLObject* itemNode = object->attribute("item")->cast<FwMLObject>();
+    if(itemNode)
+    {
+        setItemTemplate(itemNode->clone()->cast<FwMLObject>());
+    }
+
     BaseClass::apply(object);
 
     update();
+}
+
+void FwSlidingFramePrimitive::setItemTemplate(FwMLObject* itemTemplate)
+{
+    if(m_itemTemplate != itemTemplate)
+    {
+        delete m_itemTemplate;
+        m_itemTemplate = itemTemplate;
+        foreach(FwPrimitive* item, m_items)
+        {
+            item->apply(m_itemTemplate);
+        }
+    }
 }

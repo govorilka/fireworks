@@ -64,6 +64,8 @@ public:
     virtual bool toBool(bool* bOk) const = 0;
     virtual FwColor toColor(bool* bOk) const = 0;
 
+    virtual FwMLNode* clone() const = 0;
+
 private:
     FwMLNode* m_parent;
 };
@@ -123,6 +125,8 @@ public:
     FwColor toColor(bool* bOk) const;
     quint32 toUInt(bool* bOk) const;
 
+    FwMLNode* clone() const;
+
 private:
     QByteArray m_value;
 };
@@ -145,6 +149,8 @@ public:
     int toInt(bool* bOk) const;
     bool toBool(bool* bOk) const;
     FwColor toColor(bool* bOk) const;
+
+    FwMLNode* clone() const;
 
 private:
     quint32 m_value;
@@ -170,6 +176,8 @@ public:
     bool toBool(bool* bOk) const;
     FwColor toColor(bool* bOk) const;
 
+    FwMLNode* clone() const;
+
 private:
    int m_value;
 };
@@ -193,6 +201,8 @@ public:
     int toInt(bool* bOk) const;
     bool toBool(bool* bOk) const;
     FwColor toColor(bool* bOk) const;
+
+    FwMLNode* clone() const;
 
 private:
     double m_value;
@@ -233,6 +243,8 @@ public:
     bool toBool(bool* bOk) const;
     FwColor toColor(bool* bOk) const;
 
+    FwMLNode* clone() const;
+
 private:
     QHash<QByteArray, FwMLNode*> m_attributes;
 };
@@ -260,6 +272,8 @@ public:
     int toInt(bool* bOk) const;
     bool toBool(bool* bOk) const;
     FwColor toColor(bool* bOk) const;
+
+    FwMLNode* clone() const;
 };
 
 #include "fwml_inl.h"
