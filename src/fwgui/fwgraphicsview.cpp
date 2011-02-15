@@ -182,10 +182,10 @@ void FwGraphicsView::keyPressEvent(FwKeyPressEvent* event)
     }
 }
 
-void FwGraphicsView::render(FwPainter* painter)
+void FwGraphicsView::render(FwPainter* painter, const QRect& clipRect)
 {
     if(m_activeScene)
     {
-        m_activeScene->paint(painter, painter->clipRect());
+        m_activeScene->paint(painter, clipRect);
     }
 }

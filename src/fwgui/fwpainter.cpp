@@ -5,7 +5,7 @@ FwPainter::FwPainter(const QRect& window, const QRect& clipRect, FwRender* rende
     m_nullY(window.y()),
     m_windowSize(window.size()),
     m_render(render),
-    m_clipRect(QRect(0, 0, 0, 0)),
+    m_clipRect(QRect(QPoint(0, 0), window.size())),
     m_color(0x00, 0x00, 0x00, 0x00),
     m_opacity(1.0)
 {

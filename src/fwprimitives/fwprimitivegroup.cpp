@@ -60,7 +60,6 @@ QRect FwPrimitiveGroup::updateGeometry(const QRect& rect)
 void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
 {
     BaseClass::paint(painter, clipRect);
-
     foreach(FwPrimitive* item, m_primitives)
     {
         if(item->visibleOnScreen)

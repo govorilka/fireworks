@@ -105,6 +105,7 @@ void FwScene::paint(FwPainter *painter, const QRect &clipRect)
         m_boundingRect = updateGeometry(rect());
         m_boundingRectDirty = false;
     }
+
     BaseClass::paint(painter, clipRect);
 }
 
@@ -112,12 +113,14 @@ void FwScene::updateCanvas(const QRect& rect)
 {
     if(m_view && m_view->m_activeScene == this)
     {
-        QRect displayRect = this->rect().intersected(rect);
-        if(!displayRect.isEmpty())
-        {
-            m_view->updateCanvas(displayRect);
-        }
+        m_view->updateCanvas(rect);
     }
+}
+
+QRect FwScene::updateGeometry(const QRect &rect)
+{
+    BaseClass::updateGeometry(rect);
+    return rect;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
