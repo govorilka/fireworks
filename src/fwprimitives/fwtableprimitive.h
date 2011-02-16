@@ -80,7 +80,7 @@ public:
     void setColumnsWidth(QVector<qreal> widths);
 
 protected:
-    void updateGeometry(const QRect &rect, QRect& boundingRect);
+    void geometryChanged(const QRect &oldRect, QRect &rect);
 
     void updateRealSizes();
     void updateCellGeometry();

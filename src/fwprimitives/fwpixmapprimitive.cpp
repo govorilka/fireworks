@@ -30,15 +30,14 @@ void FwPixmapPrimitive::setPixmap(const FwPixmap& pixmap)
     }
 }
 
-void FwPixmapPrimitive::updateGeometry(const QRect &rect, QRect& boundingRect)
+void FwPixmapPrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
 {
-    boundingRect.moveTo(rect.topLeft());
-    boundingRect.setSize(m_pixmap.size());
+    rect.setSize(m_pixmap.size());
 }
 
 void FwPixmapPrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
-    painter->drawPixmap(clipRect, m_pixmap, &clipRect.translated(boundingRect().topLeft()));
+    painter->drawPixmap(clipRect, m_pixmap, &clipRect.translated(geometryRect().topLeft()));
 }
 
 void FwPixmapPrimitive::apply(FwMLObject *object)

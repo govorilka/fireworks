@@ -39,7 +39,7 @@ public:
     inline FwGeometry* progressRect() const;
 
 protected:
-    void updateGeometry(const QRect &rect, QRect& boundingRect);
+    void geometryChanged(const QRect &oldRect, QRect &rect);
 
     void paint(FwPainter *painter, const QRect &clipRect);
 

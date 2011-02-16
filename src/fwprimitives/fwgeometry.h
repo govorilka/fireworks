@@ -28,9 +28,16 @@ public:
 
     inline QPoint pos() const;
 
+    inline bool isDirty() const;
+    inline bool posChanged() const;
+    inline bool sizeChanged() const;
+    void apply();
+
 private:
     QVarLengthArray<FwPrimitive*> anchors;
     QRect m_rect;
+    bool m_posChanged;
+    bool m_sizeChanged;
 };
 
 void FwGeometry::setRect(int x, int y, int w, int h)
@@ -69,6 +76,21 @@ QSize FwGeometry::size() const
 QPoint FwGeometry::pos() const
 {
     return m_rect.topLeft();
+}
+
+bool FwGeometry::isDirty() const
+{
+    return m_posChanged || m_sizeChanged;
+}
+
+bool FwGeometry::posChanged() const
+{
+    return m_posChanged;
+}
+
+bool FwGeometry::sizeChanged() const
+{
+    return m_sizeChanged;
 }
 
 #endif // FIREWORKS_GEOMETRY_H

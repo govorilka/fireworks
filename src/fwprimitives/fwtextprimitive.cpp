@@ -52,7 +52,7 @@ void FwTextPrimitive::setPen(FwPen* pen)
     }
 }
 
-void FwTextPrimitive::updateGeometry(const QRect &rect, QRect& boundingRect)
+void FwTextPrimitive::geometryChanged(const QRect &oldRect, QRect &rect)
 {
     if(m_text.isEmpty())
     {
@@ -65,8 +65,7 @@ void FwTextPrimitive::updateGeometry(const QRect &rect, QRect& boundingRect)
         jEngine.setFont(m_font);
         m_strings = jEngine.processing(m_text);
     }
-    BaseClass::updateGeometry(rect, boundingRect);
-    boundingRect = rect;
+    BaseClass::geometryChanged(oldRect, rect);
 }
 
 void FwTextPrimitive::paint(FwPainter *painter, const QRect &clipRect)

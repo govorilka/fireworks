@@ -16,4 +16,14 @@ void FwPrimitiveGroup::sortZIndex()
     }
 }
 
+void FwPrimitiveGroup::updateChildRect()
+{
+    FwPrimitiveGroup* parent = this;
+    while(parent)
+    {
+        parent->m_childrenRectDirty = true;
+        parent = parent->m_parent;
+    }
+}
+
 #endif // FIREWORKS_GRAPHICSITEMGROUP_INL_H

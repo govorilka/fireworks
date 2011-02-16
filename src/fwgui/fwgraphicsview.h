@@ -52,6 +52,8 @@ public:
 
     bool event(QEvent *e);
 
+    void render(FwPainter* painter, const QRect& clipRect); //TEMPORARY
+
 protected:
     virtual void keyPressEvent(FwKeyPressEvent* event);
 
@@ -61,8 +63,6 @@ protected:
 
     virtual FwPixmapData* createBuffer(const FwPixmapDescription& desc) = 0;
     virtual FwPixmapData* createBuffer(Fw::BufferMode mode, const QSize& size) = 0;
-
-    void render(FwPainter* painter, const QRect& clipRect);
 
 private:
     QSize m_size;

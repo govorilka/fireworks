@@ -13,6 +13,7 @@ class FwPrimitiveGroup : public FwRectPrimitive
     typedef FwRectPrimitive BaseClass;
 
 public:
+    friend class FwGraphicsObject;
     friend class FwPrimitive;
     friend class FwScene;
 
@@ -27,17 +28,23 @@ public:
 
     virtual FwGraphicsObject* object() const;
 
+    inline void updateChildRect();
+
 protected:
     inline void sortZIndex();
-
-    void updateGeometry(const QRect &rect, QRect& boundingRect);
 
     void paint(FwPainter *painter, const QRect &clipRect);
 
     virtual void visibleChangedEvent();
 
+    virtual void invalidateChildrenRect();
+
 private:
     QVector<FwPrimitive*> m_primitives;
+    QList<FwPrimitiveGroup*> m_groups;
+
+    QRect m_childrenRect;
+    bool m_childrenRectDirty;
 };
 
 #include "fwprimitives/fwprimitivegroup_inl.h"

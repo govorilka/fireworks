@@ -20,14 +20,9 @@ protected:
 private:
     FwSlidingFramePrimitive* m_slidingFrame;
 
-    FwStringPrimitive* m_item1;
-    FwStringPrimitive* m_item2;
-    FwStringPrimitive* m_item3;
-    FwStringPrimitive* m_item4;
-    FwStringPrimitive* m_item5;
-
 private slots:
     void testCase1();
+    void testCase2();
 };
 
 #endif // MENUSCENE_H

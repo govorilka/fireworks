@@ -103,19 +103,15 @@ QRect FwPrimitive::geometryRect() const
     return m_geometry->rect();
 }
 
-void FwPrimitive::setGeometryRect(const QRect& rect)
+void FwPrimitive::setGeometryRect(QRect rect)
 {
     if(m_geometry->rect() != rect)
     {
         prepareGeometryChanged();
+        geometryChanged(m_geometry->rect(), rect);
         m_geometry->setRect(rect);
         update();
     }
-}
-
-QRect FwPrimitive::boundingRect() const
-{
-    return m_boundingRect;
 }
 
 bool FwPrimitive::isVisible() const
@@ -181,15 +177,6 @@ Fw::VerticalPosition FwPrimitive::vPosition() const
 void FwPrimitive::setVPosition(Fw::VerticalPosition position)
 {
     setPosition(m_hPosition, position);
-}
-
-void FwPrimitive::invalidateBoundingRect()
-{
-    if(m_boundingRectDirty)
-    {
-        updateGeometry(geometryRect(), m_boundingRect);
-        m_boundingRectDirty = false;
-    }
 }
 
 #endif // FIREWORKS_GRAPHICSITEM_INL_H

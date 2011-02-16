@@ -42,16 +42,11 @@ void FwRectPrimitive::paint(FwPainter* painter, const QRect& clipRect)
     }
 }
 
-void FwRectPrimitive::updateGeometry(const QRect &rect, QRect& boundingRect)
+void FwRectPrimitive::geometryChanged(const QRect &oldRect, QRect &rect)
 {
     if(m_brush)
     {
         m_brush->setSourceRect(rect);
-        boundingRect = rect;
-    }
-    else
-    {
-        boundingRect = QRect();
     }
 }
 

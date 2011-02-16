@@ -69,9 +69,7 @@ public:
     inline FwGeometry* geometry() const;
 
     inline QRect geometryRect() const;
-    inline void setGeometryRect(const QRect& rect);
-
-    inline QRect boundingRect() const;
+    inline void setGeometryRect(QRect rect);
 
     inline void prepareGeometryChanged();
     void invalidate();
@@ -114,15 +112,13 @@ public:
     void setPosition(Fw::HorizontalPosition hPosition, Fw::VerticalPosition vPosition);
 
 protected:
-    virtual void updateGeometry(const QRect& rect, QRect& boundingRect) = 0;
+    virtual void geometryChanged(const QRect& oldRect, QRect& rect);
 
     virtual void paint(FwPainter* painter, const QRect& clipRect) = 0;
 
     void updateGeometryRect(const QRect& parentRect, QRect currentRect);
 
     virtual void visibleChangedEvent();
-
-    inline void invalidateBoundingRect();
 
 private:
     void createNewBuffer();
@@ -137,9 +133,6 @@ private:
     Fw::HorizontalPosition m_hPosition;
     Fw::VerticalPosition m_vPosition;
     FwGeometry* m_parentGeometry;
-
-    QRect m_boundingRect;
-    bool m_boundingRectDirty;
 
     Fw::BufferMode m_bufferMode;
     bool bufferDirty;

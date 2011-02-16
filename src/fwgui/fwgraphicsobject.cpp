@@ -79,23 +79,16 @@ void FwGraphicsObject::setHideAnimation(QPropertyAnimation* animation)
     }
 }
 
-void FwGraphicsObject::updateGeometry(const QRect& rect, QRect& boundingRect)
+void FwGraphicsObject::geometryChanged(const QRect &oldRect, QRect &rect)
 {
-    if(m_oldSize != rect.size())
+    if(oldRect.size() != rect.size())
     {
         QResizeEvent resizeEvent(rect.size(), m_oldSize);
         QCoreApplication::sendEvent(this, &resizeEvent);
-        m_oldSize = rect.size();
     }
 
-    FwRectPrimitive::updateGeometry(rect, boundingRect);
-
-    foreach(FwPrimitive* primitive, primitives())
-    {
-        primitive->invalidateBoundingRect();
-    }
-
-    boundingRect = rect;
+    FwRectPrimitive::geometryChanged(oldRect, rect);
+    m_childrenRect = rect;
 }
 
 bool FwGraphicsObject::event(QEvent *e)

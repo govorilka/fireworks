@@ -28,7 +28,7 @@ public:
     void apply(FwMLObject *object);
 
 protected:
-    virtual void updateGeometry(const QRect &rect, QRect &boundingRect);
+    void geometryChanged(const QRect& oldRect, QRect& rect);
 
     virtual void paint(FwPainter *painter, const QRect &clipRect);
 

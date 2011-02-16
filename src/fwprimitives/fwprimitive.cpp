@@ -21,9 +21,6 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_vPosition(Fw::VP_Unchanged),
     m_parentGeometry(0),
 
-    m_boundingRect(0, 0, 0, 0),
-    m_boundingRectDirty(false),
-
     m_bufferMode(Fw::BM_NoBuffer),
     bufferDirty(false),
     m_buffer(0),
@@ -57,7 +54,7 @@ FwPrimitive::~FwPrimitive()
         if(m_visible)
         {
             m_parent->prepareGeometryChanged();
-            m_parent->m_boundingRectDirty = true;
+            m_parent->m_childrenRectDirty = true;
             m_parent->update();
         }
         m_parent = 0;
@@ -80,9 +77,9 @@ FwPrimitive::~FwPrimitive()
 void FwPrimitive::createNewBuffer()
 {
     releaseBuffer();
-    if(m_boundingRect.width() != 0 && m_boundingRect.height() != 0)
+    if(m_geometry->rect().width() != 0 && m_geometry->rect().height() != 0)
     {
-        m_buffer = m_scene->view()->createBuffer(m_bufferMode, m_boundingRect.size());
+        m_buffer = m_scene->view()->createBuffer(m_bufferMode, m_geometry->rect().size());
         if(m_buffer)
         {
             m_buffer->setBlendingEnable(true);
@@ -107,8 +104,8 @@ void FwPrimitive::updateBuffer()
         FwRender* render = m_buffer->createRender();
         if(render)
         {
-            FwPainter painter(m_boundingRect, m_boundingRect, render);
-            paint(&painter, m_boundingRect);
+            FwPainter painter(m_geometry->rect(), m_geometry->rect(), render);
+            paint(&painter, m_geometry->rect());
             bufferDirty = false;
         }
     }
@@ -129,15 +126,11 @@ void FwPrimitive::update(bool needUpdateBuffer)
 {
     if(_startChanged > 0 && ((--_startChanged) == 0))
     {
-        QRect oldBoundingRect = m_boundingRect;
-        updateGeometry(m_geometry->rect(), m_boundingRect);
-        m_boundingRectDirty = false;
-
-        if(oldBoundingRect != m_boundingRect)
+        if(m_geometry->isDirty())
         {
             if(m_bufferMode)
             {
-                if(m_buffer && (oldBoundingRect.size() != m_boundingRect.size()))
+                if(m_buffer && m_geometry->sizeChanged())
                 {
                     releaseBuffer();
                     bufferDirty = true;
@@ -147,17 +140,10 @@ void FwPrimitive::update(bool needUpdateBuffer)
                     bufferDirty = (!m_buffer || needUpdateBuffer);
                 }
             }
-
-
-            FwPrimitiveGroup* parent = m_parent;
-            while(parent)
-            {
-                parent->m_boundingRectDirty = true;
-                parent = parent->m_parent;
-            }
+            m_geometry->apply();
+            m_parent->updateChildRect();
+            invalidate();
         }
-
-        invalidate();
     }
 }
 
@@ -182,7 +168,7 @@ void FwPrimitive::setVisible(bool visible)
         visibleChangedEvent();
         if(_startChanged == 0)
         {
-            m_scene->updateCanvas(m_boundingRect);
+            m_scene->updateCanvas(m_geometry->rect());
         }
     }
 }
@@ -191,7 +177,7 @@ void FwPrimitive::invalidate()
 {
     if(_startChanged == 0 && visibleOnScreen)
     {
-        m_scene->updateCanvas(m_boundingRect);
+        m_scene->updateCanvas(geometryRect());
     }
 }
 
@@ -717,3 +703,8 @@ bool FwPrimitive::loadRect(FwMLObject* object, QRect* rect)
     return true;
 }
 
+void FwPrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
+{
+    Q_UNUSED(oldRect);
+    Q_UNUSED(rect);
+}

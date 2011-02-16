@@ -60,11 +60,11 @@ void FwProgressPrimitive::setAnimation(FwProgressAnimation* animation)
     }
 }
 
-void FwProgressPrimitive::updateGeometry(const QRect &rect, QRect& boundingRect)
+void FwProgressPrimitive::geometryChanged(const QRect &oldRect, QRect &rect)
 {
     normalMinProgressWidth = qBound(0, m_minProgressWidth, rect.width());
     updateProgressRect(false);
-    BaseClass::updateGeometry(rect, boundingRect);
+    BaseClass::geometryChanged(oldRect, rect);
 }
 
 void FwProgressPrimitive::paint(FwPainter *painter, const QRect &clipRect)

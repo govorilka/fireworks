@@ -54,14 +54,14 @@ FwStringPrimitive* FwSlidingFramePrimitive::addItem(const QString& text, const Q
     return 0;
 }
 
-void FwSlidingFramePrimitive::updateLayout(const QList<FwPrimitive*> items, FwPrimitive* current)
+void FwSlidingFramePrimitive::updateLayout(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect)
 {
     int leftNullX = 0;
-    int rightNullX = width();
+    int rightNullX = rect.width();
 
-    int leftX = (width() - current->width()) / 2;
+    int leftX = (rect.width() - current->width()) / 2;
     int rightX = leftX + current->width() + m_itemMargin;
-    current->setPos(leftX, (height() - current->height()) / 2);
+    current->setPos(leftX, (rect.height() - current->height()) / 2);
 
     QList<FwPrimitive*>::const_iterator leftIter = items.begin();
     leftIter += items.indexOf(current);
@@ -72,7 +72,7 @@ void FwSlidingFramePrimitive::updateLayout(const QList<FwPrimitive*> items, FwPr
             --leftIter;
             FwPrimitive* primitive = (*leftIter);
             primitive->setPos(leftX -= (primitive->width() + m_itemMargin),
-                              (height() - primitive->height()) / 2);
+                              (rect.height() - primitive->height()) / 2);
         }
         while(leftIter != items.begin() && leftX >= leftNullX);
     }
@@ -83,7 +83,7 @@ void FwSlidingFramePrimitive::updateLayout(const QList<FwPrimitive*> items, FwPr
     {
         FwPrimitive* primitive = (*rightIter);
         primitive->setPos(rightX,
-                          (height() - primitive->height()) / 2);
+                          (rect.height() - primitive->height()) / 2);
         rightX += (primitive->width() + m_itemMargin);
         rightIter++;
     }
@@ -93,7 +93,7 @@ void FwSlidingFramePrimitive::updateLayout(const QList<FwPrimitive*> items, FwPr
     {
         FwPrimitive* primitive = (*iter);
         primitive->setPos(rightX,
-                          (height() - primitive->height()) / 2);
+                          (rect.height() - primitive->height()) / 2);
         rightX += (primitive->width() + m_itemMargin);
         iter++;
     }
@@ -106,7 +106,7 @@ void FwSlidingFramePrimitive::updateLayout(const QList<FwPrimitive*> items, FwPr
             --iter;
             FwPrimitive* primitive = (*iter);
             primitive->setPos(leftX -= (primitive->width() + m_itemMargin),
-                              (height() - primitive->height()) / 2);
+                              (rect.height() - primitive->height()) / 2);
         }
         while(iter != rightIter);
     }
@@ -114,21 +114,22 @@ void FwSlidingFramePrimitive::updateLayout(const QList<FwPrimitive*> items, FwPr
 
 void FwSlidingFramePrimitive::setCurrent(FwPrimitive* primitive)
 {
-    if(m_items.contains(primitive) && m_current != primitive)
+    if(m_current != primitive)
     {
         prepareGeometryChanged();
         m_current = primitive;
+        updateChildRect();
         update();
     }
 }
 
-void FwSlidingFramePrimitive::updateGeometry(const QRect &rect, QRect& boundingRect)
+void FwSlidingFramePrimitive::geometryChanged(const QRect &oldRect, QRect &rect)
 {
+    BaseClass::geometryChanged(oldRect, rect);
     if(m_current)
     {
-        updateLayout(m_items, m_current);
+        updateLayout(m_items, m_current, rect);
     }
-    BaseClass::updateGeometry(rect, boundingRect);
 }
 
 void FwSlidingFramePrimitive::setItemMargin(int margin)
@@ -178,4 +179,13 @@ void FwSlidingFramePrimitive::setItemTemplate(FwMLObject* itemTemplate)
             item->apply(m_itemTemplate);
         }
     }
+}
+
+void FwSlidingFramePrimitive::invalidateChildrenRect()
+{
+    if(m_current)
+    {
+        updateLayout(m_items, m_current, geometryRect());
+    }
+    BaseClass::invalidateChildrenRect();
 }

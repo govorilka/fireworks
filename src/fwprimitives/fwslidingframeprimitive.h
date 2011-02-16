@@ -36,9 +36,10 @@ public:
     void apply(FwMLObject *object);
 
 protected:
-    void updateGeometry(const QRect &rect, QRect& boundingRect);
+    void geometryChanged(const QRect &oldRect, QRect &rect);
+    void invalidateChildrenRect();
 
-    virtual void updateLayout(const QList<FwPrimitive*> items, FwPrimitive* current);
+    virtual void updateLayout(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
 
 private:
     QList<FwPrimitive*> m_items;

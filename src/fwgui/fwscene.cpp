@@ -11,8 +11,7 @@
 FwScene::FwScene(int id, FwGraphicsView* view) :
     BaseClass("scene", 0),
     m_view(view),
-    m_id(id),
-    needPostUpdateEvent(true)
+    m_id(id)
 {
     setParent(m_view);
 
@@ -100,7 +99,7 @@ void FwScene::hideEventProcessed(FwSceneHideEvent* e)
 
 void FwScene::paint(FwPainter *painter, const QRect &clipRect)
 {
-    invalidateBoundingRect();
+    invalidateChildrenRect();
     BaseClass::paint(painter, clipRect);
 }
 
