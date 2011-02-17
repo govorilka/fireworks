@@ -64,6 +64,6 @@ private:
     int m_visibleTimerId;
 };
 
-#include "fwgui/fwwidget_inl.h"
+#include "fwgui/widgets/fwwidget_inl.h"
 
 #endif // FIREWORKS_WIDGET_H

@@ -3,11 +3,12 @@
 #include "fwprimitive.h"
 
 #include "fwgui/fwscene.h"
-#include "fwgui/fwwidget.h"
 #include "fwgui/fwgraphicsview.h"
 #include "fwgui/fwpixmap.h"
 #include "fwgui/fwpainter.h"
 #include "fwgui/fwpen.h"
+
+#include "fwgui/widgets/fwwidget.h"
 
 #include "fwcore/fwml.h"
 

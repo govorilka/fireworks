@@ -5,8 +5,9 @@
 #include <QtGui/qevent.h>
 
 #include "fwscene.h"
-#include "fwwidget.h"
 #include "fwgraphicsview.h"
+
+#include "fwgui/widgets/fwwidget.h"
 
 FwScene::FwScene(int id, FwGraphicsView* view) :
     BaseClass("scene", 0),

@@ -1,20 +1,29 @@
 bgcolor : "black",
 
-slidingFrame {
-  rect {
-     x : 0, y : 0, width : 0, height : 78  
-  },
+itemView
+{
+  class : "fireworks.widgets.ItemView",
+
+  height : 78,
 
   bgcolor : "red",
 
-  itemMargin : 16,
+  layout
+  {
+    class : "fireworks.layouts.SlidingFrame",
+    margin : 16,
+  },
 
-  item {
-     font {
+  item
+  {
+     class : "fireworks.primitives.String",
+     font
+     {
         family : "Arial",
         pixelSize : 48
      },
      color : "white"
   }
+
 },
 

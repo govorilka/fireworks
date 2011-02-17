@@ -5,7 +5,8 @@
 #include <QtGui/qapplication.h>
 
 #include "fwwidget.h"
-#include "fwscene.h"
+
+#include "fwgui/fwscene.h"
 
 /*!
 \class FwWidget

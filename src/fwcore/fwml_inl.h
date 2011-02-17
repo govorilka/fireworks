@@ -91,6 +91,15 @@ int FwMLObject::attributesCount() const
     return m_attributes.size();
 }
 
+QByteArray FwMLObject::className() const
+{
+    FwMLString* classNode = attribute("class")->cast<FwMLString>();
+    if(classNode)
+    {
+        return classNode->value();
+    }
+    return QByteArray();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

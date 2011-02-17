@@ -5,6 +5,7 @@
 
 class FwSlidingFramePrimitive;
 class FwStringPrimitive;
+class FwItemView;
 
 class MenuScene : public FwScene
 {
@@ -18,7 +19,7 @@ protected:
     void keyPressEvent(FwKeyPressEvent *event);
 
 private:
-    FwSlidingFramePrimitive* m_slidingFrame;
+    FwItemView* m_itemView;
 
 private slots:
     void testCase1();

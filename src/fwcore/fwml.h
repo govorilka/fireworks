@@ -222,6 +222,8 @@ public:
     FwMLObject(FwMLArray* parent);
     ~FwMLObject();
 
+    inline QByteArray className() const;
+
     FwMLNode* addAttribute(const QByteArray& name, FwMLNode* value, bool replace = true);
 
     inline FwMLNode* attribute(const QByteArray& name) const;
