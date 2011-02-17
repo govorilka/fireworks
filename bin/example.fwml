@@ -1,0 +1,28 @@
+bgcolor : "olive",
+
+rectItem {
+  zindex :1,
+  bgcolor : "purple",
+  border {
+    color : "red",
+    width : 5
+  },
+  rect {
+    x : 0, y : 0, width : 640, height : 480
+  }
+},
+
+pixmapItem {
+   zindex : 2,
+   source : "./images/browser.png"
+},
+
+stringItem {
+   zindex : 3,
+   font {
+      family : "Arial",
+      pixelSize : 48
+   },
+   color : "orange",
+   string : "Hello world!"
+}
