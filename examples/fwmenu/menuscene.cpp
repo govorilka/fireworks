@@ -8,6 +8,7 @@
 #include "fwgui/fwpainter.h"
 
 #include "fwgui/widgets/fwitemview.h"
+#include "fwgui/widgets/fwitemlayout.h"
 
 #include "fwgui/primitives/fwstringprimitive.h"
 
@@ -50,7 +51,6 @@ void MenuScene::testCase1()
 {
     QBENCHMARK
     {
-        //m_slidingFrame->updateLayout(m_slidingFrame->items(), m_slidingFrame->current());
         m_itemView->setCurrent(Fw::goPtr(m_itemView->items(), Fw::Go_Previous, m_itemView->current()));
     }
 }
@@ -62,5 +62,18 @@ void MenuScene::testCase2()
     QBENCHMARK
     {
         view()->render(&painter, rect());
+    }
+}
+
+void MenuScene::testCase3()
+{
+    FwItemLayout* layout = m_itemView->layout();
+    if(!layout)
+    {
+        return;
+    }
+    QBENCHMARK
+    {
+        layout->update(m_itemView->items(), m_itemView->current(), m_itemView->geometryRect());
     }
 }

@@ -24,6 +24,7 @@ private:
 private slots:
     void testCase1();
     void testCase2();
+    void testCase3();
 };
 
 #endif // MENUSCENE_H

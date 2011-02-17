@@ -30,7 +30,8 @@ HEADERS += \
     fwgui/widgets/fwwidget.h \
     fwgui/widgets/fwitemview.h \
     fwgui/widgets/fwwidget_inl.h \
-    fwgui/widgets/fwitemlayout.h
+    fwgui/widgets/fwitemlayout.h \
+    fwgui/widgets/fwanimation.h
 
 SOURCES += \
     fwgui/fwgraphicsview.cpp \
@@ -54,4 +55,5 @@ SOURCES += \
     fwgui/primitives/fwgeometry.cpp \
     fwgui/widgets/fwwidget.cpp \
     fwgui/widgets/fwitemview.cpp \
-    fwgui/widgets/fwitemlayout.cpp
+    fwgui/widgets/fwitemlayout.cpp \
+    fwgui/widgets/fwanimation.cpp
