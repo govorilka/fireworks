@@ -1,8 +1,7 @@
 #ifndef FIREWORKS_GRAPHICSPIXMAPITEM_H
 #define FIREWORKS_GRAPHICSPIXMAPITEM_H
 
-#include "fwprimitives/fwprimitive.h"
-
+#include "fwgui/primitives/fwprimitive.h"
 #include "fwgui/fwpixmap.h"
 
 class FwPixmapPrimitive : public FwPrimitive

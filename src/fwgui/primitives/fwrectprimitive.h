@@ -6,7 +6,7 @@
 #include "fwgui/fwbrush.h"
 #include "fwgui/fwpixmap.h"
 
-#include "fwprimitives/fwprimitive.h"
+#include "fwgui/primitives/fwprimitive.h"
 
 class FwBrush;
 

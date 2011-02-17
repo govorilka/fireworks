@@ -5,7 +5,7 @@
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 
-#include "fwprimitives/fwprimitivegroup.h"
+#include "fwgui/primitives/fwprimitivegroup.h"
 
 class FwMLObject;
 class FwStringPrimitive;

@@ -7,8 +7,8 @@
 #include "fwgui/fwguievent.h"
 #include "fwgui/fwpainter.h"
 
-#include "fwprimitives/fwslidingframeprimitive.h"
-#include "fwprimitives/fwstringprimitive.h"
+#include "fwgui/primitives/fwslidingframeprimitive.h"
+#include "fwgui/primitives/fwstringprimitive.h"
 
 #include "qpgraphicsview.h"
 #include "qprender.h"

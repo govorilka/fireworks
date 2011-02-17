@@ -4,7 +4,7 @@
 #include <QtCore/qvector.h>
 #include <QtCore/qlist.h>
 
-#include "fwprimitives/fwrectprimitive.h"
+#include "fwgui/primitives/fwrectprimitive.h"
 
 class FwGraphicsObject;
 
@@ -47,6 +47,6 @@ private:
     bool m_childrenRectDirty;
 };
 
-#include "fwprimitives/fwprimitivegroup_inl.h"
+#include "fwgui/primitives/fwprimitivegroup_inl.h"
 
 #endif //FIREWORKS_GRAPHICSITEMGROUP_H

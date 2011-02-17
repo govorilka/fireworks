@@ -3,7 +3,7 @@
 
 #include <QtCore/qvariantanimation.h>
 
-#include "fwprimitives/fwrectprimitive.h"
+#include "fwgui/primitives/fwrectprimitive.h"
 
 class FwProgressAnimation;
 

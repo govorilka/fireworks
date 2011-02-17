@@ -1,7 +1,7 @@
 #ifndef FIREWORKS_GRAPHICSLINEITEM_INL_H
 #define FIREWORKS_GRAPHICSLINEITEM_INL_H
 
-#include "fwprimitives/fwlineprimitive.h"
+#include "fwgui/primitives/fwlineprimitive.h"
 
 FwPen* FwLinePrimitive::pen() const
 {

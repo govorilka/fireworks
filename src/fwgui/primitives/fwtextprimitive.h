@@ -3,7 +3,7 @@
 
 #include <QtCore/qvector.h>
 
-#include "fwprimitives/fwrectprimitive.h"
+#include "fwgui/primitives/fwrectprimitive.h"
 
 #include "fwtypography/fwfont.h"
 #include "fwtypography/fwtextstring.h"

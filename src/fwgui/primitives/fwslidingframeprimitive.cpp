@@ -2,7 +2,7 @@
 
 #include "fwslidingframeprimitive.h"
 
-#include "fwprimitives/fwstringprimitive.h"
+#include "fwgui/primitives/fwstringprimitive.h"
 
 #include "fwcore/fwml.h"
 

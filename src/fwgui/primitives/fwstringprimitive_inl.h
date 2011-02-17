@@ -1,7 +1,7 @@
 #ifndef FIREWORKS_GRAPHICSSTRINGITEM_INL_H
 #define FIREWORKS_GRAPHICSSTRINGITEM_INL_H
 
-#include "fwprimitives/fwstringprimitive.h"
+#include "fwgui/primitives/fwstringprimitive.h"
 
 QString FwStringPrimitive::string() const
 {

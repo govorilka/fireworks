@@ -2,9 +2,9 @@
 
 #include "fwcore/fwml.h"
 
-#include "fwprimitives/fwrectprimitive.h"
-#include "fwprimitives/fwstringprimitive.h"
-#include "fwprimitives/fwpixmapprimitive.h"
+#include "fwgui/primitives/fwrectprimitive.h"
+#include "fwgui/primitives/fwstringprimitive.h"
+#include "fwgui/primitives/fwpixmapprimitive.h"
 
 PlayerScene::PlayerScene(int id, FwGraphicsView* view) :
     BaseClass(id, view),

@@ -1,7 +1,7 @@
 #ifndef FIREWORKS_GRAPHICSITEMGROUP_INL_H
 #define FIREWORKS_GRAPHICSITEMGROUP_INL_H
 
-#include "fwprimitives/fwprimitivegroup.h"
+#include "fwgui/primitives/fwprimitivegroup.h"
 
 QVector<FwPrimitive*> FwPrimitiveGroup::primitives() const
 {

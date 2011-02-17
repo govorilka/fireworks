@@ -1,7 +1,7 @@
 #ifndef FIREWORKS_GRAPHICSTABLEITEM_H
 #define FIREWORKS_GRAPHICSTABLEITEM_H
 
-#include "fwprimitives/fwprimitivegroup.h"
+#include "fwgui/primitives/fwprimitivegroup.h"
 
 class FwTablePrimitive;
 class FwCellPrimitive;

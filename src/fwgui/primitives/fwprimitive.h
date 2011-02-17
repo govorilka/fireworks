@@ -148,6 +148,6 @@ private:
     QByteArray m_name;
 };
 
-#include "fwprimitives/fwprimitive_inl.h"
+#include "fwgui/primitives/fwprimitive_inl.h"
 
 #endif // FIREWORKS_GRAPHICSITEM_H

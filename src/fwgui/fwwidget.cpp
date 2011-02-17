@@ -137,7 +137,6 @@ void FwWidget::timerEvent(QTimerEvent* event)
 {
     if(m_visibleTimerId == event->timerId())
     {
-        qDebug() << "FwWidget::timerEvent: hide";
         hide();
     }
 }

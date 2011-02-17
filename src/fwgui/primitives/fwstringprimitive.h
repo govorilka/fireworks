@@ -1,7 +1,7 @@
 #ifndef FIREWORKS_GRAPHICSSTRINGITEM_H
 #define FIREWORKS_GRAPHICSSTRINGITEM_H
 
-#include "fwprimitives/fwlineprimitive.h"
+#include "fwgui/primitives/fwlineprimitive.h"
 
 #include "fwcore/fwcolor.h"
 
@@ -55,6 +55,6 @@ private:
     QRect m_stringRect;
 };
 
-#include "fwprimitives/fwstringprimitive_inl.h"
+#include "fwgui/primitives/fwstringprimitive_inl.h"
 
 #endif // FIREWORKS_GRAPHICSSTRINGITEM_H

@@ -5,7 +5,7 @@
 
 #include <QtGui/qcolor.h>
 
-#include "fwprimitives/fwprimitivegroup.h"
+#include "fwgui/primitives/fwprimitivegroup.h"
 
 #include "fwtypography/fwfont.h"
 

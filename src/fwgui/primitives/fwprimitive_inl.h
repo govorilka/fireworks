@@ -1,8 +1,8 @@
 #ifndef FIREWORKS_GRAPHICSITEM_INL_H
 #define FIREWORKS_GRAPHICSITEM_INL_H
 
-#include "fwprimitives/fwprimitive.h"
-#include "fwprimitives/fwgeometry.h"
+#include "fwgui/primitives/fwprimitive.h"
+#include "fwgui/primitives/fwgeometry.h"
 
 FwPrimitiveGroup* FwPrimitive::parent() const
 {

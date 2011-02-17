@@ -3,7 +3,7 @@
 
 #include <QtCore/qline.h>
 
-#include "fwprimitives/fwprimitive.h"
+#include "fwgui/primitives/fwprimitive.h"
 
 class FwPen;
 
@@ -41,6 +41,6 @@ private:
     int m_orientation;
 };
 
-#include "fwprimitives/fwlineprimitive_inl.h"
+#include "fwgui/primitives/fwlineprimitive_inl.h"
 
 #endif // FIREWORKS_GRAPHICSLINEITEM_H
