@@ -22,7 +22,7 @@ MenuScene::MenuScene(int id, FwGraphicsView* view) :
     m_itemView->show();
     m_itemView->setPosition(Fw::HP_CenterDock, Fw::VP_Middle);
 
-    for(int i = 0; i < 100; i++)
+    for(int i = 0; i < 10; i++)
     {
         m_itemView->addItem(QString("item") + QString::number(i));
     }

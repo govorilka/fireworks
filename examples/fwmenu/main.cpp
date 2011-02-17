@@ -22,7 +22,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    //QTEST_DISABLE_KEYPAD_NAVIGATION
+    QTEST_DISABLE_KEYPAD_NAVIGATION
 
     QPGraphicsView view;
 
@@ -42,6 +42,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    return app.exec();
-    //return QTest::qExec(menuScene, argc, argv);
+    //return app.exec();
+    return QTest::qExec(menuScene, argc, argv);
 }
