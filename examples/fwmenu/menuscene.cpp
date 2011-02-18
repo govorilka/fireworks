@@ -44,7 +44,17 @@ void MenuScene::keyPressEvent(FwKeyPressEvent *event)
         m_itemView->setCurrent(Fw::goPtr(m_itemView->items(), Fw::Go_Next, m_itemView->current()));
         event->accept();
         break;
-     }
+
+    case Qt::Key_Space:
+        {
+            FwItemLayout* layout = m_itemView->layout();
+            if(layout)
+            {
+                layout->loop();
+            }
+        }
+        break;
+    }
 }
 
 void MenuScene::testCase1()
