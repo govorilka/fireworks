@@ -18,15 +18,15 @@ void FwPrimitiveGroup::sortZIndex()
 
 void FwPrimitiveGroup::updateChildrenRect()
 {
-    if(!childrenRectDirty)
+    FwPrimitiveGroup* parent = this;
+    while(parent)
     {
-        FwPrimitiveGroup* parent = this;
-        do
+        if(parent->childrenRectDirty)
         {
-            parent->childrenRectDirty = true;
-            parent = parent->m_parent;
+            break;
         }
-        while(parent);
+        parent->childrenRectDirty = true;
+        parent = parent->m_parent;
     }
 }
 

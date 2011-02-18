@@ -52,7 +52,7 @@ private:
     FwMLObject* m_itemTemplate;
 
     FwItemLayout* m_layout;
-
+    bool needInitLayout;
 };
 
 FwItemLayout* FwItemView::layout() const

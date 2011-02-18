@@ -18,7 +18,9 @@ const char FwSlidingFrameLayout::staticClassName[] = "fireworks.layouts.SlidingF
 FwSlidingFrameLayout::FwSlidingFrameLayout(FwItemView* view) :
     BaseClass(view),
     m_orientation(Fw::O_Horizontal),
-    m_margin(0)
+    m_margin(0),
+    m_criticalPoint(0),
+    m_middleItem(0)
 {
 }
 
@@ -60,21 +62,24 @@ void FwSlidingFrameLayout::setMargin(int margin)
     }
 }
 
-void FwSlidingFrameLayout::update(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect)
+void FwSlidingFrameLayout::init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect)
 {
-    int maxWidth = rect.width();
+    m_criticalPoint = rect.width();
     foreach(FwPrimitive* primitive, items)
     {
-        maxWidth += primitive->width();
+        primitive->setY(0.5 * (rect.height() - primitive->height()));
+        m_criticalPoint += primitive->width();
     }
-    maxWidth = 0.5 * (maxWidth + m_margin * (items.size() - 1));
+    m_criticalPoint = 0.5 * (m_criticalPoint + m_margin * (items.size() - 1));
 
-    int leftNullX = 0;
-    int rightNullX = maxWidth;
+    m_middleItem = current;
+}
 
+void FwSlidingFrameLayout::update(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect)
+{
     int leftX = (rect.width() - current->width()) / 2;
     int rightX = leftX + current->width() + m_margin;
-    current->setPos(leftX, (rect.height() - current->height()) / 2);
+    current->setX(leftX);
 
     if(items.size() == 1)
     {
@@ -87,21 +92,19 @@ void FwSlidingFrameLayout::update(const QList<FwPrimitive*> items, FwPrimitive* 
     QList<FwPrimitive*>::const_iterator beginIter = items.begin();
     QList<FwPrimitive*>::const_iterator rightIter = currentIter + 1;
 
-    while(rightIter != items.end() && rightX <= rightNullX)
+    while(rightIter != items.end() && rightX <= m_criticalPoint)
     {
         FwPrimitive* primitive = (*rightIter);
-        primitive->setPos(rightX,
-                          (rect.height() - primitive->height()) / 2);
+        primitive->setX(rightX);
         rightX += (primitive->width() + m_margin);
         ++rightIter;
     }
     if(rightIter == items.end())
     {
-        while(beginIter != currentIter && rightX <= rightNullX)
+        while(beginIter != currentIter && rightX <= m_criticalPoint)
         {
             FwPrimitive* primitive = (*beginIter);
-            primitive->setPos(rightX,
-                              (rect.height() - primitive->height()) / 2);
+            primitive->setX(rightX);
             rightX += (primitive->width() + m_margin);
             ++beginIter;
         }
@@ -113,8 +116,7 @@ void FwSlidingFrameLayout::update(const QList<FwPrimitive*> items, FwPrimitive* 
         {
             --leftIter;
             FwPrimitive* primitive = (*leftIter);
-            primitive->setPos(leftX -= (primitive->width() + m_margin),
-                              (rect.height() - primitive->height()) / 2);
+            primitive->setX(leftX -= (primitive->width() + m_margin));
         }
         while(leftIter != beginIter);
     }
@@ -125,8 +127,7 @@ void FwSlidingFrameLayout::update(const QList<FwPrimitive*> items, FwPrimitive* 
         {
             --leftIter;
             FwPrimitive* primitive = (*leftIter);
-            primitive->setPos(leftX -= (primitive->width() + m_margin),
-                              (rect.height() - primitive->height()) / 2);
+            primitive->setX(leftX -= (primitive->width() + m_margin));
         }
         while(leftIter != rightIter);
     }

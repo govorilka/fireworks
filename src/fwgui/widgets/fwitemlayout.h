@@ -24,6 +24,7 @@ public:
 
     virtual void apply(FwMLObject* object) = 0;
 
+    virtual void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect) = 0;
     virtual void update(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect) = 0;
 
 protected:
@@ -59,11 +60,14 @@ public:
 
     void apply(FwMLObject* object);
 
+    void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
     void update(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
 
 private:
     Fw::Orientation m_orientation;
     int m_margin;
+    int m_criticalPoint;
+    FwPrimitive* m_middleItem;
 };
 
 Fw::Orientation FwSlidingFrameLayout::orientation() const
