@@ -16,13 +16,17 @@ void FwPrimitiveGroup::sortZIndex()
     }
 }
 
-void FwPrimitiveGroup::updateChildRect()
+void FwPrimitiveGroup::updateChildrenRect()
 {
-    FwPrimitiveGroup* parent = this;
-    while(parent)
+    if(!childrenRectDirty)
     {
-        parent->m_childrenRectDirty = true;
-        parent = parent->m_parent;
+        FwPrimitiveGroup* parent = this;
+        do
+        {
+            parent->childrenRectDirty = true;
+            parent = parent->m_parent;
+        }
+        while(parent);
     }
 }
 

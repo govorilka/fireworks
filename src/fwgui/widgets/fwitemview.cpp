@@ -29,7 +29,7 @@ void FwItemView::setLayout(FwItemLayout* layout)
         prepareGeometryChanged();
         delete m_layout;
         m_layout = layout;
-        updateChildRect();
+        updateChildrenRect();
         update();
     }
 }
@@ -75,7 +75,7 @@ void FwItemView::setCurrent(FwPrimitive* primitive)
     {
         prepareGeometryChanged();
         m_current = primitive;
-        updateChildRect();
+        updateChildrenRect();
         update();
     }
 }

@@ -20,7 +20,7 @@ itemView
      font
      {
         family : "Arial",
-        pixelSize : 48
+        pixelSize : 24
      },
      color : "white"
   }
