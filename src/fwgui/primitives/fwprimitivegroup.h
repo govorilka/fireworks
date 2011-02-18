@@ -28,7 +28,7 @@ public:
 
     virtual FwGraphicsObject* object() const;
 
-    inline void updateChildRect();
+    inline void updateChildrenRect();
 
 protected:
     inline void sortZIndex();
@@ -39,12 +39,14 @@ protected:
 
     virtual void invalidateChildrenRect();
 
+    bool childrenRectDirty;
+    bool childGeometryChanged;
+
 private:
     QVector<FwPrimitive*> m_primitives;
     QList<FwPrimitiveGroup*> m_groups;
 
     QRect m_childrenRect;
-    bool m_childrenRectDirty;
 };
 
 #include "fwgui/primitives/fwprimitivegroup_inl.h"

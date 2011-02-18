@@ -12,7 +12,8 @@
 FwPrimitiveGroup::FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_childrenRect(0, 0, 0, 0),
-    m_childrenRectDirty(false)
+    childrenRectDirty(false),
+    childGeometryChanged(false)
 {
     if(parent)
     {
@@ -132,14 +133,14 @@ static inline void uniteRect(QRect& rect, const QRect& addRect)
 
 void FwPrimitiveGroup::invalidateChildrenRect()
 {
-    if(m_childrenRectDirty)
+    if(childrenRectDirty)
     {
         foreach(FwPrimitiveGroup* group, m_groups)
         {
             group->invalidateChildrenRect();
         }
 
-        if(object() != this)
+        if(childGeometryChanged && object() != this)
         {
             int x1 = 0;
             int y1 = 0;
@@ -161,6 +162,7 @@ void FwPrimitiveGroup::invalidateChildrenRect()
             }
             m_childrenRect.setCoords(x1, y1, x2, y2);
         }
-        m_childrenRectDirty = false;
+        childGeometryChanged = false;
+        childrenRectDirty = false;
     }
 }

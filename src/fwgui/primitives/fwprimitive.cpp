@@ -54,9 +54,8 @@ FwPrimitive::~FwPrimitive()
         m_parent->m_primitives.remove(m_parent->m_primitives.indexOf(this));
         if(m_visible)
         {
-            m_parent->prepareGeometryChanged();
-            m_parent->m_childrenRectDirty = true;
-            m_parent->update();
+            m_parent->updateChildrenRect();
+            m_parent->invalidate();
         }
         m_parent = 0;
     }
@@ -142,7 +141,11 @@ void FwPrimitive::update(bool needUpdateBuffer)
                 }
             }
             m_geometry->apply();
-            m_parent->updateChildRect();
+            if(m_parent && !m_parent->childGeometryChanged)
+            {
+                m_parent->childGeometryChanged = true;
+                m_parent->updateChildrenRect();
+            }
             invalidate();
         }
     }
