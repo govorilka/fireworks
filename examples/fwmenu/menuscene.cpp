@@ -23,7 +23,7 @@ MenuScene::MenuScene(int id, FwGraphicsView* view) :
     m_itemView->show();
     m_itemView->setPosition(Fw::HP_CenterDock, Fw::VP_Middle);
 
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 100; i++)
     {
         m_itemView->addItem(QString("item") + QString::number(i));
     }
@@ -72,6 +72,7 @@ void MenuScene::testCase3()
     {
         return;
     }
+
     QBENCHMARK
     {
         layout->update(m_itemView->items(), m_itemView->current(), m_itemView->geometryRect());

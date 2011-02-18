@@ -140,12 +140,14 @@ void FwPrimitive::update(bool needUpdateBuffer)
                     bufferDirty = (!m_buffer || needUpdateBuffer);
                 }
             }
-            m_geometry->apply();
-            if(m_parent && !m_parent->childGeometryChanged)
+
+            if(m_parent && !m_parent->childSizeChanged)
             {
-                m_parent->childGeometryChanged = true;
-                m_parent->updateChildrenRect();
+                m_parent->childSizeChanged  = m_geometry->sizeChanged();
             }
+            m_parent->updateChildrenRect();
+
+            m_geometry->apply();
             invalidate();
         }
     }

@@ -40,7 +40,7 @@ protected:
     virtual void invalidateChildrenRect();
 
     bool childrenRectDirty;
-    bool childGeometryChanged;
+    bool childSizeChanged;
 
 private:
     QVector<FwPrimitive*> m_primitives;
