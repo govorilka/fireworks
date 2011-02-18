@@ -11,7 +11,9 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_layout(new FwSlidingFrameLayout(this)),
     m_current(0),
     m_itemTemplate(0),
-    needInitLayout(true)
+    needInitLayout(true),
+    needUpdateLayout(false
+                     )
 {
     addLayoutClass(FwSlidingFrameLayout::staticClassName, &FwSlidingFrameLayout::constructor);
 }
@@ -30,6 +32,7 @@ void FwItemView::setLayout(FwItemLayout* layout)
         prepareGeometryChanged();
         delete m_layout;
         m_layout = layout;
+        needUpdateLayout = true;
         updateChildrenRect();
         update();
     }
@@ -79,6 +82,7 @@ void FwItemView::setCurrent(FwPrimitive* primitive)
     {
         prepareGeometryChanged();
         m_current = primitive;
+        needUpdateLayout = true;
         updateChildrenRect();
         update();
     }
@@ -148,10 +152,15 @@ void FwItemView::invalidateChildrenRect()
     {
         if(childSizeChanged || needInitLayout)
         {
-            m_layout->init(m_items, m_current, geometryRect());
+            m_layout->init(m_items, geometryRect());
+            needUpdateLayout = true;
             needInitLayout = false;
         }
-        m_layout->update(m_items, m_current, geometryRect());
+        if(needUpdateLayout)
+        {
+            m_layout->update(m_items, m_current, geometryRect());
+            needUpdateLayout = false;
+        }
     }
     BaseClass::invalidateChildrenRect();
 }

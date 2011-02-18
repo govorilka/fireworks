@@ -46,13 +46,15 @@ protected:
     void geometryChanged(const QRect &oldRect, QRect &rect);
     void invalidateChildrenRect();
 
+    bool needInitLayout;
+    bool needUpdateLayout;
+
 private:
     QList<FwPrimitive*> m_items;
     FwPrimitive* m_current;
     FwMLObject* m_itemTemplate;
 
     FwItemLayout* m_layout;
-    bool needInitLayout;
 };
 
 FwItemLayout* FwItemView::layout() const
