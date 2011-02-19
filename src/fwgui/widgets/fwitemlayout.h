@@ -21,19 +21,16 @@ public:
     FwItemLayout(FwItemView* view);
 
     inline FwItemView* view() const;
+    QList<FwPrimitive*> items() const;
+    FwPrimitive* currentItem() const;
+    QRect rect() const;
 
     virtual QByteArray className() const = 0;
 
     virtual void apply(FwMLObject* object) = 0;
 
     virtual void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect) = 0;
-    virtual void update(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect) = 0;
-
-    virtual void loop() = 0; //TEMPORARY FUNCTION!!!
-
-    QList<FwPrimitive*> items() const;
-    FwPrimitive* currentItem() const;
-    QRect rect() const;
+    virtual void nextItem(const QList<FwPrimitive*>& items, int key) = 0;
 
 protected:
     FwItemView* m_view;
@@ -71,9 +68,7 @@ public:
     void apply(FwMLObject* object);
 
     void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
-    void update(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
-
-    void loop();
+    void nextItem(const QList<FwPrimitive*>& items, int key);
 
     void move(int point);
     inline int moveDelta() const { return 0; }
@@ -81,23 +76,24 @@ public:
 protected:
     FwPrimitive* calculateMiddleItem(const QList<FwPrimitive*>& items, const QRect& rect);
 
-    void calculateItemPosition(const QList<FwPrimitive*>& items);
+    void calculateItemPosition(const QList<FwPrimitive*>& items, FwPrimitive* middleItem);
+
+    void animationStart(FwPrimitive* current);
 
 private:
     Fw::Orientation m_orientation;
     int m_margin;
     int m_criticalPoint;
-    int m_totalLenght;
     int m_startPoint;
     int m_endPoint;
-    FwPrimitive* m_middleItem;
+
     FwPrimitive* m_candidateItem;
+    FwPrimitive* m_nextCandidateItem;
+
     int m_candidatePoint;
 
     QPropertyAnimation* m_animation; //TEMPORARY
     int m_deltaValue; //TEMPORARY
-
-    QList<FwPrimitive*> m_candidates;
 
 private slots:
     void animationFinish();
