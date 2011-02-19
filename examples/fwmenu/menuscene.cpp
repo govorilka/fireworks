@@ -36,12 +36,14 @@ void MenuScene::keyPressEvent(FwKeyPressEvent *event)
     switch(event->key())
     {
     case Qt::Key_Left:
-        m_itemView->setCurrent(Fw::goPtr(m_itemView->items(), Fw::Go_Previous, m_itemView->current()));
+        m_itemView->keyPressEvent(Qt::Key_Left);
+        //m_itemView->setCurrent(Fw::goPtr(m_itemView->items(), Fw::Go_Previous, m_itemView->current()));
         event->accept();
         break;
 
     case Qt::Key_Right:
-        m_itemView->setCurrent(Fw::goPtr(m_itemView->items(), Fw::Go_Next, m_itemView->current()));
+        m_itemView->keyPressEvent(Qt::Key_Right);
+        //m_itemView->setCurrent(Fw::goPtr(m_itemView->items(), Fw::Go_Next, m_itemView->current()));
         event->accept();
         break;
 
@@ -85,6 +87,6 @@ void MenuScene::testCase3()
 
     QBENCHMARK
     {
-        layout->update(m_itemView->items(), m_itemView->current(), m_itemView->geometryRect());
+        //layout->update(m_itemView->items(), m_itemView->current(), m_itemView->geometryRect());
     }
 }
