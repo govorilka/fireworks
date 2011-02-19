@@ -152,15 +152,19 @@ void FwItemView::invalidateChildrenRect()
     {
         if(childSizeChanged || needInitLayout)
         {
-            m_layout->init(m_items, geometryRect());
-            needUpdateLayout = true;
+            m_layout->init(m_items, m_current, geometryRect());
+            needUpdateLayout = false;
             needInitLayout = false;
         }
-        if(needUpdateLayout)
+        else
         {
-            m_layout->update(m_items, m_current, geometryRect());
-            needUpdateLayout = false;
+            if(needUpdateLayout)
+            {
+                m_layout->update(m_items, m_current, geometryRect());
+                needUpdateLayout = false;
+            }
         }
+
     }
     BaseClass::invalidateChildrenRect();
 }
