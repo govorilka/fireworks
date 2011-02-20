@@ -43,7 +43,7 @@ FwSlidingFrameLayout::FwSlidingFrameLayout(FwItemView* view) :
     m_animation(new QPropertyAnimation(this, "move", this)),
     m_deltaValue(0)
 {
-    m_animation->setDuration(250);
+    m_animation->setDuration(500);
     connect(m_animation, SIGNAL(finished()), this, SLOT(animationFinish()));
 }
 
@@ -254,7 +254,8 @@ void FwSlidingFrameLayout::animationStart(FwPrimitive* current)
     m_candidateItem = current;
     m_deltaValue = m_candidateItem->x();
 
-    m_animation->setEasingCurve(QEasingCurve::OutCurve);
+    //m_animation->setEasingCurve(QEasingCurve::OutCurve);
+    m_animation->setEasingCurve(QEasingCurve::OutBounce);
     m_animation->setStartValue(m_deltaValue);
     m_animation->setEndValue((rect().width() - m_candidateItem->width()) * 0.5);
     m_animation->start();

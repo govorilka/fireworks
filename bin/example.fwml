@@ -1,10 +1,10 @@
-bgcolor : "olive",
+bgcolor : "black",
 
 rectItem {
   zindex :1,
   bgcolor : "purple",
   border {
-    color : "red",
+    color : "green",
     width : 5
   },
   rect {
