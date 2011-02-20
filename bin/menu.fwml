@@ -11,6 +11,11 @@ itemView
   layout
   {
     class : "fireworks.layouts.SlidingFrame",
+    animation
+    {
+        easyCurve: "OutBounce",
+        duraction : 300
+    }
     margin : 16,
   },
 
