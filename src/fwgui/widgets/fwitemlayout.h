@@ -11,6 +11,7 @@
 class FwItemView;
 class FwPrimitive;
 class FwMLObject;
+class FwKeyPressEvent;
 
 class FwItemLayout : public QObject
 {
@@ -30,9 +31,14 @@ public:
     virtual void apply(FwMLObject* object) = 0;
 
     virtual void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect) = 0;
-    virtual void nextItem(const QList<FwPrimitive*>& items, int key) = 0;
+
+    void keyPressEvent(const QList<FwPrimitive*>& items, FwKeyPressEvent* keyEvent);
 
 protected:
+    virtual FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwKeyPressEvent* keyEvent) = 0;
+
+    virtual void animationStart(FwPrimitive* primitive) = 0;
+
     FwItemView* m_view;
     QRect m_rect;
 };
@@ -68,17 +74,18 @@ public:
     void apply(FwMLObject* object);
 
     void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
-    void nextItem(const QList<FwPrimitive*>& items, int key);
 
     void move(int point);
     inline int moveDelta() const { return 0; }
 
 protected:
+    FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwKeyPressEvent* keyEvent);
+
     FwPrimitive* calculateMiddleItem(const QList<FwPrimitive*>& items, const QRect& rect);
 
     void calculateItemPosition(const QList<FwPrimitive*>& items, FwPrimitive* middleItem);
 
-    void animationStart(FwPrimitive* current);
+    void animationStart(FwPrimitive* primitive);
 
 private:
     Fw::Orientation m_orientation;

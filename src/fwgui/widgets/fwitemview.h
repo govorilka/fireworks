@@ -42,9 +42,9 @@ public:
     static bool addLayoutClass(const QByteArray& className, FwLayoutConstructor* constructor);
     FwItemLayout* createLayout(const QByteArray& className);
 
-    void keyPressEvent(int key); //TEMPORARY
-
 protected:
+    void keyPressEvent(FwKeyPressEvent* keyEvent);
+
     void geometryChanged(const QRect &oldRect, QRect &rect);
     void invalidateChildrenRect();
 

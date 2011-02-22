@@ -3,6 +3,8 @@
 
 #include "fwcore/fwml.h"
 
+#include "fwgui/fwguievent.h"
+
 #include "fwgui/primitives/fwprimitive.h"
 #include "fwgui/primitives/fwstringprimitive.h"
 
@@ -184,10 +186,10 @@ FwItemLayout* FwItemView::createLayout(const QByteArray& className)
     return 0;
 }
 
-void FwItemView::keyPressEvent(int key)
+void FwItemView::keyPressEvent(FwKeyPressEvent* keyEvent)
 {
     if(m_current && m_layout)
     {
-        m_layout->nextItem(m_items, key);
+        m_layout->keyPressEvent(m_items, keyEvent);
     }
 }

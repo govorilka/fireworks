@@ -82,14 +82,14 @@ void FwBrushTexture::drawBackground(FwPainter* painter, const QRect& clipRect)
 {
     painter->drawPixmap(clipRect,
                         m_displayPixmap,
-                        &clipRect.translated(sourceRect().topLeft()));
+                        &clipRect.translated(-sourceRect().topLeft()));
 }
 
 void FwBrushTexture::updateSourceRect(const QRect& rect)
 {
     if(!m_pixmap.isNull() && rect.size().isValid())
     {
-        m_displayPixmap = rect.size() != m_pixmap.size() ? m_pixmap.resized(rect.size(), FwPixmap::RM_Scale) : m_pixmap;
+        m_displayPixmap = (rect.size() != m_pixmap.size()) ? m_pixmap.resized(rect.size(), FwPixmap::RM_Scale) : m_pixmap;
     }
     else
     {

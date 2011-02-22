@@ -48,6 +48,11 @@ void FwPrimitiveGroup::removeItems()
 
 void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
 {
+    if(clipRect == QRect(0,224,1280,55))
+    {
+        qDebug() << name() << clipRect;
+    }
+
     BaseClass::paint(painter, clipRect);
     if(clipRect.intersects(m_childrenRect))
     {

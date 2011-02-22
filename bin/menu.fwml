@@ -11,11 +11,12 @@ itemView
   layout
   {
     class : "fireworks.layouts.SlidingFrame",
+    orientation : "Horizontal",
     animation
     {
         easyCurve: "OutBounce",
         duraction : 300
-    }
+    },
     margin : 16,
   },
 
