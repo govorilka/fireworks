@@ -19,7 +19,6 @@ class FwWidget;
 
 class QPropertyAnimation;
 class QEvent;
-class QKeyEvent;
 class QTimerEvent;
 class QShowEvent;
 class QHideEvent;
@@ -44,7 +43,6 @@ public:
     bool event(QEvent * event);
 
 protected:
-    virtual void keyPressEvent(QKeyEvent* event);
     virtual void timerEvent(QTimerEvent* event);
     virtual void showEvent(QShowEvent* event);
     virtual void hideEvent(QHideEvent* event);

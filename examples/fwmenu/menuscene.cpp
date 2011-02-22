@@ -35,26 +35,9 @@ void MenuScene::keyPressEvent(FwKeyPressEvent *event)
 {
     switch(event->key())
     {
-    case Qt::Key_Left:
-        m_itemView->keyPressEvent(Qt::Key_Left);
-        //m_itemView->setCurrent(Fw::goPtr(m_itemView->items(), Fw::Go_Previous, m_itemView->current()));
-        event->accept();
-        break;
-
     case Qt::Key_Right:
-        m_itemView->keyPressEvent(Qt::Key_Right);
-        //m_itemView->setCurrent(Fw::goPtr(m_itemView->items(), Fw::Go_Next, m_itemView->current()));
-        event->accept();
-        break;
-
-    case Qt::Key_Space:
-        {
-            FwItemLayout* layout = m_itemView->layout();
-            if(layout)
-            {
-                layout->loop();
-            }
-        }
+    case Qt::Key_Left:
+        QCoreApplication::sendEvent(m_itemView, event);
         break;
     }
 }

@@ -8,7 +8,7 @@
 
 FwPixmapDescription::FwPixmapDescription() :
     m_source(QString()),
-    m_blending(true)
+    m_blending(false)
 {
 
 }
@@ -25,7 +25,7 @@ bool FwPixmapDescription::apply(FwMLNode* node)
     if(name)
     {
         m_source = QString::fromUtf8(name->value());
-        m_blending = true;
+        m_blending = false;
         return true;
     }
     else

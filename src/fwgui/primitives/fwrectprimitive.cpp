@@ -28,7 +28,7 @@ void FwRectPrimitive::setBrush(FwBrush* brush)
         m_brush = brush;
         if(m_brush)
         {
-            m_brush->setSourceRect(rect());
+            m_brush->setSourceRect(geometryRect());
         }
         invalidate();
     }

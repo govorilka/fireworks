@@ -3,6 +3,7 @@
 
 #include <QtCore/qrect.h>
 #include <QtCore/qsharedpointer.h>
+#include <QtCore/qdebug.h>
 
 #include "fwcore/fwcolor.h"
 

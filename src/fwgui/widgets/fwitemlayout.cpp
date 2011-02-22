@@ -5,6 +5,8 @@
 
 #include"fwcore/fwml.h"
 
+#include "fwgui/fwguievent.h"
+
 FwItemLayout::FwItemLayout(FwItemView* view) :
     BaseClass(view),
     m_view(view)
@@ -26,6 +28,19 @@ QRect FwItemLayout::rect() const
     return m_view->rect();
 }
 
+void FwItemLayout::keyPressEvent(const QList<FwPrimitive*>& items, FwKeyPressEvent* keyEvent)
+{
+    if(items.size() > 1)
+    {
+        FwPrimitive* candidatPrimitive = nextItem(items, keyEvent);
+        if(candidatPrimitive)
+        {
+            animationStart(candidatPrimitive);
+            keyEvent->accept();
+        }
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 const char FwSlidingFrameLayout::staticClassName[] = "fireworks.layouts.SlidingFrame";
@@ -43,7 +58,7 @@ FwSlidingFrameLayout::FwSlidingFrameLayout(FwItemView* view) :
     m_animation(new QPropertyAnimation(this, "move", this)),
     m_deltaValue(0)
 {
-    m_animation->setDuration(500);
+    m_animation->setDuration(300);
     connect(m_animation, SIGNAL(finished()), this, SLOT(animationFinish()));
 }
 
@@ -103,11 +118,11 @@ void FwSlidingFrameLayout::init(const QList<FwPrimitive*> items, FwPrimitive* cu
     }
 }
 
-void FwSlidingFrameLayout::nextItem(const QList<FwPrimitive*>& items, int key)
+FwPrimitive* FwSlidingFrameLayout::nextItem(const QList<FwPrimitive*>& items, FwKeyPressEvent* keyEvent)
 {
     QList<FwPrimitive*>::const_iterator candidateIter = items.begin();
 
-    switch(key)
+    switch(keyEvent->key())
     {
     case Qt::Key_Right:
         candidateIter += (items.indexOf(m_candidateItem) + 1);
@@ -115,7 +130,7 @@ void FwSlidingFrameLayout::nextItem(const QList<FwPrimitive*>& items, int key)
         {
             candidateIter = items.begin();
         }
-        break;
+        return (*candidateIter);
 
     case Qt::Key_Left:
         if(m_candidateItem == (*candidateIter))
@@ -126,13 +141,13 @@ void FwSlidingFrameLayout::nextItem(const QList<FwPrimitive*>& items, int key)
         {
             candidateIter += (items.indexOf(m_candidateItem) - 1);
         }
-        break;
+        return (*candidateIter);
 
     default:
-        return;
+        break;
     }
 
-    animationStart(*candidateIter);
+    return 0;
 }
 
 void FwSlidingFrameLayout::calculateItemPosition(const QList<FwPrimitive*>& items, FwPrimitive* middleItem)
@@ -239,23 +254,22 @@ void FwSlidingFrameLayout::move(int point)
     }
 }
 
-void FwSlidingFrameLayout::animationStart(FwPrimitive* current)
+void FwSlidingFrameLayout::animationStart(FwPrimitive* primitive)
 {
     if(m_animation->state() == QAbstractAnimation::Running)
     {
         if(!m_nextCandidateItem)
         {
             m_animation->setEasingCurve(QEasingCurve::Linear);
-            m_nextCandidateItem = current;
+            m_nextCandidateItem = primitive;
         }
         return;
     }
 
-    m_candidateItem = current;
+    m_candidateItem = primitive;
     m_deltaValue = m_candidateItem->x();
 
-    //m_animation->setEasingCurve(QEasingCurve::OutCurve);
-    m_animation->setEasingCurve(QEasingCurve::OutBounce);
+    m_animation->setEasingCurve(QEasingCurve::OutCurve);
     m_animation->setStartValue(m_deltaValue);
     m_animation->setEndValue((rect().width() - m_candidateItem->width()) * 0.5);
     m_animation->start();

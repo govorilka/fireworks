@@ -129,11 +129,6 @@ bool FwWidget::event(QEvent * e)
 //    updateCanvas(QRegion(m_rect));*/
 //}
 
-void FwWidget::keyPressEvent(QKeyEvent* event)
-{
-    Q_UNUSED(event);
-}
-
 void FwWidget::timerEvent(QTimerEvent* event)
 {
     if(m_visibleTimerId == event->timerId())
