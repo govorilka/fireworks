@@ -14,8 +14,9 @@ itemView
     orientation : "Horizontal",
     animation
     {
-        easyCurve: "OutBounce",
-        duraction : 300
+        class : "fireworks.layouts.Animation",
+        curve : "OutCubic",
+        duration : 300
     },
     margin : 16,
   },

@@ -12,6 +12,7 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_layout(new FwSlidingFrameLayout(this)),
     m_current(0),
+    m_previous(0),
     m_itemTemplate(0),
     needInitLayout(true)
 {
@@ -80,12 +81,14 @@ void FwItemView::setCurrent(FwPrimitive* primitive)
 {
     if(m_current != primitive)
     {
-        //TODO: Incorrent function!!!
-        prepareGeometryChanged();
-        m_current = primitive;
-        needInitLayout = true;
-        updateChildrenRect();
-        update();
+        if(m_layout)
+        {
+            m_layout->setCurrent(m_previous, m_current, isVisibleOnScreen());
+        }
+        else
+        {
+            applyCurrentItem(primitive);
+        }
     }
 }
 
@@ -154,8 +157,9 @@ void FwItemView::invalidateChildrenRect()
         if(childSizeChanged || needInitLayout)
         {
             m_layout->init(m_items, m_current, geometryRect());
+            m_layout->update(m_items, m_current, geometryRect());
             needInitLayout = false;
-        }  
+        }
     }
     BaseClass::invalidateChildrenRect();
 }
@@ -192,4 +196,11 @@ void FwItemView::keyPressEvent(FwKeyPressEvent* keyEvent)
     {
         m_layout->keyPressEvent(m_items, keyEvent);
     }
+}
+
+void FwItemView::applyCurrentItem(FwPrimitive* primitive)
+{
+    m_previous = m_current;
+    m_current = primitive;
+    emit currentChanged(m_previous, m_current);
 }
