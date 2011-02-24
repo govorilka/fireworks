@@ -47,6 +47,8 @@ void FwItemLayout::keyPressEvent(const QList<FwPrimitive*>& items, FwKeyPressEve
 
 void FwItemLayout::setCurrent(FwPrimitive* previous, FwPrimitive* current, bool visibleOnScreen)
 {
+    m_view->startChangedCurrent();
+
     if(visibleOnScreen && m_animation)
     {
         if(m_animation->state() == QAbstractAnimation::Running)

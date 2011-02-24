@@ -3,11 +3,6 @@
 
 #include "fwgui/primitives/fwlineprimitive.h"
 
-FwPen* FwLinePrimitive::pen() const
-{
-    return m_pen;
-}
-
 QLine FwLinePrimitive::line() const
 {
     return QLine(pos(), m_p2);

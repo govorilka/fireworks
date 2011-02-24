@@ -179,4 +179,14 @@ void FwPrimitive::setVPosition(Fw::VerticalPosition position)
     setPosition(m_hPosition, position);
 }
 
+FwPen* FwPrimitive::pen() const
+{
+    return m_pen;
+}
+
+FwColor FwPrimitive::penColor() const
+{
+    return m_pen ? m_pen->color() : FwColor();
+}
+
 #endif // FIREWORKS_GRAPHICSITEM_INL_H

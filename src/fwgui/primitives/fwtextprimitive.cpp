@@ -12,14 +12,13 @@
 #include "fwtypography/fwjustification.h"
 
 FwTextPrimitive::FwTextPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
-    BaseClass(name, parent),
-    m_pen(new FwPen(1, FwColor(0xFFFFFFFF)))
+    BaseClass(name, parent)
 {
+    setPen(new FwPen(1, FwColor(0xFFFFFFFF)));
 }
 
 FwTextPrimitive::~FwTextPrimitive()
 {
-    delete m_pen;
 }
 
 void FwTextPrimitive::setText(const QString& text)
@@ -39,16 +38,6 @@ void FwTextPrimitive::setFont(const FwFont& font)
        prepareGeometryChanged();
        m_font = font;
        update();
-    }
-}
-
-void FwTextPrimitive::setPen(FwPen* pen)
-{
-    if(m_pen != pen)
-    {
-        delete m_pen;
-        m_pen = pen;
-        invalidate();
     }
 }
 
@@ -72,9 +61,10 @@ void FwTextPrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
     BaseClass::paint(painter, clipRect);
 
-    if(!m_strings.isEmpty() && m_pen)
+    FwPen* pen = this->pen();
+    if(!m_strings.isEmpty() && pen)
     {
-        painter->setColor(m_pen->color());
+        painter->setColor(pen->color());
         painter->setFont(m_font);
 
         FwTextString* string = m_strings.data();
@@ -88,12 +78,6 @@ void FwTextPrimitive::paint(FwPainter *painter, const QRect &clipRect)
 void FwTextPrimitive::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
-
-    FwPen* pen = createPen(object, "pen");
-    if(pen)
-    {
-         setPen(pen);
-    }
 
     FwFont font = createFont(object, "font");
     if(!font.isNull())

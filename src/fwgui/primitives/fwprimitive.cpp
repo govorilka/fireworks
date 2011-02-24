@@ -15,25 +15,20 @@
 FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_parent(parent),
     m_scene(0),
-
     m_pos(0, 0),
     m_geometry(new FwGeometry()),
     m_hPosition(Fw::HP_Unchanged),
     m_vPosition(Fw::VP_Unchanged),
     m_parentGeometry(0),
-
     m_bufferMode(Fw::BM_NoBuffer),
     bufferDirty(false),
     m_buffer(0),
-
     m_visible(true),
     visibleOnScreen(false),
-
     m_zIndex(0),
-
     _startChanged(0),
-
-    m_name(name)
+    m_name(name),
+    m_pen(0)
 {
     if(m_parent)
     {
@@ -65,11 +60,8 @@ FwPrimitive::~FwPrimitive()
         link(0);
     }
 
-    if(m_geometry)
-    {
-        delete m_geometry;
-        m_geometry = 0;
-    }
+    delete m_geometry;
+    delete m_pen;
 
     releaseBuffer();
 }
@@ -210,6 +202,12 @@ void FwPrimitive::apply(FwMLObject* object)
         {
             setZIndex(zindex);
         }
+    }
+
+    FwPen* pen = createPen(object, "pen");
+    if(pen)
+    {
+         setPen(pen);
     }
 
     update();
@@ -713,4 +711,38 @@ void FwPrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
 {
     Q_UNUSED(oldRect);
     Q_UNUSED(rect);
+}
+
+void FwPrimitive::setPen(FwPen* pen)
+{
+    if(m_pen != pen)
+    {
+        prepareGeometryChanged();
+
+        delete m_pen;
+        m_pen = pen;
+        penChangedEvent(pen);
+
+        update();
+    }
+}
+
+void FwPrimitive::setPenColor(const FwColor& color)
+{
+    if(!m_pen)
+    {
+        setPen(new FwPen(1, color));
+        return;
+    }
+    else if(m_pen->color() != color)
+    {
+        m_pen->setColor(color);
+        penChangedEvent(m_pen);
+        invalidate();
+    }
+}
+
+void FwPrimitive::penChangedEvent(FwPen* pen)
+{
+    Q_UNUSED(pen);
 }
