@@ -20,6 +20,8 @@ class FwItemView : public FwWidget
     typedef FwWidget BaseClass;
 
 public:
+    friend class FwItemLayout;
+
     FwItemView(const QByteArray& name, FwPrimitiveGroup* parent);
     ~FwItemView();
 
@@ -29,6 +31,7 @@ public:
     FwStringPrimitive* addItem(const QString& text, const QVariant& data = QVariant());
 
     inline FwPrimitive* current() const;
+    inline FwPrimitive* previous() const;
     void setCurrent(FwPrimitive* primitive);
 
     inline FwItemLayout* layout() const;
@@ -42,6 +45,9 @@ public:
     static bool addLayoutClass(const QByteArray& className, FwLayoutConstructor* constructor);
     FwItemLayout* createLayout(const QByteArray& className);
 
+signals:
+    void currentChanged(FwPrimitive* previous, FwPrimitive* current);
+
 protected:
     void keyPressEvent(FwKeyPressEvent* keyEvent);
 
@@ -50,9 +56,13 @@ protected:
 
     bool needInitLayout;
 
+    void applyCurrentItem(FwPrimitive* primitive);
+
 private:
     QList<FwPrimitive*> m_items;
     FwPrimitive* m_current;
+    FwPrimitive* m_previous;
+
     FwMLObject* m_itemTemplate;
 
     FwItemLayout* m_layout;
@@ -71,6 +81,11 @@ QList<FwPrimitive*> FwItemView::items() const
 FwPrimitive* FwItemView::current() const
 {
     return m_current;
+}
+
+FwPrimitive* FwItemView::previous() const
+{
+    return m_previous;
 }
 
 FwMLObject* FwItemView::itemTemplate() const
