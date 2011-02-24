@@ -30,7 +30,8 @@ itemView
         pixelSize : 24
      },
      color : "white"
-  }
-
+  },
+  itemColor : "white",
+  currentItemColor : "black"
 },
 

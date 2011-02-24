@@ -87,6 +87,7 @@ void FwItemView::setCurrent(FwPrimitive* primitive)
         }
         else
         {
+            startChangedCurrent();
             applyCurrentItem(primitive);
         }
     }
@@ -136,6 +137,28 @@ void FwItemView::apply(FwMLObject *object)
     if(itemNode)
     {
         setItemTemplate(itemNode->clone()->cast<FwMLObject>());
+    }
+
+    FwMLNode* itemColorNode = object->attribute("itemColor");
+    if(itemColorNode)
+    {
+        bool bOk = false;
+        FwColor color = itemColorNode->toColor(&bOk);
+        if(bOk)
+        {
+            setItemColor(color);
+        }
+    }
+
+    FwMLNode* currentItemColorNode = object->attribute("currentItemColor");
+    if(currentItemColorNode)
+    {
+        bool bOk = false;
+        FwColor color = currentItemColorNode->toColor(&bOk);
+        if(bOk)
+        {
+            setCurrentItemColor(color);
+        }
     }
 
     BaseClass::apply(object);
@@ -198,9 +221,54 @@ void FwItemView::keyPressEvent(FwKeyPressEvent* keyEvent)
     }
 }
 
+void FwItemView::startChangedCurrent()
+{
+    if(m_current)
+    {
+        m_current->setPenColor(m_itemColor);
+    }
+}
+
 void FwItemView::applyCurrentItem(FwPrimitive* primitive)
 {
     m_previous = m_current;
     m_current = primitive;
+    m_current->setPenColor(m_currentItemColor);
     emit currentChanged(m_previous, m_current);
+}
+
+void FwItemView::setItemColor(const FwColor& color)
+{
+    if(m_itemColor != color)
+    {
+        prepareGeometryChanged();
+
+        m_itemColor = color;
+        foreach(FwPrimitive* primitive, m_items)
+        {
+            primitive->setPenColor(m_itemColor);
+        }
+        if(m_current)
+        {
+            m_current->setPenColor(m_currentItemColor);
+        }
+
+        update();
+    }
+}
+
+void FwItemView::setCurrentItemColor(const FwColor& color)
+{
+    if(m_currentItemColor != color)
+    {
+        prepareGeometryChanged();
+
+        m_currentItemColor = color;
+        if(m_current)
+        {
+            m_current->setPenColor(m_currentItemColor);
+        }
+
+        update();
+    }
 }

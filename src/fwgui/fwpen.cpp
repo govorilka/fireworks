@@ -1,3 +1,5 @@
+#include <QtCore/qdebug.h>
+
 #include "fwpen.h"
 #include "fwpainter.h"
 

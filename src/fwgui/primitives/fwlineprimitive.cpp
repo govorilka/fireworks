@@ -6,29 +6,8 @@
 FwLinePrimitive::FwLinePrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_lenght(0),
-    m_orientation(0),
-    m_pen(0)
+    m_orientation(0)
 {
-}
-
-FwLinePrimitive::~FwLinePrimitive()
-{
-    if(m_pen)
-    {
-        delete m_pen;
-    }
-}
-
-void FwLinePrimitive::setPen(FwPen* pen)
-{
-    if(m_pen != pen)
-    {
-        prepareGeometryChanged();
-        delete m_pen;
-        m_pen = pen;
-        penChangedEvent(pen);
-        update();
-    }
 }
 
 void FwLinePrimitive::setLine(const QLine& line)
@@ -61,20 +40,21 @@ void FwLinePrimitive::setLine(const QLine& line)
 void FwLinePrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
 {
     Q_UNUSED(oldRect);
-    if(m_lenght)
+    FwPen* pen = this->pen();
+    if(pen && m_lenght)
     {
         switch(m_orientation)
         {
         case Fw::O_Horizontal:
-            rect.setSize(QSize(m_lenght, m_pen->width()));
+            rect.setSize(QSize(m_lenght, pen->width()));
             break;
 
         case Fw::O_Vertical:
-            rect.setSize(QSize(m_pen->width(), m_lenght));
+            rect.setSize(QSize(pen->width(), m_lenght));
             break;
 
         case Fw::O_Diagonal:
-            rect.setSize(QSize(m_pen->width() + m_p2.x(), m_pen->width() + m_p2.y()));
+            rect.setSize(QSize(pen->width() + m_p2.x(), pen->width() + m_p2.y()));
             break;
 
         default:
@@ -89,28 +69,11 @@ void FwLinePrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
 
 void FwLinePrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
-    if(m_lenght && m_pen)
+    Q_UNUSED(clipRect);
+
+    FwPen* pen = this->pen();
+    if(m_lenght && pen)
     {
-        m_pen->drawLine(painter, line());
+        pen->drawLine(painter, line());
     }
-}
-
-void FwLinePrimitive::apply(FwMLObject *object)
-{
-    prepareGeometryChanged();
-
-    FwPen* pen = createPen(object, "pen");
-    if(pen)
-    {
-         setPen(pen);
-    }
-
-    BaseClass::apply(object);
-
-    update();
-}
-
-void FwLinePrimitive::penChangedEvent(FwPen* pen)
-{
-    Q_UNUSED(pen);
 }

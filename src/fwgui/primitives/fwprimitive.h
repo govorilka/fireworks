@@ -6,6 +6,7 @@
 #include "fireworks.h"
 
 #include "fwgui/fwpixmap.h"
+#include "fwgui/fwpen.h"
 
 #include "fwtypography/fwfont.h"
 
@@ -15,7 +16,6 @@ class FwPrimitiveGroup;
 class FwSceneGraphicsItem;
 class FwWidget;
 class FwMLObject;
-class FwPen;
 class FwPainter;
 class FwBrush;
 class FwPixmapData;
@@ -111,14 +111,21 @@ public:
 
     void setPosition(Fw::HorizontalPosition hPosition, Fw::VerticalPosition vPosition);
 
+    inline FwPen* pen() const;
+    void setPen(FwPen* pen);
+
+    inline FwColor penColor() const;
+    void setPenColor(const FwColor& color);
+
 protected:
-    virtual void geometryChanged(const QRect& oldRect, QRect& rect);
 
     virtual void paint(FwPainter* painter, const QRect& clipRect) = 0;
 
     void updateGeometryRect(const QRect& parentRect, QRect currentRect);
 
     virtual void visibleChangedEvent();
+    virtual void geometryChanged(const QRect& oldRect, QRect& rect);
+    virtual void penChangedEvent(FwPen* pen);
 
 private:
     void createNewBuffer();
@@ -146,6 +153,8 @@ private:
     int _startChanged;
 
     QByteArray m_name;
+
+    FwPen* m_pen;
 };
 
 #include "fwgui/primitives/fwprimitive_inl.h"

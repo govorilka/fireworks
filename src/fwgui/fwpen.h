@@ -44,7 +44,9 @@ public:
     ~FwPen();
 
     inline int width() const;
+
     inline FwColor color() const;
+    inline void setColor(const FwColor& color);
 
     inline FwShadow* shadow() const;
     void setShadow(FwShadow* shadow);
@@ -72,6 +74,11 @@ int FwPen::width() const
 FwColor FwPen::color() const
 {
     return m_color;
+}
+
+void FwPen::setColor(const FwColor& color)
+{
+    m_color = color;
 }
 
 QRect FwPen::clientArea(const QRect& rect) const

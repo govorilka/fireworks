@@ -24,9 +24,6 @@ public:
     inline FwFont font() const;
     void setFont(const FwFont& font);
 
-    inline FwPen* pen() const;
-    void setPen(FwPen* pen);
-
     void apply(FwMLObject *object);
 
 protected:
@@ -37,7 +34,6 @@ protected:
 private:
     QString m_text;
     FwFont m_font;
-    FwPen* m_pen;
     QVector<FwTextString> m_strings;
 };
 
@@ -49,11 +45,6 @@ QString FwTextPrimitive::text() const
 FwFont FwTextPrimitive::font() const
 {
     return m_font;
-}
-
-FwPen* FwTextPrimitive::pen() const
-{
-    return m_pen;
 }
 
 #endif //FIREWORKS_GRAPHICSTEXTITEM_H

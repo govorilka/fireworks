@@ -40,6 +40,12 @@ public:
     inline FwMLObject* itemTemplate() const;
     void setItemTemplate(FwMLObject* itemTemplate);
 
+    inline FwColor itemColor() const;
+    void setItemColor(const FwColor& color);
+
+    inline FwColor currentItemColor() const;
+    void setCurrentItemColor(const FwColor& color);
+
     void apply(FwMLObject *object);
 
     static bool addLayoutClass(const QByteArray& className, FwLayoutConstructor* constructor);
@@ -56,6 +62,7 @@ protected:
 
     bool needInitLayout;
 
+    void startChangedCurrent();
     void applyCurrentItem(FwPrimitive* primitive);
 
 private:
@@ -64,6 +71,8 @@ private:
     FwPrimitive* m_previous;
 
     FwMLObject* m_itemTemplate;
+    FwColor m_itemColor;
+    FwColor m_currentItemColor;
 
     FwItemLayout* m_layout;
 };
@@ -91,6 +100,16 @@ FwPrimitive* FwItemView::previous() const
 FwMLObject* FwItemView::itemTemplate() const
 {
     return m_itemTemplate;
+}
+
+FwColor FwItemView::itemColor() const
+{
+    return m_itemColor;
+}
+
+FwColor FwItemView::currentItemColor() const
+{
+    return m_currentItemColor;
 }
 
 #endif // FIREWORKS_ITEMVIEW_H
