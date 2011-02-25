@@ -49,6 +49,7 @@ void FwPrimitiveGroup::removeItems()
 void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
 {
     BaseClass::paint(painter, clipRect);
+
     QRect newClipRect = clipRect.intersect(m_childrenRect);
     if(!newClipRect.isEmpty())
     {
@@ -57,8 +58,8 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
         {
             if(item->visibleOnScreen)
             {
-                QRect childClipRect = clipRect.intersected(item->geometryRect());
-                if(!childClipRect.isNull())
+                QRect childClipRect = newClipRect.intersect(item->geometryRect());
+                if(!childClipRect.isEmpty())
                 {
                     if(item->m_bufferMode)
                     {
