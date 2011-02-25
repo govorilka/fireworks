@@ -1,6 +1,5 @@
 #include <QtGui/QApplication>
 
-#include "mainwindow.h"
 #include "menuscene.h"
 
 #include <QtCore/qdebug.h>

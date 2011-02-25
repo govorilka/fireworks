@@ -10,14 +10,14 @@ itemView
 
   layout
   {
-    class : "fireworks.layouts.LoopVerticalSlider",
+    class : "fireworks.layouts.VerticalSlider",
     animation
     {
         class : "fireworks.layouts.Animation",
         curve : "OutCubic",
         duration : 300
     },
-    margin : 16,
+    margin : 16
   },
 
   item
