@@ -48,20 +48,17 @@ void FwPrimitiveGroup::removeItems()
 
 void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
 {
-    if(clipRect == QRect(0,224,1280,55))
-    {
-        qDebug() << name() << clipRect;
-    }
-
     BaseClass::paint(painter, clipRect);
-    if(clipRect.intersects(m_childrenRect))
+    QRect newClipRect = clipRect.intersect(m_childrenRect);
+    if(!newClipRect.isEmpty())
     {
+        QRect oldClipRect = painter->setClipRect(newClipRect);
         foreach(FwPrimitive* item, m_primitives)
         {
             if(item->visibleOnScreen)
             {
-                QRect newClipRect = clipRect.intersected(item->geometryRect());
-                if(!newClipRect.isNull())
+                QRect childClipRect = clipRect.intersected(item->geometryRect());
+                if(!childClipRect.isNull())
                 {
                     if(item->m_bufferMode)
                     {
@@ -78,15 +75,16 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
                         }
                         painter->drawBuffer(newClipRect,
                                             item->m_buffer,
-                                            newClipRect.translated(item->geometryRect().topLeft()));
+                                            childClipRect.translated(item->geometryRect().topLeft()));
                     }
                     else
                     {
-                        item->paint(painter, newClipRect);
+                        item->paint(painter, childClipRect);
                     }
                 }
             }
         }
+        painter->restoreClipRect(oldClipRect);
     }
 }
 
@@ -126,14 +124,6 @@ void FwPrimitiveGroup::apply(FwMLObject *object)
 FwGraphicsObject* FwPrimitiveGroup::object() const
 {
     return m_parent ? m_parent->object() : 0;
-}
-
-static inline void uniteRect(QRect& rect, const QRect& addRect)
-{
-    rect.setCoords(qMin(rect.left(), addRect.left()),
-                   qMin(rect.top(), addRect.top()),
-                   qMax(rect.right(), addRect.right()),
-                   qMax(rect.bottom(), addRect.bottom()));
 }
 
 void FwPrimitiveGroup::invalidateChildrenRect()

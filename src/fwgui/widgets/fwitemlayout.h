@@ -118,27 +118,51 @@ void FwItemAnimation::resetCurve()
 
 ///////////////////////////////////////////////////////////////////////
 
-class FwSlidingFrameLayout : public FwItemLayout
+class FwLoopSliderLayout : public FwItemLayout
 {
     Q_OBJECT
     typedef FwItemLayout BaseClass;
 
 public:
-
-    static const char staticClassName[];
-
-    FwSlidingFrameLayout(FwItemView* view);
-
-    QByteArray className() const;
-    static FwItemLayout* constructor(FwItemView* view);
-
-    inline Fw::Orientation orientation() const;
-    bool setOrientation(Fw::Orientation orientation);
+    FwLoopSliderLayout(FwItemView* view);
 
     inline int margin() const;
     void setMargin(int margin);
 
     void apply(FwMLObject* object);
+
+protected:
+    FwPrimitive* nextPrimitive(const QList<FwPrimitive*>& items, FwPrimitive* current) const;
+    FwPrimitive* prevPrimtive(const QList<FwPrimitive*>& items, FwPrimitive* current) const;
+
+    int m_margin;
+    int m_criticalPoint;
+    int m_startPoint;
+    int m_endPoint;
+    int m_deltaValue;
+    int m_maxValue;
+};
+
+int FwLoopSliderLayout::margin() const
+{
+    return m_margin;
+}
+
+///////////////////////////////////////////////////////////////////////
+
+class FwLoopHSliderLayout : public FwLoopSliderLayout
+{
+    Q_OBJECT
+    typedef FwLoopSliderLayout BaseClass;
+
+public:
+
+    static const char staticClassName[];
+
+    FwLoopHSliderLayout(FwItemView* view);
+
+    QByteArray className() const;
+    static FwItemLayout* constructor(FwItemView* view);
 
     void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
@@ -149,46 +173,37 @@ protected:
     void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
     void updateAnimationValue(const QVariant& value);
 
-    FwPrimitive* calculateMiddleItem(const QList<FwPrimitive*>& items, const QRect& rect);
-
-    inline void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
     void calculateHPosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
     void calculateVPosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
-
-private:
-    Fw::Orientation m_orientation;
-    int m_margin;
-    int m_criticalPoint;
-    int m_startPoint;
-    int m_endPoint;
-    int m_deltaValue;
 };
 
-Fw::Orientation FwSlidingFrameLayout::orientation() const
+///////////////////////////////////////////////////////////////////////
+
+class FwLoopVSliderLayout : public FwLoopSliderLayout
 {
-    return m_orientation;
-}
+    Q_OBJECT
+    typedef FwLoopSliderLayout BaseClass;
 
-int FwSlidingFrameLayout::margin() const
-{
-    return m_margin;
-}
+public:
 
-void FwSlidingFrameLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current)
-{
-    switch(m_orientation)
-    {
-    case Fw::O_Horizontal:
-        calculateHPosition(items, current);
-        return;
+    static const char staticClassName[];
 
-    case Fw::O_Vertical:
-        calculateVPosition(items, current);
-        return;
+    FwLoopVSliderLayout(FwItemView* view);
 
-    default:
-        break;
-    }
-}
+    QByteArray className() const;
+    static FwItemLayout* constructor(FwItemView* view);
+
+    void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
+    void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
+
+protected:
+    FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent);
+
+    void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
+    void updateAnimationValue(const QVariant& value);
+
+    void calculateHPosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
+    void calculateVPosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
+};
 
 #endif // FIREWORKS_ITEMLAYOUT_H

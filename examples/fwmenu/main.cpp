@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     QWidget* widget = view.createWidget(0);
     widget->show();
 
-    QFile fwmlFile(app.applicationDirPath() + QDir::separator() + "menu.fwml");
+    QFile fwmlFile(app.applicationDirPath() + QDir::separator() + "vmenu.fwml");
     if(fwmlFile.exists())
     {
         FwMLObject rootObject;

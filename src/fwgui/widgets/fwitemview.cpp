@@ -10,13 +10,14 @@
 
 FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
-    m_layout(new FwSlidingFrameLayout(this)),
+    m_layout(new FwLoopHSliderLayout(this)),
     m_current(0),
     m_previous(0),
     m_itemTemplate(0),
     needInitLayout(true)
 {
-    addLayoutClass(FwSlidingFrameLayout::staticClassName, &FwSlidingFrameLayout::constructor);
+    addLayoutClass(FwLoopHSliderLayout::staticClassName, &FwLoopHSliderLayout::constructor);
+    addLayoutClass(FwLoopVSliderLayout::staticClassName, &FwLoopVSliderLayout::constructor);
 }
 
 FwItemView::~FwItemView()

@@ -17,10 +17,9 @@ INCLUDEPATH += ../../src/ \
                ../qpainter/
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
     menuscene.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     menuscene.h
 
 FORMS    +=

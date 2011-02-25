@@ -81,3 +81,38 @@ bool Fw::changedDirectory(QDir* dir, const QString& dirName)
     }
     return true;
 }
+
+Fw::Orientation Fw::nameToOrientation(const QByteArray& name, bool* bOk)
+{
+    QByteArray lowerName = name.toLower();
+    if(lowerName == "horizontal")
+    {
+        if(bOk)
+        {
+            (*bOk) = true;
+        }
+        return O_Horizontal;
+    }
+    else if(lowerName == "vertical")
+    {
+        if(bOk)
+        {
+            (*bOk) = true;
+        }
+        return O_Vertical;
+    }
+    else if(lowerName == "diagonal")
+    {
+        if(bOk)
+        {
+            (*bOk) = true;
+        }
+        return O_Diagonal;
+    }
+
+    if(bOk)
+    {
+        (*bOk) = false;
+    }
+    return O_Horizontal;
+}
