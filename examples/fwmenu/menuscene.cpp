@@ -21,7 +21,7 @@ MenuScene::MenuScene(int id, FwGraphicsView* view) :
 {
     m_itemView->prepareGeometryChanged();
     m_itemView->show();
-    m_itemView->setPosition(Fw::HP_CenterDock, Fw::VP_Middle);
+    m_itemView->setPosition(Fw::HP_Center, Fw::VP_MiddleDock);
 
     for(int i = 0; i < 100; i++)
     {
@@ -37,6 +37,8 @@ void MenuScene::keyPressEvent(FwKeyPressEvent *event)
     {
     case Qt::Key_Right:
     case Qt::Key_Left:
+    case Qt::Key_Up:
+    case Qt::Key_Down:
         QCoreApplication::sendEvent(m_itemView, event);
         break;
     }

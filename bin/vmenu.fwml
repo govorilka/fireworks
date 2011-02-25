@@ -4,14 +4,13 @@ itemView
 {
   class : "fireworks.widgets.ItemView",
 
-  height : 78,
+  width : 150,
 
   bgcolor : "red",
 
   layout
   {
-    class : "fireworks.layouts.LoopSlider",
-    orientation : "Horizontal",
+    class : "fireworks.layouts.LoopVerticalSlider",
     animation
     {
         class : "fireworks.layouts.Animation",

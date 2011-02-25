@@ -49,6 +49,7 @@ namespace Fw
         O_Vertical,
         O_Diagonal
     };
+    Orientation nameToOrientation(const QByteArray& name, bool* bOk = 0);
 
     enum GuiEventType
     {
