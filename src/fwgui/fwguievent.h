@@ -40,14 +40,20 @@ class FwKeyPressEvent : public FwGuiEventTmpl<Fw::E_KeyPress>
     typedef FwGuiEventTmpl<Fw::E_KeyPress> BaseClass;
 public:
     FwKeyPressEvent();
-    FwKeyPressEvent(int key, bool autoRepeat);
+    FwKeyPressEvent(int key, int autoRepeatCount);
 
     inline int key() const;
     inline bool isAutoRepeat() const;
 
+    inline QString text() const;
+    inline void setText(const QString& text);
+
+    inline int count() const;
+
 private:
     int m_key;
-    bool m_autoRepeat;
+    int m_autoRepeatCount;
+    QString m_text;
 };
 
 int FwKeyPressEvent::key() const
@@ -57,7 +63,22 @@ int FwKeyPressEvent::key() const
 
 bool FwKeyPressEvent::isAutoRepeat() const
 {
-    return m_autoRepeat;
+    return m_autoRepeatCount > 0;
+}
+
+QString FwKeyPressEvent::text() const
+{
+    return m_text;
+}
+
+void FwKeyPressEvent::setText(const QString& text)
+{
+    m_text = text;
+}
+
+int FwKeyPressEvent::count() const
+{
+    return m_autoRepeatCount + 1;
 }
 
 #endif // FIREWORKS_GUIEVENT_H

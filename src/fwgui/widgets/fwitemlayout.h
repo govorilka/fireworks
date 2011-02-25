@@ -247,10 +247,10 @@ protected:
 
 ///////////////////////////////////////////////////////////////////////
 
-class FwLoopVSliderLayout : public FwHSliderLayout
+class FwLoopVSliderLayout : public FwVSliderLayout
 {
     Q_OBJECT
-    typedef FwHSliderLayout BaseClass;
+    typedef FwVSliderLayout BaseClass;
 
 public:
 

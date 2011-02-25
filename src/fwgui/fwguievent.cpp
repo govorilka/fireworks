@@ -16,13 +16,13 @@ int FwGuiEvent::qtTypeID()
 FwKeyPressEvent::FwKeyPressEvent() :
     BaseClass(),
     m_key(0),
-    m_autoRepeat(false)
+    m_autoRepeatCount(0)
 {
 }
 
-FwKeyPressEvent::FwKeyPressEvent(int key, bool autoRepeat) :
+FwKeyPressEvent::FwKeyPressEvent(int key, int autoRepeatCount) :
     BaseClass(),
     m_key(key),
-    m_autoRepeat(autoRepeat)
+    m_autoRepeatCount(autoRepeatCount)
 {
 }

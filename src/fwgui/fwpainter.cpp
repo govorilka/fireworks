@@ -28,7 +28,6 @@ QRect FwPainter::setClipRect(const QRect& rect)
     QRect clipRect = rect.translated(m_nullX, m_nullY);
     if(m_clipRect != clipRect)
     {
-        m_clipRect = clipRect;
         restoreClipRect(m_clipRect);
     }
 
@@ -37,6 +36,7 @@ QRect FwPainter::setClipRect(const QRect& rect)
 
 void FwPainter::restoreClipRect(const QRect& rect)
 {
+    m_clipRect = rect;
     if(m_clipRect != QRect(QPoint(0, 0), m_windowSize))
     {
         m_render->setClipRect(m_clipRect);

@@ -37,7 +37,7 @@ void FwPixmapPrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
 
 void FwPixmapPrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
-    painter->drawPixmap(clipRect, m_pixmap, &clipRect.translated(geometryRect().topLeft()));
+    painter->drawPixmap(clipRect, m_pixmap, &clipRect.translated(-geometryRect().topLeft()));
 }
 
 void FwPixmapPrimitive::apply(FwMLObject *object)
