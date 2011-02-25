@@ -39,6 +39,8 @@ void MenuScene::keyPressEvent(FwKeyPressEvent *event)
     case Qt::Key_Left:
     case Qt::Key_Up:
     case Qt::Key_Down:
+    case Qt::Key_Home:
+    case Qt::Key_End:
         QCoreApplication::sendEvent(m_itemView, event);
         break;
     }
