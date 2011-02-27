@@ -6,7 +6,12 @@
 
 QT       += core gui testlib
 
-TARGET = ../../bin/fwmenu
+win32 {
+    TARGET = ../../../bin/fwmenu
+}
+else {
+    TARGET = ../../bin/fwmenu
+}
 
 TEMPLATE = app
 
