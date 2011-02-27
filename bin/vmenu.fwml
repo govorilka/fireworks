@@ -14,7 +14,7 @@ itemView
     animation
     {
         class : "fireworks.layouts.Animation",
-        curve : "OutCubic",
+        curve : "InOutQuart",
         duration : 300
     },
     margin : 16
