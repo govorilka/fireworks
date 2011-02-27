@@ -6,7 +6,13 @@
 
 QT       += core gui //gui - temporary, for QRegion class
 
-TARGET = ../bin/fireworks
+win32 {
+   TARGET = ../../bin/fireworks
+}
+else {
+   TARGET = ../bin/fireworks
+}
+
 
 TEMPLATE = lib
 
