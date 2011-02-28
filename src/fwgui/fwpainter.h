@@ -20,8 +20,8 @@ public:
     inline QRect window() const;
 
     inline QRect clipRect() const;
-    QRect setClipRect(const QRect& rect);
-    void restoreClipRect(const QRect& rect);
+    inline QRect setClipRect(const QRect& rect);
+    inline void restoreClipRect(const QRect& rect);
 
     inline FwColor color() const;
     inline void setColor(quint8 a, quint8 r, quint8 g, quint8 b);

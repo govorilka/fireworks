@@ -41,7 +41,7 @@ void FwTextPrimitive::setFont(const FwFont& font)
     }
 }
 
-void FwTextPrimitive::geometryChanged(const QRect &oldRect, QRect &rect)
+void FwTextPrimitive::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
     if(m_text.isEmpty())
     {
@@ -54,7 +54,7 @@ void FwTextPrimitive::geometryChanged(const QRect &oldRect, QRect &rect)
         jEngine.setFont(m_font);
         m_strings = jEngine.processing(m_text);
     }
-    BaseClass::geometryChanged(oldRect, rect);
+    BaseClass::geometryChangedEvent(oldRect, rect);
 }
 
 void FwTextPrimitive::paint(FwPainter *painter, const QRect &clipRect)

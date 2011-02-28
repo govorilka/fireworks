@@ -42,9 +42,8 @@ void FwItemView::setLayout(FwItemLayout* layout)
     }
 }
 
-void FwItemView::addItem(FwPrimitive* primitive, const QVariant& data)
+void FwItemView::addItem(FwPrimitive* primitive)
 {
-    Q_UNUSED(data);
     if(!m_items.contains(primitive))
     {
         prepareGeometryChanged();
@@ -74,7 +73,11 @@ FwStringPrimitive* FwItemView::addItem(const QString& text, const QVariant& data
     {
         FwStringPrimitive* string = new FwStringPrimitive("", this);
         string->setString(text);
-        addItem(string, data);
+        if(data.isValid())
+        {
+            string->setData(data);
+        }
+        addItem(string);
         return string;
     }
     return 0;
@@ -169,9 +172,9 @@ void FwItemView::apply(FwMLObject *object)
     update();
 }
 
-void FwItemView::geometryChanged(const QRect &oldRect, QRect &rect)
+void FwItemView::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
-    BaseClass::geometryChanged(oldRect, rect);
+    BaseClass::geometryChangedEvent(oldRect, rect);
     needInitLayout = (oldRect.size() != rect.size());
     updateChildrenRect();
 }

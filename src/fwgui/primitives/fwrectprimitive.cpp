@@ -42,8 +42,9 @@ void FwRectPrimitive::paint(FwPainter* painter, const QRect& clipRect)
     }
 }
 
-void FwRectPrimitive::geometryChanged(const QRect &oldRect, QRect &rect)
+void FwRectPrimitive::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
+    Q_UNUSED(oldRect);
     if(m_brush)
     {
         m_brush->setSourceRect(rect);

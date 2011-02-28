@@ -17,7 +17,7 @@ public:
     void apply(FwMLObject *object);
 
 protected:
-    void geometryChanged(const QRect& oldRect, QRect& rect);
+    void boundingRectChangedEvent(QRect &boundingRect);
 
     void paint(FwPainter *painter, const QRect &clipRect);
 

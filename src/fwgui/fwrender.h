@@ -19,7 +19,6 @@ public:
     virtual ~FwRender();
 
     virtual void setClipRect(const QRect& rect) = 0;
-    virtual void resetClipRect() = 0;
 
     virtual void setColor(const FwColor& color) = 0;
     virtual void setOpacity(float opacity) = 0;

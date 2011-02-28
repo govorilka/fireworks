@@ -235,7 +235,7 @@ void FwTablePrimitive::resizeSizeVector(QVector<qreal>& vector, int newSize)
     }
 }
 
-void FwTablePrimitive::geometryChanged(const QRect &oldRect, QRect &rect)
+void FwTablePrimitive::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
     if(!m_startTableChanged)
     {
@@ -243,7 +243,7 @@ void FwTablePrimitive::geometryChanged(const QRect &oldRect, QRect &rect)
         updateRealSizes();
         updateCellGeometry();
     }
-    BaseClass::geometryChanged(oldRect, rect);
+    BaseClass::geometryChangedEvent(oldRect, rect);
 }
 
 void FwTablePrimitive::updateRealSizes()

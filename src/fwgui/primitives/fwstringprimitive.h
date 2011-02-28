@@ -35,7 +35,8 @@ public:
     void apply(FwMLObject *object);
 
 protected:
-    void geometryChanged(const QRect& oldRect, QRect& rect);
+    void geometryChangedEvent(const QRect &oldRect, QRect &rect);
+    void boundingRectChangedEvent(QRect &boundingRect);
 
     void updateStringRect(const QString &string);
 

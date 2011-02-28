@@ -74,12 +74,16 @@ void FwStringPrimitive::setShadowColor(const FwColor &color)
     }
 }
 
-void FwStringPrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
+void FwStringPrimitive::boundingRectChangedEvent(QRect &boundingRect)
+{
+    boundingRect = m_stringRect.translated(boundingRect.topLeft());
+}
+
+void FwStringPrimitive::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
     Q_UNUSED(oldRect);
     m_textPos = rect.topLeft();
     m_textPos.setY(m_textPos.y() + m_font.ascender());
-    rect.adjust(m_stringRect.x(), m_stringRect.y(), 0, 0);
 }
 
 void FwStringPrimitive::paint(FwPainter *painter, const QRect &clipRect)
