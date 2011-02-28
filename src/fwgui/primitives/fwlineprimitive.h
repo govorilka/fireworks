@@ -20,7 +20,7 @@ public:
     inline int length() const;
 
 protected:
-    void geometryChanged(const QRect& oldRect, QRect& rect);
+    void boundingRectChangedEvent(QRect& boundingRect);
 
     virtual void paint(FwPainter *painter, const QRect &clipRect);
 

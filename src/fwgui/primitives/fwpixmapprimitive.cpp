@@ -30,9 +30,9 @@ void FwPixmapPrimitive::setPixmap(const FwPixmap& pixmap)
     }
 }
 
-void FwPixmapPrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
+void FwPixmapPrimitive::boundingRectChangedEvent(QRect &boundingRect)
 {
-    rect.setSize(m_pixmap.size());
+    boundingRect.setSize(m_pixmap.size());
 }
 
 void FwPixmapPrimitive::paint(FwPainter *painter, const QRect &clipRect)

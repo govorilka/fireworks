@@ -2,6 +2,7 @@
 #define FIREWORKS_ITEMVIEW_H
 
 #include <QtCore/qlist.h>
+#include <QtCore/qhash.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qvariant.h>
 
@@ -27,7 +28,7 @@ public:
 
     inline QList<FwPrimitive*> items() const;
 
-    void addItem(FwPrimitive* primitive, const QVariant& data = QVariant());
+    void addItem(FwPrimitive* primitive);
     FwStringPrimitive* addItem(const QString& text, const QVariant& data = QVariant());
 
     inline FwPrimitive* current() const;
@@ -57,7 +58,7 @@ signals:
 protected:
     void keyPressEvent(FwKeyPressEvent* keyEvent);
 
-    void geometryChanged(const QRect &oldRect, QRect &rect);
+    void geometryChangedEvent(const QRect &oldRect, QRect &rect);
     void invalidateChildrenRect();
 
     bool needInitLayout;

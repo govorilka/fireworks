@@ -23,6 +23,21 @@ QRect FwPainter::clipRect() const
     return m_clipRect;
 }
 
+QRect FwPainter::setClipRect(const QRect& rect)
+{
+    QRect oldRect = m_clipRect;
+    restoreClipRect(rect.translated(-m_nullX, -m_nullY));
+    return oldRect;
+}
+
+void FwPainter::restoreClipRect(const QRect& rect)
+{
+    if(m_clipRect != rect)
+    {
+        m_render->setClipRect(m_clipRect = rect);
+    }
+}
+
 FwColor FwPainter::color() const
 {
     return m_color;

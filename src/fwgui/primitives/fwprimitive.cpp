@@ -28,6 +28,7 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_zIndex(0),
     _startChanged(0),
     m_name(name),
+    m_data(0),
     m_pen(0)
 {
     if(m_parent)
@@ -61,6 +62,7 @@ FwPrimitive::~FwPrimitive()
     }
 
     delete m_geometry;
+    delete m_data;
     delete m_pen;
 
     releaseBuffer();
@@ -120,6 +122,8 @@ void FwPrimitive::update(bool needUpdateBuffer)
     {
         if(m_geometry->isDirty())
         {
+            m_boundingRect = m_geometry->rect();
+            boundingRectChangedEvent(m_boundingRect);
             if(m_bufferMode)
             {
                 if(m_buffer && m_geometry->sizeChanged())
@@ -707,10 +711,15 @@ bool FwPrimitive::loadRect(FwMLObject* object, QRect* rect)
     return true;
 }
 
-void FwPrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
+void FwPrimitive::geometryChangedEvent(const QRect& oldRect, QRect& rect)
 {
     Q_UNUSED(oldRect);
     Q_UNUSED(rect);
+}
+
+void FwPrimitive::boundingRectChangedEvent(QRect& boundingRect)
+{
+    Q_UNUSED(boundingRect);
 }
 
 void FwPrimitive::setPen(FwPen* pen)

@@ -108,7 +108,7 @@ void FwPrimitive::setGeometryRect(QRect rect)
     if(m_geometry->rect() != rect)
     {
         prepareGeometryChanged();
-        geometryChanged(m_geometry->rect(), rect);
+        geometryChangedEvent(m_geometry->rect(), rect);
         m_geometry->setRect(rect);
         update();
     }
@@ -187,6 +187,28 @@ FwPen* FwPrimitive::pen() const
 FwColor FwPrimitive::penColor() const
 {
     return m_pen ? m_pen->color() : FwColor();
+}
+
+QVariant FwPrimitive::data() const
+{
+    return m_data ? (*m_data) : QVariant();
+}
+
+void FwPrimitive::setData(const QVariant& data)
+{
+    if(data.isValid())
+    {
+        if(!m_data)
+        {
+            m_data = new QVariant();
+        }
+        (*m_data) = data;
+    }
+    else
+    {
+        delete m_data;
+        m_data = 0;
+    }
 }
 
 #endif // FIREWORKS_GRAPHICSITEM_INL_H

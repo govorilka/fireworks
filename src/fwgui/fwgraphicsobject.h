@@ -41,7 +41,7 @@ public:
     FwGraphicsObject* object() const;
 
 protected:
-    void geometryChanged(const QRect &oldRect, QRect &rect);
+    void geometryChangedEvent(const QRect &oldRect, QRect &rect);
 
     virtual void keyPressEvent(FwKeyPressEvent* event);
     virtual void resizeEvent(QResizeEvent* event);

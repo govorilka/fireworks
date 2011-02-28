@@ -2,6 +2,7 @@
 #define FIREWORKS_GRAPHICSITEM_H
 
 #include <QtCore/qrect.h>
+#include <QtCore/qvariant.h>
 
 #include "fireworks.h"
 
@@ -117,6 +118,9 @@ public:
     inline FwColor penColor() const;
     void setPenColor(const FwColor& color);
 
+    inline QVariant data() const;
+    inline void setData(const QVariant& data);
+
 protected:
 
     virtual void paint(FwPainter* painter, const QRect& clipRect) = 0;
@@ -124,7 +128,8 @@ protected:
     void updateGeometryRect(const QRect& parentRect, QRect currentRect);
 
     virtual void visibleChangedEvent();
-    virtual void geometryChanged(const QRect& oldRect, QRect& rect);
+    virtual void geometryChangedEvent(const QRect& oldRect, QRect& rect);
+    virtual void boundingRectChangedEvent(QRect& boundingRect);
     virtual void penChangedEvent(FwPen* pen);
 
 private:
@@ -140,6 +145,7 @@ private:
     Fw::HorizontalPosition m_hPosition;
     Fw::VerticalPosition m_vPosition;
     FwGeometry* m_parentGeometry;
+    QRect m_boundingRect;
 
     Fw::BufferMode m_bufferMode;
     bool bufferDirty;
@@ -153,6 +159,7 @@ private:
     int _startChanged;
 
     QByteArray m_name;
+    QVariant* m_data;
 
     FwPen* m_pen;
 };

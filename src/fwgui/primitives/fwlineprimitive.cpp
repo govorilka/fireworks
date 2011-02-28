@@ -37,24 +37,23 @@ void FwLinePrimitive::setLine(const QLine& line)
     }
 }
 
-void FwLinePrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
+void FwLinePrimitive::boundingRectChangedEvent(QRect& boundingRect)
 {
-    Q_UNUSED(oldRect);
     FwPen* pen = this->pen();
     if(pen && m_lenght)
     {
         switch(m_orientation)
         {
         case Fw::O_Horizontal:
-            rect.setSize(QSize(m_lenght, pen->width()));
+            boundingRect.setSize(QSize(m_lenght, pen->width()));
             break;
 
         case Fw::O_Vertical:
-            rect.setSize(QSize(pen->width(), m_lenght));
+            boundingRect.setSize(QSize(pen->width(), m_lenght));
             break;
 
         case Fw::O_Diagonal:
-            rect.setSize(QSize(pen->width() + m_p2.x(), pen->width() + m_p2.y()));
+            boundingRect.setSize(QSize(pen->width() + m_p2.x(), pen->width() + m_p2.y()));
             break;
 
         default:
@@ -63,7 +62,7 @@ void FwLinePrimitive::geometryChanged(const QRect& oldRect, QRect& rect)
     }
     else
     {
-        rect.setSize(QSize(0, 0));
+        boundingRect.setSize(QSize(0, 0));
     }
 }
 
