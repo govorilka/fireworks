@@ -360,7 +360,7 @@ FwBrush* FwPrimitive::createBrush(FwMLObject* object)
         {
             bool bOk = false;
             FwColor bgColor = bgColorNode->toColor(&bOk);
-            if(bOk && !bgColor.isNull())
+            if(bOk)
             {
                 brush = new FwBrushSolid(bgColor);
             }
