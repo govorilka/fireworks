@@ -89,9 +89,7 @@ public:
 
     FwFont createFont(const FwFontDescription& desc);
     FwFont createFont(FwMLObject* object, const QByteArray& attribute);
-
     FwPen* createPen(FwMLObject* object, const QByteArray& penAttr);
-
     FwBrush* createBrush(FwMLObject* object);
 
     bool loadPos(FwMLObject* object, QPoint* pos);

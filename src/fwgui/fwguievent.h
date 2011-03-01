@@ -43,6 +43,8 @@ public:
     FwKeyPressEvent(int key, int autoRepeatCount);
 
     inline int key() const;
+    inline void setKey(int newKey);
+
     inline bool isAutoRepeat() const;
 
     inline QString text() const;
@@ -59,6 +61,11 @@ private:
 int FwKeyPressEvent::key() const
 {
     return m_key;
+}
+
+void FwKeyPressEvent::setKey(int newKey)
+{
+    m_key = newKey;
 }
 
 bool FwKeyPressEvent::isAutoRepeat() const

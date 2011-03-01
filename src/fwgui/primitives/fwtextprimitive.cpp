@@ -43,6 +43,7 @@ void FwTextPrimitive::setFont(const FwFont& font)
 
 void FwTextPrimitive::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
+    Q_UNUSED(oldRect);
     if(m_text.isEmpty())
     {
         m_strings = QVector<FwTextString>();
@@ -54,6 +55,7 @@ void FwTextPrimitive::geometryChangedEvent(const QRect &oldRect, QRect &rect)
         jEngine.setFont(m_font);
         m_strings = jEngine.processing(m_text);
     }
+
     BaseClass::geometryChangedEvent(oldRect, rect);
 }
 
@@ -83,6 +85,12 @@ void FwTextPrimitive::apply(FwMLObject *object)
     if(!font.isNull())
     {
         setFont(font);
+    }
+
+    FwMLString* textNode = object->attribute("text")->cast<FwMLString>();
+    if(textNode)
+    {
+        setText(QString::fromUtf8(textNode->value()));
     }
 
     BaseClass::apply(object);
