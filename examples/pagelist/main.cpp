@@ -1,10 +1,10 @@
+#include "menuscene.h"
+
 #include <QtCore/qdebug.h>
 #include <QtCore/qdir.h>
 #include <QtCore/qfile.h>
 
 #include <QtGui/QApplication>
-
-#include <QtTest/QtTest>
 
 #include "fwcore/fwml.h"
 
@@ -17,7 +17,6 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    //QTEST_DISABLE_KEYPAD_NAVIGATION
 
     QPGraphicsView view;
 
@@ -27,7 +26,7 @@ int main(int argc, char *argv[])
     QWidget* widget = view.createWidget(0);
     widget->show();
 
-    QFile fwmlFile(app.applicationDirPath() + QDir::separator() + "vmenu.fwml");
+    QFile fwmlFile(app.applicationDirPath() + QDir::separator() + "pagelist.fwml");
     if(fwmlFile.exists())
     {
         FwMLObject rootObject;
@@ -38,5 +37,4 @@ int main(int argc, char *argv[])
     }
 
     return app.exec();
-    //return QTest::qExec(menuScene, argc, argv);
 }
