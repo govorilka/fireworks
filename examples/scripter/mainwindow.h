@@ -18,9 +18,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void open();
+    void open(const QString& fileName);
+
 private:
     Ui::MainWindow *ui;
     TreeModel* m_model;
+
 };
 
 #endif // MAINWINDOW_H
