@@ -47,6 +47,9 @@ public:
     inline FwColor currentItemColor() const;
     void setCurrentItemColor(const FwColor& color);
 
+    inline FwRectPrimitive* highlight() const;
+    void setHighlight(FwRectPrimitive* primitive);
+
     void apply(FwMLObject *object);
 
     static bool addLayoutClass(const QByteArray& className, FwLayoutConstructor* constructor);
@@ -66,10 +69,14 @@ protected:
     void startChangedCurrent();
     void applyCurrentItem(FwPrimitive* primitive);
 
+    void updateHighlightPos();
+
 private:
     QList<FwPrimitive*> m_items;
     FwPrimitive* m_current;
     FwPrimitive* m_previous;
+
+    FwRectPrimitive* m_highlight;
 
     FwMLObject* m_itemTemplate;
     FwColor m_itemColor;
@@ -111,6 +118,11 @@ FwColor FwItemView::itemColor() const
 FwColor FwItemView::currentItemColor() const
 {
     return m_currentItemColor;
+}
+
+FwRectPrimitive* FwItemView::highlight() const
+{
+    return m_highlight;
 }
 
 #endif // FIREWORKS_ITEMVIEW_H

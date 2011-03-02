@@ -2,35 +2,43 @@ bgcolor : "black",
 
 itemView
 {
-  class : "fireworks.widgets.ItemView",
+    class : "fireworks.widgets.ItemView",
 
-  width : 150,
+    width : 150,
 
-  bgcolor : "red",
+    bgcolor : "red",
 
-  layout
-  {
+    layout
+    {
     class : "fireworks.layouts.Pages",
+
     animation
     {
         class : "fireworks.layouts.Animation",
         curve : "InOutQuart",
         duration : 300
     },
-    margin : 16
-  },
 
-  item
-  {
-     class : "fireworks.primitives.String",
-     font
-     {
-        family : "Arial",
-        pixelSize : 24
-     },
-     color : "white"
-  },
-  itemColor : "white",
-  currentItemColor : "black"
+    margin : 16
+    },
+
+    item
+    {
+        class : "fireworks.primitives.String",
+        font
+        {
+            family : "Arial",
+            pixelSize : 24
+        },
+        color : "white"
+    },
+
+    itemColor : "white",
+    currentItemColor : "black",
+
+    highlight
+    {
+        bgcolor : "green"
+    }
 },
 

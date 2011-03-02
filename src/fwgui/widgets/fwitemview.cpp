@@ -14,6 +14,7 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_current(0),
     m_previous(0),
     m_itemTemplate(0),
+    m_highlight(0),
     needInitLayout(true)
 {
     addLayoutClass(FwHSliderLayout::staticClassName, &FwHSliderLayout::constructor);
@@ -168,6 +169,12 @@ void FwItemView::apply(FwMLObject *object)
         }
     }
 
+    FwMLObject* highlightNode = object->attribute("highlight")->cast<FwMLObject>();
+    if(highlightNode && !m_highlight)
+    {
+        setHighlight(new FwRectPrimitive("highlight", this));
+    }
+
     BaseClass::apply(object);
 
     update();
@@ -186,8 +193,7 @@ void FwItemView::invalidateChildrenRect()
     {
         if(childSizeChanged || needInitLayout)
         {
-            m_layout->init(m_items, geometryRect());
-            m_layout->update(m_items, m_current, geometryRect());
+            m_layout->initItemsPos(m_items, m_current);
             needInitLayout = false;
         }
     }
@@ -277,5 +283,32 @@ void FwItemView::setCurrentItemColor(const FwColor& color)
         }
 
         update();
+    }
+}
+
+void FwItemView::setHighlight(FwRectPrimitive* primitive)
+{
+    if(m_highlight != primitive)
+    {
+        delete m_highlight;
+        m_highlight = primitive;
+        updateHighlightPos();
+    }
+}
+
+void FwItemView::updateHighlightPos()
+{
+    if(m_highlight && m_layout)
+    {
+        if(m_layout && m_current)
+        {
+            m_highlight->setVisible(true);
+            needInitLayout = true;
+            updateChildrenRect();
+        }
+        else
+        {
+            m_highlight->setVisible(false);
+        }
     }
 }
