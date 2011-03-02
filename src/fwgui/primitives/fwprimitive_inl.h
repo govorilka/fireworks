@@ -1,6 +1,8 @@
 #ifndef FIREWORKS_GRAPHICSITEM_INL_H
 #define FIREWORKS_GRAPHICSITEM_INL_H
 
+#include <QtCore/qdebug.h>
+
 #include "fwgui/primitives/fwprimitive.h"
 #include "fwgui/primitives/fwgeometry.h"
 
@@ -21,11 +23,11 @@ Fw::BufferMode FwPrimitive::bufferMode() const
 
 void FwPrimitive::prepareGeometryChanged()
 {
-    if(!_startChanged)
+    if(_startChanged == 0)
     {
         invalidate();
     }
-    _startChanged++;
+    ++_startChanged;
 }
 
 QPoint FwPrimitive::pos() const

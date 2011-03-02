@@ -536,7 +536,7 @@ void FwPrimitive::setSize(const QSize& size)
 
 void FwPrimitive::setRect(const QRect& rect)
 {
-    if(rect != QRect(m_pos, m_geometry->size()))
+    if(rect != this->rect())
     {
         m_pos = rect.topLeft();
         if(m_parentGeometry)
