@@ -6,7 +6,13 @@
 
 QT       += core gui
 
-TARGET = scripter
+win32 {
+    TARGET = ../../../bin/scripter
+}
+else {
+    TARGET = ../../bin/scripter
+}
+
 TEMPLATE = app
 
 INCLUDEPATH += ../../src/
@@ -22,3 +28,6 @@ HEADERS  += mainwindow.h \
             treemodel.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    scripter.qrc
