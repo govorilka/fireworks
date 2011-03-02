@@ -10,7 +10,7 @@ itemView
 
   layout
   {
-    class : "fireworks.layouts.VerticalSlider",
+    class : "fireworks.layouts.Pages",
     animation
     {
         class : "fireworks.layouts.Animation",
