@@ -53,7 +53,6 @@ QEasingCurve::Type FwAnimation::nameToCurveType(const QByteArray& name, bool* bO
         types.insert("outincubic", QEasingCurve::OutInCubic);
         types.insert("inquart", QEasingCurve::InQuart);
 
-
         QByteArray lowerName = name.toLower();
         if(types.contains(lowerName))
         {
