@@ -24,6 +24,7 @@ itemView
 
     item
     {
+        zindex : 2,
         class : "fireworks.primitives.String",
         font
         {
@@ -38,6 +39,8 @@ itemView
 
     highlight
     {
+        class : "fireworks.primitives.Rect",
+        zindex : 1,
         bgcolor : "green"
     }
 },
