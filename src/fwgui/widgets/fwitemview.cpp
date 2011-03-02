@@ -20,6 +20,7 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     addLayoutClass(FwVSliderLayout::staticClassName, &FwVSliderLayout::constructor);
     addLayoutClass(FwLoopHSliderLayout::staticClassName, &FwLoopHSliderLayout::constructor);
     addLayoutClass(FwLoopVSliderLayout::staticClassName, &FwLoopVSliderLayout::constructor);
+    addLayoutClass(FwPagesLayout::staticClassName, &FwPagesLayout::constructor);
 }
 
 FwItemView::~FwItemView()
@@ -185,7 +186,7 @@ void FwItemView::invalidateChildrenRect()
     {
         if(childSizeChanged || needInitLayout)
         {
-            m_layout->init(m_items, m_current, geometryRect());
+            m_layout->init(m_items, geometryRect());
             m_layout->update(m_items, m_current, geometryRect());
             needInitLayout = false;
         }

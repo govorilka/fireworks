@@ -16,21 +16,6 @@ FwItemLayout::FwItemLayout(FwItemView* view) :
 {
 }
 
-QList<FwPrimitive*> FwItemLayout::items() const
-{
-    return m_view->items();
-}
-
-FwPrimitive* FwItemLayout::currentItem() const
-{
-    return m_view->current();
-}
-
-QRect FwItemLayout::rect() const
-{
-    return m_view->rect();
-}
-
 void FwItemLayout::keyPressEvent(const QList<FwPrimitive*>& items, FwKeyPressEvent* keyEvent)
 {
     if(items.size() > 1)
@@ -63,13 +48,16 @@ void FwItemLayout::setCurrent(FwPrimitive* previous, FwPrimitive* current, bool 
 
         m_candidate = current;
         animationStart(m_animation, previous, current);
+        if(!m_animation->isRunning())
+        {
+            applyCurrentItem(current);
+            update(m_view->items(), current, m_view->geometryRect());
+        }
     }
     else
     {
         applyCurrentItem(current);
-        m_view->prepareGeometryChanged();
-        update(items(), current, m_view->geometryRect());
-        m_view->update();
+        update(m_view->items(), current, m_view->geometryRect());
     }
 }
 
@@ -287,9 +275,8 @@ FwItemLayout* FwHSliderLayout::constructor(FwItemView* view)
     return new FwHSliderLayout(view);
 }
 
-void FwHSliderLayout::init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect)
+void FwHSliderLayout::init(const QList<FwPrimitive*> items, const QRect& rect)
 {
-    Q_UNUSED(current);
     foreach(FwPrimitive* primitive, items)
     {
         primitive->setY(0.5 * (rect.height() - primitive->height()));
@@ -348,7 +335,7 @@ FwPrimitive* FwHSliderLayout::nextItem(const QList<FwPrimitive*>& items, FwPrimi
 
 void FwHSliderLayout::applyAnimationStep(int step)
 {
-    foreach(FwPrimitive* primitive, items())
+    foreach(FwPrimitive* primitive, m_view->items())
     {
         primitive->setX(primitive->x() + step);
     }
@@ -359,7 +346,7 @@ void FwHSliderLayout::animationStart(FwItemAnimation* animation, FwPrimitive *pr
     Q_UNUSED(previous);
     m_deltaValue = current->x();
     animation->setStartValue(m_deltaValue);
-    animation->setEndValue(static_cast<int>((rect().width() - current->width()) * 0.5));
+    animation->setEndValue(static_cast<int>((m_view->rect().width() - current->width()) * 0.5));
     animation->start();
 }
 
@@ -382,9 +369,8 @@ FwItemLayout* FwVSliderLayout::constructor(FwItemView* view)
     return new FwVSliderLayout(view);
 }
 
-void FwVSliderLayout::init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect)
+void FwVSliderLayout::init(const QList<FwPrimitive*> items, const QRect& rect)
 {
-    Q_UNUSED(current);
     foreach(FwPrimitive* primitive, items)
     {
         primitive->setX(0.5 * (rect.width() - primitive->width()));
@@ -445,7 +431,7 @@ FwPrimitive* FwVSliderLayout::nextItem(const QList<FwPrimitive*>& items, FwPrimi
 
 void FwVSliderLayout::applyAnimationStep(int step)
 {
-    foreach(FwPrimitive* primitive, items())
+    foreach(FwPrimitive* primitive, m_view->items())
     {
         primitive->setY(primitive->y() + step);
     }
@@ -456,7 +442,7 @@ void FwVSliderLayout::animationStart(FwItemAnimation* animation, FwPrimitive *pr
     Q_UNUSED(previous);
     m_deltaValue = current->y();
     animation->setStartValue(m_deltaValue);
-    animation->setEndValue(static_cast<int>((rect().height() - current->height()) * 0.5));
+    animation->setEndValue(static_cast<int>((m_view->rect().height() - current->height()) * 0.5));
     animation->start();
 }
 
@@ -480,9 +466,8 @@ FwItemLayout* FwLoopHSliderLayout::constructor(FwItemView* view)
     return new FwLoopHSliderLayout(view);
 }
 
-void FwLoopHSliderLayout::init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect)
+void FwLoopHSliderLayout::init(const QList<FwPrimitive*> items, const QRect& rect)
 {
-    Q_UNUSED(current);
     m_maxValue = rect.width();
     m_criticalPoint = m_maxValue + m_margin * (items.size() - 1);
     foreach(FwPrimitive* primitive, items)
@@ -558,7 +543,7 @@ void FwLoopHSliderLayout::applyAnimationStep(int step)
 {
     if(m_startPoint > 0 || m_endPoint < m_maxValue)
     {
-        QList<FwPrimitive*> items = this->items();
+        QList<FwPrimitive*> items = m_view->items();
         FwPrimitive* middleItem = 0;
         int halfWidth = m_maxValue * 0.5;
         int delta = halfWidth;
@@ -600,9 +585,8 @@ FwItemLayout* FwLoopVSliderLayout::constructor(FwItemView* view)
     return new FwLoopVSliderLayout(view);
 }
 
-void FwLoopVSliderLayout::init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect)
+void FwLoopVSliderLayout::init(const QList<FwPrimitive*> items, const QRect& rect)
 {
-    Q_UNUSED(current);
     m_maxValue = rect.height();
     m_criticalPoint = m_maxValue + m_margin * (items.size() - 1);
     foreach(FwPrimitive* primitive, items)
@@ -678,7 +662,7 @@ void FwLoopVSliderLayout::applyAnimationStep(int step)
 {
     if(m_startPoint > 0 || m_endPoint < m_maxValue)
     {
-        QList<FwPrimitive*> items = this->items();
+        QList<FwPrimitive*> items = m_view->items();
         FwPrimitive* middleItem = 0;
         int halfHeight = m_maxValue * 0.5;
         int delta = halfHeight;
@@ -698,4 +682,111 @@ void FwLoopVSliderLayout::applyAnimationStep(int step)
     {
         BaseClass::applyAnimationStep(step);
     }
+}
+
+///////////////////////////////////////////////////////////////////////
+
+const char FwPagesLayout::staticClassName[] = "fireworks.layouts.Pages";
+
+FwPagesLayout::FwPagesLayout(FwItemView* view) :
+    BaseClass(view),
+    m_currentPage(-1)
+{
+    setRepeat(true);
+}
+
+QByteArray FwPagesLayout::className() const
+{
+    return staticClassName;
+}
+
+FwItemLayout* FwPagesLayout::constructor(FwItemView* view)
+{
+    return new FwPagesLayout(view);
+}
+
+void FwPagesLayout::init(const QList<FwPrimitive*> items, const QRect& rect)
+{
+    m_maxValue = rect.height();
+
+    m_pageIndex.clear();
+    m_pages.clear();
+
+    int y = 0;
+    m_currentPage = 0;
+    foreach(FwPrimitive* primitive, items)
+    {
+        if(y != 0 && (y + primitive->height()) >= m_maxValue)
+        {
+            y = 0;
+            ++m_currentPage;
+        }
+
+        m_pageIndex.insert(primitive, m_currentPage);
+        m_pages.insert(m_currentPage, primitive);
+
+        primitive->prepareGeometryChanged();
+        primitive->setPos(0, y);
+        primitive->setVisible(false);
+        primitive->update();
+
+        y += (primitive->height() + m_margin);
+    }
+    m_currentPage = -1;
+}
+
+void FwPagesLayout::update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect)
+{
+    Q_UNUSED(rect);
+    calculatePosition(items, current);
+}
+
+void FwPagesLayout::animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current)
+{
+    Q_UNUSED(animation);
+    Q_UNUSED(previous);
+    calculatePosition(m_view->items(), current);
+}
+
+void FwPagesLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current)
+{
+    int nextPage = m_pageIndex.value(current, -1);
+    if(m_currentPage != nextPage)
+    {
+        if(m_currentPage != -1)
+        {
+            foreach(FwPrimitive* primitive, m_pages.values(m_currentPage))
+            {
+                primitive->setVisible(false);
+            }
+        }
+        if(nextPage != -1)
+        {
+            foreach(FwPrimitive* primitive, m_pages.values(nextPage))
+            {
+                primitive->setVisible(true);
+            }
+            m_currentPage = nextPage;
+        }
+    }
+}
+
+void FwPagesLayout::applyAnimationStep(int step)
+{
+}
+
+FwPrimitive* FwPagesLayout::nextItem(const QList<FwPrimitive *> &items, FwPrimitive *current, FwKeyPressEvent *keyEvent)
+{
+    switch(keyEvent->key())
+    {
+    case Qt::Key_Up:
+        return prevPrimtive(items, current);
+
+    case Qt::Key_Down:
+        return nextPrimitive(items, current);
+
+    default:
+        break;
+    }
+    return BaseClass::nextItem(items, current, keyEvent);
 }

@@ -4,6 +4,7 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qrect.h>
 #include <QtCore/qlist.h>
+#include <QtCore/qhash.h>
 
 #include "fireworks.h"
 
@@ -26,15 +27,12 @@ public:
     FwItemLayout(FwItemView* view);
 
     inline FwItemView* view() const;
-    QList<FwPrimitive*> items() const;
-    FwPrimitive* currentItem() const;
-    QRect rect() const;
 
     virtual QByteArray className() const = 0;
 
     virtual void apply(FwMLObject* object);
 
-    virtual void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect) = 0;
+    virtual void init(const QList<FwPrimitive*> items, const QRect& rect) = 0;
     virtual void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect) = 0;
 
     void keyPressEvent(const QList<FwPrimitive*>& items, FwKeyPressEvent* keyEvent);
@@ -184,7 +182,7 @@ public:
     QByteArray className() const;
     static FwItemLayout* constructor(FwItemView* view);
 
-    void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
+    void init(const QList<FwPrimitive*> items, const QRect& rect);
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
 
 protected:
@@ -211,7 +209,7 @@ public:
     QByteArray className() const;
     static FwItemLayout* constructor(FwItemView* view);
 
-    void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
+    void init(const QList<FwPrimitive*> items, const QRect& rect);
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
 
 protected:
@@ -237,7 +235,7 @@ public:
     QByteArray className() const;
     static FwItemLayout* constructor(FwItemView* view);
 
-    void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
+    void init(const QList<FwPrimitive*> items, const QRect& rect);
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
 
 protected:
@@ -261,12 +259,45 @@ public:
     QByteArray className() const;
     static FwItemLayout* constructor(FwItemView* view);
 
-    void init(const QList<FwPrimitive*> items, FwPrimitive* current, const QRect& rect);
+    void init(const QList<FwPrimitive*> items, const QRect& rect);
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
 
 protected:
     void applyAnimationStep(int step);
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
 };
+
+///////////////////////////////////////////////////////////////////////
+
+class FwPagesLayout : public FwVSliderLayout
+{
+    Q_OBJECT
+    typedef FwVSliderLayout BaseClass;
+
+public:
+
+    static const char staticClassName[];
+
+    FwPagesLayout(FwItemView* view);
+
+    QByteArray className() const;
+    static FwItemLayout* constructor(FwItemView* view);
+
+    void init(const QList<FwPrimitive*> items, const QRect& rect);
+    void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
+
+protected:
+    FwPrimitive* nextItem(const QList<FwPrimitive *> &items, FwPrimitive *current, FwKeyPressEvent *keyEvent);
+    void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
+    void applyAnimationStep(int step);
+
+    void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
+
+private:
+    QHash<FwPrimitive*, int> m_pageIndex;
+    QMultiHash<int, FwPrimitive*> m_pages;
+    int m_currentPage;
+};
+
 
 #endif // FIREWORKS_ITEMLAYOUT_H

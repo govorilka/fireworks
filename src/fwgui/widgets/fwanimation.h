@@ -16,6 +16,13 @@ public:
     void apply(FwMLObject* object);
 
     static QEasingCurve::Type nameToCurveType(const QByteArray& name, bool* bOk = 0);
+
+    inline bool isRunning() const;
 };
+
+bool FwAnimation::isRunning() const
+{
+    return state() == QAbstractAnimation::Running;
+}
 
 #endif // FIREWORKS_ANIMATION_H
