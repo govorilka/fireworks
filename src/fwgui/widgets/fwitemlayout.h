@@ -32,8 +32,8 @@ public:
 
     virtual void apply(FwMLObject* object);
 
-    virtual void init(const QList<FwPrimitive*> items, const QRect& rect) = 0;
-    virtual void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect) = 0;
+    void initItemsPos(const QList<FwPrimitive*> items, FwPrimitive* current);
+    void updateCurrentPos(FwPrimitive* current);
 
     void keyPressEvent(const QList<FwPrimitive*>& items, FwKeyPressEvent* keyEvent);
 
@@ -44,6 +44,10 @@ public:
 
 protected:
     virtual FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent) = 0;
+
+    virtual void init(const QList<FwPrimitive*> items, const QRect& rect) = 0;
+    virtual void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect) = 0;
+    virtual void updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect) = 0;
 
     virtual void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current) = 0;
     virtual void animationFinish(FwItemAnimation* animation, FwPrimitive* current);
@@ -133,6 +137,8 @@ public:
     void apply(FwMLObject* object);
 
 protected:
+    void updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect);
+
     void updateAnimationValue(const QVariant& value);
 
     FwPrimitive* nextPrimitive(const QList<FwPrimitive*>& items, FwPrimitive* current) const;
@@ -182,10 +188,10 @@ public:
     QByteArray className() const;
     static FwItemLayout* constructor(FwItemView* view);
 
+protected:
     void init(const QList<FwPrimitive*> items, const QRect& rect);
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
 
-protected:
     FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent);
 
     void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
@@ -209,10 +215,10 @@ public:
     QByteArray className() const;
     static FwItemLayout* constructor(FwItemView* view);
 
+protected:
     void init(const QList<FwPrimitive*> items, const QRect& rect);
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
 
-protected:
     FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent);
     void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
     void applyAnimationStep(int step);
@@ -235,10 +241,10 @@ public:
     QByteArray className() const;
     static FwItemLayout* constructor(FwItemView* view);
 
+protected:
     void init(const QList<FwPrimitive*> items, const QRect& rect);
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
 
-protected:
     void applyAnimationStep(int step);
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
 };
@@ -259,10 +265,10 @@ public:
     QByteArray className() const;
     static FwItemLayout* constructor(FwItemView* view);
 
+protected:
     void init(const QList<FwPrimitive*> items, const QRect& rect);
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
 
-protected:
     void applyAnimationStep(int step);
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
 };
@@ -283,15 +289,20 @@ public:
     QByteArray className() const;
     static FwItemLayout* constructor(FwItemView* view);
 
-    void init(const QList<FwPrimitive*> items, const QRect& rect);
-    void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
-
 protected:
     FwPrimitive* nextItem(const QList<FwPrimitive *> &items, FwPrimitive *current, FwKeyPressEvent *keyEvent);
+
+    void init(const QList<FwPrimitive*> items, const QRect& rect);
+    void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
+    void updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect);
+
     void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
+    void updateAnimationValue(const QVariant &value);
     void applyAnimationStep(int step);
 
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
+
+    QRect highlightRect(FwPrimitive* current, const QRect& currentRect) const;
 
 private:
     QHash<FwPrimitive*, int> m_pageIndex;

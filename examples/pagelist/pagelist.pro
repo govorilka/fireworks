@@ -29,3 +29,6 @@ include(../qpainter/qpainter.pri)
 
 HEADERS += \
     menuscene.h
+
+OTHER_FILES += \
+    ../../bin/pagelist.fwml

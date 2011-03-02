@@ -50,14 +50,14 @@ void FwItemLayout::setCurrent(FwPrimitive* previous, FwPrimitive* current, bool 
         animationStart(m_animation, previous, current);
         if(!m_animation->isRunning())
         {
-            applyCurrentItem(current);
-            update(m_view->items(), current, m_view->geometryRect());
+            applyCurrentItem(current);;
+            updateCurrentPos(current);
         }
     }
     else
     {
         applyCurrentItem(current);
-        update(m_view->items(), current, m_view->geometryRect());
+        updateCurrentPos(current);
     }
 }
 
@@ -142,6 +142,22 @@ FwPrimitive* FwItemLayout::nextItem(const QList<FwPrimitive*>& items, FwPrimitiv
         break;
     }
     return 0;
+}
+
+void FwItemLayout::initItemsPos(const QList<FwPrimitive*> items, FwPrimitive* current)
+{
+    init(items, m_view->geometryRect());
+    updateCurrentPos(current);
+}
+
+void FwItemLayout::updateCurrentPos(FwPrimitive* current)
+{
+    update(m_view->items(), current, m_view->geometryRect());
+    FwPrimitive* highlight = m_view->highlight();
+    if(highlight)
+    {
+        updateHighlightPos(highlight, current, m_view->geometryRect());
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -254,6 +270,13 @@ FwPrimitive* FwSliderLayout::prevPrimtive(const QList<FwPrimitive*>& items, FwPr
         candidateIter += (items.indexOf(current) - 1);
     }
     return (*candidateIter);
+}
+
+void FwSliderLayout::updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect)
+{
+    Q_UNUSED(highlight);
+    Q_UNUSED(currentItem);
+    Q_UNUSED(rect);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -746,6 +769,14 @@ void FwPagesLayout::animationStart(FwItemAnimation* animation, FwPrimitive *prev
     Q_UNUSED(animation);
     Q_UNUSED(previous);
     calculatePosition(m_view->items(), current);
+
+    FwPrimitive* highlight = m_view->highlight();
+    if(highlight)
+    {
+        animation->setStartValue(highlight->rect());
+        animation->setEndValue(highlightRect(current, highlight->rect()));
+        animation->start();
+    }
 }
 
 void FwPagesLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current)
@@ -771,8 +802,18 @@ void FwPagesLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimit
     }
 }
 
+void FwPagesLayout::updateAnimationValue(const QVariant &value)
+{
+    FwPrimitive* highlight = m_view->highlight();
+    if(highlight)
+    {
+        highlight->setRect(value.toRect());
+    }
+}
+
 void FwPagesLayout::applyAnimationStep(int step)
 {
+    Q_UNUSED(step);
 }
 
 FwPrimitive* FwPagesLayout::nextItem(const QList<FwPrimitive *> &items, FwPrimitive *current, FwKeyPressEvent *keyEvent)
@@ -789,4 +830,17 @@ FwPrimitive* FwPagesLayout::nextItem(const QList<FwPrimitive *> &items, FwPrimit
         break;
     }
     return BaseClass::nextItem(items, current, keyEvent);
+}
+
+void FwPagesLayout::updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect)
+{
+    highlight->setRect(highlightRect(currentItem, QRect(0, 0, rect.width(), highlight->height())));
+}
+
+QRect FwPagesLayout::highlightRect(FwPrimitive* current, const QRect& currentRect) const
+{
+    QRect rect = currentRect;
+    rect.setY(current->y());
+    rect.setHeight(current->height());
+    return rect;
 }
