@@ -10,16 +10,16 @@ itemView
 
     layout
     {
-    class : "fireworks.layouts.Pages",
+        class : "fireworks.layouts.Pages",
 
-    animation
-    {
-        class : "fireworks.layouts.Animation",
-        curve : "InOutQuart",
-        duration : 300
-    },
+        animation
+        {
+            class : "fireworks.layouts.Animation",
+            curve : "InOutQuart",
+            duration : 300
+        },
 
-    margin : 16
+        margin : 16
     },
 
     item

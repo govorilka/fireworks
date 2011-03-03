@@ -1,3 +1,5 @@
+#include <QtCore/qdebug.h>
+
 #include <QtGui/qbrush.h>
 #include <QtGui/qpaintdevice.h>
 
@@ -10,17 +12,12 @@ QPRender::QPRender(QPaintDevice* device) :
     m_painter(device),
     m_color(0x00, 0x00, 0x00, 0x00)
 {
+    m_painter.setClipping(true);
 }
 
 void QPRender::setClipRect(const QRect& rect)
 {
-    m_painter.setClipping(true);
     m_painter.setClipRect(rect);
-}
-
-void QPRender::resetClipRect()
-{
-    m_painter.setClipping(false);
 }
 
 void QPRender::setColor(const FwColor& color)
@@ -51,9 +48,7 @@ void QPRender::drawRect(const QRect& rect)
 
 void QPRender::drawFillRect(const QRect& rect)
 {
-    m_painter.setBrush(QBrush(m_color));
-    m_painter.drawRect(rect);
-    m_painter.setBrush(QBrush());
+    m_painter.fillRect(rect, m_color);
 }
 
 void QPRender::drawLine(const QLine& line)
