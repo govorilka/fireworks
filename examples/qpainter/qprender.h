@@ -17,7 +17,6 @@ public:
 protected:
 
     void setClipRect(const QRect& rect);
-    void resetClipRect();
 
     void setColor(const FwColor& color);
     void setOpacity(float opacity);
