@@ -164,8 +164,7 @@ void FwItemLayout::updateCurrentPos(FwPrimitive* current)
 
 FwItemAnimation::FwItemAnimation(FwItemLayout* parent) :
     BaseClass(parent),
-    m_parent(parent),
-    m_curve(QEasingCurve::Linear)
+    m_parent(parent)
 {
 }
 
