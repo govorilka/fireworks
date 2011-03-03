@@ -89,34 +89,12 @@ public:
 
     inline FwItemLayout* parent() const;
 
-    inline void restoreCurve();
-    inline void resetCurve();
-
 protected:
     void updateCurrentValue(const QVariant & value);
 
 private:
     FwItemLayout* m_parent;
-    QEasingCurve m_curve;
 };
-
-void FwItemAnimation::restoreCurve()
-{
-    if(m_curve.type() != QEasingCurve::Linear)
-    {
-        setEasingCurve(m_curve);
-    }
-}
-
-void FwItemAnimation::resetCurve()
-{
-    QEasingCurve curve = easingCurve();
-    if(curve.type() != QEasingCurve::Linear)
-    {
-        m_curve = curve;
-        setEasingCurve(QEasingCurve::Linear);
-    }
-}
 
 ///////////////////////////////////////////////////////////////////////
 

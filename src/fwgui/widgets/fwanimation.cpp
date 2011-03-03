@@ -3,7 +3,9 @@
 #include "fwcore/fwml.h"
 
 FwAnimation::FwAnimation(QObject* parent) :
-    BaseClass(parent)
+    BaseClass(parent),
+    m_curve(QEasingCurve::Linear),
+    m_smooth(false)
 {
     setDuration(250);
     setEasingCurve(QEasingCurve::Linear);
@@ -30,6 +32,17 @@ void FwAnimation::apply(FwMLObject* object)
         if(bOk)
         {
             setEasingCurve(curveType);
+        }
+    }
+
+    FwMLNode* smoothNode = object->attribute("smooth");
+    if(smoothNode)
+    {
+        bool bOk = false;
+        bool smooth = smoothNode->toBool(&bOk);
+        if(bOk)
+        {
+            setSmooth(smooth);
         }
     }
 }
