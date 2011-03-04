@@ -146,6 +146,12 @@ FwPrimitive* FwItemLayout::nextItem(const QList<FwPrimitive*>& items, FwPrimitiv
 
 void FwItemLayout::initItemsPos(const QList<FwPrimitive*> items, FwPrimitive* current)
 {
+    m_candidate = 0;
+    m_nextCandidate = 0;
+    if(m_animation && m_animation->isRunning())
+    {
+        m_animation->stop();
+    }
     init(items, m_view->geometryRect());
     updateCurrentPos(current);
 }

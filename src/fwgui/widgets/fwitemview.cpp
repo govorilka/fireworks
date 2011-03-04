@@ -55,11 +55,13 @@ void FwItemView::addItem(FwPrimitive* primitive)
         {
             primitive->apply(m_itemTemplate);
         }
+        primitive->setPenColor(m_itemColor);
         m_items.append(primitive);
 
         if(!m_current)
         {
             m_current = primitive;
+            applyCurrentItem(m_current);
         }
 
         needInitLayout = true;
@@ -112,6 +114,11 @@ void FwItemView::setItemTemplate(FwMLObject* itemTemplate)
         foreach(FwPrimitive* item, m_items)
         {
             item->apply(m_itemTemplate);
+            item->setPenColor(m_itemColor);
+        }
+        if(m_current)
+        {
+            m_current->setPenColor(m_currentItemColor);
         }
 
         needInitLayout = true;
@@ -182,20 +189,18 @@ void FwItemView::apply(FwMLObject *object)
 
 void FwItemView::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
-    BaseClass::geometryChangedEvent(oldRect, rect);
-    needInitLayout = (oldRect.size() != rect.size());
+    needInitLayout = needInitLayout || (oldRect.size() != rect.size());
     updateChildrenRect();
+
+    BaseClass::geometryChangedEvent(oldRect, rect);
 }
 
 void FwItemView::invalidateChildrenRect()
 {
-    if(m_current && m_layout)
+    if(m_current && m_layout && (childSizeChanged || needInitLayout))
     {
-        if(childSizeChanged || needInitLayout)
-        {
-            m_layout->initItemsPos(m_items, m_current);
-            needInitLayout = false;
-        }
+        m_layout->initItemsPos(m_items, m_current);
+        needInitLayout = false;
     }
     BaseClass::invalidateChildrenRect();
 }
