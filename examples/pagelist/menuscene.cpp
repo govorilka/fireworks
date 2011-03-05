@@ -21,12 +21,6 @@ MenuScene::MenuScene(int id, FwGraphicsView* view) :
     m_itemView->prepareGeometryChanged();
     m_itemView->show();
     m_itemView->setPosition(Fw::HP_Center, Fw::VP_MiddleDock);
-
-    for(int i = 0; i < 100; i++)
-    {
-        m_itemView->addItem(QString("item") + QString::number(i));
-    }
-
     m_itemView->update();
 }
 
@@ -42,5 +36,23 @@ void MenuScene::keyPressEvent(FwKeyPressEvent *event)
     case Qt::Key_End:
         QCoreApplication::sendEvent(m_itemView, event);
         break;
+
+    case Qt::Key_1:
+        {
+            m_itemView->prepareItemsChanged();
+            for(int i = 0; i < 100; i++)
+            {
+                m_itemView->addItem(QString("item") + QString::number(i));
+            }
+            m_itemView->updateItems();
+        }
+        event->accept();
+        break;
+
+    case Qt::Key_2:
+        m_itemView->clear();
+        event->accept();
+        break;
+
     }
 }

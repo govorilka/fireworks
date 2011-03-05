@@ -11,53 +11,35 @@ FwItemLayout::FwItemLayout(FwItemView* view) :
     BaseClass(view),
     m_view(view),
     m_candidate(0),
-    m_nextCandidate(0),
     m_animation(0)
 {
 }
 
-void FwItemLayout::keyPressEvent(const QList<FwPrimitive*>& items, FwKeyPressEvent* keyEvent)
+bool FwItemLayout::startAnimation(FwPrimitive* previous, FwPrimitive* current)
 {
-    if(items.size() > 1)
+    if(m_view->isVisibleOnScreen() && m_animation)
     {
-        FwPrimitive* previous = m_candidate ? m_candidate : m_view->current();
-        FwPrimitive* candidatPrimitive = nextItem(items, previous, keyEvent);
-        if(candidatPrimitive)
+        if(m_animation->isRunning())
         {
-            setCurrent(previous, candidatPrimitive, true);
-            keyEvent->accept();
+            m_animation->resetCurve();
+            m_candidate = current;
         }
+        else
+        {
+            animationStart(m_animation, previous, current);
+        }
+        return m_animation->isRunning();
     }
+    return false;
 }
 
-void FwItemLayout::setCurrent(FwPrimitive* previous, FwPrimitive* current, bool visibleOnScreen)
+void FwItemLayout::resetAnimation()
 {
-    m_view->startChangedCurrent();
-
-    if(visibleOnScreen && m_animation)
+    m_candidate = 0;
+    if(m_animation && m_animation->isRunning())
     {
-        if(m_animation->state() == QAbstractAnimation::Running)
-        {
-            if(!m_nextCandidate)
-            {
-                m_animation->resetCurve();
-                m_nextCandidate = current;
-            }
-            return;
-        }
-
-        m_candidate = current;
-        animationStart(m_animation, previous, current);
-        if(!m_animation->isRunning())
-        {
-            applyCurrentItem(current);;
-            updateCurrentPos(current);
-        }
-    }
-    else
-    {
-        applyCurrentItem(current);
-        updateCurrentPos(current);
+        m_animation->stop();
+        m_animation->restoreCurve();
     }
 }
 
@@ -83,17 +65,22 @@ void FwItemLayout::setAnimationEnabled(bool enable)
 
 void FwItemLayout::animationFinish()
 {
-    if(m_candidate)
+    if(m_view->current())
     {
-        if(m_nextCandidate)
+        if(m_candidate)
         {
-            animationStart(m_animation, m_candidate, m_nextCandidate);
-            m_candidate = m_nextCandidate;
-            m_nextCandidate = 0;
-            return;
+            if(m_candidate == m_view->current())
+            {
+                animationStart(m_animation, m_view->previous(), m_view->current());
+            }
+            m_candidate = 0;
         }
-        animationFinish(m_animation, m_candidate);
-        applyCurrentItem(m_candidate);
+        else
+        {
+            animationFinish(m_animation, m_view->current());
+            m_animation->restoreCurve();
+            m_view->updateCurrent();
+        }
     }
 }
 
@@ -101,17 +88,6 @@ void FwItemLayout::animationFinish(FwItemAnimation* animation, FwPrimitive* curr
 {
     Q_UNUSED(animation);
     Q_UNUSED(current);
-}
-
-void FwItemLayout::applyCurrentItem(FwPrimitive* current)
-{
-    m_candidate = 0;
-    m_nextCandidate = 0;
-    if(m_animation)
-    {
-        m_animation->restoreCurve();
-    }
-    m_view->applyCurrentItem(current);
 }
 
 void FwItemLayout::apply(FwMLObject* object)
@@ -146,12 +122,7 @@ FwPrimitive* FwItemLayout::nextItem(const QList<FwPrimitive*>& items, FwPrimitiv
 
 void FwItemLayout::initItemsPos(const QList<FwPrimitive*> items, FwPrimitive* current)
 {
-    m_candidate = 0;
-    m_nextCandidate = 0;
-    if(m_animation && m_animation->isRunning())
-    {
-        m_animation->stop();
-    }
+    resetAnimation();
     init(items, m_view->geometryRect());
     updateCurrentPos(current);
 }
@@ -164,6 +135,15 @@ void FwItemLayout::updateCurrentPos(FwPrimitive* current)
     {
         updateHighlightPos(highlight, current, m_view->geometryRect());
     }
+}
+
+bool FwItemLayout::canNext() const
+{
+    if(m_animation &&  m_animation->isRunning())
+    {
+        return !m_candidate;
+    }
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////

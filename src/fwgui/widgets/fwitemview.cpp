@@ -12,10 +12,12 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_layout(new FwLoopHSliderLayout(this)),
     m_current(0),
+    m_currentDirty(false),
     m_previous(0),
     m_itemTemplate(0),
     m_highlight(0),
-    needInitLayout(true)
+    needInitLayout(true),
+    m_startItemsChanged(0)
 {
     addLayoutClass(FwHSliderLayout::staticClassName, &FwHSliderLayout::constructor);
     addLayoutClass(FwVSliderLayout::staticClassName, &FwVSliderLayout::constructor);
@@ -31,44 +33,75 @@ FwItemView::~FwItemView()
     delete m_layout;
 }
 
+void FwItemView::setItems(const QList<FwPrimitive*> items)
+{
+    prepareItemsChanged();
+
+    m_previous = 0;
+    m_current = 0;
+
+    m_layout->resetAnimation();
+
+    if(!m_items.isEmpty())
+    {
+        foreach(FwPrimitive* item, m_items)
+        {
+            if(!items.contains(item))
+            {
+                delete item;
+            }
+        }
+        m_items.clear();
+    }
+
+    if(items.isEmpty())
+    {
+        if(m_highlight)
+        {
+            m_highlight->setVisible(false);
+        }
+    }
+    else
+    {
+        foreach(FwPrimitive* item, items)
+        {
+            addItem(item);
+        }
+    }
+
+    m_currentDirty = true;
+    updateItems();
+}
+
 void FwItemView::setLayout(FwItemLayout* layout)
 {
-    if(m_layout != layout)
+    if(layout && m_layout != layout)
     {
-        prepareGeometryChanged();
+        prepareItemsChanged();
         delete m_layout;
         m_layout = layout;
-        needInitLayout = true;
-        updateChildrenRect();
-        update();
+        updateItems();
     }
 }
 
 void FwItemView::addItem(FwPrimitive* primitive)
 {
-    if(!m_items.contains(primitive))
+    prepareItemsChanged();
+
+    primitive->link(geometry());
+    if(m_itemTemplate)
     {
-        prepareGeometryChanged();
-
-        primitive->link(geometry());
-        if(m_itemTemplate)
-        {
-            primitive->apply(m_itemTemplate);
-        }
-        primitive->setPenColor(m_itemColor);
-        m_items.append(primitive);
-
-        if(!m_current)
-        {
-            m_current = primitive;
-            applyCurrentItem(m_current);
-        }
-
-        needInitLayout = true;
-        updateChildrenRect();
-
-        update();
+        primitive->apply(m_itemTemplate);
     }
+    primitive->setPenColor(m_itemColor);
+    m_items.append(primitive);
+
+    if(!m_current)
+    {
+        setCurrent(primitive);
+    }
+
+    updateItems();
 }
 
 FwStringPrimitive* FwItemView::addItem(const QString& text, const QVariant& data)
@@ -91,15 +124,18 @@ void FwItemView::setCurrent(FwPrimitive* primitive)
 {
     if(m_current != primitive)
     {
-        if(m_layout)
+        prepareItemsChanged();
+
+        m_previous = m_current;
+        if(m_previous)
         {
-            m_layout->setCurrent(m_previous, m_current, isVisibleOnScreen());
+            m_previous->setPenColor(m_itemColor);
         }
-        else
-        {
-            startChangedCurrent();
-            applyCurrentItem(primitive);
-        }
+
+        m_current = primitive;
+        m_currentDirty = true;
+
+        updateItems(false);
     }
 }
 
@@ -107,45 +143,41 @@ void FwItemView::setItemTemplate(FwMLObject* itemTemplate)
 {
     if(m_itemTemplate != itemTemplate)
     {
-        prepareGeometryChanged();
+        prepareItemsChanged();
 
         delete m_itemTemplate;
         m_itemTemplate = itemTemplate;
-        foreach(FwPrimitive* item, m_items)
+        if(itemTemplate)
         {
-            item->apply(m_itemTemplate);
-            item->setPenColor(m_itemColor);
-        }
-        if(m_current)
-        {
-            m_current->setPenColor(m_currentItemColor);
+            foreach(FwPrimitive* item, m_items)
+            {
+                item->apply(m_itemTemplate);
+                item->setPenColor(m_itemColor);
+            }
+            if(m_current)
+            {
+                m_current->setPenColor(m_currentItemColor);
+            }
         }
 
-        needInitLayout = true;
-        updateChildrenRect();
-
-        update();
+        updateItems();
     }
 }
 
 void FwItemView::apply(FwMLObject *object)
 {
+    prepareItemsChanged();
     prepareGeometryChanged();
 
     FwMLObject* layoutNode = object->attribute("layout")->cast<FwMLObject>();
     if(layoutNode)
     {
-        FwItemLayout* layout = this->layout();
         QByteArray layoutClass = layoutNode->className();
-        if(!layoutClass.isEmpty() && (!layout || layout->className() != layoutClass))
+        if(!layoutClass.isEmpty() && m_layout->className() != layoutClass)
         {
-            layout = createLayout(layoutClass);
-            setLayout(layout);
+            setLayout(createLayout(layoutClass));
         }
-        if(layout)
-        {
-            layout->apply(layoutNode);
-        }
+        m_layout->apply(layoutNode);
     }
 
     FwMLObject* itemNode = object->attribute("item")->cast<FwMLObject>();
@@ -185,6 +217,7 @@ void FwItemView::apply(FwMLObject *object)
     BaseClass::apply(object);
 
     update();
+    updateItems();
 }
 
 void FwItemView::geometryChangedEvent(const QRect &oldRect, QRect &rect)
@@ -197,7 +230,7 @@ void FwItemView::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 
 void FwItemView::invalidateChildrenRect()
 {
-    if(m_current && m_layout && (childSizeChanged || needInitLayout))
+    if(m_current && (childSizeChanged || needInitLayout))
     {
         m_layout->initItemsPos(m_items, m_current);
         needInitLayout = false;
@@ -233,25 +266,23 @@ FwItemLayout* FwItemView::createLayout(const QByteArray& className)
 
 void FwItemView::keyPressEvent(FwKeyPressEvent* keyEvent)
 {
-    if(m_current && m_layout)
+    if(m_current && m_layout->canNext())
     {
-        m_layout->keyPressEvent(m_items, keyEvent);
+        FwPrimitive* candidatPrimitive = m_layout->nextItem(m_items, m_current, keyEvent);
+        if(candidatPrimitive)
+        {
+            setCurrent(candidatPrimitive);
+            keyEvent->accept();
+        }
     }
 }
 
-void FwItemView::startChangedCurrent()
+void FwItemView::updateCurrent()
 {
     if(m_current)
     {
-        m_current->setPenColor(m_itemColor);
+        m_current->setPenColor(m_currentItemColor);
     }
-}
-
-void FwItemView::applyCurrentItem(FwPrimitive* primitive)
-{
-    m_previous = m_current;
-    m_current = primitive;
-    m_current->setPenColor(m_currentItemColor);
     emit currentChanged(m_previous, m_current);
 }
 
@@ -270,7 +301,6 @@ void FwItemView::setItemColor(const FwColor& color)
         {
             m_current->setPenColor(m_currentItemColor);
         }
-
         update();
     }
 }
@@ -295,25 +325,33 @@ void FwItemView::setHighlight(FwRectPrimitive* primitive)
 {
     if(m_highlight != primitive)
     {
+        prepareItemsChanged();
         delete m_highlight;
         m_highlight = primitive;
-        updateHighlightPos();
+        updateItems();
     }
 }
 
-void FwItemView::updateHighlightPos()
+void FwItemView::updateItems(bool init)
 {
-    if(m_highlight && m_layout)
+    needInitLayout = needInitLayout || init;
+    if((--m_startItemsChanged) == 0)
     {
-        if(m_layout && m_current)
+        if(m_currentDirty)
         {
-            m_highlight->setVisible(true);
-            needInitLayout = true;
-            updateChildrenRect();
+            if(m_highlight)
+            {
+                m_highlight->setVisible(m_current != 0);
+            }
+            if(!m_current || !m_previous || !m_layout->startAnimation(m_previous, m_current))
+            {
+                updateCurrent();
+            }
+            m_currentDirty = false;
         }
-        else
+        if(needInitLayout)
         {
-            m_highlight->setVisible(false);
+            updateChildrenRect();
         }
     }
 }
