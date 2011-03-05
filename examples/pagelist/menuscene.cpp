@@ -1,5 +1,6 @@
 #include <QtCore/qcoreapplication.h>
 #include <QtCore/qdebug.h>
+#include <QtCore/qdatetime.h>
 
 #include "menuscene.h"
 
@@ -39,12 +40,15 @@ void MenuScene::keyPressEvent(FwKeyPressEvent *event)
 
     case Qt::Key_1:
         {
+            QTime currentTime = QTime::currentTime();
             m_itemView->prepareItemsChanged();
-            for(int i = 0; i < 100; i++)
+            qDebug() << "MenuScene::keyPressEvent: start";
+            for(int i = 0; i < 10000; i++)
             {
                 m_itemView->addItem(QString("item") + QString::number(i));
             }
             m_itemView->updateItems();
+            qDebug() << "MenuScene::keyPressEvent" << currentTime.msecsTo(QTime::currentTime());
         }
         event->accept();
         break;

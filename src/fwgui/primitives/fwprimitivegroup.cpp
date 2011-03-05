@@ -12,6 +12,7 @@
 FwPrimitiveGroup::FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_childrenRect(0, 0, 0, 0),
+    childrenDirty(false),
     childrenRectDirty(false),
     childSizeChanged(false)
 {
@@ -127,38 +128,57 @@ FwGraphicsObject* FwPrimitiveGroup::object() const
     return m_parent ? m_parent->object() : 0;
 }
 
-void FwPrimitiveGroup::invalidateChildrenRect()
+void FwPrimitiveGroup::invalidateChildren()
 {
-    if(childrenRectDirty)
+    if(childrenDirty)
     {
         foreach(FwPrimitiveGroup* group, m_groups)
         {
-            group->invalidateChildrenRect();
+            group->invalidateChildren();
         }
 
-        if(object() != this)
+        if(childrenRectDirty)
         {
-            int x1 = 0;
-            int y1 = 0;
-            int x2 = 0;
-            int y2 = 0;
-            foreach(FwPrimitive* primitive, m_primitives)
-            {
-                x1 = qMin(x1, primitive->m_geometry->rect().left());
-                y1 = qMin(y1, primitive->m_geometry->rect().top());
-                x2 = qMax(x2, primitive->m_geometry->rect().right());
-                y2 = qMax(y2, primitive->m_geometry->rect().bottom());
-            }
-            foreach(FwPrimitiveGroup* group, m_groups)
-            {
-                x1 = qMin(x1, group->m_childrenRect.left());
-                y1 = qMin(y1, group->m_childrenRect.top());
-                x2 = qMax(x2, group->m_childrenRect.right());
-                y2 = qMax(y2, group->m_childrenRect.bottom());
-            }
-            m_childrenRect.setCoords(x1, y1, x2, y2);
+            invalidateChildrenRect();
+            childSizeChanged = false;
+            childrenRectDirty = false;
         }
-        childSizeChanged = false;
-        childrenRectDirty = false;
+
+        if(needSortZIndex)
+        {
+            if(m_primitives.size() > 1)
+            {
+                qSort(m_primitives.begin(), m_primitives.end(), FwPrimitive::zIndexLessThan);
+            }
+            needSortZIndex = false;
+        }
+
+        childrenDirty = false;
+    }
+}
+
+void FwPrimitiveGroup::invalidateChildrenRect()
+{
+    if(object() != this)
+    {
+        int x1 = 0;
+        int y1 = 0;
+        int x2 = 0;
+        int y2 = 0;
+        foreach(FwPrimitive* primitive, m_primitives)
+        {
+            x1 = qMin(x1, primitive->m_geometry->rect().left());
+            y1 = qMin(y1, primitive->m_geometry->rect().top());
+            x2 = qMax(x2, primitive->m_geometry->rect().right());
+            y2 = qMax(y2, primitive->m_geometry->rect().bottom());
+        }
+        foreach(FwPrimitiveGroup* group, m_groups)
+        {
+            x1 = qMin(x1, group->m_childrenRect.left());
+            y1 = qMin(y1, group->m_childrenRect.top());
+            x2 = qMax(x2, group->m_childrenRect.right());
+            y2 = qMax(y2, group->m_childrenRect.bottom());
+        }
+        m_childrenRect.setCoords(x1, y1, x2, y2);
     }
 }

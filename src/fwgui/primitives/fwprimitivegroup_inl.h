@@ -10,24 +10,28 @@ QVector<FwPrimitive*> FwPrimitiveGroup::primitives() const
 
 void FwPrimitiveGroup::sortZIndex()
 {
-    if(m_primitives.size() > 1)
+    needSortZIndex = true;
+    updateChildren();
+}
+
+void FwPrimitiveGroup::updateChildren()
+{
+    FwPrimitiveGroup* parent = this;
+    while(parent)
     {
-        qSort(m_primitives.begin(), m_primitives.end(), FwPrimitive::zIndexLessThan);
+        if(parent->childrenDirty)
+        {
+            break;
+        }
+        parent->childrenDirty = true;
+        parent = parent->m_parent;
     }
 }
 
 void FwPrimitiveGroup::updateChildrenRect()
 {
-    FwPrimitiveGroup* parent = this;
-    while(parent)
-    {
-        if(parent->childrenRectDirty)
-        {
-            break;
-        }
-        parent->childrenRectDirty = true;
-        parent = parent->m_parent;
-    }
+    childrenRectDirty = true;
+    updateChildren();
 }
 
 #endif // FIREWORKS_GRAPHICSITEMGROUP_INL_H
