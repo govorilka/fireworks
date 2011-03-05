@@ -28,6 +28,7 @@ public:
 
     virtual FwGraphicsObject* object() const;
 
+    inline void updateChildren();
     inline void updateChildrenRect();
 
 protected:
@@ -37,10 +38,13 @@ protected:
 
     virtual void visibleChangedEvent();
 
+    void invalidateChildren();
     virtual void invalidateChildrenRect();
 
+    bool childrenDirty;
     bool childrenRectDirty;
     bool childSizeChanged;
+    bool needSortZIndex;
 
 private:
     QVector<FwPrimitive*> m_primitives;

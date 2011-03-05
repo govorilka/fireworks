@@ -35,11 +35,10 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     {
         visibleOnScreen = m_parent->visibleOnScreen;
         m_scene = m_parent->m_scene;
-        m_parent->prepareGeometryChanged();
         m_parent->m_primitives.append(this);
-        m_parent->sortZIndex();
-        m_parent->update();
         link(m_parent->m_geometry);
+        m_parent->updateChildrenRect();
+        m_parent->sortZIndex();
     }
 }
 
@@ -50,7 +49,7 @@ FwPrimitive::~FwPrimitive()
         m_parent->m_primitives.remove(m_parent->m_primitives.indexOf(this));
         if(m_visible)
         {
-            m_parent->updateChildrenRect();
+            m_parent->updateChildren();
             m_parent->invalidate();
         }
         m_parent = 0;
@@ -124,6 +123,7 @@ void FwPrimitive::update(bool needUpdateBuffer)
         {
             m_boundingRect = m_geometry->rect();
             boundingRectChangedEvent(m_boundingRect);
+
             if(m_bufferMode)
             {
                 if(m_buffer && m_geometry->sizeChanged())
@@ -137,11 +137,11 @@ void FwPrimitive::update(bool needUpdateBuffer)
                 }
             }
 
-            if(m_parent && !m_parent->childSizeChanged)
+            if(m_parent)
             {
                 m_parent->childSizeChanged  = m_geometry->sizeChanged();
+                m_parent->updateChildrenRect();
             }
-            m_parent->updateChildrenRect();
 
             m_geometry->apply();
             invalidate();

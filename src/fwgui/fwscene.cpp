@@ -100,7 +100,7 @@ void FwScene::hideEventProcessed(FwSceneHideEvent* e)
 
 void FwScene::paint(FwPainter *painter, const QRect &clipRect)
 {
-    invalidateChildrenRect();
+    invalidateChildren();
     BaseClass::paint(painter, clipRect);
 }
 
