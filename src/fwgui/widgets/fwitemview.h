@@ -27,9 +27,14 @@ public:
     ~FwItemView();
 
     inline QList<FwPrimitive*> items() const;
+    void setItems(const QList<FwPrimitive*> items);
+    inline void clear();
 
     void addItem(FwPrimitive* primitive);
     FwStringPrimitive* addItem(const QString& text, const QVariant& data = QVariant());
+
+    inline void prepareItemsChanged();
+    void updateItems(bool init = true);
 
     inline FwPrimitive* current() const;
     inline FwPrimitive* previous() const;
@@ -66,15 +71,14 @@ protected:
 
     bool needInitLayout;
 
-    void startChangedCurrent();
-    void applyCurrentItem(FwPrimitive* primitive);
-
-    void updateHighlightPos();
+    void updateCurrent();
 
 private:
     QList<FwPrimitive*> m_items;
     FwPrimitive* m_current;
+    bool m_currentDirty;
     FwPrimitive* m_previous;
+    int m_startItemsChanged;
 
     FwRectPrimitive* m_highlight;
 
@@ -123,6 +127,16 @@ FwColor FwItemView::currentItemColor() const
 FwRectPrimitive* FwItemView::highlight() const
 {
     return m_highlight;
+}
+
+void FwItemView::prepareItemsChanged()
+{
+    ++m_startItemsChanged;
+}
+
+void FwItemView::clear()
+{
+    setItems(QList<FwPrimitive*>());
 }
 
 #endif // FIREWORKS_ITEMVIEW_H

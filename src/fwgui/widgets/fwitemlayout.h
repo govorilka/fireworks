@@ -35,16 +35,17 @@ public:
     void initItemsPos(const QList<FwPrimitive*> items, FwPrimitive* current);
     void updateCurrentPos(FwPrimitive* current);
 
-    void keyPressEvent(const QList<FwPrimitive*>& items, FwKeyPressEvent* keyEvent);
-
-    void setCurrent(FwPrimitive* previous, FwPrimitive* current, bool visibleOnScreen);
+    bool startAnimation(FwPrimitive* previous, FwPrimitive* current);
+    void resetAnimation();
 
     inline FwItemAnimation* animation() const;
     void setAnimationEnabled(bool enable);
 
-protected:
     virtual FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent) = 0;
 
+    bool canNext() const;
+
+protected:
     virtual void init(const QList<FwPrimitive*> items, const QRect& rect) = 0;
     virtual void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect) = 0;
     virtual void updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect) = 0;
@@ -53,13 +54,10 @@ protected:
     virtual void animationFinish(FwItemAnimation* animation, FwPrimitive* current);
     virtual void updateAnimationValue(const QVariant& value) = 0;
 
-    void applyCurrentItem(FwPrimitive* current);
-
     FwItemView* m_view;
     QRect m_rect;
 
     FwPrimitive* m_candidate;
-    FwPrimitive* m_nextCandidate;
 
     FwItemAnimation* m_animation;
 
