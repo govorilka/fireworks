@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOpen">
@@ -46,27 +46,45 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/scripter/image/address-book--arrow.png</normaloff>:/scripter/image/address-book--arrow.png</iconset>
+   </property>
    <property name="text">
     <string>Open...</string>
    </property>
   </action>
   <action name="actionSave">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/scripter/image/address-book--exclamation.png</normaloff>:/scripter/image/address-book--exclamation.png</iconset>
+   </property>
    <property name="text">
     <string>Save</string>
    </property>
   </action>
   <action name="actionSaveAs">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/scripter/image/address-book--minus.png</normaloff>:/scripter/image/address-book--minus.png</iconset>
+   </property>
    <property name="text">
     <string>Save as...</string>
    </property>
   </action>
   <action name="actionExit">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/scripter/image/address-book.png</normaloff>:/scripter/image/address-book.png</iconset>
+   </property>
    <property name="text">
     <string>Exit</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="scripter.qrc"/>
+ </resources>
  <connections/>
 </ui>
