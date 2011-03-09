@@ -121,6 +121,7 @@ protected:
     FwPrimitive* prevPrimtive(const QList<FwPrimitive*>& items, FwPrimitive* current) const;
 
     virtual void applyAnimationStep(int step) = 0;
+    virtual void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current) = 0;
 
     int m_margin;
     int m_criticalPoint;
@@ -173,6 +174,7 @@ protected:
     void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
 
     void applyAnimationStep(int step);
+    void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
 };
 
 ///////////////////////////////////////////////////////////////////////
@@ -196,8 +198,11 @@ protected:
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
 
     FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent);
+
     void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
+
     void applyAnimationStep(int step);
+    void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
 };
 
 
@@ -219,9 +224,6 @@ public:
 
 protected:
     void init(const QList<FwPrimitive*> items, const QRect& rect);
-    void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
-
-    void applyAnimationStep(int step);
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
 };
 
@@ -243,9 +245,6 @@ public:
 
 protected:
     void init(const QList<FwPrimitive*> items, const QRect& rect);
-    void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
-
-    void applyAnimationStep(int step);
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
 };
 

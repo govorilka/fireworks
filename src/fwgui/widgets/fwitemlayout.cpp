@@ -222,6 +222,11 @@ void FwSliderLayout::updateAnimationValue(const QVariant& value)
     m_endPoint += step;
 
     applyAnimationStep(step);
+
+    if(m_startPoint >= 0 || m_endPoint <= m_maxValue)
+    {
+        calculatePosition(m_view->items(), m_view->current());
+    }
 }
 
 FwPrimitive* FwSliderLayout::nextPrimitive(const QList<FwPrimitive*>& items, FwPrimitive* current) const
@@ -296,32 +301,38 @@ void FwHSliderLayout::update(const QList<FwPrimitive*>& items, FwPrimitive* curr
     current->setX((rect.width() - current->width()) * 0.5);
     if(items.size() > 1)
     {
-        m_startPoint = current->x();
-        m_endPoint = m_startPoint + current->width() + m_margin;
+        calculatePosition(items, current);
+    }
+}
 
-        QList<FwPrimitive*>::const_iterator currentIter = items.begin();
-        currentIter += items.indexOf(current);
 
-        QList<FwPrimitive*>::const_iterator beginIter = items.begin();
-        QList<FwPrimitive*>::const_iterator rightIter = currentIter + 1;
-        while(rightIter != items.end())
+void FwHSliderLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current)
+{
+    m_startPoint = current->x();
+    m_endPoint = m_startPoint + current->width() + m_margin;
+
+    QList<FwPrimitive*>::const_iterator currentIter = items.begin();
+    currentIter += items.indexOf(current);
+
+    QList<FwPrimitive*>::const_iterator beginIter = items.begin();
+    QList<FwPrimitive*>::const_iterator rightIter = currentIter + 1;
+    while(rightIter != items.end())
+    {
+        FwPrimitive* primitive = (*rightIter);
+        primitive->setX(m_endPoint);
+        m_endPoint += (primitive->width() + m_margin);
+        ++rightIter;
+    }
+    if(beginIter != currentIter)
+    {
+        QList<FwPrimitive*>::const_iterator leftIter = currentIter;
+        do
         {
-            FwPrimitive* primitive = (*rightIter);
-            primitive->setX(m_endPoint);
-            m_endPoint += (primitive->width() + m_margin);
-            ++rightIter;
+            --leftIter;
+            FwPrimitive* primitive = (*leftIter);
+            primitive->setX(m_startPoint -= (primitive->width() + m_margin));
         }
-        if(beginIter != currentIter)
-        {
-            QList<FwPrimitive*>::const_iterator leftIter = currentIter;
-            do
-            {
-                --leftIter;
-                FwPrimitive* primitive = (*leftIter);
-                primitive->setX(m_startPoint -= (primitive->width() + m_margin));
-            }
-            while(leftIter != beginIter);
-        }
+        while(leftIter != beginIter);
     }
 }
 
@@ -390,34 +401,39 @@ void FwVSliderLayout::update(const QList<FwPrimitive*>& items, FwPrimitive* curr
     current->setY((rect.height() - current->height()) * 0.5);
     if(items.size() > 1)
     {
-        m_startPoint = current->y();
-        m_endPoint = m_startPoint + current->height() + m_margin;
+        calculatePosition(items, current);
+    }
+}
 
-        QList<FwPrimitive*>::const_iterator currentIter = items.begin();
-        currentIter += items.indexOf(current);
+void FwVSliderLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current)
+{
+    m_startPoint = current->y();
+    m_endPoint = m_startPoint + current->height() + m_margin;
 
-        QList<FwPrimitive*>::const_iterator beginIter = items.begin();
-        QList<FwPrimitive*>::const_iterator rightIter = currentIter + 1;
+    QList<FwPrimitive*>::const_iterator currentIter = items.begin();
+    currentIter += items.indexOf(current);
 
-        while(rightIter != items.end())
+    QList<FwPrimitive*>::const_iterator beginIter = items.begin();
+    QList<FwPrimitive*>::const_iterator rightIter = currentIter + 1;
+
+    while(rightIter != items.end())
+    {
+        FwPrimitive* primitive = (*rightIter);
+        primitive->setY(m_endPoint);
+        m_endPoint += (primitive->height() + m_margin);
+        ++rightIter;
+    }
+
+    if(beginIter != currentIter)
+    {
+        QList<FwPrimitive*>::const_iterator leftIter = currentIter;
+        do
         {
-            FwPrimitive* primitive = (*rightIter);
-            primitive->setY(m_endPoint);
-            m_endPoint += (primitive->height() + m_margin);
-            ++rightIter;
+            --leftIter;
+            FwPrimitive* primitive = (*leftIter);
+            primitive->setY(m_startPoint -= (primitive->height() + m_margin));
         }
-
-        if(beginIter != currentIter)
-        {
-            QList<FwPrimitive*>::const_iterator leftIter = currentIter;
-            do
-            {
-                --leftIter;
-                FwPrimitive* primitive = (*leftIter);
-                primitive->setY(m_startPoint -= (primitive->height() + m_margin));
-            }
-            while(leftIter != beginIter);
-        }
+        while(leftIter != beginIter);
     }
 }
 
@@ -486,15 +502,6 @@ void FwLoopHSliderLayout::init(const QList<FwPrimitive*> items, const QRect& rec
     m_criticalPoint = 0.5 * m_criticalPoint;
 }
 
-void FwLoopHSliderLayout::update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect)
-{
-    current->setX((rect.width() - current->width()) * 0.5);
-    if(items.size() > 1)
-    {
-        calculatePosition(items, current);
-    }
-}
-
 void FwLoopHSliderLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current)
 {
     m_startPoint = current->x();
@@ -547,32 +554,6 @@ void FwLoopHSliderLayout::calculatePosition(const QList<FwPrimitive*>& items, Fw
     }
 }
 
-void FwLoopHSliderLayout::applyAnimationStep(int step)
-{
-    if(m_startPoint > 0 || m_endPoint < m_maxValue)
-    {
-        QList<FwPrimitive*> items = m_view->items();
-        FwPrimitive* middleItem = 0;
-        int halfWidth = m_maxValue * 0.5;
-        int delta = halfWidth;
-        foreach(FwPrimitive* primitive, items)
-        {
-            int newDelta = qMin(qAbs(halfWidth - primitive->geometryRect().right()),
-                                qAbs(primitive->geometryRect().left() - halfWidth));
-            if(newDelta < delta)
-            {
-                delta = newDelta;
-                middleItem = primitive;
-            }
-        }
-        calculatePosition(items, middleItem);
-    }
-    else
-    {
-        BaseClass::applyAnimationStep(step);
-    }
-}
-
 ///////////////////////////////////////////////////////////////////////
 
 const char FwLoopVSliderLayout::staticClassName[] = "fireworks.layouts.LoopVerticalSlider";
@@ -603,15 +584,6 @@ void FwLoopVSliderLayout::init(const QList<FwPrimitive*> items, const QRect& rec
         m_criticalPoint += primitive->height();
     }
     m_criticalPoint = 0.5 * m_criticalPoint;
-}
-
-void FwLoopVSliderLayout::update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect)
-{
-    current->setY((rect.height() - current->height()) * 0.5);
-    if(items.size() > 1)
-    {
-        calculatePosition(items, current);
-    }
 }
 
 void FwLoopVSliderLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current)
@@ -663,32 +635,6 @@ void FwLoopVSliderLayout::calculatePosition(const QList<FwPrimitive*>& items, Fw
             primitive->setY(m_startPoint -= (primitive->height() + m_margin));
         }
         while(leftIter != rightIter);
-    }
-}
-
-void FwLoopVSliderLayout::applyAnimationStep(int step)
-{
-    if(m_startPoint > 0 || m_endPoint < m_maxValue)
-    {
-        QList<FwPrimitive*> items = m_view->items();
-        FwPrimitive* middleItem = 0;
-        int halfHeight = m_maxValue * 0.5;
-        int delta = halfHeight;
-        foreach(FwPrimitive* primitive, items)
-        {
-            int newDelta = qMin(qAbs(halfHeight - primitive->geometryRect().bottom()),
-                                qAbs(primitive->geometryRect().top() - halfHeight));
-            if(newDelta < delta)
-            {
-                delta = newDelta;
-                middleItem = primitive;
-            }
-        }
-        calculatePosition(items, middleItem);
-    }
-    else
-    {
-        BaseClass::applyAnimationStep(step);
     }
 }
 
