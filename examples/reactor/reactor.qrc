@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/reactor">
+        <file>sql/init.sql</file>
+        <file>images/database.png</file>
+        <file>images/question.png</file>
+    </qresource>
+</RCC>

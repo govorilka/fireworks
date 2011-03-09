@@ -22,8 +22,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::open()
 {
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                                    tr("Open fwml file"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open fwml file"));
     open(fileName);
 }
 
