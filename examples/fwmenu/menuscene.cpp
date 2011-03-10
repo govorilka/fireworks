@@ -21,7 +21,7 @@ MenuScene::MenuScene(int id, FwGraphicsView* view) :
 {
     m_itemView->prepareGeometryChanged();
     m_itemView->show();
-    m_itemView->setPosition(Fw::HP_Center, Fw::VP_MiddleDock);
+    m_itemView->setPosition(Fw::HP_Center, Fw::VP_Middle);
 
     for(int i = 0; i < 100; i++)
     {

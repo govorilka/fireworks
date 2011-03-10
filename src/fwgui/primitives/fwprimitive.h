@@ -72,7 +72,7 @@ public:
     inline QRect geometryRect() const;
     inline void setGeometryRect(QRect rect);
 
-    inline void prepareGeometryChanged();
+    void prepareGeometryChanged();
     void invalidate();
     void update(bool needUpdateBuffer = true);
 
@@ -160,6 +160,8 @@ private:
     QVariant* m_data;
 
     FwPen* m_pen;
+
+    bool m_contentDirty;
 };
 
 #include "fwgui/primitives/fwprimitive_inl.h"
