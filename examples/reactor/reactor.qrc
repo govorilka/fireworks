@@ -1,7 +1,10 @@
 <RCC>
     <qresource prefix="/reactor">
         <file>sql/init.sql</file>
-        <file>images/database.png</file>
-        <file>images/question.png</file>
+        <file>images/datatree/database.png</file>
+        <file>images/datatree/question.png</file>
+        <file>images/textedit/text_bold.png</file>
+        <file>images/textedit/text_italic.png</file>
+        <file>images/textedit/text_underline.png</file>
     </qresource>
 </RCC>

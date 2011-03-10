@@ -1,6 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QtGui/qtextdocument.h>
+#include <QtGui/qtextformat.h>
+
 #include <QMainWindow>
 
 namespace Ui
@@ -19,12 +22,18 @@ public:
     ~MainWindow();
 
 private:
+    void mergeFormatOnWordOrSelection(const QTextCharFormat& fmt);
+
     Ui::MainWindow *ui;
     Database* m_db;
     int m_questionId;
 
 private slots:
     void currentChanged(int type, int key);
+
+    void textEditBold();
+    void textEditItanic();
+    void textEditUnderline();
 };
 
 #endif // MAINWINDOW_H

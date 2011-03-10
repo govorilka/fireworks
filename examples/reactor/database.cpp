@@ -32,8 +32,8 @@ Database::Database(QObject *parent) :
     m_currentKey(0),
     m_currentType(DataNode::NT_Unknow)
 {
-    m_dbPixmap.load(":/reactor/images/database.png");
-    m_questionPixmap.load(":/reactor/images/question.png");
+    m_dbPixmap.load(":/reactor/images/datatree/database.png");
+    m_questionPixmap.load(":/reactor/images/datatree/question.png");
     rootNode->caption = tr("Reactor");
     rootNode->type = DataNode::NT_Root;
     rootNode->icon = QIcon(m_dbPixmap);

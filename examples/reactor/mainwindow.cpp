@@ -37,6 +37,10 @@ MainWindow::MainWindow(QWidget *parent) :
     dataTree->setHeaderHidden(true);
     dataTree->setSelectionModel(m_db->selectionModel());
     dataTree->setAlternatingRowColors(true);
+
+    connect(ui->actionBold, SIGNAL(triggered()), this,  SLOT(textEditBold()));
+    connect(ui->actionItalic, SIGNAL(triggered()), this,  SLOT(textEditItanic()));
+    connect(ui->actionUnderline, SIGNAL(triggered()), this,  SLOT(textEditUnderline()));
 }
 
 MainWindow::~MainWindow()
@@ -58,4 +62,37 @@ void MainWindow::currentChanged(int type, int key)
         m_questionId = key;
         ui->centralWidget->setHtml(m_db->questionText(m_questionId));
     }
+}
+
+void MainWindow::textEditBold()
+{
+    QTextCharFormat fmt;
+    fmt.setFontWeight(QFont::Bold);
+    //fmt.setFontWeight(actionTextBold->isChecked() ? QFont::Bold : QFont::Normal);
+    mergeFormatOnWordOrSelection(fmt);
+}
+
+void MainWindow::textEditItanic()
+{
+    QTextCharFormat fmt;
+    fmt.setFontItalic(true);
+    mergeFormatOnWordOrSelection(fmt);
+}
+
+void MainWindow::textEditUnderline()
+{
+    QTextCharFormat fmt;
+    fmt.setFontUnderline(true);
+    mergeFormatOnWordOrSelection(fmt);
+}
+
+void MainWindow::mergeFormatOnWordOrSelection(const QTextCharFormat& fmt)
+{
+    QTextCursor cursor = ui->centralWidget->textCursor();
+    if (!cursor.hasSelection())
+    {
+        cursor.select(QTextCursor::WordUnderCursor);
+    }
+    cursor.mergeCharFormat(fmt);
+    ui->centralWidget->mergeCurrentCharFormat(fmt);
 }
