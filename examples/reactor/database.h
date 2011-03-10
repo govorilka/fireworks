@@ -59,6 +59,11 @@ public:
     QString questionText(int key) const;
     void setQuestionText(int key, const QString& text);
 
+    void addQuestion(int themeID);
+    void deleteQuestion(DataNode* question);
+
+    inline QModelIndex createIndex(DataNode* node) const;
+
 signals:
     void currentChanged(int type, int key);
 
@@ -91,6 +96,11 @@ QString Database::lastError() const
 QItemSelectionModel* Database::selectionModel() const
 {
     return m_selectionModel;
+}
+
+QModelIndex Database::createIndex(DataNode* node) const
+{
+    return BaseClass::createIndex(node->row, node->column, static_cast<void*>(node));
 }
 
 #endif // REACTOR_DATABASE_H

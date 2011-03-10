@@ -22,12 +22,15 @@ INCLUDEPATH += ../../src/
 
 SOURCES += main.cpp\
            mainwindow.cpp \
-    database.cpp
+    database.cpp \
+    databaseview.cpp
 
 HEADERS  += mainwindow.h \
-    database.h
+    database.h \
+    databaseview.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    databaseview.ui
 
 RESOURCES += \
     reactor.qrc

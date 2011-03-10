@@ -67,7 +67,7 @@ QModelIndex Database::index(int row, int column, const QModelIndex &parent) cons
 {
     if(!parent.isValid())
     {
-        return createIndex(0, 0, static_cast<void*>(rootNode));
+        return createIndex(rootNode);
     }
 
     DataNode* parentNode = static_cast<DataNode*>(parent.internalPointer());
@@ -75,7 +75,7 @@ QModelIndex Database::index(int row, int column, const QModelIndex &parent) cons
     {
         if(child->row == row && child->column == column)
         {
-            return createIndex(row, column, static_cast<void*>(child));
+            return createIndex(child);
         }
     }
 
@@ -89,7 +89,7 @@ QModelIndex Database::parent(const QModelIndex &child) const
         DataNode* parentNode = static_cast<DataNode*>(child.internalPointer())->parent;
         if(parentNode)
         {
-            return createIndex(parentNode->row, parentNode->column, static_cast<void*>(parentNode));
+            return createIndex(parentNode);
         }
     }
     return QModelIndex();
@@ -216,6 +216,67 @@ void Database::setQuestionText(int key, const QString& text)
         questionQuery.bindText(1, text);
         questionQuery.bindInt(2, key);
         questionQuery.step();
+    }
+    catch(FwSQLiteException& e)
+    {
+        errorMessage = QString("SQLite: %1").arg(e.error);
+        qDebug() << errorMessage;
+    }
+}
+
+void Database::addQuestion(int themeID)
+{
+    try
+    {
+        FwSQLiteQuery questionQuery = m_db->query("INSERT INTO question (htmltext) VALUES (?1)");
+        questionQuery.bindText(1, tr("New question"));
+        questionQuery.step();
+
+        QModelIndex parent = createIndex(rootNode);
+        beginInsertRows(parent, rootNode->children.size(), rootNode->children.size());
+
+        DataNode* newQuestion = new DataNode();
+        newQuestion->parent = rootNode;
+        rootNode->children.append(newQuestion);
+
+        newQuestion->row = rootNode->children.size() - 1;
+        newQuestion->type = DataNode::NT_Question;
+        newQuestion->key = m_db->lastInsertKey();
+        newQuestion->caption = tr("Question %1").arg(newQuestion->row + 1);
+        newQuestion->icon = QIcon(m_questionPixmap);
+
+        endInsertRows();
+
+        m_selectionModel->setCurrentIndex(createIndex(newQuestion), QItemSelectionModel::Clear | QItemSelectionModel::SelectCurrent);
+    }
+    catch(FwSQLiteException& e)
+    {
+        errorMessage = QString("SQLite: %1").arg(e.error);
+        qDebug() << errorMessage;
+    }
+}
+
+void Database::deleteQuestion(DataNode* question)
+{
+    try
+    {
+        FwSQLiteQuery questionQuery = m_db->query("DELETE FROM question WHERE questionid=?1");
+        questionQuery.bindInt(1, question->key);
+        questionQuery.step();
+
+        beginRemoveRows(createIndex(rootNode), question->row, question->row);
+
+        rootNode->children.removeOne(question);
+        delete question;
+
+        int index = 0;
+        foreach(DataNode* node, rootNode->children)
+        {
+            node->row = index;
+            node->caption = tr("Question %1").arg(++index);
+        }
+
+        endRemoveRows();
     }
     catch(FwSQLiteException& e)
     {

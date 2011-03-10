@@ -8,7 +8,9 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 #include "database.h"
+#include "databaseview.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -31,12 +33,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QDockWidget* dataTreeDock = new QDockWidget(tr("Database"), this);
     addDockWidget(Qt::LeftDockWidgetArea, dataTreeDock);
 
-    QTreeView* dataTree = new QTreeView(dataTreeDock);
+    /*QTreeView* dataTree = new QTreeView(dataTreeDock);
     dataTreeDock->setWidget(dataTree);
     dataTree->setModel(m_db);
     dataTree->setHeaderHidden(true);
     dataTree->setSelectionModel(m_db->selectionModel());
-    dataTree->setAlternatingRowColors(true);
+    dataTree->setAlternatingRowColors(true);*/
+
+    DatabaseView* databaseView = new DatabaseView(dataTreeDock);
+    dataTreeDock->setWidget(databaseView);
+    databaseView->setDatabase(m_db);
 
     connect(ui->actionBold, SIGNAL(triggered()), this,  SLOT(textEditBold()));
     connect(ui->actionItalic, SIGNAL(triggered()), this,  SLOT(textEditItanic()));
