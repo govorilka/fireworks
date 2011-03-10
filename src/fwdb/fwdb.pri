@@ -1,10 +1,8 @@
 
 HEADERS += \
-    fwdb/fwsqlitedatabase.h \
     fwdb/sqlite/sqlite3.h \
-    fwdb/fwsqlitequery.h
+    fwdb/fwsqlite.h
 
 SOURCES += \
-    fwdb/fwsqlitedatabase.cpp \
     fwdb/sqlite/sqlite3.c \
-    fwdb/fwsqlitequery.cpp
+    fwdb/fwsqlite.cpp

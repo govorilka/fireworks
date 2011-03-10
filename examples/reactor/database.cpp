@@ -3,7 +3,7 @@
 
 #include "database.h"
 
-#include "fwdb/fwsqlitedatabase.h"
+#include "fwdb/fwsqlite.h"
 
 DataNode::DataNode() :
     row(0),
