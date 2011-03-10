@@ -34,6 +34,8 @@ void QPWidget::resizeEvent(QResizeEvent *e)
 
 void QPWidget::paintEvent(QPaintEvent *e)
 {
+    qDebug() << "QPWidget::paintEvent" << e->region();
+
     FwPainter painter(QRect(QPoint(0, 0), size()), e->rect(), new QPRender(this));
     m_view->render(&painter, e->rect());
     painter.setColor(FwColor(0xFF, 0xFF, 0xFF, 0xFF));

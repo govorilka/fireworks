@@ -29,7 +29,8 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     _startChanged(0),
     m_name(name),
     m_data(0),
-    m_pen(0)
+    m_pen(0),
+    m_contentDirty(false)
 {
     if(m_parent)
     {
@@ -137,14 +138,18 @@ void FwPrimitive::update(bool needUpdateBuffer)
                 }
             }
 
+            m_geometry->apply();
+
             if(m_parent)
             {
-                m_parent->childSizeChanged  = m_geometry->sizeChanged();
+                m_contentDirty = true;
+                m_parent->childSizeChanged = m_parent->childSizeChanged || m_geometry->sizeChanged();
                 m_parent->updateChildrenRect();
             }
-
-            m_geometry->apply();
-            invalidate();
+            else
+            {
+                invalidate();
+            }
         }
     }
 }
@@ -166,20 +171,43 @@ void FwPrimitive::setVisible(bool visible)
     if(m_visible != visible)
     {
         m_visible = visible;
-        visibleOnScreen = m_parent ? (m_visible && m_parent->visibleOnScreen) : m_visible;
-        visibleChangedEvent();
-        if(_startChanged == 0)
+        if(m_parent)
         {
-            m_scene->updateCanvas(m_geometry->rect());
+            bool oldVisibleOnScreen = visibleOnScreen;
+            if(oldVisibleOnScreen != (visibleOnScreen = m_visible && m_parent->visibleOnScreen))
+            {
+                m_scene->updateCanvas(m_boundingRect);
+                m_parent->updateChildrenRect();
+            }
         }
+        visibleChangedEvent();
     }
+}
+
+void FwPrimitive::prepareGeometryChanged()
+{
+    if(_startChanged == 0)
+    {
+        invalidate();
+    }
+    ++_startChanged;
 }
 
 void FwPrimitive::invalidate()
 {
     if(_startChanged == 0 && visibleOnScreen)
     {
-        m_scene->updateCanvas(geometryRect());
+        if(m_parent)
+        {
+            if(m_parent->m_visiblePrimitives.contains(this))
+            {
+                m_scene->updateCanvas(m_parent->m_childrenRect.intersected(m_boundingRect));
+            }
+        }
+        else
+        {
+            m_scene->updateCanvas(m_boundingRect);
+        }
     }
 }
 

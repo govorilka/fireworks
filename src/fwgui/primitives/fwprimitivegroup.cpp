@@ -8,6 +8,7 @@
 
 #include "fwgui/fwpainter.h"
 #include "fwgui/fwgraphicsobject.h"
+#include "fwgui/fwscene.h"
 
 FwPrimitiveGroup::FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
@@ -33,6 +34,8 @@ FwPrimitiveGroup::~FwPrimitiveGroup()
 
 void FwPrimitiveGroup::removeItems()
 {
+    m_visiblePrimitives.clear();
+
     foreach(FwPrimitive* item, m_primitives)
     {
         Q_ASSERT(item->m_parent == this);
@@ -55,34 +58,31 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
     if(!newClipRect.isEmpty())
     {
         QRect oldClipRect = painter->setClipRect(newClipRect);
-        foreach(FwPrimitive* item, m_primitives)
+        foreach(FwPrimitive* item, m_visiblePrimitives)
         {
-            if(item->visibleOnScreen)
+            QRect childClipRect = newClipRect.intersect(item->geometryRect());
+            if(!childClipRect.isEmpty())
             {
-                QRect childClipRect = newClipRect.intersect(item->geometryRect());
-                if(!childClipRect.isEmpty())
+                if(item->m_bufferMode)
                 {
-                    if(item->m_bufferMode)
+                    if(item->bufferDirty)
                     {
-                        if(item->bufferDirty)
+                        if(!item->m_buffer)
                         {
-                            if(!item->m_buffer)
-                            {
-                                item->createNewBuffer();
-                            }
-                            else
-                            {
-                                item->updateBuffer();
-                            }
+                            item->createNewBuffer();
                         }
-                        painter->drawBuffer(newClipRect,
-                                            item->m_buffer,
-                                            childClipRect.translated(item->geometryRect().topLeft()));
+                        else
+                        {
+                            item->updateBuffer();
+                        }
                     }
-                    else
-                    {
-                        item->paint(painter, childClipRect);
-                    }
+                    painter->drawBuffer(newClipRect,
+                                        item->m_buffer,
+                                        childClipRect.translated(item->geometryRect().topLeft()));
+                }
+                else
+                {
+                    item->paint(painter, childClipRect);
                 }
             }
         }
@@ -92,6 +92,7 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
 
 void FwPrimitiveGroup::visibleChangedEvent()
 {
+    qDebug() << "FwPrimitiveGroup::visibleChangedEvent" << visibleOnScreen;
     foreach(FwPrimitive* item, m_primitives)
     {
         if(item->visibleOnScreen != (visibleOnScreen && item->m_visible))
@@ -100,6 +101,7 @@ void FwPrimitiveGroup::visibleChangedEvent()
             item->visibleChangedEvent();
         }
     }
+    updateChildrenRect();
 }
 
 void FwPrimitiveGroup::apply(FwMLObject *object)
@@ -137,13 +139,6 @@ void FwPrimitiveGroup::invalidateChildren()
             group->invalidateChildren();
         }
 
-        if(childrenRectDirty)
-        {
-            invalidateChildrenRect();
-            childSizeChanged = false;
-            childrenRectDirty = false;
-        }
-
         if(needSortZIndex)
         {
             if(m_primitives.size() > 1)
@@ -153,12 +148,20 @@ void FwPrimitiveGroup::invalidateChildren()
             needSortZIndex = false;
         }
 
+        if(childrenRectDirty)
+        {
+            invalidateChildrenRect();
+            childSizeChanged = false;
+            childrenRectDirty = false;
+        }
+
         childrenDirty = false;
     }
 }
 
 void FwPrimitiveGroup::invalidateChildrenRect()
 {
+    m_visiblePrimitives.clear();
     if(object() != this)
     {
         int x1 = 0;
@@ -167,18 +170,47 @@ void FwPrimitiveGroup::invalidateChildrenRect()
         int y2 = 0;
         foreach(FwPrimitive* primitive, m_primitives)
         {
-            x1 = qMin(x1, primitive->m_geometry->rect().left());
-            y1 = qMin(y1, primitive->m_geometry->rect().top());
-            x2 = qMax(x2, primitive->m_geometry->rect().right());
-            y2 = qMax(y2, primitive->m_geometry->rect().bottom());
+            if(primitive->visibleOnScreen)
+            {
+                if(primitive->m_contentDirty)
+                {
+                    m_scene->updateCanvas(primitive->m_boundingRect);
+                }
+                m_visiblePrimitives.append(primitive);
+
+                x1 = qMin(x1, primitive->m_geometry->rect().left());
+                y1 = qMin(y1, primitive->m_geometry->rect().top());
+                x2 = qMax(x2, primitive->m_geometry->rect().right());
+                y2 = qMax(y2, primitive->m_geometry->rect().bottom());
+            }
+            primitive->m_contentDirty = false;
         }
         foreach(FwPrimitiveGroup* group, m_groups)
         {
-            x1 = qMin(x1, group->m_childrenRect.left());
-            y1 = qMin(y1, group->m_childrenRect.top());
-            x2 = qMax(x2, group->m_childrenRect.right());
-            y2 = qMax(y2, group->m_childrenRect.bottom());
+            if(group->visibleOnScreen)
+            {
+                x1 = qMin(x1, group->m_childrenRect.left());
+                y1 = qMin(y1, group->m_childrenRect.top());
+                x2 = qMax(x2, group->m_childrenRect.right());
+                y2 = qMax(y2, group->m_childrenRect.bottom());
+            }
         }
         m_childrenRect.setCoords(x1, y1, x2, y2);
+    }
+    else
+    {
+        foreach(FwPrimitive* primitive, m_primitives)
+        {
+            QRect rect = m_childrenRect.intersected(primitive->m_boundingRect);
+            if(primitive->visibleOnScreen && !rect.isNull())
+            {
+                if(primitive->m_contentDirty)
+                {
+                    m_scene->updateCanvas(rect);
+                }
+                m_visiblePrimitives.append(primitive);
+            }
+            primitive->m_contentDirty = false;
+        }
     }
 }

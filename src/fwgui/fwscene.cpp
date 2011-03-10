@@ -14,6 +14,8 @@ FwScene::FwScene(int id, FwGraphicsView* view) :
     m_view(view),
     m_id(id)
 {
+    visibleOnScreen = true;
+
     setParent(m_view);
 
     Q_ASSERT(!m_view->scene(id));

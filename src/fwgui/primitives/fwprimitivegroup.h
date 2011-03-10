@@ -31,6 +31,8 @@ public:
     inline void updateChildren();
     inline void updateChildrenRect();
 
+    void invalidateChildren();
+
 protected:
     inline void sortZIndex();
 
@@ -38,16 +40,17 @@ protected:
 
     virtual void visibleChangedEvent();
 
-    void invalidateChildren();
     virtual void invalidateChildrenRect();
 
     bool childrenDirty;
     bool childrenRectDirty;
+
     bool childSizeChanged;
     bool needSortZIndex;
 
 private:
     QVector<FwPrimitive*> m_primitives;
+    QList<FwPrimitive*> m_visiblePrimitives;
     QList<FwPrimitiveGroup*> m_groups;
 
     QRect m_childrenRect;

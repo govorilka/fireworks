@@ -27,5 +27,4 @@ HEADERS += fireworks.h
 include (fwcore/fwcore.pri)
 include (fwtypography/fwtypography.pri)
 include (fwgui/fwgui.pri)
-include (fwprimitives/fwprimitives.pri)
 include (fwdb/fwdb.pri)

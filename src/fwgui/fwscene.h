@@ -27,6 +27,7 @@ class FwScene : public FwGraphicsObject
 public:
     friend class FwWidget;
     friend class FwGraphicsView;
+    friend class FwPrimitive;
 
     explicit FwScene(int id, FwGraphicsView* view);
     virtual ~FwScene();

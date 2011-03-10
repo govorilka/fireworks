@@ -21,15 +21,6 @@ Fw::BufferMode FwPrimitive::bufferMode() const
     return m_bufferMode;
 }
 
-void FwPrimitive::prepareGeometryChanged()
-{
-    if(_startChanged == 0)
-    {
-        invalidate();
-    }
-    ++_startChanged;
-}
-
 QPoint FwPrimitive::pos() const
 {
     return m_pos;
