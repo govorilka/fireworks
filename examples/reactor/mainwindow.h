@@ -12,6 +12,7 @@ namespace Ui
 }
 
 class Database;
+class DataNode;
 
 class MainWindow : public QMainWindow
 {
@@ -29,7 +30,7 @@ private:
     int m_questionId;
 
 private slots:
-    void currentChanged(int type, int key);
+    void currentChanged(DataNode* node);
 
     void textEditBold();
     void textEditItanic();

@@ -35,8 +35,8 @@ private slots:
 
     void actionAddQuestion();
     void actionDeleteQuestion();
-    void actionAddTheme();
-    void actionDeleteTheme();
+    void actionAddFolder();
+    void actionDeleteFolder();
 };
 
 Database* DatabaseView::database() const
