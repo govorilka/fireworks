@@ -12,7 +12,8 @@ DatabaseView::DatabaseView(QWidget *parent) :
 
     connect(ui->actionAddQuestion, SIGNAL(triggered()), this, SLOT(actionAddQuestion()));
     connect(ui->actionDeleteQuestion, SIGNAL(triggered()), this, SLOT(actionDeleteQuestion()));
-
+    connect(ui->actionAddFolder, SIGNAL(triggered()), this, SLOT(actionAddFolder()));
+    connect(ui->actionDeleteFolder, SIGNAL(triggered()), this, SLOT(actionDeleteFolder()));
 }
 
 DatabaseView::~DatabaseView()
@@ -54,26 +55,33 @@ void DatabaseView::currentChanged(const QModelIndex &current)
     {
         ui->actionAddQuestion->setEnabled(false);
         ui->actionDeleteQuestion->setEnabled(false);
-        ui->actionAddTheme->setEnabled(false);
-        ui->actionDeleteTheme->setEnabled(false);
+        ui->actionAddFolder->setEnabled(false);
+        ui->actionDeleteFolder->setEnabled(false);
         return;
     }
 
     DataNode* node = static_cast<DataNode*>(current.internalPointer());
-    switch(node->type)
+    switch(node->type())
     {
     case DataNode::NT_Root:
         ui->actionAddQuestion->setEnabled(true);
         ui->actionDeleteQuestion->setEnabled(false);
-        ui->actionAddTheme->setEnabled(true);
-        ui->actionDeleteTheme->setEnabled(false);
+        ui->actionAddFolder->setEnabled(true);
+        ui->actionDeleteFolder->setEnabled(false);
         return;
 
     case DataNode::NT_Question:
         ui->actionAddQuestion->setEnabled(true);
         ui->actionDeleteQuestion->setEnabled(true);
-        ui->actionAddTheme->setEnabled(true);
-        ui->actionDeleteTheme->setEnabled(false);
+        ui->actionAddFolder->setEnabled(true);
+        ui->actionDeleteFolder->setEnabled(false);
+        return;
+
+    case DataNode::NT_Folder:
+        ui->actionAddQuestion->setEnabled(true);
+        ui->actionDeleteQuestion->setEnabled(true);
+        ui->actionAddFolder->setEnabled(true);
+        ui->actionDeleteFolder->setEnabled(true);
         return;
 
     default:
@@ -107,18 +115,26 @@ void DatabaseView::actionAddQuestion()
 void DatabaseView::actionDeleteQuestion()
 {
     DataNode* node = currentNode();
-    if(node && node->type == DataNode::NT_Question)
+    if(node && node->type() == DataNode::NT_Question)
     {
         m_db->deleteQuestion(node);
     }
 }
 
-void DatabaseView::actionAddTheme()
+void DatabaseView::actionAddFolder()
 {
-
+    DataNode* node = currentNode();
+    if(node)
+    {
+        m_db->addFolder(0);
+    }
 }
 
-void DatabaseView::actionDeleteTheme()
+void DatabaseView::actionDeleteFolder()
 {
-
+    DataNode* node = currentNode();
+    if(node && node->type() == DataNode::NT_Folder)
+    {
+        m_db->deleteFolder(node);
+    }
 }

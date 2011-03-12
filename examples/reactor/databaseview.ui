@@ -25,14 +25,15 @@
      <addaction name="actionAddQuestion"/>
      <addaction name="actionDeleteQuestion"/>
      <addaction name="separator"/>
-     <addaction name="actionAddTheme"/>
-     <addaction name="actionDeleteTheme"/>
+     <addaction name="actionAddFolder"/>
+     <addaction name="actionDeleteFolder"/>
     </widget>
    </item>
    <item>
     <widget class="QTreeView" name="treeView">
      <property name="editTriggers">
-      <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+     
+<set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
@@ -49,7 +50,9 @@
   <action name="actionAddQuestion">
    <property name="icon">
     <iconset resource="reactor.qrc">
-     <normaloff>:/reactor/images/datatreetools/question_add.png</normaloff>:/reactor/images/datatreetools/question_add.png</iconset>
+    
+<normaloff>:/reactor/images/datatreetools/question_add.png</normaloff>:/reactor/
+images/datatreetools/question_add.png</iconset>
    </property>
    <property name="text">
     <string>Add question</string>
@@ -58,25 +61,31 @@
   <action name="actionDeleteQuestion">
    <property name="icon">
     <iconset resource="reactor.qrc">
-     <normaloff>:/reactor/images/datatreetools/question_delete.png</normaloff>:/reactor/images/datatreetools/question_delete.png</iconset>
+    
+<normaloff>:/reactor/images/datatreetools/question_delete.png</normaloff>:/
+reactor/images/datatreetools/question_delete.png</iconset>
    </property>
    <property name="text">
     <string>Delete question</string>
    </property>
   </action>
-  <action name="actionAddTheme">
+  <action name="actionAddFolder">
    <property name="icon">
     <iconset resource="reactor.qrc">
-     <normaloff>:/reactor/images/datatreetools/theme_add.png</normaloff>:/reactor/images/datatreetools/theme_add.png</iconset>
+    
+<normaloff>:/reactor/images/datatreetools/folder_add.png</normaloff>:/reactor/
+images/datatreetools/folder_add.png</iconset>
    </property>
    <property name="text">
     <string>Add theme</string>
    </property>
   </action>
-  <action name="actionDeleteTheme">
+  <action name="actionDeleteFolder">
    <property name="icon">
     <iconset resource="reactor.qrc">
-     <normaloff>:/reactor/images/datatreetools/theme_delete.png</normaloff>:/reactor/images/datatreetools/theme_delete.png</iconset>
+    
+<normaloff>:/reactor/images/datatreetools/folder_delete.png</normaloff>:/reactor
+/ images/datatreetools/folder_delete.png</iconset>
    </property>
    <property name="text">
     <string>Delete theme</string>

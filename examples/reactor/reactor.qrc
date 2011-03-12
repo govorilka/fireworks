@@ -8,7 +8,11 @@
         <file>images/textedit/text_underline.png</file>
         <file>images/datatreetools/question_add.png</file>
         <file>images/datatreetools/question_delete.png</file>
-        <file>images/datatreetools/theme_add.png</file>
-        <file>images/datatreetools/theme_delete.png</file>
+        <file>images/datatreetools/folder_add.png</file>
+        <file>images/datatreetools/folder_delete.png</file>
+        <file>images/dataedit/question.png</file>
+        <file>images/dataedit/database.png</file>
+        <file>images/dataedit/folder.png</file>
+        <file>images/datatree/folder.png</file>
     </qresource>
 </RCC>

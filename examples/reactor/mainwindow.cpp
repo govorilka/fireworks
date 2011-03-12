@@ -28,17 +28,11 @@ MainWindow::MainWindow(QWidget *parent) :
         ::exit(-1);
     }
 
-    connect(m_db, SIGNAL(currentChanged(int,int)), this, SLOT(currentChanged(int,int)));
+    connect(m_db, SIGNAL(currentChanged(DataNode*)), this, SLOT(currentChanged(DataNode*)));
+    currentChanged(m_db->currentNode());
 
     QDockWidget* dataTreeDock = new QDockWidget(tr("Database"), this);
     addDockWidget(Qt::LeftDockWidgetArea, dataTreeDock);
-
-    /*QTreeView* dataTree = new QTreeView(dataTreeDock);
-    dataTreeDock->setWidget(dataTree);
-    dataTree->setModel(m_db);
-    dataTree->setHeaderHidden(true);
-    dataTree->setSelectionModel(m_db->selectionModel());
-    dataTree->setAlternatingRowColors(true);*/
 
     DatabaseView* databaseView = new DatabaseView(dataTreeDock);
     dataTreeDock->setWidget(databaseView);
@@ -54,19 +48,36 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::currentChanged(int type, int key)
+void MainWindow::currentChanged(DataNode* node)
 {
     if(m_questionId)
     {
-        m_db->setQuestionText(m_questionId, ui->centralWidget->toHtml());
-        ui->centralWidget->setHtml("");
+        m_db->setQuestionText(m_questionId, ui->textEdit->toHtml());
+        ui->textEdit->setHtml("");
         m_questionId = 0;
     }
 
-    if(type == DataNode::NT_Question)
+    if(node)
     {
-        m_questionId = key;
-        ui->centralWidget->setHtml(m_db->questionText(m_questionId));
+        ui->stackedWidget->setCurrentIndex(node->type() - 1);
+        ui->nodeIcon->setPixmap(node->icon().pixmap(32));
+        ui->nodeTitle->setText(node->caption());
+
+        if(node->type() == DataNode::NT_Question)
+        {
+            m_questionId = node->key();
+            ui->textEdit->setHtml(m_db->questionText(m_questionId));
+        }
+
+        ui->stackedWidget->show();
+        ui->nodeIcon->show();
+        ui->nodeTitle->show();
+    }
+    else
+    {
+        ui->stackedWidget->hide();
+        ui->nodeIcon->hide();
+        ui->nodeTitle->hide();
     }
 }
 
@@ -94,11 +105,11 @@ void MainWindow::textEditUnderline()
 
 void MainWindow::mergeFormatOnWordOrSelection(const QTextCharFormat& fmt)
 {
-    QTextCursor cursor = ui->centralWidget->textCursor();
+    QTextCursor cursor = ui->textEdit->textCursor();
     if (!cursor.hasSelection())
     {
         cursor.select(QTextCursor::WordUnderCursor);
     }
     cursor.mergeCharFormat(fmt);
-    ui->centralWidget->mergeCurrentCharFormat(fmt);
+    ui->textEdit->mergeCurrentCharFormat(fmt);
 }

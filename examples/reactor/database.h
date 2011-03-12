@@ -15,23 +15,84 @@ public:
     {
         NT_Unknow,
         NT_Root,
+        NT_Folder,
         NT_Question,
     };
 
     DataNode();
+    DataNode(DataNode::Type type, int key, const QIcon& icon = QIcon(), const QString& caption = QString());
     ~DataNode();
 
-    int row;
-    int column;
+    inline Type type() const;
+    inline int key() const;
+    inline DataNode* parent() const;
+    inline int row() const;
 
-    DataNode* parent;
-    QList<DataNode*> children;
+    inline QList<DataNode*> children() const;
 
-    QString caption;
-    QIcon icon;
-    Type type;
-    int key;
+    DataNode* createChild(DataNode::Type type, int key, const QIcon& icon = QIcon(), const QString& caption = QString());
+    void deleteChild(DataNode* node);
+
+    inline QString caption() const;
+    inline void setCaption(const QString& caption);
+
+    inline QIcon icon() const;
+    inline void setIcon(const QIcon& icon);
+
+private:
+    int m_row;
+    DataNode* m_parent;
+    Type m_type;
+    int m_key;
+    QIcon m_icon;
+    QString m_caption;
+    QList<DataNode*> m_children;
 };
+
+DataNode::Type DataNode::type() const
+{
+    return m_type;
+}
+
+int DataNode::key() const
+{
+    return m_key;
+}
+
+DataNode* DataNode::parent() const
+{
+    return m_parent;
+}
+
+int DataNode::row() const
+{
+    return m_row;
+}
+
+QList<DataNode*> DataNode::children() const
+{
+    return m_children;
+}
+
+QString DataNode::caption() const
+{
+    return m_caption;
+}
+
+void DataNode::setCaption(const QString& caption)
+{
+    m_caption = caption;
+}
+
+QIcon DataNode::icon() const
+{
+    return m_icon;
+}
+
+void DataNode::setIcon(const QIcon& icon)
+{
+    m_icon = icon;
+}
 
 /////////////////////////////////////////////////////////////////////
 
@@ -62,16 +123,25 @@ public:
     void addQuestion(int themeID);
     void deleteQuestion(DataNode* question);
 
+    void addFolder(int key);
+    void deleteFolder(DataNode* folder);
+
     inline QModelIndex createIndex(DataNode* node) const;
 
+    DataNode* currentNode() const;
+    void setCurrentNode(DataNode* node);
+
 signals:
-    void currentChanged(int type, int key);
+    void currentChanged(DataNode* node);
 
 protected:
     mutable QString errorMessage;
 
     void loadNode(DataNode* parent);
     void loadNodeRoot(DataNode* parent);
+
+    void addNode(DataNode* parent, DataNode::Type type, int key, const QString& caption);
+    void deleteNode(DataNode* node);
 
 private:
 
@@ -81,8 +151,8 @@ private:
     int m_currentKey;
     DataNode::Type m_currentType;
 
-    QPixmap m_dbPixmap;
-    QPixmap m_questionPixmap;
+    QIcon m_folderIcon;
+    QIcon m_questionIcon;
 
 private slots:
     void currentChanged(const QModelIndex& current, const QModelIndex& previous);
@@ -100,7 +170,7 @@ QItemSelectionModel* Database::selectionModel() const
 
 QModelIndex Database::createIndex(DataNode* node) const
 {
-    return BaseClass::createIndex(node->row, node->column, static_cast<void*>(node));
+    return BaseClass::createIndex(node->row(), 0, static_cast<void*>(node));
 }
 
 #endif // REACTOR_DATABASE_H
