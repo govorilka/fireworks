@@ -39,6 +39,9 @@ public:
     inline QIcon icon() const;
     inline void setIcon(const QIcon& icon);
 
+    DataNode* childByCaption(const QString& caption) const;
+    QString nextChildCaption(const QString& caption) const;
+
 private:
     int m_row;
     DataNode* m_parent;

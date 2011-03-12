@@ -33,7 +33,7 @@ DataNode::~DataNode()
 
 DataNode* DataNode::createChild(DataNode::Type type, int key, const QIcon& icon, const QString& caption)
 {
-    DataNode* newChild = new DataNode(type, key, icon, caption);
+    DataNode* newChild = new DataNode(type, key, icon, nextChildCaption(caption));
     newChild->m_parent = this;
     m_children.append(newChild);
     newChild->m_row = m_children.size() - 1;
@@ -53,6 +53,33 @@ void DataNode::deleteChild(DataNode* node)
         node->m_row = index;
         ++index;
     }
+}
+
+DataNode* DataNode::childByCaption(const QString& caption) const
+{
+    foreach(DataNode* node, m_children)
+    {
+        if(node->caption() == caption)
+        {
+            return node;
+        }
+    }
+    return 0;
+}
+
+QString DataNode::nextChildCaption(const QString& caption) const
+{
+    QString newCaption = caption;
+    if(caption.indexOf("%1") != -1)
+    {
+        int index = 1;
+        newCaption = caption.arg(index);
+        while(childByCaption(newCaption))
+        {
+            newCaption = caption.arg(++index);
+        }
+    }
+    return newCaption;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -188,7 +215,6 @@ void Database::loadNodeRoot(DataNode* parent)
 {
     try
     {
-        int index = 0;
         FwSQLiteQuery folderQuery = m_db->query("SELECT folderid,caption FROM folder");
         while(folderQuery.step())
         {
@@ -197,13 +223,14 @@ void Database::loadNodeRoot(DataNode* parent)
                                   m_folderIcon,
                                   folderQuery.columnText(1));
         }
+
         FwSQLiteQuery questionQuery = m_db->query("SELECT questionid FROM question");
         while(questionQuery.step())
         {
             rootNode->createChild(DataNode::NT_Question,
                                   questionQuery.columnInt(0),
                                   m_questionIcon,
-                                  tr("Question %1").arg(++index));
+                                  tr("Question %1"));
         }
     }
     catch(FwSQLiteException& e)
@@ -319,9 +346,11 @@ void Database::addFolder(int key)
 {
     try
     {
-        FwSQLiteQuery questionQuery = m_db->query("INSERT INTO folder(caption) VALUES(\"new folder\")");
+        QString caption = rootNode->nextChildCaption(tr("New folder %1"));
+        FwSQLiteQuery questionQuery = m_db->query("INSERT INTO folder(caption) VALUES(?1)");
+        questionQuery.bindText(1, caption);
         questionQuery.step();
-        addNode(rootNode, DataNode::NT_Folder, m_db->lastInsertKey(), tr("Folder %1"));
+        addNode(rootNode, DataNode::NT_Folder, m_db->lastInsertKey(), caption);
     }
     catch(FwSQLiteException& e)
     {
