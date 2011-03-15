@@ -2,6 +2,11 @@
 #include <QtGui/qapplication.h>
 #include <QtGui/qdockwidget.h>
 #include <QtGui/qtreeview.h>
+#include <QtGui/qprinter.h>
+#include <QtGui/qprintdialog.h>
+#include <QtGui/qprintpreviewdialog.h>
+#include <QtGui/qtextdocument.h>
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,10 +18,11 @@
 #include "databaseview.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+    BaseClass(parent),
     ui(new Ui::MainWindow),
     m_db(new Database(this)),
-    m_questionId(0)
+    m_questionId(0),
+    m_printer(new QPrinter())
 {
     ui->setupUi(this);
 
@@ -41,11 +47,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionBold, SIGNAL(triggered()), this,  SLOT(textEditBold()));
     connect(ui->actionItalic, SIGNAL(triggered()), this,  SLOT(textEditItanic()));
     connect(ui->actionUnderline, SIGNAL(triggered()), this,  SLOT(textEditUnderline()));
+    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(print()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete m_printer;
 }
 
 void MainWindow::currentChanged(DataNode* node)
@@ -112,4 +121,15 @@ void MainWindow::mergeFormatOnWordOrSelection(const QTextCharFormat& fmt)
     }
     cursor.mergeCharFormat(fmt);
     ui->textEdit->mergeCurrentCharFormat(fmt);
+}
+
+void MainWindow::print()
+{
+    QPrintDialog* printDialog = new QPrintDialog(m_printer, this);
+    if(printDialog->exec() == QDialog::Accepted)
+    {
+        QTextDocument textDocument;
+        textDocument.setHtml(QString("<html><body>%1</body><html>").arg(m_db->tickets(10, 3)));
+        textDocument.print(m_printer);
+    }
 }

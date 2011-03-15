@@ -79,7 +79,7 @@ void DatabaseView::currentChanged(const QModelIndex &current)
 
     case DataNode::NT_Folder:
         ui->actionAddQuestion->setEnabled(true);
-        ui->actionDeleteQuestion->setEnabled(true);
+        ui->actionDeleteQuestion->setEnabled(false);
         ui->actionAddFolder->setEnabled(true);
         ui->actionDeleteFolder->setEnabled(true);
         return;

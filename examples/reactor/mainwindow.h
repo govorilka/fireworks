@@ -14,13 +14,19 @@ namespace Ui
 class Database;
 class DataNode;
 
+class QPrinter;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+    typedef QMainWindow BaseClass;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+public slots:
+    void print();
 
 private:
     void mergeFormatOnWordOrSelection(const QTextCharFormat& fmt);
@@ -28,6 +34,7 @@ private:
     Ui::MainWindow *ui;
     Database* m_db;
     int m_questionId;
+    QPrinter* m_printer;
 
 private slots:
     void currentChanged(DataNode* node);

@@ -392,3 +392,58 @@ void Database::deleteNode(DataNode* node)
         endRemoveRows();
     }
 }
+
+QString Database::tickets(int variantCount, int questionCount) const
+{
+    try
+    {
+        QList<int> questionsIDs;
+        QHash<int, QString> questions;
+        FwSQLiteQuery questionQuery = m_db->query("SELECT questionid, htmltext FROM question");
+        while(questionQuery.step())
+        {
+            questionsIDs.append(questionQuery.columnInt(0));
+            questions.insert(questionQuery.columnInt(0), questionQuery.columnText(1));
+        }
+
+        qsrand(QDateTime::currentDateTime().toTime_t());
+
+        QString text;
+        QList<int> rands;
+        for(int i = 0; i < variantCount; i++)
+        {
+            QString strQuestions;
+            for(int j = 0; j < questionCount; j++)
+            {
+                int rand = qrand() % questions.size();
+                while(rands.contains(rand))
+                {
+                    rand = qrand() % questions.size();
+                }
+
+                if(rands.size() == questionsIDs.size() - 1)
+                {
+                    rands.clear();
+                }
+                else
+                {
+                    rands.append(rand);
+                }
+
+                qDebug() << questions.size() << rand << rands;
+
+                int questionID = questionsIDs.at(rand);
+                strQuestions.append(QString("<h3>Question %1</h3>%2").arg(j + 1).arg(questions.value(questionID)));
+            }
+            text.append(QString("<h2>Ticket #%1</h2>%2").arg(i + 1).arg(strQuestions));
+        }
+        return text;
+    }
+    catch(FwSQLiteException& e)
+    {
+        errorMessage = QString("SQLite: %1").arg(e.error);
+        qDebug() << errorMessage;
+    }
+
+    return QString();
+}

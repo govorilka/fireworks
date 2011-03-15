@@ -134,6 +134,8 @@ public:
     DataNode* currentNode() const;
     void setCurrentNode(DataNode* node);
 
+    QString tickets(int variantCount, int questionCount) const;
+
 signals:
     void currentChanged(DataNode* node);
 
