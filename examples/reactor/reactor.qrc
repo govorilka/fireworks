@@ -14,5 +14,8 @@
         <file>images/dataedit/database.png</file>
         <file>images/dataedit/folder.png</file>
         <file>images/datatree/folder.png</file>
+        <file>images/toolbar/printer.png</file>
+        <file>images/menu/exit.png</file>
+        <file>images/menu/printer.png</file>
     </qresource>
 </RCC>
