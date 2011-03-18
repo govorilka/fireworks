@@ -11,7 +11,8 @@ FwGraphicsView::FwGraphicsView(QObject *parent) :
     BaseClass(parent),
     m_activeScene(0),
     m_prevActiveScene(0),
-    m_needPostUpdateEvent(false)
+    m_needPostUpdateEvent(true),
+    m_needInvalidate(false)
 {
 }
 
@@ -98,6 +99,7 @@ void FwGraphicsView::setSize(const QSize& size)
         {
             m_activeScene->setSize(m_size);
         }
+        update();
     }
 }
 
@@ -130,33 +132,43 @@ FwScene* FwGraphicsView::scene(int id) const
 
 void FwGraphicsView::setActiveScene(FwScene* scene)
 {
-    Q_ASSERT(scene->m_view == this);
-
-    m_prevActiveScene = m_activeScene;
-    if(m_prevActiveScene)
+    if(m_activeScene != scene)
     {
-        m_activeScene = 0;
-        FwSceneHideEvent sceneHideEvent(scene);
-        QCoreApplication::sendEvent(m_prevActiveScene, &sceneHideEvent);
-    }
+        Q_ASSERT(scene->m_view == this);
 
-    if(scene)
-    {
-        m_activeScene = scene;
-        if(m_activeScene->size() != m_size)
+        m_prevActiveScene = m_activeScene;
+        if(m_prevActiveScene)
         {
-            m_activeScene->setSize(m_size);
+            m_activeScene = 0;
+            FwSceneHideEvent sceneHideEvent(scene);
+            QCoreApplication::sendEvent(m_prevActiveScene, &sceneHideEvent);
         }
 
-        FwSceneShowEvent sceneShowEvent(m_prevActiveScene);
-        QCoreApplication::sendEvent(m_activeScene, &sceneShowEvent);
-        m_activeScene->invalidate();
+        if(scene)
+        {
+            m_activeScene = scene;
+            if(m_activeScene->size() != m_size)
+            {
+                m_activeScene->setSize(m_size);
+            }
+
+            FwSceneShowEvent sceneShowEvent(m_prevActiveScene);
+            QCoreApplication::sendEvent(m_activeScene, &sceneShowEvent);
+        }
+
+        update();
     }
 }
 
 bool FwGraphicsView::event(QEvent *e)
 {
-    if(e->type() == FwGuiEvent::qtTypeID())
+    if(e->type() == QEvent::UpdateLater)
+    {
+        invalidateChanges();
+        e->accept();
+        return true;
+    }
+    else if(e->type() == FwGuiEvent::qtTypeID())
     {
         FwGuiEvent* fwEvent = static_cast<FwGuiEvent*>(e);
         switch(fwEvent->eventType())
@@ -183,5 +195,25 @@ void FwGraphicsView::render(FwPainter* painter, const QRect& clipRect)
     if(m_activeScene)
     {
         m_activeScene->paint(painter, clipRect);
+    }
+}
+
+void FwGraphicsView::invalidateChanges()
+{
+    if(m_needInvalidate)
+    {
+        if(m_activeScene)
+        {
+            m_activeScene->invalidateChildren();
+        }
+
+        if(!m_dirtyRegion.isEmpty())
+        {
+            invalidateCanvas(m_dirtyRegion);
+            m_dirtyRegion = QRegion();
+        }
+
+        m_needPostUpdateEvent = true;
+        m_needInvalidate = false;
     }
 }
