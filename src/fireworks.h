@@ -95,6 +95,8 @@ namespace Fw
 
     bool changedDirectory(QDir* dir, const QString& dirName);
 
+    HorizontalPosition nameToHorizontalPosition(const QByteArray& name, bool *bOk);
+    VerticalPosition nameToVerticalPosition(const QByteArray& name, bool *bOk);
 }
 
 #endif // FIREWORKS_H
