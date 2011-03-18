@@ -73,7 +73,6 @@ public:
     inline void setGeometryRect(QRect rect);
 
     void prepareGeometryChanged();
-    void invalidate();
     void update(bool needUpdateBuffer = true);
 
     inline int zIndex() const;
@@ -129,6 +128,8 @@ protected:
     virtual void geometryChangedEvent(const QRect& oldRect, QRect& rect);
     virtual void boundingRectChangedEvent(QRect& boundingRect);
     virtual void penChangedEvent(FwPen* pen);
+
+    void invalidateCanvas(const QRect& clipRect);
 
 private:
     void createNewBuffer();

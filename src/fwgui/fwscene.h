@@ -40,7 +40,7 @@ public:
 
     inline FwGraphicsView* view() const;
 
-    void updateCanvas(const QRect& rect);
+    bool isActive() const;
 
 protected:
     void showEventProcessed(FwSceneShowEvent* e);
@@ -51,8 +51,6 @@ protected:
 
     void showAnimationFinished();
     void hideAnimationFinished();
-
-    void paint(FwPainter *painter, const QRect &clipRect);
 
 private:
     FwGraphicsView* m_view;

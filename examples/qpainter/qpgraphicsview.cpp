@@ -96,10 +96,10 @@ FwPixmapData* QPGraphicsView::createBuffer(Fw::BufferMode mode, const QSize& siz
     return new QPPixmapData(pixmap, "");
 }
 
-void QPGraphicsView::updateCanvas(const QRect& rect)
+void QPGraphicsView::invalidateCanvas(const QRegion& region)
 {
     if(m_widget)
     {
-        m_widget->update(rect);
+        m_widget->update(region);
     }
 }

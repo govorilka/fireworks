@@ -24,13 +24,16 @@ void FwRectPrimitive::setBrush(FwBrush* brush)
 {
     if(m_brush != brush)
     {
+        prepareGeometryChanged();
+
         delete m_brush;
         m_brush = brush;
         if(m_brush)
         {
             m_brush->setSourceRect(geometryRect());
         }
-        invalidate();
+
+        update();
     }
 }
 
