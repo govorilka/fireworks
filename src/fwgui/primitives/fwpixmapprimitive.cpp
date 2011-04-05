@@ -15,10 +15,18 @@ void FwPixmapPrimitive::setPixmap(const FwPixmap& pixmap)
 {
     if(m_pixmap != pixmap)
     {
-        prepareGeometryChanged();
-        m_pixmap = pixmap;
-        setSize(m_pixmap.size());
-        update();
+         if(m_pixmap.size() == pixmap.size())
+        {
+            m_pixmap = pixmap;
+            invalidate();
+        }
+        else
+        {
+            prepareGeometryChanged();
+            m_pixmap = pixmap;
+            setSize(m_pixmap.size());
+            update();
+        }
     }
 }
 

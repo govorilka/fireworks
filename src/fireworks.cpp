@@ -32,6 +32,8 @@ int Fw::go(Navigation nav, int size, int current, int previous)
     return -1;
 }
 
+
+
 QString Fw::cacheDirectory(const QString& cacheName)
 {
     QDir dir = QDir::home();
@@ -113,22 +115,4 @@ Fw::Orientation Fw::nameToOrientation(const QByteArray& name, bool* bOk)
         (*bOk) = false;
     }
     return O_Horizontal;
-}
-
-Fw::HorizontalPosition Fw::nameToHorizontalPosition(const QByteArray& name, bool *bOk)
-{
-    if(bOk)
-    {
-        (*bOk) = false;
-    }
-    return HP_Left;
-}
-
-Fw::VerticalPosition Fw::nameToVerticalPosition(const QByteArray& name, bool *bOk)
-{
-    if(bOk)
-    {
-        (*bOk) = false;
-    }
-    return VP_Top;
 }

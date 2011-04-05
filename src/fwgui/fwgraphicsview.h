@@ -52,22 +52,17 @@ public:
 
     bool event(QEvent *e);
 
-    void render(FwPainter* painter, const QRect& clipRect);
-
-    inline void update();
-    inline void update(const QRect& rect);
+    void render(FwPainter* painter, const QRect& clipRect); //TEMPORARY
 
 protected:
     virtual void keyPressEvent(FwKeyPressEvent* event);
 
-    virtual void invalidateCanvas(const QRegion& region) = 0;
+    virtual void updateCanvas(const QRect& rect) = 0;
 
     virtual FwFontData* createFontData(const FwFontDescription& desc) = 0;
 
     virtual FwPixmapData* createBuffer(const FwPixmapDescription& desc) = 0;
     virtual FwPixmapData* createBuffer(Fw::BufferMode mode, const QSize& size) = 0;
-
-    void invalidateChanges();
 
 private:
     QSize m_size;
@@ -77,12 +72,12 @@ private:
     FwScene* m_activeScene;
     FwScene* m_prevActiveScene;
     QList<FwScene*> m_scenes;
-
     bool m_needPostUpdateEvent;
-    bool m_needInvalidate;
-
     QRegion m_dirtyRegion;
 };
+
+Q_DECLARE_INTERFACE(FwGraphicsView, "com.fireworks.fwgraphicsview/0.1")
+
 
 #include "fwgui/fwgraphicsview_inl.h"
 

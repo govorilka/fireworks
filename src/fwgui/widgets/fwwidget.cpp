@@ -159,9 +159,8 @@ void FwWidget::fontChangedEvent(const FwFont& font)
 
 void FwWidget::showAnimationFinished()
 {
-    prepareGeometryChanged();
     startVisibleTimer();
-    update();
+    invalidate();
 }
 
 void FwWidget::hideAnimationFinished()

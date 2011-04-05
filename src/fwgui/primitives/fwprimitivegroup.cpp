@@ -9,7 +9,6 @@
 #include "fwgui/fwpainter.h"
 #include "fwgui/fwgraphicsobject.h"
 #include "fwgui/fwscene.h"
-#include "fwgui/fwgraphicsview.h"
 
 FwPrimitiveGroup::FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
@@ -47,8 +46,7 @@ void FwPrimitiveGroup::removeItems()
 
     if(scene())
     {
-        prepareGeometryChanged();
-        update();
+        invalidate();
     }
 }
 
@@ -174,14 +172,18 @@ void FwPrimitiveGroup::invalidateChildrenRect()
         {
             if(primitive->visibleOnScreen)
             {
+                if(primitive->m_contentDirty)
+                {
+                    m_scene->updateCanvas(primitive->m_boundingRect);
+                }
                 m_visiblePrimitives.append(primitive);
-                primitive->invalidateCanvas(m_childrenRect);
 
                 x1 = qMin(x1, primitive->m_geometry->rect().left());
                 y1 = qMin(y1, primitive->m_geometry->rect().top());
                 x2 = qMax(x2, primitive->m_geometry->rect().right());
                 y2 = qMax(y2, primitive->m_geometry->rect().bottom());
             }
+            primitive->m_contentDirty = false;
         }
         foreach(FwPrimitiveGroup* group, m_groups)
         {
@@ -202,9 +204,13 @@ void FwPrimitiveGroup::invalidateChildrenRect()
             QRect rect = m_childrenRect.intersected(primitive->m_boundingRect);
             if(primitive->visibleOnScreen && !rect.isNull())
             {
-                primitive->invalidateCanvas(m_childrenRect);
+                if(primitive->m_contentDirty)
+                {
+                    m_scene->updateCanvas(rect);
+                }
                 m_visiblePrimitives.append(primitive);
             }
+            primitive->m_contentDirty = false;
         }
     }
 }
