@@ -31,6 +31,8 @@ private:
 class QPGraphicsView : public FwGraphicsView
 {
     Q_OBJECT
+    Q_INTERFACES(FwGraphicsView)
+
     typedef FwGraphicsView BaseClass;
 
 public:
@@ -45,7 +47,7 @@ public:
 
 protected:
 
-    void invalidateCanvas(const QRegion& region);
+    void updateCanvas(const QRect& rect);
 
     FwFontData* createFontData(const FwFontDescription& desc);
 

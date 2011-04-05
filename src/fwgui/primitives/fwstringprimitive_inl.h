@@ -13,6 +13,16 @@ FwFont FwStringPrimitive::font() const
     return m_font;
 }
 
+bool FwStringPrimitive::isShadowEnable() const
+{
+    return m_shadow;
+}
+
+FwColor FwStringPrimitive::shadowColor() const
+{
+    return m_shadowColor;
+}
+
 bool FwStringPrimitive::isFixedSize() const
 {
     return m_fixedSize;

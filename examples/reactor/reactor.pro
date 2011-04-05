@@ -23,17 +23,30 @@ INCLUDEPATH += ../../src/
 SOURCES += main.cpp\
            mainwindow.cpp \
     database.cpp \
-    databaseview.cpp
+    databaseview.cpp \
+    datatype.cpp \
+    datanode.cpp \
+    dataedit.cpp \
+    selectdatatypedialog.cpp
 
 HEADERS  += mainwindow.h \
     database.h \
-    databaseview.h
+    databaseview.h \
+    datatype.h \
+    datanode.h \
+    dataedit.h \
+    selectdatatypedialog.h
 
 FORMS    += mainwindow.ui \
-    databaseview.ui
+    databaseview.ui \
+    selectdatatypedialog.ui \
+    dataeditroot.ui \
+    dataeditquestion.ui
 
 RESOURCES += \
     reactor.qrc
 
 OTHER_FILES += \
     sql/init.sql
+
+ TRANSLATIONS = reactor_ru.ts
