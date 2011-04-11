@@ -27,8 +27,9 @@ void FwProgressPrimitive::setProgressBrush(const FwBrushPtr& brush)
 {
     if(m_progressBrush != brush)
     {
+        prepareGeometryChanged();
         m_progressBrush = brush;
-        invalidate();
+        update();
     }
 }
 
@@ -122,9 +123,10 @@ void FwProgressPrimitive::updateProgressRect(const QRect& rect)
 {
     if(m_progressRect->rect() != rect)
     {
+        prepareGeometryChanged();
         m_progressRect->setRect(rect);
         m_backgroundRect = this->rect().intersected(rect);
-        invalidate();
+        update();
     }
 }
 

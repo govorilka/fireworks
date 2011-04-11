@@ -1,5 +1,3 @@
-#include <QtCore/qdebug.h>
-
 #include <QtGui/qmessagebox.h>
 #include <QtGui/qapplication.h>
 #include <QtGui/qdockwidget.h>
@@ -9,6 +7,7 @@
 #include <QtGui/qprintpreviewdialog.h>
 #include <QtGui/qtextdocument.h>
 
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,16 +16,13 @@
 
 #include "database.h"
 #include "databaseview.h"
-#include "datanode.h"
-#include "datatype.h"
-#include "dataedit.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     BaseClass(parent),
     ui(new Ui::MainWindow),
     m_db(new Database(this)),
-    m_printer(new QPrinter()),
-    m_currentEdit(0)
+    m_questionId(0),
+    m_printer(new QPrinter())
 {
     ui->setupUi(this);
 
@@ -41,30 +37,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_db, SIGNAL(currentChanged(DataNode*)), this, SLOT(currentChanged(DataNode*)));
     currentChanged(m_db->currentNode());
 
-    ui->menuToolbars->addAction(ui->toolsReports->toggleViewAction());
-
     QDockWidget* dataTreeDock = new QDockWidget(tr("Database"), this);
     addDockWidget(Qt::LeftDockWidgetArea, dataTreeDock);
-    ui->menuDockPanels->addAction(dataTreeDock->toggleViewAction());
 
     DatabaseView* databaseView = new DatabaseView(dataTreeDock);
     dataTreeDock->setWidget(databaseView);
     databaseView->setDatabase(m_db);
 
-    //connect(ui->actionBold, SIGNAL(triggered()), this,  SLOT(textEditBold()));
-    //connect(ui->actionItalic, SIGNAL(triggered()), this,  SLOT(textEditItanic()));
-    //connect(ui->actionUnderline, SIGNAL(triggered()), this,  SLOT(textEditUnderline()));
+    connect(ui->actionBold, SIGNAL(triggered()), this,  SLOT(textEditBold()));
+    connect(ui->actionItalic, SIGNAL(triggered()), this,  SLOT(textEditItanic()));
+    connect(ui->actionUnderline, SIGNAL(triggered()), this,  SLOT(textEditUnderline()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(print()));
-
-    QVector<DataType*> types = m_db->types();
-    foreach(DataType* type, types)
-    {
-        DataEdit* edit = type->createEdit(this);
-        edit->setObjectName("edit" + type->className());
-        type->setEdit(edit);
-        ui->stackedWidget->addWidget(edit);
-    }
 }
 
 MainWindow::~MainWindow()
@@ -75,34 +59,27 @@ MainWindow::~MainWindow()
 
 void MainWindow::currentChanged(DataNode* node)
 {
-    if(m_currentEdit)
+    if(m_questionId)
     {
-        m_currentEdit->close();
-        m_currentEdit = 0;
+        m_db->setQuestionText(m_questionId, ui->textEdit->toHtml());
+        ui->textEdit->setHtml("");
+        m_questionId = 0;
     }
 
     if(node)
     {
-        DataType* type = node->type();
-
-        DataEdit* edit = type->edit();
-        if(edit)
-        {
-            m_currentEdit = edit;
-            m_currentEdit->open(node);
-            ui->stackedWidget->setCurrentWidget(m_currentEdit);
-            ui->stackedWidget->show();
-        }
-        else
-        {
-            ui->stackedWidget->hide();
-        }
-
-
-        ui->nodeIcon->setPixmap(type->icon().pixmap(32));
-        ui->nodeIcon->show();
-
+        ui->stackedWidget->setCurrentIndex(node->type() - 1);
+        ui->nodeIcon->setPixmap(node->icon().pixmap(32));
         ui->nodeTitle->setText(node->caption());
+
+        if(node->type() == DataNode::NT_Question)
+        {
+            m_questionId = node->key();
+            ui->textEdit->setHtml(m_db->questionText(m_questionId));
+        }
+
+        ui->stackedWidget->show();
+        ui->nodeIcon->show();
         ui->nodeTitle->show();
     }
     else
@@ -137,13 +114,13 @@ void MainWindow::textEditUnderline()
 
 void MainWindow::mergeFormatOnWordOrSelection(const QTextCharFormat& fmt)
 {
-    /*QTextCursor cursor = ui->textEdit->textCursor();
+    QTextCursor cursor = ui->textEdit->textCursor();
     if (!cursor.hasSelection())
     {
         cursor.select(QTextCursor::WordUnderCursor);
     }
     cursor.mergeCharFormat(fmt);
-    ui->textEdit->mergeCurrentCharFormat(fmt);*/
+    ui->textEdit->mergeCurrentCharFormat(fmt);
 }
 
 void MainWindow::print()

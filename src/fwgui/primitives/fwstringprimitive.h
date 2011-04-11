@@ -23,12 +23,6 @@ public:
     inline FwFont font() const;
     void setFont(const FwFont& font);
 
-    inline bool isShadowEnable() const;
-    void setShadowEnabled(bool enable);
-
-    inline FwColor shadowColor() const;
-    void setShadowColor(const FwColor& color);
-
     inline bool isFixedSize() const;
     void setFixedSize(bool enable, const QString& mask = QString());
 
@@ -49,8 +43,6 @@ private:
     QByteArray m_utf8String;
     FwFont m_font;
     QPoint m_textPos;
-    bool m_shadow;
-    FwColor m_shadowColor;
     bool m_fixedSize;
     QString m_mask;
     QRect m_stringRect;

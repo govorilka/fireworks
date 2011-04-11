@@ -11,8 +11,6 @@
 FwStringPrimitive::FwStringPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_textPos(0, 0),
-    m_shadow(false),
-    m_shadowColor(0x00, 0x00, 0x00, 0x66), //40% black
     m_fixedSize(false),
     m_stringRect(0, 0, 0, 0)
 {
@@ -41,36 +39,6 @@ void FwStringPrimitive::setFont(const FwFont& font)
         m_font = font;
         updateStringRect(m_fixedSize && !m_mask.isEmpty() ? m_mask : m_string);
         update();
-    }
-}
-
-/*!
-Устанавливает или отключает отображение тени для текста
-\param enable Если true, то для текста будет отображаться тень
-\sa void StringPrimitive::setShadowEnabled(bool enable)
-*/
-void FwStringPrimitive::setShadowEnabled(bool enable)
-{
-    if(m_shadow != enable)
-    {
-        prepareGeometryChanged();
-        m_shadow = enable;
-        update();
-    }
-}
-
-/*!
-Устанавливает цвет тени для текста
-\param color Цвет тени
-\note По умолчанию для тени установлен цвет 0x00000066 (40% черный).
-\sa void StringPrimitive::setShadowColor(const FwColor& color)
-*/
-void FwStringPrimitive::setShadowColor(const FwColor &color)
-{
-    if(m_shadowColor != color)
-    {
-        m_shadowColor = color;
-        invalidate();
     }
 }
 

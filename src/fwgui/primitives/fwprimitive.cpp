@@ -50,8 +50,9 @@ FwPrimitive::~FwPrimitive()
         m_parent->m_primitives.remove(m_parent->m_primitives.indexOf(this));
         if(m_visible)
         {
+            m_parent->prepareGeometryChanged();
             m_parent->updateChildren();
-            m_parent->invalidate();
+            m_parent->update();
         }
         m_parent = 0;
     }
@@ -109,10 +110,11 @@ void FwPrimitive::setBufferMode(Fw::BufferMode mode)
 {
     if(m_bufferMode != mode)
     {
+        prepareGeometryChanged();
         m_bufferMode = mode;
         releaseBuffer();
         bufferDirty = true;
-        invalidate();
+        update();
     }
 }
 
@@ -148,7 +150,7 @@ void FwPrimitive::update(bool needUpdateBuffer)
             }
             else
             {
-                invalidate();
+                invalidateCanvas(rect());
             }
         }
     }
@@ -176,8 +178,10 @@ void FwPrimitive::setVisible(bool visible)
             bool oldVisibleOnScreen = visibleOnScreen;
             if(oldVisibleOnScreen != (visibleOnScreen = m_visible && m_parent->visibleOnScreen))
             {
-                m_scene->updateCanvas(m_boundingRect);
+                prepareGeometryChanged();
+                m_contentDirty = true;
                 m_parent->updateChildrenRect();
+                update();
             }
         }
         visibleChangedEvent();
@@ -188,27 +192,10 @@ void FwPrimitive::prepareGeometryChanged()
 {
     if(_startChanged == 0)
     {
-        invalidate();
+        m_contentDirty = true;
+        invalidateCanvas(m_parent ? m_parent->m_childrenRect : rect());
     }
     ++_startChanged;
-}
-
-void FwPrimitive::invalidate()
-{
-    if(_startChanged == 0 && visibleOnScreen)
-    {
-        if(m_parent)
-        {
-            if(m_parent->m_visiblePrimitives.contains(this))
-            {
-                m_scene->updateCanvas(m_parent->m_childrenRect.intersected(m_boundingRect));
-            }
-        }
-        else
-        {
-            m_scene->updateCanvas(m_boundingRect);
-        }
-    }
 }
 
 void FwPrimitive::visibleChangedEvent()
@@ -773,13 +760,23 @@ void FwPrimitive::setPenColor(const FwColor& color)
     }
     else if(m_pen->color() != color)
     {
+        prepareGeometryChanged();
         m_pen->setColor(color);
         penChangedEvent(m_pen);
-        invalidate();
+        update();
     }
 }
 
 void FwPrimitive::penChangedEvent(FwPen* pen)
 {
     Q_UNUSED(pen);
+}
+
+void FwPrimitive::invalidateCanvas(const QRect& clipRect)
+{
+    if(m_contentDirty && m_scene->isActive())
+    {
+         m_scene->view()->update(clipRect.intersected(m_boundingRect));
+         m_contentDirty = false;
+    }
 }

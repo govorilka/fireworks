@@ -100,18 +100,9 @@ void FwScene::hideEventProcessed(FwSceneHideEvent* e)
     hideEvent(e);
 }
 
-void FwScene::paint(FwPainter *painter, const QRect &clipRect)
+bool FwScene::isActive() const
 {
-    invalidateChildren();
-    BaseClass::paint(painter, clipRect);
-}
-
-void FwScene::updateCanvas(const QRect& rect)
-{
-    if(m_view && m_view->m_activeScene == this)
-    {
-        m_view->updateCanvas(rect);
-    }
+    return m_view && m_view->m_activeScene == this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

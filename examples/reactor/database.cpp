@@ -2,29 +2,106 @@
 #include <QtCore/qdebug.h>
 
 #include "database.h"
-#include "datatype.h"
-#include "datanode.h"
 
 #include "fwdb/fwsqlite.h"
+
+DataNode::DataNode() :
+    m_row(0),
+    m_parent(0),
+    m_type(NT_Unknow),
+    m_key(0)
+{
+}
+
+DataNode::DataNode(DataNode::Type type, int key, const QIcon& icon, const QString& caption) :
+    m_row(0),
+    m_parent(0),
+    m_type(type),
+    m_key(key),
+    m_icon(icon),
+    m_caption(caption)
+{
+}
+
+DataNode::~DataNode()
+{
+    foreach(DataNode* node, m_children)
+    {
+        delete node;
+    }
+}
+
+DataNode* DataNode::createChild(DataNode::Type type, int key, const QIcon& icon, const QString& caption)
+{
+    DataNode* newChild = new DataNode(type, key, icon, nextChildCaption(caption));
+    newChild->m_parent = this;
+    m_children.append(newChild);
+    newChild->m_row = m_children.size() - 1;
+    return newChild;
+}
+
+void DataNode::deleteChild(DataNode* node)
+{
+    Q_ASSERT(node->m_parent == this);
+
+    m_children.removeOne(node);
+    delete node;
+
+    int index = 0;
+    foreach(DataNode* node, m_children)
+    {
+        node->m_row = index;
+        ++index;
+    }
+}
+
+DataNode* DataNode::childByCaption(const QString& caption) const
+{
+    foreach(DataNode* node, m_children)
+    {
+        if(node->caption() == caption)
+        {
+            return node;
+        }
+    }
+    return 0;
+}
+
+QString DataNode::nextChildCaption(const QString& caption) const
+{
+    QString newCaption = caption;
+    if(caption.indexOf("%1") != -1)
+    {
+        int index = 1;
+        newCaption = caption.arg(index);
+        while(childByCaption(newCaption))
+        {
+            newCaption = caption.arg(++index);
+        }
+    }
+    return newCaption;
+}
+
+/////////////////////////////////////////////////////////////////////
 
 Database::Database(QObject *parent) :
     BaseClass(parent),
     m_db(new FwSQLiteDatabase(this)),
+    rootNode(new DataNode(DataNode::NT_Root, 0)),
     m_selectionModel(new QItemSelectionModel(this)),
-    m_currentNode(0)
+    m_currentKey(0),
+    m_currentType(DataNode::NT_Unknow)
 {
-    DataTypeRoot* typeRoot = new DataTypeRoot(this);
-    m_types.append(typeRoot);
+    m_folderIcon.addPixmap(QPixmap(":/reactor/images/datatree/folder.png"));
+    m_folderIcon.addPixmap(QPixmap(":/reactor/images/dataedit/folder.png"));
+    m_questionIcon.addPixmap(QPixmap(":/reactor/images/datatree/question.png"));
+    m_questionIcon.addPixmap(QPixmap(":/reactor/images/dataedit/question.png"));
 
-    DataTypeTheme* typeTheme = new DataTypeTheme(this);
-    m_types.append(typeTheme);
-    typeRoot->setDataTypeTheme(typeTheme);
-
-    DataTypeQuestion* typeQuestion = new DataTypeQuestion(this);
-    m_types.append(typeQuestion);
-    typeRoot->setDataTypeQuestion(typeQuestion);
-
-    rootNode = new DataNode(typeRoot, 0, tr("Reactor"));
+    QIcon databaseIcon;
+    databaseIcon.addPixmap(QPixmap(":/reactor/images/datatree/database.png"));
+    databaseIcon.addPixmap(QPixmap(":/reactor/images/dataedit/database.png"));
+    rootNode->setCaption(tr("Reactor"));
+    rootNode->setIcon(databaseIcon);
 
     connect(m_selectionModel, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(currentChanged(QModelIndex,QModelIndex)));
 }
@@ -32,11 +109,6 @@ Database::Database(QObject *parent) :
 Database::~Database()
 {
     delete rootNode;
-
-    foreach(DataType* type, m_types)
-    {
-        delete type;
-    }
 }
 
 bool Database::open()
@@ -93,10 +165,9 @@ int Database::rowCount(const QModelIndex &parent) const
     if(parent.isValid())
     {
         DataNode* parentNode = static_cast<DataNode*>(parent.internalPointer());
-        DataType* parentType = parentNode->type();
-        if(parentType->hasChildren() && parentNode->children().isEmpty())
+        if(parentNode->children().isEmpty())
         {
-            parentType->loadChildren(parentNode);
+            const_cast<Database*>(this)->loadNode(parentNode);
         }
         return parentNode->children().size();
     }
@@ -119,7 +190,7 @@ QVariant Database::data(const QModelIndex &index, int role) const
             return node->caption();
 
         case Qt::DecorationRole:
-            return node->type()->icon();
+            return node->icon();
 
         default:
             break;
@@ -128,20 +199,58 @@ QVariant Database::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void Database::currentChanged(const QModelIndex& current, const QModelIndex& previous)
-{    
-    Q_UNUSED(previous);
+void Database::loadNode(DataNode* parent)
+{
+    switch(parent->type())
+    {
+    case DataNode::NT_Root:
+        loadNodeRoot(parent);
 
-    DataNode* currentNode = 0;
+    default:
+        break;
+    }
+}
+
+void Database::loadNodeRoot(DataNode* parent)
+{
+    try
+    {
+        FwSQLiteQuery folderQuery = m_db->query("SELECT folderid,caption FROM folder");
+        while(folderQuery.step())
+        {
+            rootNode->createChild(DataNode::NT_Folder,
+                                  folderQuery.columnInt(0),
+                                  m_folderIcon,
+                                  folderQuery.columnText(1));
+        }
+
+        FwSQLiteQuery questionQuery = m_db->query("SELECT questionid FROM question");
+        while(questionQuery.step())
+        {
+            rootNode->createChild(DataNode::NT_Question,
+                                  questionQuery.columnInt(0),
+                                  m_questionIcon,
+                                  tr("Question %1"));
+        }
+    }
+    catch(FwSQLiteException& e)
+    {
+        errorMessage = QString("SQLite: %1").arg(e.error);
+    }
+}
+
+void Database::currentChanged(const QModelIndex& current, const QModelIndex& previous)
+{
+    Q_UNUSED(previous);
     if(current.isValid())
     {
-        currentNode = static_cast<DataNode*>(current.internalPointer());
-    }
-
-    if(m_currentNode != currentNode)
-    {
-        m_currentNode = currentNode;
-        emit currentChanged(m_currentNode);
+        DataNode* node = static_cast<DataNode*>(current.internalPointer());
+        if(node->type() != m_currentType || node->key() != m_currentKey)
+        {
+            m_currentType = node->type();
+            m_currentKey = node->key();
+            currentChanged(node);
+        }
     }
 }
 
@@ -183,7 +292,7 @@ void Database::setQuestionText(int key, const QString& text)
 
 void Database::addQuestion(int themeID)
 {
-    /*try
+    try
     {
         FwSQLiteQuery questionQuery = m_db->query("INSERT INTO question (htmltext) VALUES (?1)");
         questionQuery.bindText(1, tr("New question"));
@@ -194,12 +303,12 @@ void Database::addQuestion(int themeID)
     {
         errorMessage = QString("SQLite: %1").arg(e.error);
         qDebug() << errorMessage;
-    }*/
+    }
 }
 
 void Database::deleteQuestion(DataNode* question)
 {
-    /*try
+    try
     {
         FwSQLiteQuery questionQuery = m_db->query("DELETE FROM question WHERE questionid=?1");
         questionQuery.bindInt(1, question->key());
@@ -210,7 +319,7 @@ void Database::deleteQuestion(DataNode* question)
     {
         errorMessage = QString("SQLite: %1").arg(e.error);
         qDebug() << errorMessage;
-    }*/
+    }
 }
 
 DataNode* Database::currentNode() const
@@ -235,7 +344,7 @@ void Database::setCurrentNode(DataNode* node)
 
 void Database::addFolder(int key)
 {
-    /*try
+    try
     {
         QString caption = rootNode->nextChildCaption(tr("New folder %1"));
         FwSQLiteQuery questionQuery = m_db->query("INSERT INTO folder(caption) VALUES(?1)");
@@ -247,7 +356,7 @@ void Database::addFolder(int key)
     {
         errorMessage = QString("SQLite: %1").arg(e.error);
         qDebug() << errorMessage;
-    }*/
+    }
 }
 void Database::deleteFolder(DataNode* folder)
 {
@@ -263,6 +372,15 @@ void Database::deleteFolder(DataNode* folder)
         errorMessage = QString("SQLite: %1").arg(e.error);
         qDebug() << errorMessage;
     }
+}
+
+void Database::addNode(DataNode* parent, DataNode::Type type, int key, const QString& caption)
+{
+    QModelIndex parentIndex = createIndex(parent);
+    beginInsertRows(parentIndex, parent->children().size(), parent->children().size());
+    DataNode* newChild = parent->createChild(type, key, type == DataNode::NT_Question ? m_questionIcon : m_folderIcon, caption);
+    endInsertRows();
+    setCurrentNode(newChild);
 }
 
 void Database::deleteNode(DataNode* node)
@@ -312,6 +430,8 @@ QString Database::tickets(int variantCount, int questionCount) const
                     rands.append(rand);
                 }
 
+                qDebug() << questions.size() << rand << rands;
+
                 int questionID = questionsIDs.at(rand);
                 strQuestions.append(QString("<h3>Question %1</h3>%2").arg(j + 1).arg(questions.value(questionID)));
             }
@@ -326,9 +446,4 @@ QString Database::tickets(int variantCount, int questionCount) const
     }
 
     return QString();
-}
-
-QModelIndex Database::createIndex(DataNode* node) const
-{
-    return BaseClass::createIndex(node->row(), 0, static_cast<void*>(node));
 }

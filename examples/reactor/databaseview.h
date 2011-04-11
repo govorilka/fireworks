@@ -33,8 +33,10 @@ private:
 private slots:
     void currentChanged(const QModelIndex & current);
 
-    void actionAdd();
-    void actionDelete();
+    void actionAddQuestion();
+    void actionDeleteQuestion();
+    void actionAddFolder();
+    void actionDeleteFolder();
 };
 
 Database* DatabaseView::database() const
