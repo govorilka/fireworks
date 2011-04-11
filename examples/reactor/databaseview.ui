@@ -22,24 +22,18 @@
    </property>
    <item>
     <widget class="QToolBar" name="toolbar">
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
-     </property>
+     <addaction name="actionAddQuestion"/>
+     <addaction name="actionDeleteQuestion"/>
      <addaction name="separator"/>
-     <addaction name="actionAdd"/>
-     <addaction name="actionDelete"/>
-     <addaction name="separator"/>
-     <addaction name="actionFilterAdd"/>
-     <addaction name="actionFilterDelete"/>
+     <addaction name="actionAddFolder"/>
+     <addaction name="actionDeleteFolder"/>
     </widget>
    </item>
    <item>
     <widget class="QTreeView" name="treeView">
      <property name="editTriggers">
-      <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+     
+<set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
@@ -53,40 +47,48 @@
     </widget>
    </item>
   </layout>
-  <action name="actionAdd">
+  <action name="actionAddQuestion">
    <property name="icon">
     <iconset resource="reactor.qrc">
-     <normaloff>:/reactor/images/datatreetools/node_add.png</normaloff>:/reactor/images/datatreetools/node_add.png</iconset>
+    
+<normaloff>:/reactor/images/datatreetools/question_add.png</normaloff>:/reactor/
+images/datatreetools/question_add.png</iconset>
    </property>
    <property name="text">
-    <string>Add new node</string>
+    <string>Add question</string>
    </property>
   </action>
-  <action name="actionDelete">
+  <action name="actionDeleteQuestion">
    <property name="icon">
     <iconset resource="reactor.qrc">
-     <normaloff>:/reactor/images/datatreetools/node_delete.png</normaloff>:/reactor/images/datatreetools/node_delete.png</iconset>
+    
+<normaloff>:/reactor/images/datatreetools/question_delete.png</normaloff>:/
+reactor/images/datatreetools/question_delete.png</iconset>
    </property>
    <property name="text">
-    <string>Delete cirrent node</string>
+    <string>Delete question</string>
    </property>
   </action>
-  <action name="actionFilterAdd">
+  <action name="actionAddFolder">
    <property name="icon">
     <iconset resource="reactor.qrc">
-     <normaloff>:/reactor/images/datatreetools/filter_add.png</normaloff>:/reactor/images/datatreetools/filter_add.png</iconset>
+    
+<normaloff>:/reactor/images/datatreetools/folder_add.png</normaloff>:/reactor/
+images/datatreetools/folder_add.png</iconset>
    </property>
    <property name="text">
-    <string>Filter add</string>
+    <string>Add theme</string>
    </property>
   </action>
-  <action name="actionFilterDelete">
+  <action name="actionDeleteFolder">
    <property name="icon">
     <iconset resource="reactor.qrc">
-     <normaloff>:/reactor/images/datatreetools/filter_delete.png</normaloff>:/reactor/images/datatreetools/filter_delete.png</iconset>
+    
+<normaloff>:/reactor/images/datatreetools/folder_delete.png</normaloff>:/reactor
+/ images/datatreetools/folder_delete.png</iconset>
    </property>
    <property name="text">
-    <string>Filter delete</string>
+    <string>Delete theme</string>
    </property>
   </action>
  </widget>

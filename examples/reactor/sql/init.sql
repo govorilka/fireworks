@@ -5,8 +5,7 @@ PRAGMA ENCODING="UTF-8";
 
 CREATE TABLE IF NOT EXISTS question (
      questionid INTEGER PRIMARY KEY,
-     htmltext TEXT,
-     parentid INTEGER DEFAULT 0);
+     htmltext TEXT);
 
 CREATE TABLE IF NOT EXISTS folder (
      folderid INTEGER PRIMARY KEY,
