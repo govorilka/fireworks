@@ -1,0 +1,48 @@
+bgcolor : "black",
+
+itemView
+{
+    class : "fireworks.widgets.ItemView",
+
+    width : 150,
+
+    bgcolor : "red",
+
+    layout
+    {
+        class : "fireworks.layouts.Pages",
+
+        animation
+        {
+            class : "fireworks.layouts.Animation",
+            curve : "InOutQuart",
+            duration : 300
+        },
+
+        margin : 16
+    },
+
+    item
+    {
+        zindex : 2,
+        class : "fireworks.primitives.String",
+        font
+        {
+            family : "Arial",
+            pixelSize : 24
+        },
+        color : "white",
+        wordwrap : true
+    },
+
+    itemColor : "white",
+    currentItemColor : "black",
+
+    highlight
+    {
+        class : "fireworks.primitives.Rect",
+        zindex : 1,
+        bgcolor : "green"
+    }
+},
+

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DatabaseView</class>
+ <widget class="QWidget" name="DatabaseView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>280</width>
+    <height>426</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QToolBar" name="toolbar">
+     <addaction name="actionAddQuestion"/>
+     <addaction name="actionDeleteQuestion"/>
+     <addaction name="separator"/>
+     <addaction name="actionAddFolder"/>
+     <addaction name="actionDeleteFolder"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTreeView" name="treeView">
+     <property name="editTriggers">
+     
+<set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="animated">
+      <bool>true</bool>
+     </property>
+     <property name="headerHidden">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <action name="actionAddQuestion">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+    
+<normaloff>:/reactor/images/datatreetools/question_add.png</normaloff>:/reactor/
+images/datatreetools/question_add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add question</string>
+   </property>
+  </action>
+  <action name="actionDeleteQuestion">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+    
+<normaloff>:/reactor/images/datatreetools/question_delete.png</normaloff>:/
+reactor/images/datatreetools/question_delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete question</string>
+   </property>
+  </action>
+  <action name="actionAddFolder">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+    
+<normaloff>:/reactor/images/datatreetools/folder_add.png</normaloff>:/reactor/
+images/datatreetools/folder_add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add theme</string>
+   </property>
+  </action>
+  <action name="actionDeleteFolder">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+    
+<normaloff>:/reactor/images/datatreetools/folder_delete.png</normaloff>:/reactor
+/ images/datatreetools/folder_delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete theme</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="reactor.qrc"/>
+ </resources>
+ <connections/>
+</ui>
