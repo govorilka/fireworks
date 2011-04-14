@@ -18,5 +18,4 @@ bool FwStringPrimitive::isFixedSize() const
     return m_fixedSize;
 }
 
-
 #endif // FIREWORKS_GRAPHICSSTRINGITEM_INL_H

@@ -7,6 +7,7 @@
 
 #include "fwgui/primitives/fwprimitive.h"
 #include "fwgui/primitives/fwstringprimitive.h"
+#include "fwgui/primitives/fwtextprimitive.h"
 
 FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
@@ -84,40 +85,61 @@ void FwItemView::setLayout(FwItemLayout* layout)
     }
 }
 
-void FwItemView::addItem(FwPrimitive* primitive)
+bool FwItemView::addItem(FwPrimitive* item)
 {
-    prepareItemsChanged();
-
-    primitive->link(geometry());
-    if(m_itemTemplate)
+    if(item)
     {
-        primitive->apply(m_itemTemplate);
-    }
-    primitive->setPenColor(m_itemColor);
-    m_items.append(primitive);
+        prepareItemsChanged();
 
-    if(!m_current)
-    {
-        setCurrent(primitive);
-    }
+        item->link(geometry());
+        if(m_itemTemplate)
+        {
+            item->apply(m_itemTemplate);
+        }
+        item->setPenColor(m_itemColor);
+        m_items.append(item);
 
-    updateItems();
+        if(!m_current)
+        {
+            setCurrent(item);
+        }
+
+        updateItems();
+
+        return true;
+    }
+    return false;
+
 }
 
-FwStringPrimitive* FwItemView::addItem(const QString& text, const QVariant& data)
+bool FwItemView::addItem(FwPrimitive* item, const QVariant& data)
 {
-    if(!text.isEmpty())
+    if(item)
     {
-        FwStringPrimitive* string = new FwStringPrimitive("", this);
-        string->setString(text);
         if(data.isValid())
         {
-            string->setData(data);
+            item->setData(data);
         }
-        addItem(string);
-        return string;
+        addItem(item);
+        return true;
     }
-    return 0;
+    return false;
+}
+
+FwTextPrimitive* FwItemView::addText(const QString& text, const QVariant& data)
+{
+    FwTextPrimitive* item = new FwTextPrimitive("", this);
+    item->setText(text);
+    addItem(item, data);
+    return item;
+}
+
+FwStringPrimitive* FwItemView::addString(const QString& string, const QVariant& data)
+{
+    FwStringPrimitive* item = new FwStringPrimitive("", this);
+    item->setString(string);
+    addItem(item, data);
+    return item;
 }
 
 void FwItemView::setCurrent(FwPrimitive* primitive)
@@ -222,10 +244,13 @@ void FwItemView::apply(FwMLObject *object)
 
 void FwItemView::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
-    needInitLayout = needInitLayout || (oldRect.size() != rect.size());
-    updateChildrenRect();
-
     BaseClass::geometryChangedEvent(oldRect, rect);
+    if(oldRect.size() != rect.size())
+    {
+        updateItemsSize(rect.size());
+        needInitLayout = true;
+        updateChildrenRect();
+    }
 }
 
 void FwItemView::invalidateChildrenRect()
@@ -337,6 +362,12 @@ void FwItemView::updateItems(bool init)
     needInitLayout = needInitLayout || init;
     if((--m_startItemsChanged) == 0)
     {
+        if(needInitLayout)
+        {
+            updateItemsSize(size());
+            updateChildrenRect();
+        }
+
         if(m_currentDirty)
         {
             if(m_highlight)
@@ -349,9 +380,16 @@ void FwItemView::updateItems(bool init)
             }
             m_currentDirty = false;
         }
-        if(needInitLayout)
-        {
-            updateChildrenRect();
-        }
     }
+}
+
+void FwItemView::updateItemsSize(const QSize& parentSize)
+{
+    QSize size = parentSize;
+    size.setHeight(100);
+    foreach(FwPrimitive* primitive, m_items)
+    {
+        primitive->setSize(size);
+    }
+
 }

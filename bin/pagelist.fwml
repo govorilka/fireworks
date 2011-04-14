@@ -31,7 +31,8 @@ itemView
             family : "Arial",
             pixelSize : 24
         },
-        color : "white"
+        color : "white",
+        wordwrap : true
     },
 
     itemColor : "white",

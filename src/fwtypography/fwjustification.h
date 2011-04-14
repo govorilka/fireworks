@@ -38,16 +38,21 @@ public:
     inline FwFont font() const;
     void setFont(const FwFont& font);
 
-    QVector<FwTextString> processing(const QString& text);
+    inline bool wordWrap() const;
+    inline void setWordWrap(bool enable);
+
+    QVector<FwTextString> processing(const QString& text, bool fixedHeight);
 
     bool validateData() const;
 
 protected:
     FwTextString nextString(QString& text) const;
 
-    QList<FwTextString> processingWord(const QString& text);
+    QVector<FwTextString> processingWord(const QString& text, bool fixedHeight);
 
     TextCommand nextWord(QString& text, QString& word, int& wordWidth) const;
+
+    QVector<FwTextString> singleLineProcessing(const QString& text);
 
 private:
     FwFont m_font;
@@ -62,6 +67,8 @@ private:
 
     QRect m_blockRect;
     State state;
+
+    bool m_wordWrap;
 };
 
 QRect FwJustification::blockRect() const
@@ -77,6 +84,16 @@ void FwJustification::setBlockRect(const QRect& blockRect)
 FwFont FwJustification::font() const
 {
     return m_font;
+}
+
+bool FwJustification::wordWrap() const
+{
+    return m_wordWrap;
+}
+
+void FwJustification::setWordWrap(bool enable)
+{
+    m_wordWrap = enable;
 }
 
 #endif //FIREWORKS_JUSTIFICATION_H

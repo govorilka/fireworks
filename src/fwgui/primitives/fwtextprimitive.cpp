@@ -12,7 +12,8 @@
 #include "fwtypography/fwjustification.h"
 
 FwTextPrimitive::FwTextPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
-    BaseClass(name, parent)
+    BaseClass(name, parent),
+    m_fixedHeight(false)
 {
     setPen(new FwPen(1, FwColor(0xFFFFFFFF)));
 }
@@ -25,9 +26,8 @@ void FwTextPrimitive::setText(const QString& text)
 {
     if(m_text != text)
     {
-        prepareGeometryChanged();
         m_text = text;
-        update();
+        updateText(geometryRect());
     }
 }
 
@@ -35,28 +35,15 @@ void FwTextPrimitive::setFont(const FwFont& font)
 {
     if(m_font != font)
     {
-       prepareGeometryChanged();
        m_font = font;
-       update();
+       updateText(geometryRect());
     }
 }
 
 void FwTextPrimitive::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
-    Q_UNUSED(oldRect);
-    if(m_text.isEmpty())
-    {
-        m_strings = QVector<FwTextString>();
-    }
-    else
-    {
-        FwJustification jEngine;
-        jEngine.setBlockRect(rect);
-        jEngine.setFont(m_font);
-        m_strings = jEngine.processing(m_text);
-    }
-
     BaseClass::geometryChangedEvent(oldRect, rect);
+    updateTextLayout(rect);
 }
 
 void FwTextPrimitive::paint(FwPainter *painter, const QRect &clipRect)
@@ -96,4 +83,23 @@ void FwTextPrimitive::apply(FwMLObject *object)
     BaseClass::apply(object);
 
     update();
+}
+
+void FwTextPrimitive::updateTextLayout(QRect& rect)
+{
+    if(m_text.isEmpty())
+    {
+        m_strings = QVector<FwTextString>();
+    }
+    else
+    {
+        FwJustification jEngine;
+        jEngine.setBlockRect(rect);
+        jEngine.setFont(m_font);
+        m_strings = jEngine.processing(m_text, m_fixedHeight);
+        if(!m_fixedHeight)
+        {
+            rect.setHeight(jEngine.blockRect().height());
+        }
+    }
 }

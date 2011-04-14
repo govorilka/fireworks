@@ -12,6 +12,7 @@ class FwItemView;
 class FwItemLayout;
 class FwPrimitive;
 class FwStringPrimitive;
+class FwTextPrimitive;
 
 typedef FwItemLayout*(FwLayoutConstructor)(FwItemView* view);
 
@@ -30,8 +31,10 @@ public:
     void setItems(const QList<FwPrimitive*> items);
     inline void clear();
 
-    void addItem(FwPrimitive* primitive);
-    FwStringPrimitive* addItem(const QString& text, const QVariant& data = QVariant());
+    bool addItem(FwPrimitive* item);
+    bool addItem(FwPrimitive* item, const QVariant& data);
+    FwStringPrimitive* addString(const QString& string, const QVariant& data = QVariant());
+    FwTextPrimitive* addText(const QString& text, const QVariant& data = QVariant());
 
     inline void prepareItemsChanged();
     void updateItems(bool init = true);
@@ -72,6 +75,7 @@ protected:
     bool needInitLayout;
 
     void updateCurrent();
+    void updateItemsSize(const QSize& parentSize);
 
 private:
     QList<FwPrimitive*> m_items;

@@ -9,7 +9,8 @@ FwJustification::FwJustification() :
     blockWidth(0),
     maxLineWidth(0),
     minLineWidth(0),
-    state(Error)
+    state(Error),
+    m_wordWrap(true)
 {
 }
 
@@ -39,7 +40,7 @@ bool FwJustification::validateData() const
     return true;
 }
 
-QVector<FwTextString> FwJustification::processing(const QString& text)
+QVector<FwTextString> FwJustification::processing(const QString& text, bool fixedHeight)
 {
     if(!validateData())
     {
@@ -52,11 +53,16 @@ QVector<FwTextString> FwJustification::processing(const QString& text)
         return QVector<FwTextString>();
     }
 
+    if(!m_wordWrap)
+    {
+        return singleLineProcessing(simplifiedText);
+    }
+
     state = ProcessWord;
 
     blockWidth = m_blockRect.width();
 
-    QList<FwTextString> strings = processingWord(simplifiedText);
+    QVector<FwTextString> strings = processingWord(simplifiedText, fixedHeight);
     if(!strings.isEmpty())
     {
         qreal wMax = maxLineWidth;
@@ -64,21 +70,21 @@ QVector<FwTextString> FwJustification::processing(const QString& text)
         if((wMax / wMin) > 1.15)
         {
             blockWidth = qRound((wMax + wMin) / 2);
-            strings = processingWord(simplifiedText);
+            strings = processingWord(simplifiedText, fixedHeight);
         }
     }
 
-    return strings.toVector();
+    return strings;
 }
 
-QList<FwTextString> FwJustification::processingWord(const QString& text)
+QVector<FwTextString> FwJustification::processingWord(const QString& text, bool fixedHeight)
 {
     QString str = text;
 
     minLineWidth = blockWidth;
     maxLineWidth = 0;
 
-    QList<FwTextString> strings;
+    QVector<FwTextString> strings;
 
     int y = m_blockRect.y();
     do
@@ -105,16 +111,21 @@ QList<FwTextString> FwJustification::processingWord(const QString& text)
 
         if(state == Error)
         {
-            return QList<FwTextString>();
+            return QVector<FwTextString>();
         }
 
         y += stringHeight;
-        if((y + stringHeight) >= m_blockRect.bottom())
+        if(fixedHeight && (y + stringHeight) >= m_blockRect.bottom())
         {
             break;
         }
     }
     while(!str.isEmpty());
+
+    if(!fixedHeight)
+    {
+        m_blockRect.setHeight(y - m_blockRect.y());
+    }
 
     return strings;
 }
@@ -192,4 +203,14 @@ FwJustification::TextCommand FwJustification::nextWord(QString& text, QString& w
     wordWidth = m_font.stringWidth(word);
     text = text.right(text.length() - word.length());
     return FwJustification::C_AddWord;
+}
+
+QVector<FwTextString> FwJustification::singleLineProcessing(const QString& text)
+{
+    FwTextString newString;
+    newString.m_value = text;
+    newString.m_utf8 = text.toUtf8();
+    newString.m_pos.setX(m_blockRect.x());
+    newString.m_pos.setY(m_blockRect.y() + stringHeight - stringDescender);
+    return QVector<FwTextString>() << newString;
 }

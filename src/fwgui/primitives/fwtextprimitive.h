@@ -31,10 +31,14 @@ protected:
 
     void paint(FwPainter *painter, const QRect &clipRect);
 
+    inline void updateText(const QRect& rect);
+    void updateTextLayout(QRect& rect);
+
 private:
     QString m_text;
     FwFont m_font;
     QVector<FwTextString> m_strings;
+    bool m_fixedHeight;
 };
 
 QString FwTextPrimitive::text() const
@@ -45,6 +49,15 @@ QString FwTextPrimitive::text() const
 FwFont FwTextPrimitive::font() const
 {
     return m_font;
+}
+
+void FwTextPrimitive::updateText(const QRect& rect)
+{
+    prepareGeometryChanged();
+    QRect newRect = rect;
+    updateTextLayout(newRect);
+    setSize(newRect.size());
+    update();
 }
 
 #endif //FIREWORKS_GRAPHICSTEXTITEM_H

@@ -11,6 +11,7 @@
 #include "fwgui/widgets/fwitemlayout.h"
 
 #include "fwgui/primitives/fwstringprimitive.h"
+#include "fwgui/primitives/fwtextprimitive.h"
 
 #include "qpgraphicsview.h"
 #include "qprender.h"
@@ -43,9 +44,21 @@ void MenuScene::keyPressEvent(FwKeyPressEvent *event)
             QTime currentTime = QTime::currentTime();
             m_itemView->prepareItemsChanged();
             qDebug() << "MenuScene::keyPressEvent: start";
+            int iText = 7;
+            QString text;
             for(int i = 0; i < 10000; i++)
             {
-                m_itemView->addItem(QString("item") + QString::number(i));
+                if(iText < 7)
+                {
+                    text += " item";
+                    ++iText;
+                }
+                else
+                {
+                    text = "item";
+                    iText= 0;
+                }
+                m_itemView->addText(text + QString::number(i));
             }
             m_itemView->updateItems();
             qDebug() << "MenuScene::keyPressEvent" << currentTime.msecsTo(QTime::currentTime());

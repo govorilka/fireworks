@@ -7,9 +7,6 @@
 
 #include "fwtypography/fwfont.h"
 
-class FwStringPrimitive;
-typedef FwStringPrimitive* FwStringPrimitivePtr;
-
 class FwStringPrimitive : public FwLinePrimitive
 {
     typedef FwLinePrimitive BaseClass;
