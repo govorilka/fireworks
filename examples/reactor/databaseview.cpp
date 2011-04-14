@@ -1,5 +1,10 @@
 #include "databaseview.h"
+
 #include "database.h"
+#include "datanode.h"
+#include "datatype.h"
+
+#include "selectdatatypedialog.h"
 
 #include "ui_databaseview.h"
 
@@ -10,10 +15,8 @@ DatabaseView::DatabaseView(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->actionAddQuestion, SIGNAL(triggered()), this, SLOT(actionAddQuestion()));
-    connect(ui->actionDeleteQuestion, SIGNAL(triggered()), this, SLOT(actionDeleteQuestion()));
-    connect(ui->actionAddFolder, SIGNAL(triggered()), this, SLOT(actionAddFolder()));
-    connect(ui->actionDeleteFolder, SIGNAL(triggered()), this, SLOT(actionDeleteFolder()));
+    connect(ui->actionAdd, SIGNAL(triggered()), this, SLOT(actionAdd()));
+    connect(ui->actionDelete, SIGNAL(triggered()), this, SLOT(actionDelete()));
 }
 
 DatabaseView::~DatabaseView()
@@ -51,7 +54,7 @@ void DatabaseView::setDatabase(Database* db)
 
 void DatabaseView::currentChanged(const QModelIndex &current)
 {
-    if(!current.isValid())
+    /*if(!current.isValid())
     {
         ui->actionAddQuestion->setEnabled(false);
         ui->actionDeleteQuestion->setEnabled(false);
@@ -87,7 +90,7 @@ void DatabaseView::currentChanged(const QModelIndex &current)
     default:
         Q_ASSERT(false);
         break;
-    }
+    }*/
 }
 
 DataNode* DatabaseView::currentNode() const
@@ -103,38 +106,36 @@ DataNode* DatabaseView::currentNode() const
     return 0;
 }
 
-void DatabaseView::actionAddQuestion()
+void DatabaseView::actionAdd()
 {
     DataNode* node = currentNode();
     if(node)
     {
-        m_db->addQuestion(0);
+        DataType* type = node->type();
+        if(type->hasChildren())
+        {
+            QVector<DataType*> childrenTypes = type->childrenTypes();
+            if(!childrenTypes.isEmpty())
+            {
+                DataType* newType = childrenTypes.at(0);
+                if(childrenTypes.size() > 1)
+                {
+                    if(!(newType = SelectDataTypeDialog::getType(this, childrenTypes, newType)))
+                    {
+                        return;
+                    }
+                }
+                newType->addNode(node);
+            }
+        }
     }
 }
 
-void DatabaseView::actionDeleteQuestion()
-{
-    DataNode* node = currentNode();
-    if(node && node->type() == DataNode::NT_Question)
-    {
-        m_db->deleteQuestion(node);
-    }
-}
-
-void DatabaseView::actionAddFolder()
+void DatabaseView::actionDelete()
 {
     DataNode* node = currentNode();
     if(node)
     {
-        m_db->addFolder(0);
-    }
-}
-
-void DatabaseView::actionDeleteFolder()
-{
-    DataNode* node = currentNode();
-    if(node && node->type() == DataNode::NT_Folder)
-    {
-        m_db->deleteFolder(node);
+        //m_db->deleteQuestion(node);
     }
 }

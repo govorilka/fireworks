@@ -13,6 +13,7 @@ namespace Ui
 
 class Database;
 class DataNode;
+class DataEdit;
 
 class QPrinter;
 
@@ -32,9 +33,11 @@ private:
     void mergeFormatOnWordOrSelection(const QTextCharFormat& fmt);
 
     Ui::MainWindow *ui;
-    Database* m_db;
-    int m_questionId;
+
     QPrinter* m_printer;
+
+    Database* m_db;
+    DataEdit* m_currentEdit;
 
 private slots:
     void currentChanged(DataNode* node);
