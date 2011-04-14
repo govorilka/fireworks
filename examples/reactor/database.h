@@ -2,102 +2,13 @@
 #define REACTOR_DATABASE_H
 
 #include <QtCore/qobject.h>
+#include <QtCore/qvector.h>
 
 #include <QtGui/qabstractitemview.h>
 
 class FwSQLiteDatabase;
-
-class DataNode
-{
-public:
-
-    enum Type
-    {
-        NT_Unknow,
-        NT_Root,
-        NT_Folder,
-        NT_Question,
-    };
-
-    DataNode();
-    DataNode(DataNode::Type type, int key, const QIcon& icon = QIcon(), const QString& caption = QString());
-    ~DataNode();
-
-    inline Type type() const;
-    inline int key() const;
-    inline DataNode* parent() const;
-    inline int row() const;
-
-    inline QList<DataNode*> children() const;
-
-    DataNode* createChild(DataNode::Type type, int key, const QIcon& icon = QIcon(), const QString& caption = QString());
-    void deleteChild(DataNode* node);
-
-    inline QString caption() const;
-    inline void setCaption(const QString& caption);
-
-    inline QIcon icon() const;
-    inline void setIcon(const QIcon& icon);
-
-    DataNode* childByCaption(const QString& caption) const;
-    QString nextChildCaption(const QString& caption) const;
-
-private:
-    int m_row;
-    DataNode* m_parent;
-    Type m_type;
-    int m_key;
-    QIcon m_icon;
-    QString m_caption;
-    QList<DataNode*> m_children;
-};
-
-DataNode::Type DataNode::type() const
-{
-    return m_type;
-}
-
-int DataNode::key() const
-{
-    return m_key;
-}
-
-DataNode* DataNode::parent() const
-{
-    return m_parent;
-}
-
-int DataNode::row() const
-{
-    return m_row;
-}
-
-QList<DataNode*> DataNode::children() const
-{
-    return m_children;
-}
-
-QString DataNode::caption() const
-{
-    return m_caption;
-}
-
-void DataNode::setCaption(const QString& caption)
-{
-    m_caption = caption;
-}
-
-QIcon DataNode::icon() const
-{
-    return m_icon;
-}
-
-void DataNode::setIcon(const QIcon& icon)
-{
-    m_icon = icon;
-}
-
-/////////////////////////////////////////////////////////////////////
+class DataType;
+class DataNode;
 
 class Database : public QAbstractItemModel
 {
@@ -105,6 +16,8 @@ class Database : public QAbstractItemModel
     typedef QAbstractItemModel BaseClass;
 
 public:
+    friend class DataType;
+
     explicit Database(QObject *parent = 0);
     ~Database();
 
@@ -129,35 +42,34 @@ public:
     void addFolder(int key);
     void deleteFolder(DataNode* folder);
 
-    inline QModelIndex createIndex(DataNode* node) const;
+    QModelIndex createIndex(DataNode* node) const;
 
     DataNode* currentNode() const;
     void setCurrentNode(DataNode* node);
 
     QString tickets(int variantCount, int questionCount) const;
 
+    inline QVector<DataType*> types() const;
+
+    inline FwSQLiteDatabase* sqlite() const;
+
 signals:
-    void currentChanged(DataNode* node);
+    void currentChanged(DataNode* current);
 
 protected:
     mutable QString errorMessage;
 
-    void loadNode(DataNode* parent);
-    void loadNodeRoot(DataNode* parent);
-
-    void addNode(DataNode* parent, DataNode::Type type, int key, const QString& caption);
     void deleteNode(DataNode* node);
 
 private:
 
     FwSQLiteDatabase* m_db;
-    DataNode* rootNode;
-    QItemSelectionModel* m_selectionModel;
-    int m_currentKey;
-    DataNode::Type m_currentType;
 
-    QIcon m_folderIcon;
-    QIcon m_questionIcon;
+    DataNode* rootNode;
+    QVector<DataType*> m_types;
+
+    QItemSelectionModel* m_selectionModel;
+    DataNode* m_currentNode;
 
 private slots:
     void currentChanged(const QModelIndex& current, const QModelIndex& previous);
@@ -173,9 +85,14 @@ QItemSelectionModel* Database::selectionModel() const
     return m_selectionModel;
 }
 
-QModelIndex Database::createIndex(DataNode* node) const
+QVector<DataType*> Database::types() const
 {
-    return BaseClass::createIndex(node->row(), 0, static_cast<void*>(node));
+    return m_types;
+}
+
+FwSQLiteDatabase* Database::sqlite() const
+{
+    return m_db;
 }
 
 #endif // REACTOR_DATABASE_H
