@@ -29,7 +29,7 @@ void FwPixmapPrimitive::boundingRectChangedEvent(QRect &boundingRect)
 
 void FwPixmapPrimitive::paint(FwPainter *painter, const QRect &clipRect)
 {
-    painter->drawPixmap(clipRect, m_pixmap, &clipRect.translated(-geometryRect().topLeft()));
+    painter->drawPixmap(clipRect, m_pixmap, &clipRect.translated(-geometry()->rect().topLeft()));
 }
 
 void FwPixmapPrimitive::apply(FwMLObject *object)

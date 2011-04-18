@@ -33,13 +33,6 @@ FwScene::~FwScene()
         }
         m_view->m_scenes.removeAll(this);
     }
-
-    foreach(FwWidget* widget, m_widgets)
-    {
-        delete widget;
-    }
-
-    m_widgets.clear();
 }
 
 void FwScene::showEvent(FwSceneShowEvent* event)

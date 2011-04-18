@@ -30,7 +30,7 @@ void FwRectPrimitive::setBrush(FwBrush* brush)
         m_brush = brush;
         if(m_brush)
         {
-            m_brush->setSourceRect(geometryRect());
+            m_brush->setSourceRect(geometry()->rect());
         }
 
         update();

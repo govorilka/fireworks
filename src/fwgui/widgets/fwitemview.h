@@ -81,7 +81,6 @@ protected:
     bool needInitLayout;
 
     void updateCurrent();
-    void updateItemsSize(const QSize& parentSize);
 
 private:
     QList<FwPrimitive*> m_items;

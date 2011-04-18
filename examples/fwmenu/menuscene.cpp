@@ -25,7 +25,7 @@ MenuScene::MenuScene(int id, FwGraphicsView* view) :
 
     for(int i = 0; i < 100; i++)
     {
-        m_itemView->addItem(QString("item") + QString::number(i));
+        m_itemView->addString(QString("item") + QString::number(i));
     }
 
     m_itemView->update();
