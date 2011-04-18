@@ -18,7 +18,9 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_itemTemplate(0),
     m_highlight(0),
     needInitLayout(true),
-    m_startItemsChanged(0)
+    m_startItemsChanged(0),
+    m_itemWidthDock(false),
+    m_itemHeightDock(false)
 {
     addLayoutClass(FwHSliderLayout::staticClassName, &FwHSliderLayout::constructor);
     addLayoutClass(FwVSliderLayout::staticClassName, &FwVSliderLayout::constructor);
@@ -191,6 +193,8 @@ void FwItemView::apply(FwMLObject *object)
     prepareItemsChanged();
     prepareGeometryChanged();
 
+    bool bOk = false;
+
     FwMLObject* layoutNode = object->attribute("layout")->cast<FwMLObject>();
     if(layoutNode)
     {
@@ -211,7 +215,6 @@ void FwItemView::apply(FwMLObject *object)
     FwMLNode* itemColorNode = object->attribute("itemColor");
     if(itemColorNode)
     {
-        bool bOk = false;
         FwColor color = itemColorNode->toColor(&bOk);
         if(bOk)
         {
@@ -222,7 +225,6 @@ void FwItemView::apply(FwMLObject *object)
     FwMLNode* currentItemColorNode = object->attribute("currentItemColor");
     if(currentItemColorNode)
     {
-        bool bOk = false;
         FwColor color = currentItemColorNode->toColor(&bOk);
         if(bOk)
         {
@@ -234,6 +236,26 @@ void FwItemView::apply(FwMLObject *object)
     if(highlightNode && !m_highlight)
     {
         setHighlight(new FwRectPrimitive("highlight", this));
+    }
+
+    FwMLNode* itemWidthDock = object->attribute("itemwidthdock");
+    if(itemWidthDock)
+    {
+        bool dock = itemWidthDock->toBool(&bOk);
+        if(bOk)
+        {
+            setItemWidthDock(dock);
+        }
+    }
+
+    FwMLNode* itemHeightDock = object->attribute("itemheighthdock");
+    if(itemHeightDock)
+    {
+        bool dock = itemHeightDock->toBool(&bOk);
+        if(bOk)
+        {
+            setItemHeightDock(dock);
+        }
     }
 
     BaseClass::apply(object);
@@ -385,11 +407,51 @@ void FwItemView::updateItems(bool init)
 
 void FwItemView::updateItemsSize(const QSize& parentSize)
 {
-    QSize size = parentSize;
-    size.setHeight(100);
-    foreach(FwPrimitive* primitive, m_items)
+    if(m_itemWidthDock)
     {
-        primitive->setSize(size);
+        if(m_itemHeightDock)
+        {
+            QSize size = parentSize;
+            foreach(FwPrimitive* primitive, m_items)
+            {
+                primitive->setSize(size);
+            }
+        }
+        else
+        {
+            int width = parentSize.width();
+            foreach(FwPrimitive* primitive, m_items)
+            {
+                primitive->setWidth(width);
+            }
+        }
     }
+    else if(m_itemHeightDock)
+    {
+        int height = parentSize.height();
+        foreach(FwPrimitive* primitive, m_items)
+        {
+            primitive->setHeight(height);
+        }
+    }
+}
 
+void FwItemView::setItemWidthDock(bool enable)
+{
+    if(m_itemWidthDock != enable)
+    {
+        prepareItemsChanged();
+        m_itemWidthDock = enable;
+        updateItems(true);
+    }
+}
+
+void FwItemView::setItemHeightDock(bool enable)
+{
+    if(m_itemHeightDock != enable)
+    {
+        prepareItemsChanged();
+        m_itemHeightDock = enable;
+        updateItems(true);
+    }
 }
