@@ -69,9 +69,6 @@ public:
 
     inline FwGeometry* geometry() const;
 
-    inline QRect geometryRect() const;
-    inline void setGeometryRect(QRect rect);
-
     void prepareGeometryChanged();
     void update(bool needUpdateBuffer = true);
 
@@ -118,11 +115,19 @@ public:
     inline QVariant data() const;
     inline void setData(const QVariant& data);
 
+    inline bool isIgnoreParentMargin() const;
+    void setIgnoreParentMargin(bool enable);
+
+    inline QPoint mapFromScene(const QPoint& pos) const;
+    inline QPoint mapToScene(const QPoint& pos) const;
+
+    inline const QRect& parentRect() const;
+
 protected:
 
     virtual void paint(FwPainter* painter, const QRect& clipRect) = 0;
 
-    void updateGeometryRect(const QRect& parentRect, QRect currentRect);
+    void updateGeometryRect();
 
     virtual void visibleChangedEvent();
     virtual void geometryChangedEvent(const QRect& oldRect, QRect& rect);
@@ -140,10 +145,12 @@ private:
     FwScene* m_scene;
 
     QPoint m_pos;
+    QSize m_size;
     FwGeometry* m_geometry;
+    FwGeometry* m_parentGeometry;
+    bool m_ignoreParentMargin;
     Fw::HorizontalPosition m_hPosition;
     Fw::VerticalPosition m_vPosition;
-    FwGeometry* m_parentGeometry;
     QRect m_boundingRect;
 
     Fw::BufferMode m_bufferMode;

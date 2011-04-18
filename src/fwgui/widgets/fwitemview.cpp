@@ -93,11 +93,17 @@ bool FwItemView::addItem(FwPrimitive* item)
     {
         prepareItemsChanged();
 
+        item->prepareGeometryChanged();
+
+        item->setPosition(m_itemWidthDock ? Fw::HP_CenterDock : Fw::HP_Left,
+                          m_itemHeightDock ? Fw::VP_MiddleDock : Fw::VP_Top);
         item->link(geometry());
+
         if(m_itemTemplate)
         {
             item->apply(m_itemTemplate);
         }
+
         item->setPenColor(m_itemColor);
         m_items.append(item);
 
@@ -105,6 +111,8 @@ bool FwItemView::addItem(FwPrimitive* item)
         {
             setCurrent(item);
         }
+
+        item->update();
 
         updateItems();
 
@@ -235,7 +243,9 @@ void FwItemView::apply(FwMLObject *object)
     FwMLObject* highlightNode = object->attribute("highlight")->cast<FwMLObject>();
     if(highlightNode && !m_highlight)
     {
-        setHighlight(new FwRectPrimitive("highlight", this));
+        FwRectPrimitive* hightlight = new FwRectPrimitive("highlight", this);
+        hightlight->setPosition(Fw::HP_CenterDock, Fw::VP_Top);
+        setHighlight(hightlight);
     }
 
     FwMLNode* itemWidthDock = object->attribute("itemwidthdock");
@@ -269,7 +279,6 @@ void FwItemView::geometryChangedEvent(const QRect &oldRect, QRect &rect)
     BaseClass::geometryChangedEvent(oldRect, rect);
     if(oldRect.size() != rect.size())
     {
-        updateItemsSize(rect.size());
         needInitLayout = true;
         updateChildrenRect();
     }
@@ -386,7 +395,6 @@ void FwItemView::updateItems(bool init)
     {
         if(needInitLayout)
         {
-            updateItemsSize(size());
             updateChildrenRect();
         }
 
@@ -401,37 +409,6 @@ void FwItemView::updateItems(bool init)
                 updateCurrent();
             }
             m_currentDirty = false;
-        }
-    }
-}
-
-void FwItemView::updateItemsSize(const QSize& parentSize)
-{
-    if(m_itemWidthDock)
-    {
-        if(m_itemHeightDock)
-        {
-            QSize size = parentSize;
-            foreach(FwPrimitive* primitive, m_items)
-            {
-                primitive->setSize(size);
-            }
-        }
-        else
-        {
-            int width = parentSize.width();
-            foreach(FwPrimitive* primitive, m_items)
-            {
-                primitive->setWidth(width);
-            }
-        }
-    }
-    else if(m_itemHeightDock)
-    {
-        int height = parentSize.height();
-        foreach(FwPrimitive* primitive, m_items)
-        {
-            primitive->setHeight(height);
         }
     }
 }

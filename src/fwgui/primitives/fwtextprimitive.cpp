@@ -27,7 +27,7 @@ void FwTextPrimitive::setText(const QString& text)
     if(m_text != text)
     {
         m_text = text;
-        updateText(geometryRect());
+        updateText(geometry()->rect());
     }
 }
 
@@ -36,7 +36,7 @@ void FwTextPrimitive::setFont(const FwFont& font)
     if(m_font != font)
     {
        m_font = font;
-       updateText(geometryRect());
+       updateText(geometry()->rect());
     }
 }
 

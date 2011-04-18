@@ -123,17 +123,17 @@ FwPrimitive* FwItemLayout::nextItem(const QList<FwPrimitive*>& items, FwPrimitiv
 void FwItemLayout::initItemsPos(const QList<FwPrimitive*> items, FwPrimitive* current)
 {
     resetAnimation();
-    init(items, m_view->geometryRect());
+    init(items, m_view->geometry()->contentRect());
     updateCurrentPos(current);
 }
 
 void FwItemLayout::updateCurrentPos(FwPrimitive* current)
 {
-    update(m_view->items(), current, m_view->geometryRect());
+    update(m_view->items(), current, m_view->geometry()->rect());
     FwPrimitive* highlight = m_view->highlight();
     if(highlight)
     {
-        updateHighlightPos(highlight, current, m_view->geometryRect());
+        updateHighlightPos(highlight, current, m_view->geometry()->rect());
     }
 }
 
@@ -680,7 +680,7 @@ void FwPagesLayout::init(const QList<FwPrimitive*> items, const QRect& rect)
         m_pages.insert(m_currentPage, primitive);
 
         primitive->prepareGeometryChanged();
-        primitive->setPos(0, y);
+        primitive->setY(y);
         primitive->setVisible(false);
         primitive->update();
 
@@ -704,8 +704,14 @@ void FwPagesLayout::animationStart(FwItemAnimation* animation, FwPrimitive *prev
     FwPrimitive* highlight = m_view->highlight();
     if(highlight)
     {
-        animation->setStartValue(highlight->rect());
-        animation->setEndValue(highlightRect(current, highlight->rect()));
+        QRect rect = highlight->rect();
+
+        animation->setStartValue(rect);
+
+        rect.setY(highlight->mapFromScene(current->mapToScene(current->pos())).y());
+        rect.setHeight(current->height());
+        animation->setEndValue(rect);
+
         animation->start();
     }
 }
@@ -738,7 +744,11 @@ void FwPagesLayout::updateAnimationValue(const QVariant &value)
     FwPrimitive* highlight = m_view->highlight();
     if(highlight)
     {
-        highlight->setRect(value.toRect());
+        QRect rect = value.toRect();
+        highlight->prepareGeometryChanged();
+        highlight->setY(rect.y());
+        highlight->setHeight(rect.height());
+        highlight->update();
     }
 }
 
@@ -765,13 +775,16 @@ FwPrimitive* FwPagesLayout::nextItem(const QList<FwPrimitive *> &items, FwPrimit
 
 void FwPagesLayout::updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect)
 {
-    highlight->setRect(highlightRect(currentItem, QRect(0, 0, rect.width(), highlight->height())));
+    highlight->prepareGeometryChanged();
+    highlight->setY(highlight->mapFromScene(currentItem->mapToScene(currentItem->pos())).y());
+    highlight->setHeight(currentItem->height());
+    highlight->update();
 }
 
 QRect FwPagesLayout::highlightRect(FwPrimitive* current, const QRect& currentRect) const
 {
     QRect rect = currentRect;
-    rect.setY(current->y());
+    rect.setY(current->y() + m_view->geometry()->margin().top);
     rect.setHeight(current->height());
     return rect;
 }

@@ -8,6 +8,29 @@
 #include "fireworks.h"
 
 class FwPrimitive;
+class FwMLObject;
+
+class FwMargin
+{
+public:
+    FwMargin();
+
+    bool apply(FwMLObject* object);
+
+    int left;
+    int right;
+    int top;
+    int bottom;
+
+    inline QRect contentRect(const QRect& rect);
+};
+
+QRect FwMargin::contentRect(const QRect& rect)
+{
+    return rect.adjusted(left, top, -right, -bottom);
+}
+
+//////////////////////////////////////////////////////////////////////
 
 class FwGeometry
 {
@@ -21,6 +44,8 @@ public:
     inline void setRect(int x, int y, int w, int h);
     void setRect(const QRect& rect);
 
+    inline QRect contentRect() const;
+
     inline bool contains(FwPrimitive* anchor) const;
 
     inline QSize size() const;
@@ -33,11 +58,16 @@ public:
     inline bool sizeChanged() const;
     void apply();
 
+    inline const FwMargin& margin() const;
+    inline void setMargin(const FwMargin& margin);
+
 private:
     QVarLengthArray<FwPrimitive*> anchors;
     QRect m_rect;
+    QRect m_contentRect;
     bool m_posChanged;
     bool m_sizeChanged;
+    FwMargin m_margin;
 };
 
 void FwGeometry::setRect(int x, int y, int w, int h)
@@ -91,6 +121,22 @@ bool FwGeometry::posChanged() const
 bool FwGeometry::sizeChanged() const
 {
     return m_sizeChanged;
+}
+
+const FwMargin& FwGeometry::margin() const
+{
+    return m_margin;
+}
+
+void FwGeometry::setMargin(const FwMargin& margin)
+{
+    m_margin = margin;
+    m_contentRect = m_margin.contentRect(m_rect);
+}
+
+QRect FwGeometry::contentRect() const
+{
+    return m_contentRect;
 }
 
 #endif // FIREWORKS_GEOMETRY_H

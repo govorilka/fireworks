@@ -26,6 +26,7 @@ public:
     friend class FwPrimitive;
 
     explicit FwGraphicsObject(const QByteArray& name, FwPrimitiveGroup* parent);
+    virtual ~FwGraphicsObject();
 
     inline FwFont font() const;
     void setFont(const FwFont& font);

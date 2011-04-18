@@ -25,6 +25,10 @@ FwGraphicsObject::FwGraphicsObject(const QByteArray& name, FwPrimitiveGroup* par
     visibleOnScreen = false;
 }
 
+FwGraphicsObject::~FwGraphicsObject()
+{
+}
+
 void FwGraphicsObject::setFont(const FwFont& font)
 {
     if(m_font != font)

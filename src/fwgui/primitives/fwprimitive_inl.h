@@ -91,22 +91,6 @@ FwGeometry* FwPrimitive::geometry() const
     return m_geometry;
 }
 
-QRect FwPrimitive::geometryRect() const
-{
-    return m_geometry->rect();
-}
-
-void FwPrimitive::setGeometryRect(QRect rect)
-{
-    if(m_geometry->rect() != rect)
-    {
-        prepareGeometryChanged();
-        geometryChangedEvent(m_geometry->rect(), rect);
-        m_geometry->setRect(rect);
-        update();
-    }
-}
-
 bool FwPrimitive::isVisible() const
 {
     return m_visible;
@@ -202,6 +186,26 @@ void FwPrimitive::setData(const QVariant& data)
         delete m_data;
         m_data = 0;
     }
+}
+
+bool FwPrimitive::isIgnoreParentMargin() const
+{
+    return m_ignoreParentMargin;
+}
+
+QPoint FwPrimitive::mapFromScene(const QPoint& pos) const
+{
+    return pos - parentRect().topLeft();
+}
+
+QPoint FwPrimitive::mapToScene(const QPoint& pos) const
+{
+    return parentRect().topLeft() + pos;
+}
+
+const QRect& FwPrimitive::parentRect() const
+{
+    return m_ignoreParentMargin ? m_parentGeometry->m_rect : m_parentGeometry->m_contentRect;
 }
 
 #endif // FIREWORKS_GRAPHICSITEM_INL_H

@@ -16,10 +16,12 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_parent(parent),
     m_scene(0),
     m_pos(0, 0),
+    m_size(0, 0),
     m_geometry(new FwGeometry()),
-    m_hPosition(Fw::HP_Unchanged),
-    m_vPosition(Fw::VP_Unchanged),
+    m_hPosition(Fw::HP_Left),
+    m_vPosition(Fw::VP_Top),
     m_parentGeometry(0),
+    m_ignoreParentMargin(false),
     m_bufferMode(Fw::BM_NoBuffer),
     bufferDirty(false),
     m_buffer(0),
@@ -229,6 +231,28 @@ void FwPrimitive::apply(FwMLObject* object)
          setPen(pen);
     }
 
+    FwMLObject* marginObject = object->attribute("margin")->cast<FwMLObject>();
+    if(marginObject)
+    {
+        FwMargin margin;
+        if(margin.apply(marginObject))
+        {
+            m_geometry->setMargin(margin);
+            updateGeometryRect();
+        }
+    }
+
+    FwMLNode* ignoreParentMargin = object->attribute("ignoreParentMargin");
+    if(ignoreParentMargin)
+    {
+        bool bOk = false;
+        bool enable = ignoreParentMargin->toBool(&bOk);
+        if(bOk)
+        {
+            setIgnoreParentMargin(enable);
+        }
+    }
+
     update();
 }
 
@@ -398,84 +422,96 @@ void FwPrimitive::setPosition(Fw::HorizontalPosition hPosition, Fw::VerticalPosi
         m_vPosition = vPosition;
         if(m_parentGeometry)
         {
-            updateGeometryRect(m_geometry->rect(), rect());
+            updateGeometryRect();
         }
     }
 }
 
-void FwPrimitive::updateGeometryRect(const QRect& parentRect, QRect currentRect)
+void FwPrimitive::updateGeometryRect()
 {
-    switch(m_hPosition)
+    QRect currentRect(m_pos, m_size);
+
+    if(m_parentGeometry)
     {
-    case Fw::HP_Unchanged:
-        currentRect.moveLeft(parentRect.x() + m_pos.x());
-        break;
+        const QRect& parentRect = this->parentRect();
+        switch(m_hPosition)
+        {
+        case Fw::HP_Unchanged:
+            currentRect.moveLeft(parentRect.x() + m_pos.x());
+            break;
 
-    case Fw::HP_BeforeLeft:
-        currentRect.moveLeft(parentRect.x() - currentRect.width() + m_pos.x());
-        break;
+        case Fw::HP_BeforeLeft:
+            currentRect.moveLeft(parentRect.x() - currentRect.width() + m_pos.x());
+            break;
 
-    case Fw::HP_Left:
-        currentRect.moveLeft(parentRect.x() + m_pos.x());
-        break;
+        case Fw::HP_Left:
+            currentRect.moveLeft(parentRect.x() + m_pos.x());
+            break;
 
-    case Fw::HP_Center:
-        currentRect.moveLeft(parentRect.x() + (parentRect.width() - currentRect.width()) * 0.5 + m_pos.x());
-        break;
+        case Fw::HP_Center:
+            currentRect.moveLeft(parentRect.x() + (parentRect.width() - currentRect.width()) * 0.5 + m_pos.x());
+            break;
 
-    case Fw::HP_CenterDock:
-        currentRect.moveLeft(parentRect.x() + m_pos.x());
-        currentRect.setWidth(parentRect.width());
-        break;
+        case Fw::HP_CenterDock:
+            currentRect.moveLeft(parentRect.x() + m_pos.x());
+            currentRect.setWidth(parentRect.width());
+            break;
 
-    case Fw::HP_Right:
-        currentRect.moveLeft(parentRect.right() + 1 - currentRect.width() + m_pos.x());
-        break;
+        case Fw::HP_Right:
+            currentRect.moveLeft(parentRect.right() + 1 - currentRect.width() + m_pos.x());
+            break;
 
-    case Fw::HP_AfterRight:
-        currentRect.moveLeft(parentRect.right() + m_pos.x());
-        break;
+        case Fw::HP_AfterRight:
+            currentRect.moveLeft(parentRect.right() + m_pos.x());
+            break;
 
-    default:
-        break;
+        default:
+            break;
+        }
+
+        switch(m_vPosition)
+        {
+        case Fw::VP_Unchanged:
+            currentRect.moveTop(parentRect.y() + m_pos.y());
+            break;
+
+        case Fw::VP_BeforeTop:
+            currentRect.moveTop(parentRect.y() - currentRect.height() + m_pos.y());
+            break;
+
+        case Fw::VP_Top:
+            currentRect.moveTop(parentRect.y() + m_pos.y());
+            break;
+
+        case Fw::VP_Middle:
+            currentRect.moveTop(parentRect.y() + (parentRect.height() - currentRect.height()) * 0.5 + m_pos.y());
+            break;
+
+        case Fw::VP_MiddleDock:
+            currentRect.moveTop(parentRect.y()+ m_pos.y());
+            currentRect.setHeight(parentRect.height());
+            break;
+
+        case Fw::VP_Bottom:
+            currentRect.moveTop(parentRect.bottom() - currentRect.height() + m_pos.y());
+            break;
+
+        case Fw::VP_AfterBottom:
+            currentRect.moveTop(parentRect.bottom() + m_pos.y());
+            break;
+
+        default:
+            break;
+        }
     }
 
-    switch(m_vPosition)
+    if(m_geometry->rect() != currentRect)
     {
-    case Fw::VP_Unchanged:
-        currentRect.moveTop(parentRect.y() + m_pos.y());
-        break;
-
-    case Fw::VP_BeforeTop:
-        currentRect.moveTop(parentRect.y() - currentRect.height() + m_pos.y());
-        break;
-
-    case Fw::VP_Top:
-        currentRect.moveTop(parentRect.y() + m_pos.y());
-        break;
-
-    case Fw::VP_Middle:
-        currentRect.moveTop(parentRect.y() + (parentRect.height() - currentRect.height()) * 0.5 + m_pos.y());
-        break;
-
-    case Fw::VP_MiddleDock:
-        currentRect.moveTop(parentRect.y()+ m_pos.y());
-        currentRect.setHeight(parentRect.height());
-        break;
-
-    case Fw::VP_Bottom:
-        currentRect.moveTop(parentRect.bottom() - currentRect.height() + m_pos.y());
-        break;
-
-    case Fw::VP_AfterBottom:
-        currentRect.moveTop(parentRect.bottom() + m_pos.y());
-        break;
-
-    default:
-        break;
+        prepareGeometryChanged();
+        geometryChangedEvent(m_geometry->rect(), currentRect);
+        m_geometry->setRect(currentRect);
+        update();
     }
-
-    setGeometryRect(currentRect);
 }
 
 void FwPrimitive::link(FwGeometry* parentGeometry)
@@ -511,9 +547,17 @@ void FwPrimitive::link(FwGeometry* parentGeometry)
 
         if(parentGeometry)
         {
+            if(m_parent)
+            {
+                m_ignoreParentMargin = (m_parent->geometry() != parentGeometry);
+            }
+            else
+            {
+                m_ignoreParentMargin = true;
+            }
             m_parentGeometry = parentGeometry;
             m_parentGeometry->anchors.append(this);
-            updateGeometryRect(m_parentGeometry->rect(), rect());
+            updateGeometryRect();
         }
     }
 }
@@ -523,29 +567,16 @@ void FwPrimitive::setPos(const QPoint& pos)
     if(m_pos != pos)
     {
         m_pos = pos;
-        if(m_parentGeometry)
-        {
-            updateGeometryRect(m_parentGeometry->rect(), QRect(QPoint(0, 0), size()));
-        }
-        else
-        {
-            setGeometryRect(QRect(m_pos, size()));
-        }
+        updateGeometryRect();
     }
 }
 
 void FwPrimitive::setSize(const QSize& size)
 {
-    if(size != m_geometry->size())
+    if(m_size != size)
     {
-        if(m_parentGeometry)
-        {
-            updateGeometryRect(m_parentGeometry->rect(), QRect(QPoint(0, 0), size));
-        }
-        else
-        {
-            setGeometryRect(QRect(m_pos, size));
-        }
+        m_size = size;
+        updateGeometryRect();
     }
 }
 
@@ -554,14 +585,8 @@ void FwPrimitive::setRect(const QRect& rect)
     if(rect != this->rect())
     {
         m_pos = rect.topLeft();
-        if(m_parentGeometry)
-        {
-            updateGeometryRect(m_parentGeometry->rect(), QRect(QPoint(0, 0), rect.size()));
-        }
-        else
-        {
-            setGeometryRect(rect);
-        }
+        m_size = rect.size();
+        updateGeometryRect();
     }
 }
 
@@ -778,5 +803,14 @@ void FwPrimitive::invalidateCanvas(const QRect& clipRect)
     {
          m_scene->view()->update(clipRect.intersected(m_boundingRect));
          m_contentDirty = false;
+    }
+}
+
+void FwPrimitive::setIgnoreParentMargin(bool enable)
+{
+    if(m_ignoreParentMargin != enable)
+    {
+        m_ignoreParentMargin = enable;
+        updateGeometryRect();
     }
 }
