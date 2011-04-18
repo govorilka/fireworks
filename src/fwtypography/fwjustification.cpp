@@ -23,26 +23,15 @@ void FwJustification::setFont(const FwFont& font)
     spaceWidth = m_font.stringWidth(" ");
 }
 
-bool FwJustification::validateData() const
+QVector<FwTextString> FwJustification::processing(const QString& text, bool fixedHeight)
 {
     if(m_font.isNull() ||
        stringAscender == 0 ||
        stringDescender == 0 ||
        stringHeight == 0 ||
        spaceWidth == 0 ||
-       m_blockRect.height() <= 0 ||
        m_blockRect.width() <= 0 ||
-       stringHeight > m_blockRect.height())
-    {
-        return false;
-    }
-
-    return true;
-}
-
-QVector<FwTextString> FwJustification::processing(const QString& text, bool fixedHeight)
-{
-    if(!validateData())
+       (fixedHeight && (m_blockRect.height() <= 0 || stringHeight > m_blockRect.height())))
     {
         return QVector<FwTextString>();
     }

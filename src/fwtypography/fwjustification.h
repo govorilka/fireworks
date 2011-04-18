@@ -43,8 +43,6 @@ public:
 
     QVector<FwTextString> processing(const QString& text, bool fixedHeight);
 
-    bool validateData() const;
-
 protected:
     FwTextString nextString(QString& text) const;
 

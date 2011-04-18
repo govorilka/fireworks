@@ -63,6 +63,12 @@ public:
     static bool addLayoutClass(const QByteArray& className, FwLayoutConstructor* constructor);
     FwItemLayout* createLayout(const QByteArray& className);
 
+    inline bool isItemWidthDockEnable() const;
+    void setItemWidthDock(bool enable);
+
+    inline bool isItemHeightDockEnable() const;
+    void setItemHeightDock(bool enable);
+
 signals:
     void currentChanged(FwPrimitive* previous, FwPrimitive* current);
 
@@ -91,6 +97,9 @@ private:
     FwColor m_currentItemColor;
 
     FwItemLayout* m_layout;
+
+    bool m_itemWidthDock;
+    bool m_itemHeightDock;
 };
 
 FwItemLayout* FwItemView::layout() const
