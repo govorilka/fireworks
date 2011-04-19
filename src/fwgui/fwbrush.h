@@ -11,12 +11,15 @@
 #include "fwgui/fwpen.h"
 
 class FwPainter;
+class FwPrimitive;
 
 class FwBrush
 {
 public:
-    FwBrush();
+    FwBrush(FwPrimitive* primitive);
     virtual ~FwBrush();
+
+    inline FwPrimitive* primitive() const;
 
     inline FwPen* border() const;
     void setBorder(FwPen* border);
@@ -37,6 +40,7 @@ private:
     QRect m_sourceRect;
     QRect m_backgroundRect;
     FwPen* m_border;
+    FwPrimitive* m_primitive;
 };
 
 FwPen* FwBrush::border() const
@@ -55,13 +59,18 @@ void FwBrush::updateGeometry()
     updateSourceRect(m_backgroundRect);
 }
 
+FwPrimitive* FwBrush::primitive() const
+{
+    return m_primitive;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 class FwBrushSolid : public FwBrush
 {
     typedef FwBrush BaseClass;
 public:
-    FwBrushSolid(const FwColor& color);
+    FwBrushSolid(FwPrimitive* primitive, const FwColor& color);
 
     inline FwColor color() const;
 
@@ -81,7 +90,7 @@ class FwBrushTexture : public FwBrush
     typedef FwBrush BaseClass;
 
 public:
-    FwBrushTexture(const FwPixmap& pixmap);
+    FwBrushTexture(FwPrimitive* primitive, const FwPixmap& pixmap);
 
     inline FwPixmap pixmap() const;
 
@@ -99,9 +108,5 @@ FwPixmap FwBrushTexture::pixmap() const
 {
     return m_pixmap;
 }
-
-///////////////////////////////////////////////////////////////////////////////
-
-typedef QSharedPointer<FwBrush> FwBrushPtr;
 
 #endif // FIREWORKS_BRUSH_H

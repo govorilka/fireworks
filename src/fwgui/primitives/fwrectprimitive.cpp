@@ -1,6 +1,7 @@
 #include <QtCore/qdebug.h>
 
 #include "fwrectprimitive.h"
+#include "fwdrawer.h"
 
 #include "fwcore/fwml.h"
 
@@ -67,4 +68,20 @@ void FwRectPrimitive::apply(FwMLObject *object)
     BaseClass::apply(object);
 
     update();
+}
+
+FwDrawer* FwRectPrimitive::createDrawer(FwMLObject *object) const
+{
+    FwMLNode* radiusNode = object->attribute("radius");
+    if(radiusNode)
+    {
+        bool bOk = false;
+        int radius = radiusNode->toInt(&bOk);
+        if(bOk)
+        {
+            return new FwRoundedRectDrawer(radius, this);
+        }
+    }
+
+    return BaseClass::createDrawer(object);
 }

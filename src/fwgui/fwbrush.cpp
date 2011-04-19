@@ -3,10 +3,11 @@
 #include "fwbrush.h"
 #include "fwpainter.h"
 
-FwBrush::FwBrush() :
-   m_sourceRect(0, 0, 0, 0),
-   m_backgroundRect(0, 0, 0, 0),
-   m_border(0)
+FwBrush::FwBrush(FwPrimitive* primitive) :
+    m_sourceRect(0, 0, 0, 0),
+    m_backgroundRect(0, 0, 0, 0),
+    m_border(0),
+    m_primitive(primitive)
 {
 }
 
@@ -52,8 +53,8 @@ void FwBrush::setSourceRect(const QRect& rect)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-FwBrushSolid::FwBrushSolid(const FwColor& color) :
-    BaseClass(),
+FwBrushSolid::FwBrushSolid(FwPrimitive* primitive, const FwColor& color) :
+    BaseClass(primitive),
     m_color(color)
 {
 }
@@ -71,8 +72,8 @@ void FwBrushSolid::updateSourceRect(const QRect& rect)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-FwBrushTexture::FwBrushTexture(const FwPixmap& pixmap) :
-    BaseClass(),
+FwBrushTexture::FwBrushTexture(FwPrimitive* primitive, const FwPixmap& pixmap) :
+    BaseClass(primitive),
     m_pixmap(pixmap)
 {
     m_displayPixmap = pixmap;

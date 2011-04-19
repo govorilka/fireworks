@@ -1,25 +1,35 @@
 bgcolor : "black",
 
-rectItem {
-  zindex :1,
-  bgcolor : "purple",
-  border {
-    color : "green",
-    width : 5
-  },
-  rect {
-    x : 0, y : 0, width : 640, height : 480
-  }
+rectItem
+{
+    zindex :1,
+    bgcolor : "purple",
+    border
+    {
+        color : "green",
+        width : 5
+    },
+    rect
+    {
+        x : 0,
+        y : 0,
+        width : 640,
+        height : 480
+    },
+    radius : 20
 },
 
-pixmapItem {
+pixmapItem
+{
    zindex : 2,
    source : "./images/browser.png"
 },
 
-stringItem {
+stringItem
+{
    zindex : 3,
-   font {
+   font
+   {
       family : "Arial",
       pixelSize : 48
    },
