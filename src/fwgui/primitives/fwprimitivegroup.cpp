@@ -3,6 +3,7 @@
 #include <QtGui/qregion.h>
 
 #include "fwprimitivegroup.h"
+#include "fwdrawer.h"
 
 #include "fwcore/fwml.h"
 
@@ -75,6 +76,10 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
                     painter->drawBuffer(newClipRect,
                                         item->m_buffer,
                                         childClipRect.translated(item->geometry()->rect().topLeft()));
+                }
+                else if(item->m_drawer)
+                {
+                    item->m_drawer->paint(painter, childClipRect);
                 }
                 else
                 {

@@ -11,23 +11,26 @@ FwProgressPrimitive::FwProgressPrimitive(const QByteArray& name, FwPrimitiveGrou
     m_minProgressWidth(0),
     normalMinProgressWidth(0),
     m_progressRect(new FwGeometry()),
-    m_backgroundRect(0, 0, 0, 0)
+    m_backgroundRect(0, 0, 0, 0),
+    m_progressBrush(0)
 {
 }
 
 FwProgressPrimitive::~FwProgressPrimitive()
 {
+    delete m_progressBrush;
     if(m_animation)
     {
         m_animation->resetGraphicsItem();
     }
 }
 
-void FwProgressPrimitive::setProgressBrush(const FwBrushPtr& brush)
+void FwProgressPrimitive::setProgressBrush(FwBrush* brush)
 {
     if(m_progressBrush != brush)
     {
         prepareGeometryChanged();
+        delete m_progressBrush;
         m_progressBrush = brush;
         update();
     }

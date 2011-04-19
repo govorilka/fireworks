@@ -20,6 +20,7 @@ class FwMLObject;
 class FwPainter;
 class FwBrush;
 class FwPixmapData;
+class FwDrawer;
 
 class FwPrimitive
 {
@@ -35,6 +36,7 @@ public:
 
     inline FwPrimitiveGroup* parent() const;
     inline FwScene* scene() const;
+    inline FwDrawer* drawer() const;
 
     inline bool isVisible() const;
     inline bool isVisibleOnScreen() const;
@@ -136,6 +138,8 @@ protected:
 
     void invalidateCanvas(const QRect& clipRect);
 
+    virtual FwDrawer* createDrawer(FwMLObject* object) const;
+
 private:
     void createNewBuffer();
     void releaseBuffer();
@@ -170,6 +174,8 @@ private:
     FwPen* m_pen;
 
     bool m_contentDirty;
+
+    FwDrawer* m_drawer;
 };
 
 #include "fwgui/primitives/fwprimitive_inl.h"

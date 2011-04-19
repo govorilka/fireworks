@@ -28,6 +28,8 @@ protected:
 
     void paint(FwPainter* painter, const QRect& clipRect);
 
+    FwDrawer* createDrawer(FwMLObject *object) const;
+
 private:
     FwBrush* m_brush;
 };

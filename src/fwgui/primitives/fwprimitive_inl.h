@@ -16,6 +16,11 @@ FwScene* FwPrimitive::scene() const
     return m_scene;
 }
 
+FwDrawer* FwPrimitive::drawer() const
+{
+    return m_drawer;
+}
+
 Fw::BufferMode FwPrimitive::bufferMode() const
 {
     return m_bufferMode;

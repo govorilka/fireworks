@@ -17,8 +17,8 @@ public:
     FwProgressPrimitive(const QByteArray& name, FwPrimitiveGroup* parent);
     ~FwProgressPrimitive();
 
-    inline FwBrushPtr progressBrush() const;
-    void setProgressBrush(const FwBrushPtr& brush);
+    inline FwBrush* progressBrush() const;
+    void setProgressBrush(FwBrush* brush);
 
     inline int minValue() const;
     inline int maxValue() const;
@@ -47,7 +47,7 @@ protected:
     void updateProgressRect(const QRect& rect);
 
 private:
-    FwBrushPtr m_progressBrush;
+    FwBrush* m_progressBrush;
 
     FwProgressAnimation* m_animation;
 
@@ -61,7 +61,7 @@ private:
     QRect m_backgroundRect;
 };
 
-FwBrushPtr FwProgressPrimitive::progressBrush() const
+FwBrush* FwProgressPrimitive::progressBrush() const
 {
     return m_progressBrush;
 }

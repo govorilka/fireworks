@@ -1,6 +1,7 @@
 #include <QtCore/qdebug.h>
 
 #include "fwprimitive.h"
+#include "fwdrawer.h"
 
 #include "fwgui/fwscene.h"
 #include "fwgui/fwgraphicsview.h"
@@ -32,7 +33,8 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_name(name),
     m_data(0),
     m_pen(0),
-    m_contentDirty(false)
+    m_contentDirty(false),
+    m_drawer(0)
 {
     if(m_parent)
     {
@@ -225,10 +227,15 @@ void FwPrimitive::apply(FwMLObject* object)
         }
     }
 
-    FwPen* pen = createPen(object, "pen");
-    if(pen)
+    delete  m_drawer;
+    m_drawer = createDrawer(object);
+    if(!m_drawer)
     {
-         setPen(pen);
+        FwPen* pen = createPen(object, "pen");
+        if(pen)
+        {
+             setPen(pen);
+        }
     }
 
     FwMLObject* marginObject = object->attribute("margin")->cast<FwMLObject>();
@@ -389,7 +396,7 @@ FwBrush* FwPrimitive::createBrush(FwMLObject* object)
         FwPixmap px = createPixmap(background);
         if(!px.isNull())
         {
-            brush = new FwBrushTexture(px);
+            brush = new FwBrushTexture(this, px);
         }
     }
     else
@@ -401,7 +408,7 @@ FwBrush* FwPrimitive::createBrush(FwMLObject* object)
             FwColor bgColor = bgColorNode->toColor(&bOk);
             if(bOk)
             {
-                brush = new FwBrushSolid(bgColor);
+                brush = new FwBrushSolid(this, bgColor);
             }
         }
     }
@@ -813,4 +820,10 @@ void FwPrimitive::setIgnoreParentMargin(bool enable)
         m_ignoreParentMargin = enable;
         updateGeometryRect();
     }
+}
+
+FwDrawer* FwPrimitive::createDrawer(FwMLObject* object) const
+{
+    Q_UNUSED(object);
+    return 0;
 }
