@@ -9,6 +9,7 @@
 #include "fwgui/fwgraphicsview.h"
 
 #include "playerscene.h"
+#include "playerscene2.h"
 
 #include "qpgraphicsview.h"
 
@@ -21,6 +22,8 @@ int main(int argc, char *argv[])
     PlayerScene* playerScene = new PlayerScene(1, &view);
     view.setActiveScene(playerScene);
 
+    PlayerScene2* playerScene2 = new PlayerScene2(2, &view);
+
     QWidget* widget = view.createWidget(0);
     widget->show();
 
@@ -31,6 +34,16 @@ int main(int argc, char *argv[])
         if(rootObject.parse(&fwmlFile))
         {
             playerScene->apply(&rootObject);
+        }
+    }
+
+    QFile fwmlFile2(a.applicationDirPath() + QDir::separator() + "example2.fwml");
+    if(fwmlFile2.exists())
+    {
+        FwMLObject rootObject;
+        if(rootObject.parse(&fwmlFile2))
+        {
+            playerScene2->apply(&rootObject);
         }
     }
 
