@@ -77,12 +77,12 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
                                         item->m_buffer,
                                         childClipRect.translated(item->geometry()->rect().topLeft()));
                 }
-                else if(item->m_drawer)
-                {
-                    item->m_drawer->paint(painter, childClipRect);
-                }
                 else
                 {
+                    if(item->m_drawer)
+                    {
+                        item->m_drawer->paint(painter, childClipRect);
+                    }
                     item->paint(painter, childClipRect);
                 }
             }

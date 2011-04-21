@@ -137,4 +137,9 @@ void FwPainter::drawBuffer(const QRect& rect, FwPixmapData* pixmap, const QRect 
     m_render->drawPixmap(rect, pixmap, &srcRect);
 }
 
+void FwPainter::drawVertexArray(FwVertexArray* array)
+{
+    m_render->drawVertexArray(array);
+}
+
 #endif // FIREWORKS_PAINTER_INL_H

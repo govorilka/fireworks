@@ -5,7 +5,31 @@
 
 #include "fwgui/fwrender.h"
 
+class QPRender;
 class QPaintDevice;
+
+class QPVertexArray : public FwVertexArray
+{
+    typedef FwVertexArray BaseClass;
+
+public:
+    friend class QPRender;
+
+    explicit QPVertexArray();
+    ~QPVertexArray();
+
+    void begin();
+    void end();
+
+    void addLine(int x1, int y1, int x2, int y2);
+    void addRect(int x, int y, int w, int h);
+
+private:
+    QVector<QLine> m_lines;
+    QVector<QRect> m_rectangles;
+};
+
+/////////////////////////////////////////////////////////////////////////////////////
 
 class QPRender : public FwRender
 {
@@ -30,6 +54,7 @@ protected:
     void drawPixmap(int x, int y, FwPixmapData* pixmap);
     void drawPixmap(const QRect& rect, FwPixmapData* pixmap, const QRect* srcRect);
     void drawString(int x, int y, const QByteArray& utf8String);
+    void drawVertexArray(FwVertexArray* array);
 
 private:
     QPainter m_painter;

@@ -40,6 +40,7 @@ public:
     inline void drawPixmap(const QRect& rect, const FwPixmap& pixmap, const QRect* srcRect = 0);
     inline void drawString(int x, int y, const QByteArray& utf8String);
     inline void drawBuffer(const QRect& rect, FwPixmapData* pixmap, const QRect srcRect);
+    inline void drawVertexArray(FwVertexArray* array);
 
 private:
     FwRender* m_render;

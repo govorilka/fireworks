@@ -19,6 +19,7 @@ class FwMLNode;
 class FwRender;
 class FwPainter;
 class FwKeyPressEvent;
+class FwVertexArray;
 
 class FwGraphicsView : public QObject
 {
@@ -56,6 +57,8 @@ public:
 
     inline void update();
     inline void update(const QRect& rect);
+
+    virtual FwVertexArray* createVertexArray() const = 0;
 
 protected:
     virtual void keyPressEvent(FwKeyPressEvent* event);

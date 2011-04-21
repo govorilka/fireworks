@@ -103,3 +103,8 @@ void QPGraphicsView::invalidateCanvas(const QRegion& region)
         m_widget->update(region);
     }
 }
+
+FwVertexArray* QPGraphicsView::createVertexArray() const
+{
+    return new QPVertexArray();
+}

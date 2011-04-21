@@ -12,6 +12,21 @@
 class FwFontData;
 class FwPixmapData;
 
+class FwVertexArray
+{
+public:
+    explicit FwVertexArray();
+    virtual ~FwVertexArray();
+
+    virtual void begin() = 0;
+    virtual void end() = 0;
+
+    virtual void addLine(int x1, int y1, int x2, int y2) = 0;
+    virtual void addRect(int x, int y, int w, int h) = 0;
+};
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 class FwRender
 {
 public:
@@ -32,6 +47,7 @@ public:
     virtual void drawPixmap(int x, int y, FwPixmapData* pixmap) = 0;
     virtual void drawPixmap(const QRect& rect, FwPixmapData* pixmap, const QRect* srcRect) = 0;
     virtual void drawString(int x, int y, const QByteArray& utf8String) = 0;
+    virtual void drawVertexArray(FwVertexArray* array) = 0;
 };
 
 #endif //FIREWORKS_RENDER_H
