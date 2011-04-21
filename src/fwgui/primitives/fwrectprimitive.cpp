@@ -70,18 +70,29 @@ void FwRectPrimitive::apply(FwMLObject *object)
     update();
 }
 
-FwDrawer* FwRectPrimitive::createDrawer(FwMLObject *object) const
+FwDrawer* FwRectPrimitive::createDrawer(const QByteArray& name, FwMLObject *object) const
 {
-    FwMLNode* radiusNode = object->attribute("radius");
-    if(radiusNode)
+    if(name == "RoundedRect")
     {
-        bool bOk = false;
-        int radius = radiusNode->toInt(&bOk);
-        if(bOk)
+        FwMLNode* radiusNode = object->attribute("radius");
+        if(radiusNode)
         {
-            return new FwRoundedRectDrawer(radius, this);
+            bool bOk = false;
+            int radius = radiusNode->toInt(&bOk);
+            if(bOk)
+            {
+                FwRoundedRectDrawer* drawer = new FwRoundedRectDrawer(radius, this);
+                drawer->apply(object);
+                return drawer;
+            }
         }
     }
+    else if(name == "BorderImage")
+    {
+        FwBorderImageDrawer* drawer = new FwBorderImageDrawer(this);
+        drawer->apply(object);
+        return drawer;
+    }
 
-    return BaseClass::createDrawer(object);
+    return BaseClass::createDrawer(name, object);
 }

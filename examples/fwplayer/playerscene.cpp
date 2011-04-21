@@ -15,4 +15,5 @@ PlayerScene::PlayerScene(int id, FwGraphicsView* view) :
     m_rectPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
     m_pixmapPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
     m_stringPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
+
 }

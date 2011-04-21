@@ -81,9 +81,9 @@ public:
 
     virtual void apply(FwMLObject* object);
 
-    FwPixmap createPixmap(const QSize& size);
-    FwPixmap createPixmap(const FwPixmapDescription& desc);
-    FwPixmap createPixmap(FwMLNode* node);
+    FwPixmap createPixmap(const QSize& size) const;
+    FwPixmap createPixmap(const FwPixmapDescription& desc) const;
+    FwPixmap createPixmap(FwMLNode* node) const;
 
     FwFont createFont(const FwFontDescription& desc);
     FwFont createFont(FwMLObject* object, const QByteArray& attribute);
@@ -138,7 +138,7 @@ protected:
 
     void invalidateCanvas(const QRect& clipRect);
 
-    virtual FwDrawer* createDrawer(FwMLObject* object) const;
+    virtual FwDrawer* createDrawer(const QByteArray& name, FwMLObject* object) const;
 
 private:
     void createNewBuffer();

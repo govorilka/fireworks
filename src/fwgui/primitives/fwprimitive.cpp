@@ -131,6 +131,11 @@ void FwPrimitive::update(bool needUpdateBuffer)
             m_boundingRect = m_geometry->rect();
             boundingRectChangedEvent(m_boundingRect);
 
+            if(m_drawer)
+            {
+                m_drawer->setPrimitiveRect(m_geometry->rect());
+            }
+
             if(m_bufferMode)
             {
                 if(m_buffer && m_geometry->sizeChanged())
@@ -227,8 +232,17 @@ void FwPrimitive::apply(FwMLObject* object)
         }
     }
 
-    delete  m_drawer;
-    m_drawer = createDrawer(object);
+    FwMLObject* drawerObject = object->attribute("drawer")->cast<FwMLObject>();
+    if(drawerObject)
+    {
+        FwMLString* drawerNameNode = drawerObject->attribute("name")->cast<FwMLString>();
+        if(drawerNameNode && !drawerNameNode->value().isEmpty())
+        {
+            delete  m_drawer;
+            m_drawer = createDrawer(drawerNameNode->value(), drawerObject);
+        }
+    }
+
     if(!m_drawer)
     {
         FwPen* pen = createPen(object, "pen");
@@ -237,6 +251,7 @@ void FwPrimitive::apply(FwMLObject* object)
              setPen(pen);
         }
     }
+
 
     FwMLObject* marginObject = object->attribute("margin")->cast<FwMLObject>();
     if(marginObject)
@@ -263,17 +278,17 @@ void FwPrimitive::apply(FwMLObject* object)
     update();
 }
 
-FwPixmap FwPrimitive::createPixmap(const QSize& size)
+FwPixmap FwPrimitive::createPixmap(const QSize& size) const
 {
     return m_scene->view()->pixmap(size);
 }
 
-FwPixmap FwPrimitive::createPixmap(const FwPixmapDescription& desc)
+FwPixmap FwPrimitive::createPixmap(const FwPixmapDescription& desc) const
 {
     return m_scene->view()->pixmap(desc);
 }
 
-FwPixmap FwPrimitive::createPixmap(FwMLNode* node)
+FwPixmap FwPrimitive::createPixmap(FwMLNode* node) const
 {
     FwPixmapDescription desc;
     if(desc.apply(node))
@@ -822,7 +837,7 @@ void FwPrimitive::setIgnoreParentMargin(bool enable)
     }
 }
 
-FwDrawer* FwPrimitive::createDrawer(FwMLObject* object) const
+FwDrawer* FwPrimitive::createDrawer(const QByteArray& name, FwMLObject* object) const
 {
     Q_UNUSED(object);
     return 0;

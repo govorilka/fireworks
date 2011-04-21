@@ -43,6 +43,8 @@ public:
 
     inline QWidget* widget() const;
 
+    FwVertexArray* createVertexArray() const;
+
 protected:
 
     void invalidateCanvas(const QRegion& region);

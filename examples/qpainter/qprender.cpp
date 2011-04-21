@@ -7,6 +7,36 @@
 #include "qpfontdata.h"
 #include "qppixmapdata.h"
 
+QPVertexArray::QPVertexArray() :
+    BaseClass()
+{
+}
+
+QPVertexArray::~QPVertexArray()
+{
+}
+
+void QPVertexArray::begin()
+{
+    m_lines.clear();
+}
+
+void QPVertexArray::end()
+{
+}
+
+void QPVertexArray::addLine(int x1, int y1, int x2, int y2)
+{
+    m_lines.append(QLine(x1, y1, x2, y2));
+}
+
+void QPVertexArray::addRect(int x, int y, int w, int h)
+{
+    m_rectangles.append(QRect(x, y, w, h));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 QPRender::QPRender(QPaintDevice* device) :
     BaseClass(),
     m_painter(device),
@@ -78,4 +108,14 @@ void QPRender::drawPixmap(const QRect& rect, FwPixmapData* pixmap, const QRect* 
 void QPRender::drawString(int x, int y, const QByteArray& utf8String)
 {
     m_painter.drawText(x, y, QString::fromUtf8(utf8String));
+}
+
+void QPRender::drawVertexArray(FwVertexArray* array)
+{
+    QPVertexArray* vertexArray = static_cast<QPVertexArray*>(array);
+    m_painter.drawLines(vertexArray->m_lines);
+    foreach(const QRect& rect, vertexArray->m_rectangles)
+    {
+        m_painter.fillRect(rect, m_color);
+    }
 }

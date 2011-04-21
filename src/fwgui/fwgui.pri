@@ -33,7 +33,8 @@ HEADERS += \
     fwgui/widgets/fwitemlayout.h \
     fwgui/widgets/fwanimation.h \
     fwgui/widgets/fwtextview.h \
-    fwgui/primitives/fwdrawer.h
+    fwgui/primitives/fwdrawer.h \
+    fwgui/fwvertexarray.h
 
 SOURCES += \
     fwgui/fwgraphicsview.cpp \
@@ -60,4 +61,5 @@ SOURCES += \
     fwgui/widgets/fwitemlayout.cpp \
     fwgui/widgets/fwanimation.cpp \
     fwgui/widgets/fwtextview.cpp \
-    fwgui/primitives/fwdrawer.cpp
+    fwgui/primitives/fwdrawer.cpp \
+    fwgui/fwvertexarray.cpp

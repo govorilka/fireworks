@@ -3,7 +3,6 @@ bgcolor : "black",
 rectItem
 {
     zindex :1,
-    bgcolor : "purple",
     border
     {
         color : "green",
@@ -13,10 +12,35 @@ rectItem
     {
         x : 0,
         y : 0,
-        width : 640,
-        height : 480
+        width : 480,
+        height : 320
     },
-    radius : 20
+    drawer
+    {
+        name : "BorderImage",
+        bgcolor : "purple",
+        topLeft
+        {
+            source : "./images/corners/topleft.png",
+            blending : true
+        },
+        topRight
+        {
+            source : "./images/corners/topright.png",
+            blending : true
+        },
+        bottomLeft
+        {
+            source : "./images/corners/bottomleft.png",
+            blending : true
+        },
+        bottomRight
+        {
+            source : "./images/corners/bottomright.png",
+            blending : true
+        }
+
+    }
 },
 
 pixmapItem
