@@ -134,6 +134,7 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
 {
     if(m_activeScene != scene)
     {
+        qDebug() << "FwGraphicsView::setActiveScene" << scene;
         Q_ASSERT(scene->m_view == this);
 
         m_prevActiveScene = m_activeScene;
