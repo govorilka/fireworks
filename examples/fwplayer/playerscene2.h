@@ -1,5 +1,5 @@
-#ifndef PLAYERSCENE_H
-#define PLAYERSCENE_H
+#ifndef PLAYERSCENE2_H
+#define PLAYERSCENE2_H
 
 #include "fwgui/fwscene.h"
 
@@ -7,12 +7,12 @@ class FwRectPrimitive;
 class FwStringPrimitive;
 class FwPixmapPrimitive;
 
-class PlayerScene : public FwScene
+class PlayerScene2 : public FwScene
 {
     typedef FwScene BaseClass;
 
 public:
-    PlayerScene(int id, FwGraphicsView* view);
+    PlayerScene2(int id, FwGraphicsView* view);
 
 protected:
     void keyPressEvent(FwKeyPressEvent *event);
@@ -23,4 +23,4 @@ private:
     FwPixmapPrimitive* m_pixmapPrimitive;
 };
 
-#endif // PLAYERSCENE_H
+#endif // PLAYERSCENE2_H

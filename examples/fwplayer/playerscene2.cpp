@@ -1,4 +1,4 @@
-#include "playerscene.h"
+#include "playerscene2.h"
 
 #include "fwcore/fwml.h"
 
@@ -9,7 +9,7 @@
 #include "fwgui/primitives/fwstringprimitive.h"
 #include "fwgui/primitives/fwpixmapprimitive.h"
 
-PlayerScene::PlayerScene(int id, FwGraphicsView* view) :
+PlayerScene2::PlayerScene2(int id, FwGraphicsView* view) :
     BaseClass(id, view),
     m_rectPrimitive(new FwRectPrimitive("rectItem", this)),
     m_stringPrimitive(new FwStringPrimitive("stringItem", this)),
@@ -20,11 +20,11 @@ PlayerScene::PlayerScene(int id, FwGraphicsView* view) :
     m_stringPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
 }
 
-void PlayerScene::keyPressEvent(FwKeyPressEvent *event)
+void PlayerScene2::keyPressEvent(FwKeyPressEvent *event)
 {
     if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
     {
-        view()->setActiveScene(2);
+        view()->setActiveScene(1);
         event->accept();
     }
 }

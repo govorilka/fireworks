@@ -16,12 +16,17 @@ INCLUDEPATH += ../../src/ \
                ../qpainter/
 
 SOURCES += main.cpp \
-    playerscene.cpp
+    playerscene.cpp \
+    playerscene2.cpp
 
 HEADERS  += \
-    playerscene.h
+    playerscene.h \
+    playerscene2.h
 
 FORMS    +=
 
 include(../qpainter/qpainter.pri)
 
+OTHER_FILES += \
+    ../../bin/example2.fwml \
+    ../../bin/example.fwml
