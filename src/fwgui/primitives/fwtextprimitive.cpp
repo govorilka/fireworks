@@ -27,7 +27,7 @@ void FwTextPrimitive::setText(const QString& text)
     if(m_text != text)
     {
         m_text = text;
-        updateText(geometry()->rect());
+        updateText();
     }
 }
 
@@ -36,7 +36,7 @@ void FwTextPrimitive::setFont(const FwFont& font)
     if(m_font != font)
     {
        m_font = font;
-       updateText(geometry()->rect());
+       updateText();
     }
 }
 
@@ -80,6 +80,17 @@ void FwTextPrimitive::apply(FwMLObject *object)
         setText(QString::fromUtf8(textNode->value()));
     }
 
+    FwMLNode* fixedHeightNode = object->attribute("fixedHeight");
+    if(fixedHeightNode)
+    {
+        bool bOk = false;
+        bool fixedHeight = fixedHeightNode->toBool(&bOk);
+        if(bOk)
+        {
+            setFixedHeight(fixedHeight);
+        }
+    }
+
     BaseClass::apply(object);
 
     update();
@@ -101,5 +112,14 @@ void FwTextPrimitive::updateTextLayout(QRect& rect)
         {
             rect.setHeight(jEngine.blockRect().height());
         }
+    }
+}
+
+void FwTextPrimitive::setFixedHeight(bool enable)
+{
+    if(m_fixedHeight != enable)
+    {
+        m_fixedHeight = enable;
+        updateText();
     }
 }

@@ -26,12 +26,15 @@ public:
 
     void apply(FwMLObject *object);
 
+    inline bool isFixedHeightEnable() const;
+    void setFixedHeight(bool enable);
+
 protected:
     void geometryChangedEvent(const QRect &oldRect, QRect &rect);
 
     void paint(FwPainter *painter, const QRect &clipRect);
 
-    inline void updateText(const QRect& rect);
+    inline void updateText();
     void updateTextLayout(QRect& rect);
 
 private:
@@ -51,13 +54,18 @@ FwFont FwTextPrimitive::font() const
     return m_font;
 }
 
-void FwTextPrimitive::updateText(const QRect& rect)
+void FwTextPrimitive::updateText()
 {
     prepareGeometryChanged();
-    QRect newRect = rect;
+    QRect newRect = geometry()->rect();
     updateTextLayout(newRect);
     setSize(newRect.size());
     update();
+}
+
+bool FwTextPrimitive::isFixedHeightEnable() const
+{
+    return m_fixedHeight;
 }
 
 #endif //FIREWORKS_GRAPHICSTEXTITEM_H
