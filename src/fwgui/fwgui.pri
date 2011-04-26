@@ -14,7 +14,6 @@ HEADERS += \
     fwgui/fwpainter_inl.h \
     fwgui/fwguievent.h \
     fwgui/primitives/fwtextprimitive.h \
-    fwgui/primitives/fwprogressprimitive.h \
     fwgui/primitives/fwprimitivegroup_inl.h \
     fwgui/primitives/fwprimitivegroup.h \
     fwgui/primitives/fwprimitive_inl.h \
@@ -34,7 +33,8 @@ HEADERS += \
     fwgui/widgets/fwanimation.h \
     fwgui/widgets/fwtextview.h \
     fwgui/primitives/fwdrawer.h \
-    fwgui/fwvertexarray.h
+    fwgui/fwvertexarray.h \
+    fwgui/widgets/fwprogresswidget.h
 
 SOURCES += \
     fwgui/fwgraphicsview.cpp \
@@ -47,7 +47,6 @@ SOURCES += \
     fwgui/fwpainter.cpp \
     fwgui/fwguievent.cpp \
     fwgui/primitives/fwrectprimitive.cpp \
-    fwgui/primitives/fwprogressprimitive.cpp \
     fwgui/primitives/fwprimitivegroup.cpp \
     fwgui/primitives/fwtextprimitive.cpp \
     fwgui/primitives/fwtableprimitive.cpp \
@@ -62,4 +61,5 @@ SOURCES += \
     fwgui/widgets/fwanimation.cpp \
     fwgui/widgets/fwtextview.cpp \
     fwgui/primitives/fwdrawer.cpp \
-    fwgui/fwvertexarray.cpp
+    fwgui/fwvertexarray.cpp \
+    fwgui/widgets/fwprogresswidget.cpp

@@ -1,10 +1,10 @@
-#include "fwprogressprimitive.h"
+#include "fwprogresswidget.h"
 
 #include "fwcore/fwml.h"
 
 #include "fwgui/fwscene.h"
 
-FwProgressPrimitive::FwProgressPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
+FwProgressWidget::FwProgressWidget(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_minValue(0),
     m_maxValue(0),
@@ -18,7 +18,7 @@ FwProgressPrimitive::FwProgressPrimitive(const QByteArray& name, FwPrimitiveGrou
 {
 }
 
-FwProgressPrimitive::~FwProgressPrimitive()
+FwProgressWidget::~FwProgressWidget()
 {
     delete m_progressBrush;
     if(m_animation)
@@ -27,7 +27,7 @@ FwProgressPrimitive::~FwProgressPrimitive()
     }
 }
 
-void FwProgressPrimitive::setProgressBrush(FwBrush* brush)
+void FwProgressWidget::setProgressBrush(FwBrush* brush)
 {
     if(m_progressBrush != brush)
     {
@@ -38,7 +38,7 @@ void FwProgressPrimitive::setProgressBrush(FwBrush* brush)
     }
 }
 
-void FwProgressPrimitive::setValue(int min, int max, int value, bool byUser)
+void FwProgressWidget::setValue(int min, int max, int value, bool byUser)
 {
     if(m_minValue != min || m_maxValue != max || m_value != value)
     {
@@ -49,7 +49,7 @@ void FwProgressPrimitive::setValue(int min, int max, int value, bool byUser)
     }
 }
 
-void FwProgressPrimitive::setAnimation(FwProgressAnimation* animation)
+void FwProgressWidget::setAnimation(FwProgressAnimation* animation)
 {
     if(m_animation != animation)
     {
@@ -66,7 +66,7 @@ void FwProgressPrimitive::setAnimation(FwProgressAnimation* animation)
     }
 }
 
-void FwProgressPrimitive::geometryChangedEvent(const QRect &oldRect, QRect &rect)
+void FwProgressWidget::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
     BaseClass::geometryChangedEvent(oldRect, rect);
 
@@ -74,7 +74,7 @@ void FwProgressPrimitive::geometryChangedEvent(const QRect &oldRect, QRect &rect
     updateValueDisplay(rect, false);
 }
 
-void FwProgressPrimitive::paint(FwPainter *painter, const QRect &clipRect)
+void FwProgressWidget::paint(FwPainter *painter, const QRect &clipRect)
 {
     if(m_progressRect->rect().width() && m_progressBrush)
     {
@@ -84,7 +84,7 @@ void FwProgressPrimitive::paint(FwPainter *painter, const QRect &clipRect)
     BaseClass::paint(painter, m_backgroundRect.intersect(clipRect));
 }
 
-void FwProgressPrimitive::updateValueDisplay(const QRect& rect, bool byUser)
+void FwProgressWidget::updateValueDisplay(const QRect& rect, bool byUser)
 {
     QRect newProgressRect = rect;
     if(m_value == m_minValue)
@@ -114,7 +114,7 @@ void FwProgressPrimitive::updateValueDisplay(const QRect& rect, bool byUser)
     }
 }
 
-void FwProgressPrimitive::updateProgressRect(const QRect& geometryRect, const QRect& progressRect)
+void FwProgressWidget::updateProgressRect(const QRect& geometryRect, const QRect& progressRect)
 {
     if(m_progressRect->rect() != progressRect)
     {
@@ -132,7 +132,7 @@ void FwProgressPrimitive::updateProgressRect(const QRect& geometryRect, const QR
     }
 }
 
-void FwProgressPrimitive::setMinProgressWidth(int width)
+void FwProgressWidget::setMinProgressWidth(int width)
 {
     if(m_minProgressWidth != width)
     {
@@ -142,7 +142,7 @@ void FwProgressPrimitive::setMinProgressWidth(int width)
     }
 }
 
-void FwProgressPrimitive::apply(FwMLObject *object)
+void FwProgressWidget::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
 
@@ -161,7 +161,7 @@ void FwProgressPrimitive::apply(FwMLObject *object)
     {
         if(!m_animation)
         {
-            setAnimation(new FwProgressAnimation(scene()));
+            setAnimation(new FwProgressAnimation(this));
         }
         m_animation->apply(progressAnimationNode);
     }
@@ -212,7 +212,7 @@ void FwProgressAnimation::complete()
     }
 }
 
-void FwProgressAnimation::setGraphicsItem(FwProgressPrimitive * item)
+void FwProgressAnimation::setGraphicsItem(FwProgressWidget * item)
 {
     if(m_item != item)
     {
@@ -233,3 +233,4 @@ void FwProgressAnimation::resetGraphicsItem()
         m_item = 0;
     }
 }
+
