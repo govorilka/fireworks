@@ -1,23 +1,23 @@
-#ifndef FIREWORKS_GRAPHICSPROGRESSITEM_H
-#define FIREWORKS_GRAPHICSPROGRESSITEM_H
+#ifndef FWPROGRESSWIDGET_H
+#define FWPROGRESSWIDGET_H
 
 #include <QtCore/qvariantanimation.h>
 
-#include "fwgui/primitives/fwrectprimitive.h"
-
+#include "fwgui/widgets/fwwidget.h"
 #include "fwgui/widgets/fwanimation.h"
 
 class FwProgressAnimation;
 
-class FwProgressPrimitive : public FwRectPrimitive
+class FwProgressWidget : public FwWidget
 {
-    typedef FwRectPrimitive BaseClass;
+    Q_OBJECT
+    typedef FwWidget BaseClass;
 
 public:
     friend class FwProgressAnimation;
 
-    FwProgressPrimitive(const QByteArray& name, FwPrimitiveGroup* parent);
-    ~FwProgressPrimitive();
+    FwProgressWidget(const QByteArray& name, FwPrimitiveGroup* parent);
+    ~FwProgressWidget();
 
     inline FwBrush* progressBrush() const;
     void setProgressBrush(FwBrush* brush);
@@ -65,47 +65,47 @@ private:
     QRect m_backgroundRect;
 };
 
-FwBrush* FwProgressPrimitive::progressBrush() const
+FwBrush* FwProgressWidget::progressBrush() const
 {
     return m_progressBrush;
 }
 
-int FwProgressPrimitive::minValue() const
+int FwProgressWidget::minValue() const
 {
     return m_minValue;
 }
 
-int FwProgressPrimitive::maxValue() const
+int FwProgressWidget::maxValue() const
 {
     return m_maxValue;
 }
 
-void FwProgressPrimitive::setRange(int min, int max)
+void FwProgressWidget::setRange(int min, int max)
 {
     setValue(min, max, m_value, false);
 }
 
-int FwProgressPrimitive::value() const
+int FwProgressWidget::value() const
 {
     return m_value;
 }
 
-void FwProgressPrimitive::setValue(int value, bool byUser)
+void FwProgressWidget::setValue(int value, bool byUser)
 {
     setValue(m_minValue, m_maxValue, value, byUser);
 }
 
-void FwProgressPrimitive::resetValue(bool byUser)
+void FwProgressWidget::resetValue(bool byUser)
 {
     setValue(0, 0, 0, byUser);
 }
 
-FwProgressAnimation* FwProgressPrimitive::animation() const
+FwProgressAnimation* FwProgressWidget::animation() const
 {
     return m_animation;
 }
 
-FwGeometry* FwProgressPrimitive::progressRect() const
+FwGeometry* FwProgressWidget::progressRect() const
 {
     return m_progressRect;
 }
@@ -118,7 +118,7 @@ class FwProgressAnimation : public FwAnimation
     typedef FwAnimation BaseClass;
 
 public:
-    friend class FwProgressPrimitive;
+    friend class FwProgressWidget;
 
     FwProgressAnimation(QObject* parent = 0);
     ~FwProgressAnimation();
@@ -132,10 +132,10 @@ protected:
     void updatePrimitive();
 
 private:
-    void setGraphicsItem(FwProgressPrimitive * item);
+    void setGraphicsItem(FwProgressWidget * item);
     void resetGraphicsItem();
 
-    FwProgressPrimitive * m_item;
+    FwProgressWidget * m_item;
 };
 
-#endif // FIREWORKS_GRAPHICSPROGRESSITEM_H
+#endif // FWPROGRESSWIDGET_H
