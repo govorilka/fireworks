@@ -22,11 +22,6 @@ int main(int argc, char *argv[])
     PlayerScene* playerScene = new PlayerScene(1, &view);
     view.setActiveScene(playerScene);
 
-    PlayerScene2* playerScene2 = new PlayerScene2(2, &view);
-
-    QWidget* widget = view.createWidget(0);
-    widget->show();
-
     QFile fwmlFile(a.applicationDirPath() + QDir::separator() + "example.fwml");
     if(fwmlFile.exists())
     {
@@ -37,6 +32,7 @@ int main(int argc, char *argv[])
         }
     }
 
+    PlayerScene2* playerScene2 = new PlayerScene2(2, &view);
     QFile fwmlFile2(a.applicationDirPath() + QDir::separator() + "example2.fwml");
     if(fwmlFile2.exists())
     {
@@ -46,6 +42,9 @@ int main(int argc, char *argv[])
             playerScene2->apply(&rootObject);
         }
     }
+
+    QWidget* widget = view.createWidget(0);
+    widget->show();
 
     return a.exec();
 }

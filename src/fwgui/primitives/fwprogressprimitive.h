@@ -5,6 +5,8 @@
 
 #include "fwgui/primitives/fwrectprimitive.h"
 
+#include "fwgui/widgets/fwanimation.h"
+
 class FwProgressAnimation;
 
 class FwProgressPrimitive : public FwRectPrimitive
@@ -38,13 +40,15 @@ public:
 
     inline FwGeometry* progressRect() const;
 
+    virtual void apply(FwMLObject *object);
+
 protected:
     void geometryChangedEvent(const QRect &oldRect, QRect &rect);
 
     void paint(FwPainter *painter, const QRect &clipRect);
 
-    void updateProgressRect(bool byUser);
-    void updateProgressRect(const QRect& rect);
+    void updateValueDisplay(const QRect& rect, bool byUser);
+    void updateProgressRect(const QRect& geometryRect, const QRect& progressRect);
 
 private:
     FwBrush* m_progressBrush;
@@ -108,10 +112,10 @@ FwGeometry* FwProgressPrimitive::progressRect() const
 
 //////////////////////////////////////////////////////////////////////////////////
 
-class FwProgressAnimation : public QVariantAnimation
+class FwProgressAnimation : public FwAnimation
 {
     Q_OBJECT
-    typedef QVariantAnimation BaseClass;
+    typedef FwAnimation BaseClass;
 
 public:
     friend class FwProgressPrimitive;
