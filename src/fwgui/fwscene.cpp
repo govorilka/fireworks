@@ -37,8 +37,10 @@ FwScene::~FwScene()
 
 void FwScene::showEvent(FwSceneShowEvent* event)
 {
+    qDebug() << "FwScene::showEvent" << 1;
     Q_UNUSED(event);
     setVisible(true);
+    qDebug() << "FwScene::showEvent" << 2;
 }
 
 void FwScene::hideEvent(FwSceneHideEvent* event)

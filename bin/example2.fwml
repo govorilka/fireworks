@@ -5,7 +5,7 @@ rectItem
     zindex :1,
     border
     {
-        color : "green",
+        color : "orange",
         width : 5
     },
     rect
@@ -18,7 +18,7 @@ rectItem
     drawer
     {
         name : "RoundedRect",
-        bgcolor : "green",
+        bgcolor : "orange",
         radius : 20
     }
 },
@@ -29,14 +29,23 @@ pixmapItem
    source : "./images/browser.png"
 },
 
-stringItem
+progressItem
 {
-   zindex : 3,
-   font
-   {
-      family : "Arial",
-      pixelSize : 48
-   },
-   color : "orange",
-   string : "Hello world!"
+    zindex : 3,
+    width : 200,
+    height: 40,
+    bgcolor : "#A0000000",
+
+    progress
+    {
+        bgcolor : "#A0FFFFFF",
+    },
+
+    animation
+    {
+        class : "fireworks.layouts.Animation",
+        curve : "OutBounce",
+        duration : 300,
+        smooth : true
+    }
 }

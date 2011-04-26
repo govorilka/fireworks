@@ -4,7 +4,7 @@
 #include "fwgui/fwscene.h"
 
 class FwRectPrimitive;
-class FwStringPrimitive;
+class FwProgressPrimitive;
 class FwPixmapPrimitive;
 
 class PlayerScene2 : public FwScene
@@ -19,7 +19,7 @@ protected:
 
 private:
     FwRectPrimitive* m_rectPrimitive;
-    FwStringPrimitive* m_stringPrimitive;
+    FwProgressPrimitive* m_progressPrimitive;
     FwPixmapPrimitive* m_pixmapPrimitive;
 };
 
