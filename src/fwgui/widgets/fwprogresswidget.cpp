@@ -166,6 +166,17 @@ void FwProgressWidget::apply(FwMLObject *object)
         m_animation->apply(progressAnimationNode);
     }
 
+    FwMLNode* displyMinNode = object->attribute("displayMin");
+    if(displyMinNode)
+    {
+        bool bOk = false;
+        int displayMin = displyMinNode->toInt(&bOk);
+        if(bOk)
+        {
+            setMinProgressWidth(displayMin);
+        }
+    }
+
     BaseClass::apply(object);
 
     update();

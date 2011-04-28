@@ -224,7 +224,7 @@ public:
 
     inline QByteArray className() const;
 
-    FwMLNode* addAttribute(const QByteArray& name, FwMLNode* value, bool replace = true);
+    void addAttribute(const QByteArray& name, FwMLNode* value, bool replace = true);
 
     inline FwMLNode* attribute(const QByteArray& name) const;
     inline QByteArray attributeName(FwMLNode* child) const;
@@ -257,17 +257,20 @@ class FwMLArray : public FwMLBase<FwMLNode::T_Array>
 {
     typedef FwMLBase<FwMLNode::T_Array> BaseClass;
 public:
+
+    friend class FwMLNode;
+
     FwMLArray();
     FwMLArray(const QByteArray& attrName, FwMLObject* parent);
     FwMLArray(FwMLArray* parent);
     ~FwMLArray();
 
+    void addNode(FwMLNode* node);
+
     inline int size() const;
 
     inline int indexOf(FwMLNode* item) const;
     inline FwMLNode* item(int index) const;
-
-    QVector<FwMLNode*> data;
 
     QByteArray toUtf8() const;
 
@@ -276,6 +279,11 @@ public:
     FwColor toColor(bool* bOk) const;
 
     FwMLNode* clone() const;
+
+    inline QVector<FwMLNode*> toQVector() const;
+
+private:
+    QVector<FwMLNode*> m_data;
 };
 
 #include "fwml_inl.h"
