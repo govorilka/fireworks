@@ -105,19 +105,19 @@ QByteArray FwMLObject::className() const
 
 int FwMLArray::size() const
 {
-    return data.size();
+    return m_data.size();
 }
 
 int FwMLArray::indexOf(FwMLNode* item) const
 {
-    return data.indexOf(item);
+    return m_data.indexOf(item);
 }
 
 FwMLNode* FwMLArray::item(int index) const
 {
-    if(index >= 0 && index < data.size())
+    if(index < m_data.size() && index >= 0)
     {
-        return data.at(index);
+        return m_data.at(index);
     }
     return 0;
 }

@@ -21,6 +21,11 @@ FwPixmapDescription::FwPixmapDescription(const QString& name, bool blending) :
 
 bool FwPixmapDescription::apply(FwMLNode* node)
 {
+    if(!node)
+    {
+        return false;
+    }
+
     FwMLString* name = node->cast<FwMLString>();
     if(name)
     {
@@ -28,34 +33,32 @@ bool FwPixmapDescription::apply(FwMLNode* node)
         m_blending = false;
         return true;
     }
-    else
+
+    FwMLObject* object = node->cast<FwMLObject>();
+    if(object)
     {
-        FwMLObject* object = node->cast<FwMLObject>();
-        if(object)
+        FwMLString* sourceNode = object->attribute("source")->cast<FwMLString>();
+        if(sourceNode)
         {
-            FwMLString* sourceNode = object->attribute("source")->cast<FwMLString>();
-            if(sourceNode)
+            QString source = QString::fromUtf8(sourceNode->value());
+            if(!source.isEmpty())
             {
-                QString source = QString::fromUtf8(sourceNode->value());
-                if(!source.isEmpty())
+                FwMLNode* blendingNode = object->attribute("blending");
+                if(blendingNode)
                 {
-                    FwMLNode* blendingNode = object->attribute("blending");
-                    if(blendingNode)
+                    bool bOk = false;
+                    bool blending = blendingNode->toBool(&bOk);
+                    if(bOk)
                     {
-                        bool bOk = false;
-                        bool blending = blendingNode->toBool(&bOk);
-                        if(bOk)
-                        {
-                            m_blending = blending;
-                            m_source = source;
-                            return true;
-                        }
-                    }
-                    else
-                    {
+                        m_blending = blending;
                         m_source = source;
                         return true;
                     }
+                }
+                else
+                {
+                    m_source = source;
+                    return true;
                 }
             }
         }

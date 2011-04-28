@@ -611,7 +611,7 @@ FwMLNode::FwMLNode(const QByteArray& attrName, FwMLObject* parent) :
 FwMLNode::FwMLNode(FwMLArray* parent) :
     m_parent(parent)
 {
-    parent->data.append(this);
+    parent->addNode(this);
 }
 
 FwMLNode::~FwMLNode()
@@ -646,20 +646,27 @@ void FwMLNode::takeFromParent()
 {
     if(m_parent)
     {
-        if(m_parent->type() == FwMLNode::T_Object)
+        switch(m_parent->type())
         {
-            FwMLObject* object = static_cast<FwMLObject*>(m_parent);
-            object->m_attributes.remove(object->m_attributes.key(this));
-        }
-        else if(m_parent->type() == FwMLNode::T_Array)
-        {
-            FwMLArray* array = static_cast<FwMLArray*>(m_parent);
-            array->data.remove(array->data.indexOf(this));
-        }
-        else
-        {
+        case FwMLNode::T_Object:
+            {
+                FwMLObject* object = static_cast<FwMLObject*>(m_parent);
+                object->m_attributes.remove(object->m_attributes.key(this));
+            }
+            break;
+
+        case FwMLNode::T_Array:
+            {
+                FwMLArray* array = static_cast<FwMLArray*>(m_parent);
+                array->m_data.remove(array->m_data.indexOf(this));
+            }
+            break;
+
+        default:
             Q_ASSERT(false);
+            break;
         }
+
         m_parent = 0;
     }
 }
@@ -984,33 +991,33 @@ FwMLObject::~FwMLObject()
 Если значение false, то будет создан массив создан массив включающий в себя
 старое и новое значение. По умолчанию значение атрибута true.
 */
-FwMLNode* FwMLObject::addAttribute(const QByteArray& name, FwMLNode* value, bool replace)
+void FwMLObject::addAttribute(const QByteArray& name, FwMLNode* value, bool replace)
 {
     value->takeFromParent();
-    value->m_parent = this;
 
-    if(m_attributes.contains(name))
+    FwMLNode* currentAttr = m_attributes.value(name);
+    if(currentAttr)
     {
         if(replace)
         {
-            delete m_attributes.take(name);
+            delete currentAttr;
         }
         else
         {
-            FwMLArray* addArray = m_attributes.value(name)->cast<FwMLArray>();
+            FwMLArray* addArray = currentAttr->cast<FwMLArray>();
             if(!addArray)
             {
-                addArray = new FwMLArray();
-                addArray->data.append(m_attributes.take(name));
-                m_attributes.insert(name, addArray);
+                currentAttr->takeFromParent();
+                addArray = new FwMLArray(name, this);
+                addArray->addNode(currentAttr);
             }
-            addArray->data.append(value);
-            return value;
+            addArray->addNode(value);
+            return;
         }
     }
 
+    value->m_parent = this;
     m_attributes.insert(name, value);
-    return value;
 }
 
 QByteArray FwMLObject::toUtf8() const
@@ -1217,19 +1224,19 @@ FwMLArray::FwMLArray(FwMLArray* parent) :
 
 FwMLArray::~FwMLArray()
 {
-    foreach(FwMLNode* node, data)
+    foreach(FwMLNode* node, m_data)
     {
         Q_ASSERT(node->m_parent == this);
         node->m_parent = 0;
         delete node;
     }
-    data.clear();
+    m_data.clear();
 }
 
 QByteArray FwMLArray::toUtf8() const
 {
     QByteArray items;
-    foreach(FwMLNode* node, data)
+    foreach(FwMLNode* node, m_data)
     {
         if(!items.isEmpty())
         {
@@ -1255,7 +1262,7 @@ int FwMLArray::toInt(bool* bOk) const
 {
     if(size() == 1)
     {
-        return data.at(0)->toInt(bOk);
+        return m_data.at(0)->toInt(bOk);
     }
     (*bOk) = false;
     return 0;
@@ -1272,7 +1279,7 @@ bool FwMLArray::toBool(bool* bOk) const
 {
     if(size() == 1)
     {
-        return data.at(0)->toBool(bOk);
+        return m_data.at(0)->toBool(bOk);
     }
     (*bOk) = false;
     return false;
@@ -1282,7 +1289,7 @@ FwColor FwMLArray::toColor(bool* bOk) const
 {
     if(size() == 1)
     {
-        return data.at(0)->toColor(bOk);
+        return m_data.at(0)->toColor(bOk);
     }
     (*bOk) = false;
     return false;
@@ -1291,13 +1298,20 @@ FwColor FwMLArray::toColor(bool* bOk) const
 FwMLNode* FwMLArray::clone() const
 {
     FwMLArray* newArray = new FwMLArray();
-    int array_size = data.size();
-    newArray->data.resize(array_size);
-    for(int i = 0; i < array_size; i++)
+    newArray->m_data.reserve(m_data.size());
+    foreach(FwMLNode* child, m_data)
     {
-        FwMLNode* child = data[i]->clone();
-        child->m_parent = newArray;
-        newArray->data[i] = child;
+        newArray->addNode(child->clone());
     }
     return newArray;
+}
+
+void FwMLArray::addNode(FwMLNode* node)
+{
+    if(node->m_parent && node->m_parent != this)
+    {
+        node->takeFromParent();
+    }
+    node->m_parent = this;
+    m_data.append(node);
 }

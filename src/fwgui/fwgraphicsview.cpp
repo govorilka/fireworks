@@ -134,8 +134,6 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
 {
     if(m_activeScene != scene)
     {
-        qDebug() << "FwGraphicsView::setActiveScene" << scene << 1;
-
         Q_ASSERT(scene->m_view == this);
 
         m_prevActiveScene = m_activeScene;
@@ -146,11 +144,8 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
             QCoreApplication::sendEvent(m_prevActiveScene, &sceneHideEvent);
         }
 
-        qDebug() << "FwGraphicsView::setActiveScene" << scene << 2;
-
         if(scene)
         {
-            qDebug() << "FwGraphicsView::setActiveScene" << scene << 2 << 1;
             m_activeScene = scene;
             if(m_activeScene->size() != m_size)
             {
@@ -159,14 +154,9 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
 
             FwSceneShowEvent sceneShowEvent(m_prevActiveScene);
             QCoreApplication::sendEvent(m_activeScene, &sceneShowEvent);
-
-            qDebug() << "FwGraphicsView::setActiveScene" << scene << 2 << 2;
         }
 
-        qDebug() << "FwGraphicsView::setActiveScene" << scene << 3;
-
         update();
-        qDebug() << "FwGraphicsView::setActiveScene" << scene << 4;
     }
 }
 
@@ -186,6 +176,9 @@ bool FwGraphicsView::event(QEvent *e)
         case Fw::E_KeyPress:
             keyPressEvent(static_cast<FwKeyPressEvent*>(fwEvent));
             return true;
+
+        default:
+            break;
         }
     }
 
