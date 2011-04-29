@@ -106,6 +106,23 @@ void FwStringPrimitive::apply(FwMLObject *object)
         setString(QString::fromUtf8(stringNode->value()));
     }
 
+    FwMLNode* fixedSizeNode = object->attribute("fixedSize");
+    if(fixedSizeNode)
+    {
+        bool bOk = false;
+        bool fixedSize = fixedSizeNode->toBool(&bOk);
+        if(bOk)
+        {
+            QString mask;
+            FwMLString* maskNode = object->attribute("mask")->cast<FwMLString>();
+            if(maskNode)
+            {
+                mask = QString::fromUtf8(maskNode->value());
+            }
+            setFixedSize(fixedSize, mask);
+        }
+    }
+
     BaseClass::apply(object);
 
     update();
