@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui //gui - temporary, for QRegion class
+QT       += core gui network //gui - temporary, for QRegion class
 
 win32 {
    TARGET = ../../bin/fireworks
@@ -28,3 +28,4 @@ include (fwcore/fwcore.pri)
 include (fwtypography/fwtypography.pri)
 include (fwgui/fwgui.pri)
 include (fwdb/fwdb.pri)
+include (fwutils/fwutils.pri)

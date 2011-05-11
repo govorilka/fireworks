@@ -122,4 +122,9 @@ FwMLNode* FwMLArray::item(int index) const
     return 0;
 }
 
+QVector<FwMLNode*> FwMLArray::toQVector() const
+{
+    return m_data;
+}
+
 #endif // FIREWORKS_ML_INL_H
