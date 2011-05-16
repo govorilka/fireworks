@@ -117,18 +117,129 @@ Fw::Orientation Fw::nameToOrientation(const QByteArray& name, bool* bOk)
 
 Fw::HorizontalPosition Fw::nameToHorizontalPosition(const QByteArray& name, bool *bOk)
 {
-    if(bOk)
+ if(bOk)
     {
-        (*bOk) = false;
+        (*bOk) = true;
     }
+ QByteArray temp = name.trimmed();
+ temp = temp.toLower();
+ if(temp == "unchanged")
+ {
+    return HP_Unchanged;
+ }
+ else if(temp == "beforeleft")
+ {
+    return HP_BeforeLeft;
+ }
+ else if(temp == "left")
+ {
+    return HP_Left;
+ }
+else if(temp == "center")
+{
+    return HP_Center;
+}
+else if(temp == "centerdock")
+{
+    return HP_CenterDock;
+}
+else if(temp == "right")
+{
+    return HP_Right;
+}
+else if(temp == "afterright")
+{
+    return HP_AfterRight;
+}
+else
+{
+    (*bOk) = false;
     return HP_Left;
 }
-
+}
 Fw::VerticalPosition Fw::nameToVerticalPosition(const QByteArray& name, bool *bOk)
 {
     if(bOk)
     {
-        (*bOk) = false;
+        (*bOk) = true;
     }
-    return VP_Top;
+
+    QByteArray temp = name.trimmed().toLower();
+    if(temp == "unchanged")
+    {
+        return VP_Unchanged;
+    }
+    else if(temp == "beforetop")
+    {
+        return VP_BeforeTop;
+    }
+    else if(temp == "top")
+    {
+        return VP_Top;
+    }
+    else if(temp == "middle")
+    {
+        return VP_Middle;
+    }
+    else if(temp == "middledock")
+    {
+        return VP_MiddleDock;
+    }
+    else if(temp == "bottom")
+    {
+        return VP_Bottom;
+    }
+    else if(temp == "afterbottom")
+    {
+        return VP_AfterBottom;
+    }
+    else
+    {
+        (*bOk) = false;
+        return VP_Top;
+    }
+
+}
+
+QByteArray Fw::verticalPositionToname(VerticalPosition position)
+{
+    switch(position)
+    {
+    case HP_Unchanged:
+        return "unchanged";
+    case VP_BeforeTop:
+        return "beforetop";
+    case VP_Top:
+        return "top";
+    case VP_Middle:
+        return "middle";
+    case VP_MiddleDock:
+        return "middledock";
+    case VP_Bottom:
+        return "bottom";
+    case VP_AfterBottom:
+        return "afterbottom";
+    }
+}
+
+QByteArray Fw::horizontalPositionToName(HorizontalPosition position)
+{
+
+    switch(position)
+    {
+    case HP_Unchanged:
+        return "unchanged";
+    case HP_BeforeLeft:
+        return "beforeleft";
+    case HP_Left:
+        return "left";
+    case HP_Center:
+        return "center";
+    case HP_CenterDock:
+        return "centerdock";
+    case HP_Right:
+        return "right";
+    case HP_AfterRight:
+        return "afterright";
+    }
 }

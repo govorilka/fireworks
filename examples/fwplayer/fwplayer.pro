@@ -6,7 +6,13 @@
 
 QT       += core gui
 
-TARGET = ../../bin/fwplayer
+win32 {
+    TARGET = ../../../bin/fwplayer
+}
+else {
+    TARGET = ../../bin/fwplayer
+}
+
 TEMPLATE = app
 
 LIBS += -L../../bin \
@@ -23,7 +29,6 @@ HEADERS  += \
     playerscene.h \
     playerscene2.h
 
-FORMS    +=
 
 include(../qpainter/qpainter.pri)
 

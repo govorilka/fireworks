@@ -17,7 +17,8 @@ PlayerScene::PlayerScene(int id, FwGraphicsView* view) :
 {
     m_rectPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
     m_pixmapPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
-    m_stringPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
+    m_stringPrimitive->link(m_rectPrimitive->geometry());
+    //m_stringPrimitive->setPosition(Fw::HP_Right, Fw::VP_Middle);
 }
 
 void PlayerScene::keyPressEvent(FwKeyPressEvent *event)
