@@ -866,3 +866,53 @@ FwDrawer* FwPrimitive::createDrawer(const QByteArray& name, FwMLObject* object) 
     Q_UNUSED(object);
     return 0;
 }
+
+FwPrimitive* FwPrimitive::primitiveByName(const QByteArray& name)
+{
+    if(name.isEmpty())
+    {
+        return 0;
+    }
+
+    QList<QByteArray> parentList = name.split('.');
+    if(parentList.isEmpty())
+    {
+        return 0;
+    }
+
+    if(parentList[0] == "scene")
+    {
+        return parentList.size() == 1 ? scene() : scene()->primitiveByName(parentList, 1);
+    }
+    else if(parentList[0] == "parent")
+    {
+        return parentList.size() == 1 ? parent() : parent()->primitiveByName(parentList, 1);
+    }
+
+    FwPrimitive* primitive = primitiveByName(parentList, 0);
+
+    if(!primitive)
+    {
+        FwPrimitive* parent = this->parent();
+        while(parent)
+        {
+            primitive = parent->primitiveByName(parentList, 0);
+            if(primitive)
+            {
+                break;
+            }
+            parent = parent->parent();
+        }
+    }
+
+    return primitive;
+}
+
+FwPrimitive* FwPrimitive::primitiveByName(const QList<QByteArray>& name, int firstElement)
+{
+    if(parent())
+    {
+        parent()->primitiveByName(name, firstElement);
+    }
+    return 0;
+}

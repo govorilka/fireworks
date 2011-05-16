@@ -33,6 +33,8 @@ public:
 
     void invalidateChildren();
 
+    FwPrimitive* primitiveByName(const QList<QByteArray>& name, int firstElement = 0);
+
 protected:
     inline void sortZIndex();
 

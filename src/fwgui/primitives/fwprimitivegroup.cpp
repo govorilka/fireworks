@@ -208,3 +208,22 @@ void FwPrimitiveGroup::invalidateChildrenRect()
         }
     }
 }
+FwPrimitive* FwPrimitiveGroup::primitiveByName(const QList<QByteArray>& name, int firstElement)
+{
+    foreach(FwPrimitive* primitive, m_primitives)
+    {
+        if(primitive->name() == name[firstElement])
+        {
+            if(firstElement < (name.size() - 1))
+            {
+                return primitive->primitiveByName(name, firstElement + 1);
+            }
+            else
+            {
+                return primitive;
+            }
+        }
+    }
+
+    return 0;
+}
