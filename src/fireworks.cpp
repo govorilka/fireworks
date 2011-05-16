@@ -153,7 +153,10 @@ else if(temp == "afterright")
 }
 else
 {
-    (*bOk) = false;
+    if(bOk)
+    {
+        (*bOk) = false;
+    }
     return HP_Left;
 }
 }
@@ -195,7 +198,10 @@ Fw::VerticalPosition Fw::nameToVerticalPosition(const QByteArray& name, bool *bO
     }
     else
     {
-        (*bOk) = false;
+        if (bOk)
+        {
+            (*bOk) = false;
+        }
         return VP_Top;
     }
 
@@ -205,41 +211,62 @@ QByteArray Fw::verticalPositionToname(VerticalPosition position)
 {
     switch(position)
     {
-    case HP_Unchanged:
+    case VP_Unchanged:
         return "unchanged";
+
     case VP_BeforeTop:
         return "beforetop";
+
     case VP_Top:
         return "top";
+
     case VP_Middle:
         return "middle";
+
     case VP_MiddleDock:
         return "middledock";
+
     case VP_Bottom:
         return "bottom";
+
     case VP_AfterBottom:
         return "afterbottom";
+
+     default:
+        Q_ASSERT(false);
     }
+
+    return "";
 }
 
 QByteArray Fw::horizontalPositionToName(HorizontalPosition position)
 {
-
     switch(position)
     {
     case HP_Unchanged:
         return "unchanged";
+
     case HP_BeforeLeft:
         return "beforeleft";
+
     case HP_Left:
         return "left";
+
     case HP_Center:
         return "center";
+
     case HP_CenterDock:
         return "centerdock";
+
     case HP_Right:
         return "right";
+
     case HP_AfterRight:
         return "afterright";
+
+    default:
+       Q_ASSERT(false);
     }
+
+    return "";
 }
