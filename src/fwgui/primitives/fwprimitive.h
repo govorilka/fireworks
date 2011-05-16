@@ -125,6 +125,8 @@ public:
 
     inline const QRect& parentRect() const;
 
+    FwPrimitive* primitiveByName(const QByteArray& name);
+
 protected:
 
     virtual void paint(FwPainter* painter, const QRect& clipRect) = 0;
@@ -139,6 +141,8 @@ protected:
     void invalidateCanvas(const QRect& clipRect);
 
     virtual FwDrawer* createDrawer(const QByteArray& name, FwMLObject* object) const;
+
+    virtual FwPrimitive* primitiveByName(const QList<QByteArray>& name, int firstElement = 0);
 
 private:
     void createNewBuffer();
