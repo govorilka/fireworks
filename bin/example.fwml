@@ -58,5 +58,10 @@ stringItem
       pixelSize : 48
    },
    color : "orange",
-   string : "Hello world!"
+   string : "Hello world!",
+   geometry
+   {
+      hPosition : "Center",
+      vPosition : "Middle"
+   }
 }

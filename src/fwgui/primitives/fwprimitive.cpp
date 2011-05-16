@@ -215,6 +215,8 @@ void FwPrimitive::apply(FwMLObject* object)
 {
     prepareGeometryChanged();
 
+    bool bOk = false;
+
     QRect rect = this->rect();
     if(loadRect(object, &rect))
     {
@@ -224,7 +226,6 @@ void FwPrimitive::apply(FwMLObject* object)
     FwMLNode* zIndexNode = object->attribute("zindex");
     if(zIndexNode)
     {
-        bool bOk = false;
         int zindex = zIndexNode->toInt(&bOk);
         if(bOk)
         {
@@ -267,11 +268,34 @@ void FwPrimitive::apply(FwMLObject* object)
     FwMLNode* ignoreParentMargin = object->attribute("ignoreParentMargin");
     if(ignoreParentMargin)
     {
-        bool bOk = false;
         bool enable = ignoreParentMargin->toBool(&bOk);
         if(bOk)
         {
             setIgnoreParentMargin(enable);
+        }
+    }
+
+    FwMLObject* geometryObject = object->attribute("geometry")->cast<FwMLObject>();
+    if(geometryObject)
+    {
+        FwMLString* hPositionNode = geometryObject->attribute("hPosition")->cast<FwMLString>();
+        if(hPositionNode)
+        {
+            Fw::HorizontalPosition hPosition = Fw::nameToHorizontalPosition(hPositionNode->value(), &bOk);
+            if(bOk)
+            {
+                setHPosition(hPosition);
+            }
+        }
+
+        FwMLString* vPositionNode = geometryObject->attribute("vPosition")->cast<FwMLString>();
+        if(vPositionNode)
+        {
+            Fw::VerticalPosition vPosition = Fw::nameToVerticalPosition(vPositionNode->value(), &bOk);
+            if(bOk)
+            {
+                setVPosition(vPosition);
+            }
         }
     }
 

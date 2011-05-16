@@ -41,6 +41,11 @@ progressItem
         bgcolor : "#A0FFFFFF",
     },
 
+    geometry
+    {
+        hPosition : "CenterDock"
+    },
+
     animation
     {
         class : "fireworks.layouts.Animation",
