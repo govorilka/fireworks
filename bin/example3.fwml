@@ -1,0 +1,92 @@
+bgcolor : "black",
+
+rectItemGroup
+{
+    zindex : 1,
+    rect
+    {
+        x : 0,
+        y : 0,
+        width : 500,
+        height : 500
+    },
+    geometry
+    {
+        hPosition : "center",
+        vPosition : "middle"
+    },
+    bgcolor : "green",
+
+    rectItem1
+    {
+        zindex : 2,
+        rect
+        {
+            x : 0,
+            y : 0,
+            width : 300,
+            height : 300
+        },
+        geometry
+        {
+            hPosition : "center",
+            vPosition : "middle"
+        },
+        drawer
+        {
+            name : "RoundedRect",
+            bgcolor : "orange",
+            radius : 20
+        }
+    },
+
+    rectItem2
+    {
+        zindex : 3,
+        rect
+        {
+            x : 0,
+            y : 0,
+            width : 200,
+            height : 200
+        },
+        geometry
+        {
+            hPosition : "right",
+            vPosition : "middle",
+            link : "scene.rectItemGroup.rectItem1"
+        },
+        drawer
+        {
+            name : "RoundedRect",
+            bgcolor : "red",
+            radius : 20
+        }
+    },
+
+    rectItem3
+    {
+        zindex : 4,
+        rect
+        {
+            x : 0,
+            y : 0,
+            width : 100,
+            height : 100
+        },
+        geometry
+        {
+            hPosition : "center",
+            vPosition : "middle",
+            link : "parent"
+        },
+        drawer
+        {
+            name : "RoundedRect",
+            bgcolor : "grey",
+            radius : 20
+        }
+    }
+}
+
+

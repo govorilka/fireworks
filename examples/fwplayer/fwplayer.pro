@@ -23,15 +23,18 @@ INCLUDEPATH += ../../src/ \
 
 SOURCES += main.cpp \
     playerscene.cpp \
-    playerscene2.cpp
+    playerscene2.cpp \
+    playerscene3.cpp
 
 HEADERS  += \
     playerscene.h \
-    playerscene2.h
+    playerscene2.h \
+    playerscene3.h
 
 
 include(../qpainter/qpainter.pri)
 
 OTHER_FILES += \
     ../../bin/example2.fwml \
-    ../../bin/example.fwml
+    ../../bin/example.fwml \
+    ../../bin/example3.fwml

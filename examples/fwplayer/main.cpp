@@ -10,6 +10,7 @@
 
 #include "playerscene.h"
 #include "playerscene2.h"
+#include "playerscene3.h"
 
 #include "qpgraphicsview.h"
 
@@ -40,6 +41,17 @@ int main(int argc, char *argv[])
         if(rootObject.parse(&fwmlFile2))
         {
             playerScene2->apply(&rootObject);
+        }
+    }
+
+    PlayerScene3* playerScene3 = new PlayerScene3(3, &view);
+    QFile fwmlFile3(a.applicationDirPath() + QDir::separator() + "example3.fwml");
+    if(fwmlFile3.exists())
+    {
+        FwMLObject rootObject;
+        if(rootObject.parse(&fwmlFile3))
+        {
+            playerScene3->apply(&rootObject);
         }
     }
 

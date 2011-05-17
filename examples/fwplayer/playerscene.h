@@ -9,6 +9,7 @@ class FwPixmapPrimitive;
 
 class PlayerScene : public FwScene
 {
+    Q_OBJECT
     typedef FwScene BaseClass;
 
 public:
