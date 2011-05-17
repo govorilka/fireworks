@@ -297,7 +297,20 @@ void FwPrimitive::apply(FwMLObject* object)
                 setVPosition(vPosition);
             }
         }
+        FwMLString* linkObjectNode = geometryObject->attribute("link")->cast<FwMLString>();
+        if(linkObjectNode)
+        {
+            FwPrimitive* sPrimitive = primitiveByName((linkObjectNode->value()));
+            if(sPrimitive)
+            {
+                qDebug() << " sPrimitive.name: " << sPrimitive->name();
+                link(sPrimitive->geometry());
+            }
+
+        }
     }
+
+
 
     update();
 }
