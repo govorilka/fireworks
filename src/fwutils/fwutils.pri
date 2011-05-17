@@ -1,6 +1,6 @@
 
 HEADERS += \
-    fwutils/fwnetworkinfo.h
+    fwutils/fwnetworkconfig.h
 
 SOURCES += \
-    fwutils/fwnetworkinfo.cpp
+    fwutils/fwnetworkconfig.cpp

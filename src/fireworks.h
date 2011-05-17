@@ -100,6 +100,12 @@ namespace Fw
 
     VerticalPosition nameToVerticalPosition(const QByteArray& name, bool *bOk);
     QByteArray verticalPositionToname(VerticalPosition position);
+
+    const char constantTrue[] = "true";
+    const char constantFalse[] = "false";
+
+    bool nameToBool(const QByteArray&, bool* bOk);
+    QByteArray boolToName(bool value);
 }
 
 #endif // FIREWORKS_H

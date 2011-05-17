@@ -14,6 +14,7 @@ FwColor::FwColor(quint32 argb) :
     m_blue(argb & 0xFF),
     m_blending(m_alpha != 255)
 {
+
 }
 
 FwColor::FwColor(quint8 a, quint8 r, quint8 g, quint8 b) :

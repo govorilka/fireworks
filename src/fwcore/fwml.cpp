@@ -158,6 +158,7 @@ namespace
 
         bool specialChar;
         QByteArray buffer;
+        bool isVariable;
 
         int xcmd;
 
@@ -182,7 +183,8 @@ namespace
         charType(C_Err),
         uintNumber(0),
         declareRoot(false),
-        type(FwMLNode::T_Null)
+        type(FwMLNode::T_Null),
+        isVariable(false)
     {
     }
 
@@ -235,8 +237,20 @@ namespace
         switch(type)
         {
         case FwMLNode::T_String:
-            new FwMLString(buffer, attribute, static_cast<FwMLObject*>(parent));
-            buffer = QByteArray();
+            {
+                bool bOk = false;
+                bool value = Fw::nameToBool(buffer, &bOk);
+                if(bOk)
+                {
+                    //TODO: Create new type
+                    new FwMLString(buffer, attribute, static_cast<FwMLObject*>(parent));
+                }
+                else
+                {
+                    new FwMLString(buffer, attribute, static_cast<FwMLObject*>(parent));
+                }
+                buffer = QByteArray();
+            }
             break;
 
         case FwMLNode::T_UIntNumber:
@@ -302,8 +316,20 @@ namespace
         switch(type)
         {
         case FwMLNode::T_String:
-            new FwMLString(buffer, static_cast<FwMLArray*>(parent));
-            buffer = QByteArray();
+            {
+                bool bOk = false;
+                bool value = Fw::nameToBool(buffer, &bOk);
+                if(bOk)
+                {
+                    //TODO: Added create new type
+                    new FwMLString(buffer, static_cast<FwMLArray*>(parent));
+                }
+                else
+                {
+                    new FwMLString(buffer, static_cast<FwMLArray*>(parent));
+                }
+                buffer = QByteArray();
+            }
             break;
 
         case FwMLNode::T_UIntNumber:
@@ -408,6 +434,7 @@ namespace
         {
             data->type = FwMLNode::T_String;
             data->xcmd = X_VAR;
+            data->isVariable = true;
             data->buffer += c;
             return;
         }
