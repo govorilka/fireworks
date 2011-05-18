@@ -238,11 +238,19 @@ namespace
         {
         case FwMLNode::T_String:
             {
-                bool bOk = false;
-                bool value = Fw::nameToBool(buffer, &bOk);
-                if(bOk && isVariable)
+
+                if(isVariable)
                 {
-                    new FwMLBool(value, attribute, static_cast<FwMLObject*>(parent));
+                    bool bOk = false;
+                    bool value = Fw::nameToBool(buffer, &bOk);
+                    if(bOk)
+                    {
+                        new FwMLBool(value, attribute, static_cast<FwMLObject*>(parent));
+                    }
+                    else
+                    {
+                        new FwMLString(buffer, attribute, static_cast<FwMLObject*>(parent));
+                    }
                 }
                 else
                 {
@@ -316,11 +324,19 @@ namespace
         {
         case FwMLNode::T_String:
             {
-                bool bOk = false;
-                bool value = Fw::nameToBool(buffer, &bOk);
-                if(bOk)
+
+                if(isVariable)
                 {
-                    new FwMLBool(value, static_cast<FwMLArray*>(parent));
+                    bool bOk = false;
+                    bool value = Fw::nameToBool(buffer, &bOk);
+                    if(bOk)
+                    {
+                        new FwMLBool(value, static_cast<FwMLArray*>(parent));
+                    }
+                    else
+                    {
+                        new FwMLString(buffer, static_cast<FwMLArray*>(parent));
+                    }
                 }
                 else
                 {
@@ -1366,13 +1382,13 @@ FwMLBool::FwMLBool(bool value, FwMLArray* parent) :
 
 QByteArray FwMLBool::toUtf8() const
 {
-    return m_value ? "true" : "false";
+    return m_value ? Fw::constantTrue : Fw::constantFalse;
 }
 
 int FwMLBool::toInt(bool *bOk) const
 {
     (*bOk) = true;
-    return m_value ? 1 : 0;
+    return m_value;
 }
 
 quint32 FwMLBool::toUInt(bool* bOk) const
