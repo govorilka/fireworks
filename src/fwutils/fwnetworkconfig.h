@@ -5,6 +5,8 @@
 
 #include <QtNetwork/qnetworkinterface.h>
 
+class FwMLObject;
+
 class FwNetworkConfig : public QObject
 {
     Q_OBJECT
@@ -17,6 +19,8 @@ public:
     inline void setActiveInterfaceName(const QString& name);
 
     inline QNetworkInterface activeInterface() const;
+
+    void apply(FwMLObject* object);
 
 private:
     QString m_activeInterface;

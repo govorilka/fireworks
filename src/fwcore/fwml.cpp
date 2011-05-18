@@ -1378,20 +1378,20 @@ int FwMLBool::toInt(bool *bOk) const
 quint32 FwMLBool::toUInt(bool* bOk) const
 {
     (*bOk) = true;
-    return m_value ? quint32(1) : quint32(0);
+    return m_value;
 }
 
 FwMLNode* FwMLBool::clone() const
 {
-    FwMLBool* FwMLBoolClon = new FwMLBool();
-    FwMLBoolClon->m_value = m_value;
-    return FwMLBoolClon;
+    FwMLBool* newNode = new FwMLBool();
+    newNode->m_value = m_value;
+    return newNode;
 }
 
 bool FwMLBool::toBool(bool *bOk) const
 {
     (*bOk) = true;
-    return m_value ? true : false;
+    return m_value;
 }
 
 FwColor FwMLBool::toColor(bool *bOk) const

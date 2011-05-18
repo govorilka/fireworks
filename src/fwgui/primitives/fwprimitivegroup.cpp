@@ -93,7 +93,6 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
 
 void FwPrimitiveGroup::visibleChangedEvent()
 {
-    qDebug() << "FwPrimitiveGroup::visibleChangedEvent" << visibleOnScreen;
     foreach(FwPrimitive* item, m_primitives)
     {
         if(item->visibleOnScreen != (visibleOnScreen && item->m_visible))
@@ -113,7 +112,6 @@ void FwPrimitiveGroup::apply(FwMLObject *object)
     {
         if(!primitive->name().isEmpty())
         {
-            qDebug() << primitive->name();
             FwMLObject* childObject = object->attribute(primitive->name())->cast<FwMLObject>();
             if(childObject)
             {

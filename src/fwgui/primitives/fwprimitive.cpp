@@ -303,7 +303,6 @@ void FwPrimitive::apply(FwMLObject* object)
             FwPrimitive* sPrimitive = primitiveByName((linkObjectNode->value()));
             if(sPrimitive)
             {
-                qDebug() << " sPrimitive.name: " << sPrimitive->name();
                 link(sPrimitive->geometry());
             }
 
