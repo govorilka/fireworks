@@ -20,6 +20,7 @@ rectItemGroup
     rectItem1
     {
         zindex : 2,
+        visible : false,
         rect
         {
             x : 0,

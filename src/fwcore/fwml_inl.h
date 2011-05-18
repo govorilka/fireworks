@@ -20,6 +20,17 @@ void FwMLString::setValue(const QByteArray& value)
     m_value = value;
 }
 
+
+bool FwMLString::isEmpty() const
+{
+    return m_value.isEmpty();
+}
+
+QString FwMLString::toQString() const
+{
+    return QString::fromUtf8(m_value);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 quint32 FwMLUIntNumber::value() const
@@ -55,6 +66,21 @@ void FwMLDoubleNumber::setValue(double value)
 {
     m_value = value;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+bool FwMLBool::value() const
+{
+    return m_value;
+}
+
+void FwMLBool::setValue(bool value)
+{
+    m_value = value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
