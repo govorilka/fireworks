@@ -11,6 +11,8 @@
 #include "playerscene.h"
 #include "playerscene2.h"
 #include "playerscene3.h"
+#include "playerscene4.h"
+#include "playerscene5.h"
 
 #include "qpgraphicsview.h"
 
@@ -52,6 +54,28 @@ int main(int argc, char *argv[])
         if(rootObject.parse(&fwmlFile3))
         {
             playerScene3->apply(&rootObject);
+        }
+    }
+
+    PlayerScene4* playerScene4 = new PlayerScene4(4, &view);
+    QFile fwmlFile4(a.applicationDirPath() + QDir::separator() + "example4.fwml");
+    if(fwmlFile4.exists())
+    {
+        FwMLObject rootObject;
+        if(rootObject.parse(&fwmlFile4))
+        {
+            playerScene4->apply(&rootObject);
+        }
+    }
+
+    PlayerScene5* playerScene5 = new PlayerScene5(5, &view);
+    QFile fwmlFile5(a.applicationDirPath() + QDir::separator() + "example5.fwml");
+    if(fwmlFile5.exists())
+    {
+        FwMLObject rootObject;
+        if(rootObject.parse(&fwmlFile5))
+        {
+            playerScene5->apply(&rootObject);
         }
     }
 

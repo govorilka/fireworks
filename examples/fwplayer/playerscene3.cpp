@@ -25,7 +25,7 @@ void PlayerScene3::keyPressEvent(FwKeyPressEvent *event)
     {
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        view()->setActiveScene(1);
+        view()->setActiveScene(4);
         event->accept();
         return;
     }

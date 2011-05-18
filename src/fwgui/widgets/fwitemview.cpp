@@ -20,13 +20,16 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     needInitLayout(true),
     m_startItemsChanged(0),
     m_itemWidthDock(false),
-    m_itemHeightDock(false)
+    m_itemHeightDock(false),
+    m_itemColor(0xFFFFFFFF),
+    m_currentItemColor(0xFF000000)
 {
     addLayoutClass(FwHSliderLayout::staticClassName, &FwHSliderLayout::constructor);
     addLayoutClass(FwVSliderLayout::staticClassName, &FwVSliderLayout::constructor);
     addLayoutClass(FwLoopHSliderLayout::staticClassName, &FwLoopHSliderLayout::constructor);
     addLayoutClass(FwLoopVSliderLayout::staticClassName, &FwLoopVSliderLayout::constructor);
     addLayoutClass(FwPagesLayout::staticClassName, &FwPagesLayout::constructor);
+
 }
 
 FwItemView::~FwItemView()
