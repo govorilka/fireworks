@@ -312,13 +312,7 @@ void FwPrimitive::apply(FwMLObject* object)
     FwMLBool* visibleObj = object->attribute("visible")->cast<FwMLBool>();
     if(visibleObj)
     {
-        bOk = true;
-        qDebug() << "FwMLBool value is: " << visibleObj->toBool(&bOk);
-        if(bOk)
-        {
-            bool value = visibleObj->toBool(&bOk);
-            if(bOk) this->setVisible(value);
-        }
+       setVisible(visibleObj->value());
     }
 
     update();

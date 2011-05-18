@@ -12,15 +12,16 @@ rectItemGroup
     },
     geometry
     {
-        hPosition : "center",
-        vPosition : "middle"
+        hPosition : "right",
+        vPosition : "middle",
+
     },
     bgcolor : "green",
 
     rectItem1
     {
         zindex : 2,
-        visible : false,
+        visible : true,
         rect
         {
             x : 0,
@@ -55,7 +56,6 @@ rectItemGroup
         {
             hPosition : "right",
             vPosition : "middle",
-            link : "scene.rectItemGroup.rectItem1"
         },
         drawer
         {
