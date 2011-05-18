@@ -31,6 +31,7 @@ public:
         T_IntNumber,
         T_FloatNumber,
         T_DoubleNumber,
+        T_Bool,
         T_Object,
         T_Array,
     };
@@ -115,15 +116,19 @@ public:
     FwMLString(const QByteArray &value, const QByteArray& attr, FwMLObject* parent);
     FwMLString(const QByteArray &value, FwMLArray* parent);
 
-    QByteArray toUtf8() const;
 
     inline QByteArray value() const;
     inline void setValue(const QByteArray& value);
+
+    inline bool isEmpty() const;
 
     int toInt(bool* bOk) const;
     bool toBool(bool* bOk) const;
     FwColor toColor(bool* bOk) const;
     quint32 toUInt(bool* bOk) const;
+    QByteArray toUtf8() const;
+    inline QString  toQString() const;
+
 
     FwMLNode* clone() const;
 
@@ -284,6 +289,36 @@ public:
 
 private:
     QVector<FwMLNode*> m_data;
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+
+class FwMLBool: public FwMLBase<FwMLNode::T_Bool>
+{
+  typedef FwMLBase<FwMLNode::T_Bool> BaseClass;
+
+public:
+    friend class FwMLNode;
+
+    FwMLBool();
+    FwMLBool(bool value);
+    FwMLBool(bool value, const QByteArray& attrName, FwMLObject* parent);
+    FwMLBool(bool value, FwMLArray* parent);
+
+    inline bool value() const;
+    inline void setValue(bool value);
+
+    QByteArray toUtf8() const;
+
+    int toInt(bool* bOk) const;
+    bool toBool(bool *bOk) const;
+    FwColor toColor(bool *bOk) const;
+    quint32 toUInt(bool* bOk) const;
+
+    FwMLNode* clone() const;
+
+private:
+    bool m_value;
 };
 
 #include "fwml_inl.h"

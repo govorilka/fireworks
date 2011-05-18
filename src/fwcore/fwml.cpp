@@ -240,10 +240,9 @@ namespace
             {
                 bool bOk = false;
                 bool value = Fw::nameToBool(buffer, &bOk);
-                if(bOk)
+                if(bOk && isVariable)
                 {
-                    //TODO: Create new type
-                    new FwMLString(buffer, attribute, static_cast<FwMLObject*>(parent));
+                    new FwMLBool(value, attribute, static_cast<FwMLObject*>(parent));
                 }
                 else
                 {
@@ -321,8 +320,7 @@ namespace
                 bool value = Fw::nameToBool(buffer, &bOk);
                 if(bOk)
                 {
-                    //TODO: Added create new type
-                    new FwMLString(buffer, static_cast<FwMLArray*>(parent));
+                    new FwMLBool(value, static_cast<FwMLArray*>(parent));
                 }
                 else
                 {
@@ -447,6 +445,7 @@ namespace
         {
             data->type = FwMLNode::T_String;
             data->xcmd = X_STR;
+            data->isVariable = false;
             return;
         }
         throw FwMLParserException(c, data);
@@ -796,6 +795,7 @@ FwMLNode* FwMLString::clone() const
 {
     return new FwMLString(m_value);
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1341,4 +1341,61 @@ void FwMLArray::addNode(FwMLNode* node)
     }
     node->m_parent = this;
     m_data.append(node);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+FwMLBool::FwMLBool() :
+    BaseClass(),
+    m_value(false)
+{
+}
+
+FwMLBool::FwMLBool(bool value, const QByteArray &attrName, FwMLObject *parent) :
+    BaseClass(attrName, parent),
+    m_value(value)
+{
+}
+
+FwMLBool::FwMLBool(bool value, FwMLArray* parent) :
+    BaseClass(parent),
+    m_value(value)
+{
+}
+
+QByteArray FwMLBool::toUtf8() const
+{
+    return m_value ? "true" : "false";
+}
+
+int FwMLBool::toInt(bool *bOk) const
+{
+    (*bOk) = true;
+    return m_value ? 1 : 0;
+}
+
+quint32 FwMLBool::toUInt(bool* bOk) const
+{
+    (*bOk) = true;
+    return m_value ? quint32(1) : quint32(0);
+}
+
+FwMLNode* FwMLBool::clone() const
+{
+    FwMLBool* FwMLBoolClon = new FwMLBool();
+    FwMLBoolClon->m_value = m_value;
+    return FwMLBoolClon;
+}
+
+bool FwMLBool::toBool(bool *bOk) const
+{
+    (*bOk) = true;
+    return m_value ? true : false;
+}
+
+FwColor FwMLBool::toColor(bool *bOk) const
+{
+    (*bOk) = false;
+    return FwColor();
 }

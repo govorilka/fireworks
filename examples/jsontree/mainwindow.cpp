@@ -15,15 +15,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(m_treeView);
 
-    /*QByteArray fwml = "\"Scene\" : {\n"
+    QByteArray fwml = "\"Scene\" : {\n"
                       "\"background\" : \"123.png\", \n"
                       "\"size\" : { \n"
-                      "\"width\" : \"100\", \n"
-                      "\"height\" : \"100\" }, \n"
-                      "array[-56, 1, 2.25, 3e-3, 5.] \n"
-                      "}";*/
+                      "\"width\" : 100, \n"
+                      "\"height\" : 100 }, \n"
+                      "array[-56, 1, 2.25, 3e-3, 5.], \n"
+                      "\"stroka\" : \"value_str\",\n"
+                      "\"visible\" : true, \n"
+                      "\"visible_str\" : \"true\", \n"
+                      "\"stroka 2\" : \"true true\", \n"
+                      "\"zero_str\" : \"\" \n"
+                      "}";
 
-    QByteArray fwml = "bgcolor : \"orange\"";
+    //QByteArray fwml = "bgcolor : \"orange\", visible : false";
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);
     rootItem->setText(0, "root");
@@ -70,7 +75,8 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
     case FwMLNode::T_String:
         {
             parent->setText(1, "string");
-            parent->setText(2, QString::fromUtf8(node->cast<FwMLString>()->value()));
+            FwMLString* stringNode = node->cast<FwMLString>();
+            parent->setText(2, stringNode->isEmpty() ? "<empty>" : QString::fromUtf8(stringNode->value()));
         }
         break;
 
@@ -102,7 +108,7 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
             parent->setText(1, QString("array[%1]").arg(array->size()));
 
             int i = 0;
-            foreach(FwMLNode* child, array->data)
+            foreach(FwMLNode* child, array->toQVector())
             {
                 QTreeWidgetItem* childItem = new QTreeWidgetItem(parent);
                 childItem->setText(0, QString("[%1]").arg(i++));
@@ -110,7 +116,12 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
             }
         }
         break;
-
+    case FwMLNode::T_Bool:
+        {
+            parent->setText(1, "boolean");
+            parent->setText(2, QString::fromUtf8(node->toUtf8()));
+        }
+        break;
     default:
         break;
 

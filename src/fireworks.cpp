@@ -271,18 +271,28 @@ QByteArray Fw::horizontalPositionToName(HorizontalPosition position)
     return "";
 }
 
-bool Fw::nameToBool(const QByteArray&, bool* bOk)
+bool Fw::nameToBool(const QByteArray& value, bool* bOk)
 {
-    //TODO: Need writting this function
-    if(*bOk)
+    if(bOk) (*bOk) = false;
+    if(!value.isEmpty())
     {
-        (*bOk) = false;
+
+        if(value == "true")
+        {
+            if(bOk) (*bOk) = true;
+            return true;
+        }
+        else if(value == "false")
+        {
+            if(bOk) (*bOk) = true;
+            return false;
+        }
     }
+
     return false;
 }
 
 QByteArray Fw::boolToName(bool value)
 {
-    //TODO: Need writting this function
-    return "true";
+    return value ? "true": "false";
 }
