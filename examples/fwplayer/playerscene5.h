@@ -2,7 +2,8 @@
 #define PLAYERSCENE5_H
 
 #include "fwgui/fwscene.h"
-#include "fwgui/widgets/fwitemview.h"
+//#include "fwgui/widgets/fwitemview.h"
+#include "fwgui/widgets/fwcheckableitemview.h"
 
 
 class PlayerScene5 : public FwScene
@@ -15,7 +16,7 @@ public:
 protected:
     void keyPressEvent(FwKeyPressEvent *event);
 private:
-        FwItemView* m_itemView;
+       FwCheckableItemView* m_itemView;
 };
 
 #endif // PLAYERSCENE5_H

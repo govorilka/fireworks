@@ -34,7 +34,8 @@ HEADERS += \
     fwgui/widgets/fwtextview.h \
     fwgui/primitives/fwdrawer.h \
     fwgui/fwvertexarray.h \
-    fwgui/widgets/fwprogresswidget.h
+    fwgui/widgets/fwprogresswidget.h \
+    fwgui/widgets/fwcheckableitemview.h
 
 SOURCES += \
     fwgui/fwgraphicsview.cpp \
@@ -62,4 +63,5 @@ SOURCES += \
     fwgui/widgets/fwtextview.cpp \
     fwgui/primitives/fwdrawer.cpp \
     fwgui/fwvertexarray.cpp \
-    fwgui/widgets/fwprogresswidget.cpp
+    fwgui/widgets/fwprogresswidget.cpp \
+    fwgui/widgets/fwcheckableitemview.cpp

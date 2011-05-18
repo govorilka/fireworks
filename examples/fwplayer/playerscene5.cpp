@@ -12,7 +12,7 @@
 
 PlayerScene5::PlayerScene5(int id, FwGraphicsView* view) :
     BaseClass(id, view),
-    m_itemView(new FwItemView("itemView", this))
+    m_itemView(new FwCheckableItemView("itemView", this))
 {
     m_itemView->prepareGeometryChanged();
     m_itemView->show();
