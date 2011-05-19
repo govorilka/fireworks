@@ -22,14 +22,21 @@ itemView
 
   item
   {
-     class : "fireworks.primitives.String",
-     font
+     class : "fireworks.primitives.Rect",
+     rect
      {
-        family : "Arial",
-        pixelSize : 24
+         x : 0,
+         y : 0,
+         width : 30,
+         height : 30
      },
-     color : "white"
-  },
+     drawer
+     {
+         name : "RoundedRect",
+         bgcolor : "white",
+         radius : 3
+     }
+   },
   geometry
   {
      hPosition : "center",

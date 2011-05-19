@@ -17,9 +17,11 @@ PlayerScene5::PlayerScene5(int id, FwGraphicsView* view) :
     m_itemView->prepareGeometryChanged();
     m_itemView->show();
 
+    FwRectPrimitive* rectPrim = 0;
     for(int i = 0; i < 100; i++)
     {
-        m_itemView->addString(QString("item") + QString::number(i));
+        rectPrim = new FwRectPrimitive("item", m_itemView);
+        m_itemView->addItem(new FwRectPrimitive("item", m_itemView)); //addString(QString("item") + QString::number(i));
     }
 
     m_itemView->update();
