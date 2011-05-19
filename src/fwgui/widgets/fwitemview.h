@@ -31,7 +31,7 @@ public:
     void setItems(const QList<FwPrimitive*> items);
     inline void clear();
 
-    bool addItem(FwPrimitive* item);
+    virtual bool addItem(FwPrimitive* item);
     bool addItem(FwPrimitive* item, const QVariant& data);
     FwStringPrimitive* addString(const QString& string, const QVariant& data = QVariant());
     FwTextPrimitive* addText(const QString& text, const QVariant& data = QVariant());
@@ -81,6 +81,8 @@ protected:
     bool needInitLayout;
 
     void updateCurrent();
+
+    virtual void itemAddedEvent(FwPrimitive* item);
 
 private:
     QList<FwPrimitive*> m_items;

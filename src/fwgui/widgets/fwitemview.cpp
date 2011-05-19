@@ -106,9 +106,10 @@ bool FwItemView::addItem(FwPrimitive* item)
         {
             item->apply(m_itemTemplate);
         }
-
         item->setPenColor(m_itemColor);
+
         m_items.append(item);
+        itemAddedEvent(item);
 
         if(!m_current)
         {
@@ -434,4 +435,9 @@ void FwItemView::setItemHeightDock(bool enable)
         m_itemHeightDock = enable;
         updateItems(true);
     }
+}
+
+void FwItemView::itemAddedEvent(FwPrimitive* item)
+{
+    Q_UNUSED(item);
 }
