@@ -20,6 +20,14 @@ public:
 
     inline QNetworkInterface activeInterface() const;
 
+    QHostAddress ip() const;
+    QHostAddress netmask() const;
+    QHostAddress firstDNS() const;
+    QHostAddress secondDNS() const;
+    QHostAddress gateway() const;
+
+    QString mac(const QNetworkInterface& interface);
+
     void apply(FwMLObject* object);
 
 private:
@@ -45,4 +53,4 @@ QNetworkInterface FwNetworkConfig::activeInterface() const
     return QNetworkInterface();
 }
 
-#endif // FIREWORKS_NETWORKCONFIG_H
+#endif //FIREWORKS_NETWORKCONFIG_H
