@@ -35,6 +35,15 @@ namespace Fw
         VP_AfterBottom
     };
 
+    enum SchedulerTaskStatus
+    {
+        TS_Unknow,
+        TS_Start,
+        TS_Stop,
+        TS_Pause,
+        TS_UserRequest,
+    };
+
     enum BufferMode
     {
         BM_NoBuffer = 0,
