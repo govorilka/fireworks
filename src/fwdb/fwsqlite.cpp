@@ -233,13 +233,13 @@ FwSQLiteDatabase::~FwSQLiteDatabase()
     close();
 }
 
-void FwSQLiteDatabase::open(const QString& fileName) throw(FwSQLiteException&)
+void FwSQLiteDatabase::open(const QString& fileName, const QString& initScript) throw(FwSQLiteException&)
 {
     int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
-    open(fileName, flags);
+    open(fileName, initScript, flags);
 }
 
-void FwSQLiteDatabase::open(const QString& fileName, int flags) throw(FwSQLiteException&)
+void FwSQLiteDatabase::open(const QString& fileName, const QString& initScript, int flags) throw(FwSQLiteException&)
 {
     if(m_db)
     {
@@ -254,6 +254,11 @@ void FwSQLiteDatabase::open(const QString& fileName, int flags) throw(FwSQLiteEx
         m_db = 0;
         throw FwSQLiteException(error);
     }
+    if(!initScript.isEmpty())
+    {
+        execFile(initScript);
+    }
+
 }
 
 void FwSQLiteDatabase::close()
