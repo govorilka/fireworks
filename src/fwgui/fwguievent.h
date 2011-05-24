@@ -2,8 +2,11 @@
 #define FIREWORKS_GUIEVENT_H
 
 #include <QtCore/qcoreevent.h>
+#include <QtCore/qsize.h>
 
 #include "fireworks.h"
+
+class FwScene;
 
 class FwGuiEvent : public QEvent
 {
@@ -86,6 +89,105 @@ void FwKeyPressEvent::setText(const QString& text)
 int FwKeyPressEvent::count() const
 {
     return m_autoRepeatCount + 1;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+class FwResizeEvent : public FwGuiEventTmpl<Fw::E_Resize>
+{
+    typedef FwGuiEventTmpl<Fw::E_Resize> BaseClass;
+
+public:
+    FwResizeEvent();
+    FwResizeEvent(const QSize& olsSize, const QSize& newSize);
+
+    inline QSize oldSize() const;
+    inline QSize newSize() const;
+
+private:
+    QSize m_oldSize;
+    QSize m_newSize;
+};
+
+QSize FwResizeEvent::oldSize() const
+{
+    return m_oldSize;
+}
+
+QSize FwResizeEvent::newSize() const
+{
+    return m_newSize;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+class FwShowEvent : public FwGuiEventTmpl<Fw::E_Show>
+{
+    typedef FwGuiEventTmpl<Fw::E_Show> BaseClass;
+
+public:
+    FwShowEvent();
+    FwShowEvent(bool visibleOnScreen);
+
+    inline bool visibleOnScreen() const;
+
+private:
+    bool m_visibleOnScreen;
+};
+
+bool FwShowEvent::visibleOnScreen() const
+{
+    return m_visibleOnScreen;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+class FwHideEvent : public FwGuiEventTmpl<Fw::E_Hide>
+{
+    typedef FwGuiEventTmpl<Fw::E_Hide> BaseClass;
+
+public:
+    FwHideEvent();
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
+class FwSceneShowEvent : public FwGuiEventTmpl<Fw::E_SceneShow>
+{
+    typedef FwGuiEventTmpl<Fw::E_SceneShow> BaseClass;
+
+public:
+    FwSceneShowEvent(FwScene* previous);
+
+    inline FwScene* previous() const;
+
+private:
+    FwScene* m_previous;
+};
+
+FwScene* FwSceneShowEvent::previous() const
+{
+    return m_previous;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+class FwSceneHideEvent : public FwGuiEventTmpl<Fw::E_SceneHide>
+{
+    typedef FwGuiEventTmpl<Fw::E_SceneHide> BaseClass;
+
+public:
+    FwSceneHideEvent(FwScene* next);
+
+    inline FwScene* next() const;
+
+private:
+    FwScene* m_next;
+};
+
+FwScene* FwSceneHideEvent::next() const
+{
+    return m_next;
 }
 
 #endif // FIREWORKS_GUIEVENT_H

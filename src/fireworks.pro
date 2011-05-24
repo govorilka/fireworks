@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network //gui - temporary, for QRegion class
+QT       += core network
+QT       -= gui
 
 win32 {
    TARGET = ../../bin/fireworks

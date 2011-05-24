@@ -32,7 +32,7 @@ void FwGraphicsView::update()
 
 void FwGraphicsView::update(const QRect& rect)
 {
-    m_dirtyRegion = m_dirtyRegion.united(rect);
+    m_dirtyRegion.addRect(rect);
     if(!m_dirtyRegion.isEmpty() && m_needPostUpdateEvent)
     {
         QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateLater));

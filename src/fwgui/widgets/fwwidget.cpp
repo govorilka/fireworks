@@ -1,12 +1,11 @@
 #include <QtCore/qpropertyanimation.h>
+#include <QtCore/qcoreapplication.h>
 #include <QtCore/qdebug.h>
-
-#include <QtGui/qevent.h>
-#include <QtGui/qapplication.h>
 
 #include "fwwidget.h"
 
 #include "fwgui/fwscene.h"
+#include "fwgui/fwguievent.h"
 
 /*!
 \class FwWidget
@@ -82,6 +81,26 @@ bool FwWidget::event(QEvent * e)
         break;
     }
 
+    if(e->type() == FwGuiEvent::qtTypeID())
+    {
+        FwGuiEvent* fwEvent = static_cast<FwGuiEvent*>(e);
+        switch(fwEvent->eventType())
+        {
+        case Fw::E_Show:
+            showEvent(static_cast<FwShowEvent*>(fwEvent));
+            showAnimationFinished();
+            return true;
+
+        case Fw::E_Hide:
+            hideEvent(static_cast<FwHideEvent*>(e));
+            stopVisibleTimer();
+            return true;
+
+        default:
+            break;
+        }
+    }
+
     return BaseClass::event(e);
 }
 
@@ -137,17 +156,12 @@ void FwWidget::timerEvent(QTimerEvent* event)
     }
 }
 
-void FwWidget::showEvent(QShowEvent* event)
+void FwWidget::showEvent(FwShowEvent* event)
 {
     event->accept();
 }
 
-void FwWidget::hideEvent(QHideEvent* event)
-{
-    event->accept();
-}
-
-void FwWidget::resizeEvent(QResizeEvent* event)
+void FwWidget::hideEvent(FwHideEvent* event)
 {
     event->accept();
 }
@@ -173,14 +187,10 @@ void FwWidget::visibleChangedEvent()
     BaseClass::visibleChangedEvent();
     if(isVisibleOnScreen())
     {
-        QShowEvent event;
-        showEvent(&event);
-        showAnimationFinished();
+        QCoreApplication::sendEvent(this, &FwShowEvent());
     }
     else
     {
-        QHideEvent event;
-        hideEvent(&event);
-        stopVisibleTimer();
+        QCoreApplication::sendEvent(this, &FwHideEvent());
     }
 }

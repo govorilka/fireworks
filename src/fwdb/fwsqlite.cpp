@@ -160,9 +160,9 @@ bool FwSQLiteQuery::columnBool(int column)
     return columnInt(column) != 0;
 }
 
-QColor FwSQLiteQuery::columnColor(int column)
+FwColor FwSQLiteQuery::columnColor(int column)
 {
-    return QColor(static_cast<quint32>(columnInt(column)));
+    return FwColor(static_cast<quint32>(columnInt(column)));
 }
 
 void FwSQLiteQuery::finalize()
@@ -201,12 +201,12 @@ void FwSQLiteQuery::bindDateTime(int index, const QDateTime& datetime)
     }
 }
 
-void  FwSQLiteQuery::bindColor(int index, const  QColor& color)
+void  FwSQLiteQuery::bindColor(int index, const  FwColor& color)
 {
     FwSQLiteQueryData* data = this->data();
     if(data && data->stmt)
     {
-        sqlite3_bind_int(data->stmt, index, static_cast<qint32>(color.rgba()));
+        sqlite3_bind_int(data->stmt, index, static_cast<qint32>(color.argb()));
     }
 }
 

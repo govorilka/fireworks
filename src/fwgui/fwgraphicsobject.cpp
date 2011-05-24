@@ -2,8 +2,7 @@
 #include <QtCore/qpropertyanimation.h>
 #include <QtCore/qcoreapplication.h>
 #include <QtCore/qdebug.h>
-
-#include <QtGui/qevent.h>
+#include <QtCore/qcoreevent.h>
 
 #include "fwgraphicsobject.h"
 #include "fwscene.h"
@@ -87,8 +86,7 @@ void FwGraphicsObject::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
     if(oldRect.size() != rect.size())
     {
-        QResizeEvent resizeEvent(rect.size(), m_oldSize);
-        QCoreApplication::sendEvent(this, &resizeEvent);
+        QCoreApplication::sendEvent(this, &FwResizeEvent(m_oldSize, rect.size()));
     }
     FwRectPrimitive::geometryChangedEvent(oldRect, rect);
     m_childrenRect = rect;
@@ -104,20 +102,14 @@ bool FwGraphicsObject::event(QEvent *e)
         case Fw::E_KeyPress:
             keyPressEvent(static_cast<FwKeyPressEvent*>(fwEvent));
             return true;
+
+        case Fw::E_Resize:
+            resizeEvent(static_cast<FwResizeEvent*>(e));
+            return true;
+
         default:
             break;
         }
-    }
-
-    switch(e->type())
-    {
-    case QEvent::Resize:
-        resizeEvent(static_cast<QResizeEvent*>(e));
-        e->accept();
-        return true;
-
-    default:
-        break;
     }
 
     return QObject::event(e);
@@ -128,7 +120,7 @@ void FwGraphicsObject::keyPressEvent(FwKeyPressEvent* event)
     Q_UNUSED(event);
 }
 
-void FwGraphicsObject::resizeEvent(QResizeEvent* event)
+void FwGraphicsObject::resizeEvent(FwResizeEvent* event)
 {
     Q_UNUSED(event);
 }

@@ -4,7 +4,6 @@ HEADERS += \
     fwgui/fwgraphicsview_inl.h \
     fwgui/fwpixmap.h \
     fwgui/fwscene.h \
-    fwgui/fwscene_inl.h \
     fwgui/fwgraphicsobject_inl.h \
     fwgui/fwgraphicsobject.h \
     fwgui/fwbrush.h \
@@ -35,7 +34,8 @@ HEADERS += \
     fwgui/primitives/fwdrawer.h \
     fwgui/fwvertexarray.h \
     fwgui/widgets/fwprogresswidget.h \
-    fwgui/widgets/fwcheckableitemview.h
+    fwgui/widgets/fwcheckableitemview.h \
+    fwgui/fwregion.h
 
 SOURCES += \
     fwgui/fwgraphicsview.cpp \
@@ -64,4 +64,5 @@ SOURCES += \
     fwgui/primitives/fwdrawer.cpp \
     fwgui/fwvertexarray.cpp \
     fwgui/widgets/fwprogresswidget.cpp \
-    fwgui/widgets/fwcheckableitemview.cpp
+    fwgui/widgets/fwcheckableitemview.cpp \
+    fwgui/fwregion.cpp

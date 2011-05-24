@@ -8,7 +8,7 @@
 #include <QtCore/qstringlist.h>
 #include <QtCore/qreadwritelock.h>
 
-#include <QtGui/qcolor.h> //TEMPORARY
+#include "fwcore/fwcolor.h"
 
 #include "fwdb/sqlite/sqlite3.h"
 
@@ -78,7 +78,7 @@ public:
     int columnInt(int column);
     QUrl columnUrl(int column);
     bool columnBool(int column);
-    QColor columnColor(int column);
+    FwColor columnColor(int column);
 
     void finalize();
 
@@ -86,7 +86,7 @@ public:
     void bindText(int index, const QString& text);
     void bindInt(int index, int value);
     void bindDateTime(int index, const QDateTime& datetime);
-    void bindColor(int index, const  QColor& color);
+    void bindColor(int index, const FwColor& color);
 
     void reset();
 

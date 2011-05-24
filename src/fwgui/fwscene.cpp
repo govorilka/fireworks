@@ -1,11 +1,11 @@
 #include <QtCore/qcoreevent.h>
 #include <QtCore/qcoreapplication.h>
 #include <QtCore/qdebug.h>
-
-#include <QtGui/qevent.h>
+#include <QtCore/qcoreevent.h>
 
 #include "fwscene.h"
 #include "fwgraphicsview.h"
+#include "fwguievent.h"
 
 #include "fwgui/widgets/fwwidget.h"
 
@@ -37,10 +37,8 @@ FwScene::~FwScene()
 
 void FwScene::showEvent(FwSceneShowEvent* event)
 {
-    qDebug() << "FwScene::showEvent" << 1;
     Q_UNUSED(event);
     setVisible(true);
-    qDebug() << "FwScene::showEvent" << 2;
 }
 
 void FwScene::hideEvent(FwSceneHideEvent* event)
@@ -60,19 +58,22 @@ void FwScene::hideAnimationFinished()
 
 bool FwScene::event(QEvent * e)
 {
-    if(e->type() == FwSceneShowEvent::typeID())
+    if(e->type() == FwGuiEvent::qtTypeID())
     {
-        FwSceneShowEvent* showEvent = static_cast<FwSceneShowEvent*>(e);
-        showEventProcessed(showEvent);
-        e->accept();
-        return true;
-    }
-    else if(e->type() == FwSceneHideEvent::typeID())
-    {
-        FwSceneHideEvent* hideEvent = static_cast<FwSceneHideEvent*>(e);
-        hideEventProcessed(hideEvent);
-        e->accept();
-        return true;
+        FwGuiEvent* fwEvent = static_cast<FwGuiEvent*>(e);
+        switch(fwEvent->eventType())
+        {
+        case Fw::E_SceneShow:
+            showEvent(static_cast<FwSceneShowEvent*>(fwEvent));
+            return true;
+
+        case Fw::E_SceneHide:
+            hideEvent(static_cast<FwSceneHideEvent*>(e));
+            return true;
+
+        default:
+            break;
+        }
     }
 
     return BaseClass::event(e);
@@ -98,32 +99,4 @@ void FwScene::hideEventProcessed(FwSceneHideEvent* e)
 bool FwScene::isActive() const
 {
     return m_view && m_view->m_activeScene == this;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-FwSceneShowEvent::FwSceneShowEvent(FwScene* previous) :
-    BaseClass(static_cast<QEvent::Type>(typeID())),
-    m_previous(previous)
-{
-}
-
-int FwSceneShowEvent::typeID()
-{
-    static int _typeID = QEvent::registerEventType();
-    return _typeID;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-FwSceneHideEvent::FwSceneHideEvent(FwScene* next) :
-    BaseClass(static_cast<QEvent::Type>(typeID())),
-    m_next(next)
-{
-}
-
-int FwSceneHideEvent::typeID()
-{
-    static int _typeID = QEvent::registerEventType();
-    return _typeID;
 }

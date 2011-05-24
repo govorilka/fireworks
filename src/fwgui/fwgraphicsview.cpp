@@ -213,7 +213,7 @@ void FwGraphicsView::invalidateChanges()
         if(!m_dirtyRegion.isEmpty())
         {
             invalidateCanvas(m_dirtyRegion);
-            m_dirtyRegion = QRegion();
+            m_dirtyRegion.clear();
         }
 
         m_needPostUpdateEvent = true;

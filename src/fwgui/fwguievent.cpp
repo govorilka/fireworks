@@ -13,16 +13,47 @@ int FwGuiEvent::qtTypeID()
 
 //////////////////////////////////////////////////////////////////////////////
 
-FwKeyPressEvent::FwKeyPressEvent() :
-    BaseClass(),
-    m_key(0),
-    m_autoRepeatCount(0)
-{
-}
-
 FwKeyPressEvent::FwKeyPressEvent(int key, int autoRepeatCount) :
     BaseClass(),
     m_key(key),
     m_autoRepeatCount(autoRepeatCount)
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+FwResizeEvent::FwResizeEvent(const QSize& olsSize, const QSize& newSize) :
+    BaseClass()
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+FwShowEvent::FwShowEvent(bool visibleOnScreen) :
+    BaseClass(),
+    m_visibleOnScreen(visibleOnScreen)
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+FwHideEvent::FwHideEvent() :
+    BaseClass()
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+FwSceneShowEvent::FwSceneShowEvent(FwScene* previous) :
+    BaseClass(),
+    m_previous(previous)
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+FwSceneHideEvent::FwSceneHideEvent(FwScene* next) :
+    BaseClass(),
+    m_next(next)
 {
 }
