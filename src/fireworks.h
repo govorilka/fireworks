@@ -64,6 +64,11 @@ namespace Fw
     {
         E_Unknow,
         E_KeyPress,
+        E_Resize,
+        E_Show,
+        E_Hide,
+        E_SceneShow,
+        E_SceneHide
     };
 
     enum Navigation

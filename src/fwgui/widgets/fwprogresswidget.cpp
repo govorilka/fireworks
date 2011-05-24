@@ -1,3 +1,5 @@
+#include <QtGlobal>
+
 #include "fwprogresswidget.h"
 
 #include "fwcore/fwml.h"
@@ -89,7 +91,8 @@ void FwProgressWidget::updateValueDisplay(const QRect& rect, bool byUser)
     QRect newProgressRect = rect;
     if(m_value == m_minValue)
     {
-        newProgressRect.setWidth(qMax(0., normalMinProgressWidth));
+        qreal null = 0.;
+        newProgressRect.setWidth(qMax(null, normalMinProgressWidth));
     }
     else if(m_value < m_maxValue)
     {

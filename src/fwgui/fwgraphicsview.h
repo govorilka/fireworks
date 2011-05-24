@@ -6,11 +6,10 @@
 #include <QtCore/qhash.h>
 #include <QtCore/qplugin.h>
 
-#include <QtGui/qregion.h>
-
 #include "fireworks.h"
 
 #include "fwgui/fwpixmap.h"
+#include "fwgui/fwregion.h"
 
 #include "fwtypography/fwfont.h"
 
@@ -63,7 +62,7 @@ public:
 protected:
     virtual void keyPressEvent(FwKeyPressEvent* event);
 
-    virtual void invalidateCanvas(const QRegion& region) = 0;
+    virtual void invalidateCanvas(const FwRegion& region) = 0;
 
     virtual FwFontData* createFontData(const FwFontDescription& desc) = 0;
 
@@ -84,7 +83,7 @@ private:
     bool m_needPostUpdateEvent;
     bool m_needInvalidate;
 
-    QRegion m_dirtyRegion;
+    FwRegion m_dirtyRegion;
 };
 
 #include "fwgui/fwgraphicsview_inl.h"

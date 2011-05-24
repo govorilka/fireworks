@@ -1,8 +1,6 @@
 #ifndef FIREWORKS_GRAPHICSRECTITEM_H
 #define FIREWORKS_GRAPHICSRECTITEM_H
 
-#include <QtGui/qcolor.h>
-
 #include "fwgui/fwbrush.h"
 #include "fwgui/fwpixmap.h"
 

@@ -22,6 +22,8 @@ public:
     inline quint8 alpha() const;
     inline void setAlpha(quint8 alpha);
 
+    inline quint32 argb() const;
+
     inline bool blending() const;
     inline void setBlending(bool blending);
 
@@ -87,6 +89,14 @@ quint8 FwColor::alpha() const
 void FwColor::setAlpha(quint8 alpha)
 {
     m_alpha = alpha;
+}
+
+quint32 FwColor::argb() const
+{
+    return ((m_alpha & 0xff) << 24) |
+           ((m_red & 0xff) << 16) |
+           ((m_green & 0xff) << 8) |
+            (m_blue & 0xff);
 }
 
 bool FwColor::blending() const

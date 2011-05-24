@@ -4,8 +4,6 @@
 #include <QtCore/qlist.h>
 #include <QtCore/qcoreevent.h>
 
-#include <QtGui/qregion.h>
-
 #include "fwgui/fwgraphicsobject.h"
 
 #include "fwtypography/fwfont.h"
@@ -59,39 +57,14 @@ private:
     QList<FwWidget*> m_widgets;
 };
 
-////////////////////////////////////////////////////////////////////////////////
-
-class FwSceneShowEvent : public QEvent
+int FwScene::id() const
 {
-    typedef QEvent BaseClass;
+    return m_id;
+}
 
-public:
-    FwSceneShowEvent(FwScene* next);
-
-    static int typeID();
-
-    inline FwScene* previous() const;
-
-private:
-    FwScene* m_previous;
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
-class FwSceneHideEvent : public QEvent
+FwGraphicsView* FwScene::view() const
 {
-    typedef QEvent BaseClass;
-public:
-    FwSceneHideEvent(FwScene* next);
-
-    static int typeID();
-
-    inline FwScene* next() const;
-
-private:
-    FwScene* m_next;
-};
-
-#include "fwgui/fwscene_inl.h"
+    return m_view;
+}
 
 #endif // FWSCENE_H

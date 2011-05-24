@@ -1,7 +1,5 @@
 #include <QtCore/qdebug.h>
 
-#include <QtGui/qregion.h>
-
 #include "fwprimitivegroup.h"
 #include "fwdrawer.h"
 

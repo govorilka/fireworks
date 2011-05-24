@@ -4,25 +4,20 @@
 #include <QtCore/qlist.h>
 #include <QtCore/qrect.h>
 
-#include <QtGui/qregion.h>
-
 #include "fwtypography/fwfont.h"
 
 #include "fwgui/fwgraphicsobject.h"
 
 class FwScene;
 
-class Primitive;
-class PrimitiveGroup;
-class RootPrimitive;
 class FwWidget;
 
 class QPropertyAnimation;
 class QEvent;
 class QTimerEvent;
-class QShowEvent;
-class QHideEvent;
-class QResizeEvent;
+
+class FwShowEvent;
+class FwHideEvent;
 
 class FwWidget : public FwGraphicsObject
 {
@@ -44,9 +39,8 @@ public:
 
 protected:
     virtual void timerEvent(QTimerEvent* event);
-    virtual void showEvent(QShowEvent* event);
-    virtual void hideEvent(QHideEvent* event);
-    virtual void resizeEvent(QResizeEvent* event);
+    virtual void showEvent(FwShowEvent* event);
+    virtual void hideEvent(FwHideEvent* event);
     virtual void fontChangedEvent(const FwFont& font);
 
     virtual void visibleChangedEvent();

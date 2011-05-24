@@ -3,8 +3,6 @@
 
 #include <QtCore/qobject.h>
 
-#include <QtGui/qcolor.h>
-
 #include "fwgui/primitives/fwprimitivegroup.h"
 
 #include "fwtypography/fwfont.h"
@@ -12,7 +10,9 @@
 class QResizeEvent;
 class QPropertyAnimation;
 
+class FwResizeEvent;
 class FwKeyPressEvent;
+
 class FwObjectGraphicsItem;
 
 class FwGraphicsObject : public QObject, public FwPrimitiveGroup
@@ -45,7 +45,7 @@ protected:
     void geometryChangedEvent(const QRect &oldRect, QRect &rect);
 
     virtual void keyPressEvent(FwKeyPressEvent* event);
-    virtual void resizeEvent(QResizeEvent* event);
+    virtual void resizeEvent(FwResizeEvent* event);
 
 protected slots:
     virtual void showAnimationFinished() = 0;
