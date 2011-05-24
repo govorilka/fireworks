@@ -187,7 +187,7 @@ void FwWidget::visibleChangedEvent()
     BaseClass::visibleChangedEvent();
     if(isVisibleOnScreen())
     {
-        QCoreApplication::sendEvent(this, &FwShowEvent());
+        QCoreApplication::sendEvent(this, &FwShowEvent(isVisibleOnScreen()));
     }
     else
     {
