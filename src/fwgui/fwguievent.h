@@ -126,7 +126,6 @@ class FwShowEvent : public FwGuiEventTmpl<Fw::E_Show>
     typedef FwGuiEventTmpl<Fw::E_Show> BaseClass;
 
 public:
-    FwShowEvent();
     FwShowEvent(bool visibleOnScreen);
 
     inline bool visibleOnScreen() const;
