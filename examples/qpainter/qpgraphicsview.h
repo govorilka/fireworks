@@ -45,9 +45,11 @@ public:
 
     FwVertexArray* createVertexArray() const;
 
+    static QRegion convert(const FwRegion& region);
+
 protected:
 
-    void invalidateCanvas(const QRegion& region);
+    void invalidateCanvas(const FwRegion& region);
 
     FwFontData* createFontData(const FwFontDescription& desc);
 
