@@ -45,9 +45,6 @@ protected:
 
     virtual void visibleChangedEvent();
 
-    //void showEventProcessed(QShowEvent* event);
-    //void hideEventProcessed(QHideEvent* event);
-
     void showAnimationFinished();
     void hideAnimationFinished();
 

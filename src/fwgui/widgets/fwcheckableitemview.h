@@ -1,18 +1,12 @@
 #ifndef FIREWORKS_CHECKABLEITEMVIEW_H
 #define FIREWORKS_CHECKABLEITEMVIEW_H
 
-#include "fwgui/primitives/fwpixmapprimitive.h"
-
 #include "fwgui/widgets/fwitemview.h"
 
-#include "fwgui/primitives/fwprimitivegroup.h"
+#include "fwgui/fwpixmap.h"
 
 class FwCheckableItem;
 class FwPixmapPrimitive;
-
-const FwPixmap m_pixmapCheckOn;
-const FwPixmap m_pixmapCheckOff;
-
 
 class FwCheckableItemView : public FwItemView
 {
@@ -22,18 +16,37 @@ class FwCheckableItemView : public FwItemView
 public:
     FwCheckableItemView(const QByteArray& name, FwPrimitiveGroup* parent);
 
-
     bool check(FwPrimitive* item) const;
     void setCheck(FwPrimitive* item, bool value);
 
+    inline FwPixmap pixmapCheckOn() const;
+    void setPixmapCheckOn(const FwPixmap& pixmap);
+
+    inline FwPixmap pixmapCheckOff() const;
+    void setPixmapCheckOff(const FwPixmap& pixmap);
+
+    void apply(FwMLObject *object);
+
 protected:
     void itemAddedEvent(FwPrimitive* item);
-
+    void itemTriggered(FwPrimitive* item);
 
 private:
     QHash<FwPrimitive*, FwCheckableItem*> m_checkableItems;
-
+    FwPixmap m_pixmapCheckOn;
+    FwPixmap m_pixmapCheckOff;
+    FwMLObject* m_checkboxTemplate;
 };
+
+FwPixmap FwCheckableItemView::pixmapCheckOn() const
+{
+    return m_pixmapCheckOn;
+}
+
+FwPixmap FwCheckableItemView::pixmapCheckOff() const
+{
+    return m_pixmapCheckOff;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

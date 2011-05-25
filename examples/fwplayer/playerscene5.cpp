@@ -16,7 +16,7 @@ PlayerScene5::PlayerScene5(int id, FwGraphicsView* view) :
     m_itemView->show();
 
     m_itemView->prepareItemsChanged();
-    for(int i = 0; i < 100; i++)
+    for(int i = 0; i < 5; i++)
     {
         m_itemView->addString("item" + QString::number(i));
     }
@@ -34,12 +34,14 @@ void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
         view()->setActiveScene(1);
         event->accept();
         return;
+
     case Qt::Key_Right:
     case Qt::Key_Left:
     case Qt::Key_Up:
     case Qt::Key_Down:
     case Qt::Key_Home:
     case Qt::Key_End:
+    case Qt::Key_Space:
         QCoreApplication::sendEvent(m_itemView, event);
         break;
     }
