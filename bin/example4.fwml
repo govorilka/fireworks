@@ -30,6 +30,7 @@ itemView
      },
      color : "white"
   },
+  
   geometry
   {
      hPosition : "center",

@@ -8,8 +8,6 @@
 
 #include "fwgui/primitives/fwrectprimitive.h"
 
-
-
 PlayerScene5::PlayerScene5(int id, FwGraphicsView* view) :
     BaseClass(id, view),
     m_itemView(new FwCheckableItemView("itemView", this))
@@ -17,12 +15,12 @@ PlayerScene5::PlayerScene5(int id, FwGraphicsView* view) :
     m_itemView->prepareGeometryChanged();
     m_itemView->show();
 
-    FwRectPrimitive* rectPrim = 0;
+    m_itemView->prepareItemsChanged();
     for(int i = 0; i < 100; i++)
     {
-        rectPrim = new FwRectPrimitive("item", m_itemView);
-        m_itemView->addItem(new FwRectPrimitive("item", m_itemView)); //addString(QString("item") + QString::number(i));
+        m_itemView->addString("item" + QString::number(i));
     }
+    m_itemView->updateItems();
 
     m_itemView->update();
 }
