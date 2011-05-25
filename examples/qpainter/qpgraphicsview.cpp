@@ -96,15 +96,25 @@ FwPixmapData* QPGraphicsView::createBuffer(Fw::BufferMode mode, const QSize& siz
     return new QPPixmapData(pixmap, "");
 }
 
-void QPGraphicsView::invalidateCanvas(const QRegion& region)
+void QPGraphicsView::invalidateCanvas(const FwRegion& region)
 {
     if(m_widget)
     {
-        m_widget->update(region);
+        m_widget->update(convert(region));
     }
 }
 
 FwVertexArray* QPGraphicsView::createVertexArray() const
 {
     return new QPVertexArray();
+}
+
+QRegion QPGraphicsView::convert(const FwRegion& region)
+{
+    QRegion qregion;
+    foreach(QRect rect, region.rects())
+    {
+        qregion = qregion.united(rect);
+    }
+    return qregion;
 }
