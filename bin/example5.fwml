@@ -20,20 +20,42 @@ itemView
     margin : 16
   },
 
-  item
-  {
-     class : "fireworks.primitives.String",
-     font
-     {
-        family : "Arial",
-        pixelSize : 24
-     },
-     color : "white"
-  },
-  
-  geometry
-  {
-     hPosition : "center",
-     vPosition : "middle"
-  }
+    item
+    {
+        class : "fireworks.primitives.String",
+        font
+        {
+            family : "Arial",
+            pixelSize : 24
+        },
+        color : "white"
+    },
+
+    geometry
+    {
+        hPosition : "center",
+        vPosition : "middle"
+    },
+
+    checkbox
+    {
+        x : 10,
+        geometry
+        {
+           hPosition : "afterright",
+           vPosition : "middle",
+        },
+    },
+
+    pixmapCheckOn
+    {
+        source : "./images/checkon.png",
+        blending : true
+    },
+
+    pixmapCheckOff
+    {
+        source : "./images/checkoff.png",
+        blending : true
+    }
 }

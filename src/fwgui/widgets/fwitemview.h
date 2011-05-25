@@ -83,6 +83,7 @@ protected:
     void updateCurrent();
 
     virtual void itemAddedEvent(FwPrimitive* item);
+    virtual void itemTriggered(FwPrimitive* item);
 
 private:
     QList<FwPrimitive*> m_items;

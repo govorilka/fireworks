@@ -326,15 +326,31 @@ FwItemLayout* FwItemView::createLayout(const QByteArray& className)
 
 void FwItemView::keyPressEvent(FwKeyPressEvent* keyEvent)
 {
-    if(m_current && m_layout->canNext())
+    if(m_current)
     {
-        FwPrimitive* candidatPrimitive = m_layout->nextItem(m_items, m_current, keyEvent);
-        if(candidatPrimitive)
+        switch(keyEvent->key())
         {
-            setCurrent(candidatPrimitive);
+        case Qt::Key_Space:
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            itemTriggered(m_current);
             keyEvent->accept();
+            break;
+
+        default:
+            if(m_layout->canNext())
+            {
+                FwPrimitive* candidatPrimitive = m_layout->nextItem(m_items, m_current, keyEvent);
+                if(candidatPrimitive)
+                {
+                    setCurrent(candidatPrimitive);
+                    keyEvent->accept();
+                }
+            }
         }
     }
+
+    BaseClass::keyPressEvent(keyEvent);
 }
 
 void FwItemView::updateCurrent()
@@ -438,6 +454,11 @@ void FwItemView::setItemHeightDock(bool enable)
 }
 
 void FwItemView::itemAddedEvent(FwPrimitive* item)
+{
+    Q_UNUSED(item);
+}
+
+void FwItemView::itemTriggered(FwPrimitive* item)
 {
     Q_UNUSED(item);
 }
