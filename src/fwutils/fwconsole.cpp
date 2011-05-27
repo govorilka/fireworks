@@ -18,11 +18,21 @@ void FwConsole::writeLine(const QString& line)
 
 bool FwConsole::execCommand(const QString& command, const QStringList& params)
 {
-    if(m_commands.contains(command))
+    QString tempCommand = command;
+    QStringList tempParams = params;
+
+    CommandFunc commandFunction = m_commands.value(tempCommand, 0);
+    while(!commandFunction && !tempParams.isEmpty())
     {
-        CommandFunc commandFunction = m_commands.value((command));
-        return commandFunction(m_receiver, params, &errorMessage);
+        tempCommand += " " + tempParams.takeFirst();
+        commandFunction = m_commands.value(tempCommand, 0);
     }
+
+    if(commandFunction)
+    {
+        return commandFunction(m_receiver, tempParams, &errorMessage);
+    }
+
     errorMessage = QString("Unknow command %1").arg(command);
     return false;
 }
