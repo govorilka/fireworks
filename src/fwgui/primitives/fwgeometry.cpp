@@ -107,3 +107,28 @@ void FwGeometry::apply()
         (*iterAnchor)->updateGeometryRect();
     }
 }
+
+void FwGeometry::unlink(FwPrimitive* primitive)
+{
+    Q_ASSERT(contains(primitive));
+
+    int array_size = anchors.size();
+    if(array_size > 1)
+    {
+        QVarLengthArray<FwPrimitive*> newAnchors(array_size - 1);
+        FwPrimitive** iterAnchor = anchors.data();
+        for(int i = 0, j = 0; i < array_size; i++, iterAnchor++)
+        {
+            if((*iterAnchor) != primitive)
+            {
+                newAnchors[j] = (*iterAnchor);
+                j++;
+            }
+        }
+        anchors = newAnchors;
+    }
+    else
+    {
+        anchors.clear();
+    }
+}

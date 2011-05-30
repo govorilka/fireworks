@@ -328,7 +328,7 @@ void FwSQLiteDatabase::execFile(QIODevice *device) throw(FwSQLiteException&)
     {
         if(!command.isEmpty())
         {
-            exec(command);
+            exec(QString::fromUtf8(command));
         }
     }
 

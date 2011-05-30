@@ -22,29 +22,33 @@ itemView
 
     item
     {
-        class : "fireworks.primitives.String",
-        font
+        width : 100, height : 32,
+        bgcolor: red;
+        caption
         {
-            family : "Arial",
-            pixelSize : 24
+            x : 10,
+            class : "fireworks.primitives.String",
+            font
+            {
+                family : "Arial",
+                pixelSize : 24
+            },
+            color : "white"
         },
-        color : "white"
+        checkbox
+        {
+            x : 10,
+            geometry
+            {
+               vPosition : "middle",
+            },
+        },
     },
 
     geometry
     {
         hPosition : "center",
         vPosition : "middle"
-    },
-
-    checkbox
-    {
-        x : 10,
-        geometry
-        {
-           hPosition : "afterright",
-           vPosition : "middle",
-        },
     },
 
     pixmapCheckOn

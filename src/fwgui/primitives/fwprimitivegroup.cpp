@@ -132,11 +132,6 @@ void FwPrimitiveGroup::invalidateChildren()
 {
     if(childrenDirty)
     {
-        foreach(FwPrimitiveGroup* group, m_groups)
-        {
-            group->invalidateChildren();
-        }
-
         if(needSortZIndex)
         {
             if(m_primitives.size() > 1)
@@ -144,6 +139,18 @@ void FwPrimitiveGroup::invalidateChildren()
                 qSort(m_primitives.begin(), m_primitives.end(), FwPrimitive::zIndexLessThan);
             }
             needSortZIndex = false;
+        }
+
+        if(childrenRectDirty)
+        {
+            invalidateChildrenRect();
+            childSizeChanged = false;
+            childrenRectDirty = false;
+        }
+
+        foreach(FwPrimitiveGroup* group, m_groups)
+        {
+            group->invalidateChildren();
         }
 
         if(childrenRectDirty)
@@ -220,6 +227,5 @@ FwPrimitive* FwPrimitiveGroup::primitiveByName(const QList<QByteArray>& name, in
             }
         }
     }
-
     return 0;
 }
