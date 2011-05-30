@@ -76,7 +76,7 @@ protected:
     void keyPressEvent(FwKeyPressEvent* keyEvent);
 
     void geometryChangedEvent(const QRect &oldRect, QRect &rect);
-    void invalidateChildrenRect();
+    void childrenRectChangedEvent(bool posChanged, bool sizeChanged);
 
     bool needInitLayout;
 

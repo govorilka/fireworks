@@ -29,7 +29,7 @@ public:
     virtual FwGraphicsObject* object() const;
 
     inline void updateChildren();
-    inline void updateChildrenRect();
+    inline void updateChildrenRect(bool posChanged, bool sizeChanged);
 
     void invalidateChildren();
 
@@ -41,13 +41,12 @@ protected:
     void paint(FwPainter *painter, const QRect &clipRect);
 
     virtual void visibleChangedEvent();
+    virtual void childrenRectChangedEvent(bool posChanged, bool sizeChanged);
 
-    virtual void invalidateChildrenRect();
+    void invalidateChildrenRect();
 
     bool childrenDirty;
-    bool childrenRectDirty;
 
-    bool childSizeChanged;
     bool needSortZIndex;
 
 private:
@@ -56,6 +55,10 @@ private:
     QList<FwPrimitiveGroup*> m_groups;
 
     QRect m_childrenRect;
+
+    bool m_childrenPosChanged;
+    bool m_childrenSizeChanged;
+    bool m_invalidateChildrenRect;
 };
 
 #include "fwgui/primitives/fwprimitivegroup_inl.h"

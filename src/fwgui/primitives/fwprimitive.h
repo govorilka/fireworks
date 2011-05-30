@@ -21,6 +21,7 @@ class FwPainter;
 class FwBrush;
 class FwPixmapData;
 class FwDrawer;
+class FwItemView;
 
 class FwPrimitive
 {
@@ -126,6 +127,9 @@ public:
     inline const QRect& parentRect() const;
 
     FwPrimitive* primitiveByName(const QByteArray& name);
+
+    virtual void currentChangedEvent(FwItemView* view, bool current);
+    virtual void trigger();
 
 protected:
 

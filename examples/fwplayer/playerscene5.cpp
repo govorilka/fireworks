@@ -46,7 +46,7 @@ void PlayerScene5::apply(FwMLObject *object)
     BaseClass::apply(object);
 
     m_itemView->prepareItemsChanged();
-    for(int i = 0; i < 5; i++)
+    for(int i = 0; i < 100; i++)
     {
         m_itemView->addItem("item" + QString::number(i), false);
     }
@@ -56,21 +56,4 @@ void PlayerScene5::apply(FwMLObject *object)
 void PlayerScene5::showEvent(FwSceneShowEvent *event)
 {
     BaseClass::showEvent(event);
-}
-
-void PlayerScene5::invalidateChildrenRect()
-{
-    BaseClass::invalidateChildrenRect();
-
-    qDebug() << "=================================================: ";
-    qDebug() << "Scene geometry rect: " << geometry()->rect();
-
-    foreach(FwCheckableItem* item, m_itemView->checkableItems())
-    {
-        qDebug() << "PlayerScene5::apply" << item->caption()->string() << item->pos() << item->geometry()->rect();
-        foreach(FwPrimitive* child, item->primitives())
-        {
-            qDebug() << "child" << child->name() << ": " << child->geometry()->rect();
-        }
-    }
 }

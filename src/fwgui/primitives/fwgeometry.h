@@ -56,7 +56,9 @@ public:
     inline bool isDirty() const;
     inline bool posChanged() const;
     inline bool sizeChanged() const;
-    void apply();
+
+    void applyChanged();
+    void updateChildrenRect();
 
     inline const FwMargin& margin() const;
     inline void setMargin(const FwMargin& margin);

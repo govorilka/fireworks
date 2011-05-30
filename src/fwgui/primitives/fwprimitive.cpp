@@ -10,6 +10,7 @@
 #include "fwgui/fwpen.h"
 
 #include "fwgui/widgets/fwwidget.h"
+#include "fwgui/widgets/fwitemview.h"
 
 #include "fwcore/fwml.h"
 
@@ -46,7 +47,7 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
         m_parentGeometry->anchors.append(this);
         updateGeometryRect();
 
-        m_parent->updateChildrenRect();
+        m_parent->updateChildrenRect(true, true);
         m_parent->sortZIndex();
     }
 }
@@ -153,13 +154,16 @@ void FwPrimitive::update(bool needUpdateBuffer)
                 }
             }
 
-            m_geometry->apply();
+            bool posChanged = m_geometry->posChanged();
+            bool sizeChanged = m_geometry->sizeChanged();
+
+            m_geometry->updateChildrenRect();
 
             if(m_parent)
             {
                 m_contentDirty = true;
-                m_parent->childSizeChanged = m_parent->childSizeChanged || m_geometry->sizeChanged();
-                m_parent->updateChildrenRect();
+                m_parent->updateChildrenRect(m_geometry->m_posChanged,
+                                             m_geometry->m_sizeChanged);
             }
             else
             {
@@ -193,7 +197,8 @@ void FwPrimitive::setVisible(bool visible)
             {
                 prepareGeometryChanged();
                 m_contentDirty = true;
-                m_parent->updateChildrenRect();
+                m_parent->m_invalidateChildrenRect = true;
+                m_parent->updateChildren();
                 update();
             }
         }
@@ -903,4 +908,13 @@ FwPrimitive* FwPrimitive::primitiveByName(const QList<QByteArray>& name, int fir
         parent()->primitiveByName(name, firstElement);
     }
     return 0;
+}
+
+void FwPrimitive::currentChangedEvent(FwItemView* view, bool current)
+{
+    setPenColor(current ? view->currentItemColor() : view->itemColor());
+}
+
+void FwPrimitive::trigger()
+{
 }
