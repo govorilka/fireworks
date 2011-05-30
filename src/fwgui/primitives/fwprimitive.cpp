@@ -41,7 +41,11 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
         visibleOnScreen = m_parent->visibleOnScreen;
         m_scene = m_parent->m_scene;
         m_parent->m_primitives.append(this);
-        link(m_parent->m_geometry);
+
+        m_parentGeometry = m_parent->m_geometry;
+        m_parentGeometry->anchors.append(this);
+        updateGeometryRect();
+
         m_parent->updateChildrenRect();
         m_parent->sortZIndex();
     }
@@ -63,7 +67,7 @@ FwPrimitive::~FwPrimitive()
 
     if(m_parentGeometry)
     {
-        link(0);
+        m_parentGeometry->unlink(this);
     }
 
     delete m_geometry;
@@ -482,10 +486,7 @@ void FwPrimitive::setPosition(Fw::HorizontalPosition hPosition, Fw::VerticalPosi
     {
         m_hPosition = hPosition;
         m_vPosition = vPosition;
-        if(m_parentGeometry)
-        {
-            updateGeometryRect();
-        }
+        updateGeometryRect();
     }
 }
 
@@ -578,49 +579,20 @@ void FwPrimitive::updateGeometryRect()
 
 void FwPrimitive::link(FwGeometry* parentGeometry)
 {
+    Q_ASSERT(this != m_scene);
+
+    if(!parentGeometry)
+    {
+        parentGeometry = m_scene->geometry();
+    }
+
     if(m_parentGeometry != parentGeometry)
     {
-        if(m_parentGeometry)
-        {
-            Q_ASSERT(m_parentGeometry->contains(this));
-
-            int array_size = m_parentGeometry->anchors.size();
-            if(array_size > 1)
-            {
-                QVarLengthArray<FwPrimitive*> newAnchors(array_size - 1);
-                FwPrimitive** iterAnchor = m_parentGeometry->anchors.data();
-                for(int i = 0, j = 0; i < array_size; i++, iterAnchor++)
-                {
-                    if((*iterAnchor) != this)
-                    {
-                        newAnchors[j] = (*iterAnchor);
-                        j++;
-                    }
-                }
-                m_parentGeometry->anchors = newAnchors;
-            }
-            else
-            {
-                m_parentGeometry->anchors.clear();
-            }
-
-            m_parentGeometry = 0;
-        }
-
-        if(parentGeometry)
-        {
-            if(m_parent)
-            {
-                m_ignoreParentMargin = (m_parent->geometry() != parentGeometry);
-            }
-            else
-            {
-                m_ignoreParentMargin = true;
-            }
-            m_parentGeometry = parentGeometry;
-            m_parentGeometry->anchors.append(this);
-            updateGeometryRect();
-        }
+        m_parentGeometry->unlink(this);
+        m_parentGeometry = parentGeometry;
+        m_parentGeometry->anchors.append(this);
+        m_ignoreParentMargin = (m_parent->geometry() != parentGeometry);
+        updateGeometryRect();
     }
 }
 

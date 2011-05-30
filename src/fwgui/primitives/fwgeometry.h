@@ -61,6 +61,9 @@ public:
     inline const FwMargin& margin() const;
     inline void setMargin(const FwMargin& margin);
 
+protected:
+    void unlink(FwPrimitive* primitive);
+
 private:
     QVarLengthArray<FwPrimitive*> anchors;
     QRect m_rect;

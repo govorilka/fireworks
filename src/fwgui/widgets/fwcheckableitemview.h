@@ -14,10 +14,9 @@ class FwCheckableItemView : public FwItemView
     typedef FwItemView BaseClass;
 
 public:
-    FwCheckableItemView(const QByteArray& name, FwPrimitiveGroup* parent);
+    friend class FwCheckableItem;
 
-    bool check(FwPrimitive* item) const;
-    void setCheck(FwPrimitive* item, bool value);
+    FwCheckableItemView(const QByteArray& name, FwPrimitiveGroup* parent);
 
     inline FwPixmap pixmapCheckOn() const;
     void setPixmapCheckOn(const FwPixmap& pixmap);
@@ -27,12 +26,16 @@ public:
 
     void apply(FwMLObject *object);
 
+    void addItem(FwCheckableItem* item);
+    FwCheckableItem* addItem(const QString& caption, bool check, const QVariant& data = QVariant());
+
+    inline QList<FwCheckableItem*> checkableItems() const;
+
 protected:
-    void itemAddedEvent(FwPrimitive* item);
     void itemTriggered(FwPrimitive* item);
 
 private:
-    QHash<FwPrimitive*, FwCheckableItem*> m_checkableItems;
+    QList<FwCheckableItem*> m_checkableItems;
     FwPixmap m_pixmapCheckOn;
     FwPixmap m_pixmapCheckOff;
     FwMLObject* m_checkboxTemplate;
@@ -48,21 +51,52 @@ FwPixmap FwCheckableItemView::pixmapCheckOff() const
     return m_pixmapCheckOff;
 }
 
+QList<FwCheckableItem*> FwCheckableItemView::checkableItems() const
+{
+    return m_checkableItems;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
-class FwCheckableItem
+class FwCheckableItem : public FwPrimitiveGroup
 {
-public:
-    friend class FwCheckableItemView;
+    typedef FwPrimitiveGroup BaseClass;
 
-    FwCheckableItem(FwPrimitive* item, FwCheckableItemView* parent);
+public:
+    FwCheckableItem(FwCheckableItemView* parent);
+
+    inline bool isChecked() const;
+    void setCheck(bool value);
+
+    inline void toggleCheck();
+
+    inline FwStringPrimitive* caption() const;
+
+    void updatePixmaps();
+
+protected:
+    void updateChildrenRect();
 
 private:
-    FwPrimitive* m_item;
     FwCheckableItemView* m_parent;
+    FwStringPrimitive* m_caption;
     FwPixmapPrimitive* m_checkBox;
-
     bool m_check;
 };
+
+bool FwCheckableItem::isChecked() const
+{
+    return m_check;
+}
+
+void FwCheckableItem::toggleCheck()
+{
+    setCheck(!isChecked());
+}
+
+FwStringPrimitive* FwCheckableItem::caption() const
+{
+    return m_caption;
+}
 
 #endif // FIREWORKS_CHECKABLEITEMVIEW_H

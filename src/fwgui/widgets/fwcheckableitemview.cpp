@@ -3,19 +3,32 @@
 #include "fwcore/fwml.h"
 
 #include "fwgui/primitives/fwpixmapprimitive.h"
+#include "fwgui/primitives/fwstringprimitive.h"
 
-
-FwCheckableItem::FwCheckableItem(FwPrimitive* item, FwCheckableItemView* parent) :
+FwCheckableItem::FwCheckableItem(FwCheckableItemView* parent) :
+    BaseClass("", parent),
     m_check(false),
-    m_item(item),
     m_parent(parent),
-    m_checkBox(new FwPixmapPrimitive("", parent))
+    m_caption(new FwStringPrimitive("caption", this)),
+    m_checkBox(new FwPixmapPrimitive("checkbox", this))
 {
-    m_checkBox->link(m_item->geometry());
+}
+
+void FwCheckableItem::setCheck(bool value)
+{
+    if(m_check != value)
+    {
+        m_check = value;
+        updatePixmaps();
+    }
+}
+
+void FwCheckableItem::updatePixmaps()
+{
+    m_checkBox->setPixmap(m_check ? m_parent->m_pixmapCheckOn : m_parent->m_pixmapCheckOff);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-
 
 FwCheckableItemView::FwCheckableItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
@@ -23,38 +36,29 @@ FwCheckableItemView::FwCheckableItemView(const QByteArray& name, FwPrimitiveGrou
 {
 }
 
-void FwCheckableItemView::itemAddedEvent(FwPrimitive* item)
+void FwCheckableItemView::addItem(FwCheckableItem* item)
 {
-    FwCheckableItem* check = new FwCheckableItem(item, this);
+    m_checkableItems.append(item);
     if(m_checkboxTemplate)
     {
-        check->m_checkBox->apply(m_checkboxTemplate);
+        item->apply(m_checkboxTemplate);
     }
-    m_checkableItems.insert(item, check);
+    BaseClass::addItem(item);
+}
+
+FwCheckableItem* FwCheckableItemView::addItem(const QString& caption, bool check, const QVariant& data)
+{
+    FwCheckableItem* item = new FwCheckableItem(this);
+    item->caption()->setString(caption);
+    item->setCheck(check);
+    item->setData(data);
+    addItem(item);
+    return item;
 }
 
 void FwCheckableItemView::itemTriggered(FwPrimitive* item)
 {
-    setCheck(item, !check(item));
-}
-
-bool FwCheckableItemView::check(FwPrimitive* item) const
-{
-    FwCheckableItem* check = m_checkableItems.value(item, 0);
-    Q_ASSERT(check);
-    return check->m_check;
-}
-
-void FwCheckableItemView::setCheck(FwPrimitive* item, bool value)
-{
-    FwCheckableItem* check = m_checkableItems.value(item, 0);
-    Q_ASSERT(check);
-
-    if(check && check->m_check != value)
-    {
-        check->m_check = value;
-        check->m_checkBox->setPixmap(value ? m_pixmapCheckOn : m_pixmapCheckOff);
-    }
+    static_cast<FwCheckableItem*>(item)->toggleCheck();
 }
 
 void FwCheckableItemView::setPixmapCheckOn(const FwPixmap& pixmap)
@@ -64,9 +68,9 @@ void FwCheckableItemView::setPixmapCheckOn(const FwPixmap& pixmap)
         m_pixmapCheckOn = pixmap;
         foreach(FwCheckableItem* item, m_checkableItems)
         {
-            if(item->m_check)
+            if(item->isChecked())
             {
-                item->m_checkBox->setPixmap(m_pixmapCheckOn);
+                item->updatePixmaps();
             }
         }
     }
@@ -79,9 +83,9 @@ void FwCheckableItemView::setPixmapCheckOff(const FwPixmap& pixmap)
         m_pixmapCheckOff = pixmap;
         foreach(FwCheckableItem* item, m_checkableItems)
         {
-            if(!item->m_check)
+            if(!item->isChecked())
             {
-                item->m_checkBox->setPixmap(m_pixmapCheckOff);
+                item->updatePixmaps();
             }
         }
     }
@@ -89,16 +93,6 @@ void FwCheckableItemView::setPixmapCheckOff(const FwPixmap& pixmap)
 
 void FwCheckableItemView::apply(FwMLObject *object)
 {
-    FwMLObject* checkboxObject = object->attribute("checkbox")->cast<FwMLObject>();
-    if(checkboxObject)
-    {
-        m_checkboxTemplate = checkboxObject->clone()->cast<FwMLObject>();
-        foreach(FwCheckableItem* item, m_checkableItems)
-        {
-            item->m_checkBox->apply(m_checkboxTemplate);
-        }
-    }
-
     FwMLNode* pixmapCheckOnNode = object->attribute("pixmapCheckOn");
     if(pixmapCheckOnNode)
     {
