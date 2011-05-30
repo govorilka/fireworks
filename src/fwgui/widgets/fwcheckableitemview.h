@@ -31,14 +31,15 @@ public:
 
     inline QList<FwCheckableItem*> checkableItems() const;
 
-protected:
-    void itemTriggered(FwPrimitive* item);
+    inline bool	isExclusive() const;
+    void setExclusive(bool enable);
 
 private:
     QList<FwCheckableItem*> m_checkableItems;
     FwPixmap m_pixmapCheckOn;
     FwPixmap m_pixmapCheckOff;
     FwMLObject* m_checkboxTemplate;
+    bool m_exclusive;
 };
 
 FwPixmap FwCheckableItemView::pixmapCheckOn() const
@@ -56,6 +57,11 @@ QList<FwCheckableItem*> FwCheckableItemView::checkableItems() const
     return m_checkableItems;
 }
 
+bool FwCheckableItemView::isExclusive() const
+{
+    return m_exclusive;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 class FwCheckableItem : public FwPrimitiveGroup
@@ -68,14 +74,15 @@ public:
     inline bool isChecked() const;
     void setCheck(bool value);
 
-    inline void toggleCheck();
-
     inline FwStringPrimitive* caption() const;
 
     void updatePixmaps();
 
 protected:
     void updateChildrenRect();
+
+    void currentChangedEvent(FwItemView *view, bool current);
+    void trigger();
 
 private:
     FwCheckableItemView* m_parent;
@@ -87,11 +94,6 @@ private:
 bool FwCheckableItem::isChecked() const
 {
     return m_check;
-}
-
-void FwCheckableItem::toggleCheck()
-{
-    setCheck(!isChecked());
 }
 
 FwStringPrimitive* FwCheckableItem::caption() const

@@ -14,8 +14,9 @@ FwPrimitiveGroup::FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* par
     BaseClass(name, parent),
     m_childrenRect(0, 0, 0, 0),
     childrenDirty(false),
-    childrenRectDirty(false),
-    childSizeChanged(false)
+    m_childrenPosChanged(false),
+    m_childrenSizeChanged(false),
+    m_invalidateChildrenRect(false)
 {
     if(parent)
     {
@@ -99,7 +100,9 @@ void FwPrimitiveGroup::visibleChangedEvent()
             item->visibleChangedEvent();
         }
     }
-    updateChildrenRect();
+
+    m_invalidateChildrenRect = true;
+    updateChildren();
 }
 
 void FwPrimitiveGroup::apply(FwMLObject *object)
@@ -141,11 +144,12 @@ void FwPrimitiveGroup::invalidateChildren()
             needSortZIndex = false;
         }
 
-        if(childrenRectDirty)
+        if(m_childrenPosChanged || m_childrenSizeChanged)
         {
-            invalidateChildrenRect();
-            childSizeChanged = false;
-            childrenRectDirty = false;
+            childrenRectChangedEvent(m_childrenPosChanged, m_childrenSizeChanged);
+            m_childrenPosChanged = false;
+            m_childrenSizeChanged = false;
+            m_invalidateChildrenRect = true;
         }
 
         foreach(FwPrimitiveGroup* group, m_groups)
@@ -153,11 +157,10 @@ void FwPrimitiveGroup::invalidateChildren()
             group->invalidateChildren();
         }
 
-        if(childrenRectDirty)
+        if(m_invalidateChildrenRect)
         {
             invalidateChildrenRect();
-            childSizeChanged = false;
-            childrenRectDirty = false;
+            m_invalidateChildrenRect = false;
         }
 
         childrenDirty = false;
@@ -211,6 +214,7 @@ void FwPrimitiveGroup::invalidateChildrenRect()
         }
     }
 }
+
 FwPrimitive* FwPrimitiveGroup::primitiveByName(const QList<QByteArray>& name, int firstElement)
 {
     foreach(FwPrimitive* primitive, m_primitives)
@@ -228,4 +232,10 @@ FwPrimitive* FwPrimitiveGroup::primitiveByName(const QList<QByteArray>& name, in
         }
     }
     return 0;
+}
+
+void FwPrimitiveGroup::childrenRectChangedEvent(bool posChanged, bool sizeChanged)
+{
+    Q_UNUSED(posChanged);
+    Q_UNUSED(sizeChanged);
 }

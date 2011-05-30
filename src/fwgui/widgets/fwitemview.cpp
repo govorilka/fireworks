@@ -106,7 +106,7 @@ bool FwItemView::addItem(FwPrimitive* item)
         {
             item->apply(m_itemTemplate);
         }
-        item->setPenColor(m_itemColor);
+        item->currentChangedEvent(this, false);
 
         m_items.append(item);
         itemAddedEvent(item);
@@ -165,7 +165,7 @@ void FwItemView::setCurrent(FwPrimitive* primitive)
         m_previous = m_current;
         if(m_previous)
         {
-            m_previous->setPenColor(m_itemColor);
+            m_previous->currentChangedEvent(this, false);
         }
 
         m_current = primitive;
@@ -188,11 +188,11 @@ void FwItemView::setItemTemplate(FwMLObject* itemTemplate)
             foreach(FwPrimitive* item, m_items)
             {
                 item->apply(m_itemTemplate);
-                item->setPenColor(m_itemColor);
+                item->currentChangedEvent(this, false);
             }
             if(m_current)
             {
-                m_current->setPenColor(m_currentItemColor);
+                m_current->currentChangedEvent(this, true);
             }
         }
 
@@ -284,18 +284,18 @@ void FwItemView::geometryChangedEvent(const QRect &oldRect, QRect &rect)
     if(oldRect.size() != rect.size())
     {
         needInitLayout = true;
-        updateChildrenRect();
+        updateChildrenRect(false, true);
     }
 }
 
-void FwItemView::invalidateChildrenRect()
+void FwItemView::childrenRectChangedEvent(bool posChanged, bool sizeChanged)
 {
-    if(m_current && (childSizeChanged || needInitLayout))
+    if(m_current && (sizeChanged || needInitLayout))
     {
         m_layout->initItemsPos(m_items, m_current);
         needInitLayout = false;
     }
-    BaseClass::invalidateChildrenRect();
+    BaseClass::childrenRectChangedEvent(posChanged, sizeChanged);
 }
 
 static QHash<QByteArray, FwLayoutConstructor*> layoutsFactory;
@@ -333,6 +333,7 @@ void FwItemView::keyPressEvent(FwKeyPressEvent* keyEvent)
         case Qt::Key_Space:
         case Qt::Key_Return:
         case Qt::Key_Enter:
+            m_current->trigger();
             itemTriggered(m_current);
             keyEvent->accept();
             break;
@@ -357,7 +358,7 @@ void FwItemView::updateCurrent()
 {
     if(m_current)
     {
-        m_current->setPenColor(m_currentItemColor);
+        m_current->currentChangedEvent(this, true);
     }
     emit currentChanged(m_previous, m_current);
 }
@@ -371,11 +372,11 @@ void FwItemView::setItemColor(const FwColor& color)
         m_itemColor = color;
         foreach(FwPrimitive* primitive, m_items)
         {
-            primitive->setPenColor(m_itemColor);
+            primitive->currentChangedEvent(this, false);
         }
         if(m_current)
         {
-            m_current->setPenColor(m_currentItemColor);
+            m_current->currentChangedEvent(this, true);
         }
         update();
     }
@@ -390,7 +391,7 @@ void FwItemView::setCurrentItemColor(const FwColor& color)
         m_currentItemColor = color;
         if(m_current)
         {
-            m_current->setPenColor(m_currentItemColor);
+            m_current->currentChangedEvent(this, true);
         }
 
         update();
@@ -415,7 +416,7 @@ void FwItemView::updateItems(bool init)
     {
         if(needInitLayout)
         {
-            updateChildrenRect();
+            updateChildrenRect(false, true);
         }
 
         if(m_currentDirty)

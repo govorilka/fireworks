@@ -28,9 +28,10 @@ void FwPrimitiveGroup::updateChildren()
     }
 }
 
-void FwPrimitiveGroup::updateChildrenRect()
+void FwPrimitiveGroup::updateChildrenRect(bool posChanged, bool sizeChanged)
 {
-    childrenRectDirty = true;
+    m_childrenPosChanged = m_childrenPosChanged || posChanged;
+    m_childrenSizeChanged = m_childrenSizeChanged || sizeChanged;
     updateChildren();
 }
 

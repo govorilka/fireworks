@@ -12,6 +12,7 @@ FwCheckableItem::FwCheckableItem(FwCheckableItemView* parent) :
     m_caption(new FwStringPrimitive("caption", this)),
     m_checkBox(new FwPixmapPrimitive("checkbox", this))
 {
+    updatePixmaps();
 }
 
 void FwCheckableItem::setCheck(bool value)
@@ -19,6 +20,16 @@ void FwCheckableItem::setCheck(bool value)
     if(m_check != value)
     {
         m_check = value;
+        if(m_check && m_parent->isExclusive())
+        {
+            foreach(FwCheckableItem* item, m_parent->checkableItems())
+            {
+                if(item != this && item->isChecked())
+                {
+                    item->setCheck(false);
+                }
+            }
+        }
         updatePixmaps();
     }
 }
@@ -28,22 +39,23 @@ void FwCheckableItem::updatePixmaps()
     m_checkBox->setPixmap(m_check ? m_parent->m_pixmapCheckOn : m_parent->m_pixmapCheckOff);
 }
 
+void FwCheckableItem::currentChangedEvent(FwItemView *view, bool current)
+{
+    m_caption->currentChangedEvent(view, current);
+}
+
+void FwCheckableItem::trigger()
+{
+    setCheck(!isChecked());
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 FwCheckableItemView::FwCheckableItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
-    m_checkboxTemplate(0)
+    m_checkboxTemplate(0),
+    m_exclusive(false)
 {
-}
-
-void FwCheckableItemView::addItem(FwCheckableItem* item)
-{
-    m_checkableItems.append(item);
-    if(m_checkboxTemplate)
-    {
-        item->apply(m_checkboxTemplate);
-    }
-    BaseClass::addItem(item);
 }
 
 FwCheckableItem* FwCheckableItemView::addItem(const QString& caption, bool check, const QVariant& data)
@@ -52,13 +64,9 @@ FwCheckableItem* FwCheckableItemView::addItem(const QString& caption, bool check
     item->caption()->setString(caption);
     item->setCheck(check);
     item->setData(data);
-    addItem(item);
+    BaseClass::addItem(item);
+    m_checkableItems.append(item);
     return item;
-}
-
-void FwCheckableItemView::itemTriggered(FwPrimitive* item)
-{
-    static_cast<FwCheckableItem*>(item)->toggleCheck();
 }
 
 void FwCheckableItemView::setPixmapCheckOn(const FwPixmap& pixmap)
@@ -113,5 +121,41 @@ void FwCheckableItemView::apply(FwMLObject *object)
         }
     }
 
+    FwMLBool* exclusiveNode = object->attribute("exclusive")->cast<FwMLBool>();
+    if(exclusiveNode)
+    {
+        setExclusive(exclusiveNode->value());
+    }
+
     BaseClass::apply(object);
+}
+
+void FwCheckableItemView::setExclusive(bool enable)
+{
+    if(m_exclusive != enable)
+    {
+        m_exclusive = enable;
+        if(m_exclusive && !m_checkableItems.isEmpty())
+        {
+            FwCheckableItem* currentCheck = 0;
+            foreach(FwCheckableItem* item, m_checkableItems)
+            {
+                if(item->isChecked())
+                {
+                    if(!currentCheck)
+                    {
+                        currentCheck = item;
+                    }
+                    else
+                    {
+                        item->setCheck(false);
+                    }
+                }
+            }
+            if(!currentCheck)
+            {
+                m_checkableItems.first()->setCheck(true);
+            }
+        }
+    }
 }

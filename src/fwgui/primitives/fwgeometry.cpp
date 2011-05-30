@@ -97,10 +97,15 @@ void FwGeometry::setRect(const QRect& rect)
     }
 }
 
-void FwGeometry::apply()
+void FwGeometry::applyChanged()
 {
+    updateChildrenRect();
     m_posChanged = false;
     m_sizeChanged = false;
+}
+
+void FwGeometry::updateChildrenRect()
+{
     FwPrimitive** iterAnchor = anchors.data();
     for(int i = 0; i < anchors.size(); i++, iterAnchor++)
     {
