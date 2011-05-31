@@ -9,8 +9,6 @@ HEADERS += \
 
 SOURCES += \
     fwutils/fwnetworkconfig.cpp \
-    fwutils/fwnetworkconfig_linux.cpp \
-    fwutils/fwnetworkconfig_win32.cpp \
     fwutils/fwsystem.cpp \
     fwutils/fwscheduler.cpp \
     fwutils/fwversion.cpp \
