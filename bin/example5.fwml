@@ -69,5 +69,5 @@ itemView
         blending : true
     },
 
-    exclusive : true
+    exclusive : false
 }

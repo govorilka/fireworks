@@ -28,9 +28,9 @@ QHostAddress FwNetworkConfig::netmask() const
     return addressList.isEmpty() ? QHostAddress() : addressList.first().netmask();
 }
 
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_LINUX)
     #include "fwnetworkconfig_linux.cpp"
-#elif Q_OS_WIN32
+#elif defined(Q_OS_WIN32)
     #include "fwnetworkconfig_win32.cpp"
 #else
     #error This OS is not supported
