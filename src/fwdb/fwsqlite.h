@@ -112,7 +112,7 @@ public:
     FwSQLiteDatabase(QObject* parent = 0);
     virtual ~FwSQLiteDatabase();
 
-    void open(const QString& fileName, const QString& initScript) throw(FwSQLiteException&);
+    void open(const QString& fileName, const QString& initScript = QString()) throw(FwSQLiteException&);
     void open(const QString& fileName, const QString& initScript, int flags) throw(FwSQLiteException&);
 
     void close();
