@@ -23,7 +23,10 @@ private:
 
 void FwRegion::addRect(const QRect& rect)
 {
-    m_rects.append(rect);
+    if(rect.width() && rect.height() && !m_rects.contains(rect))
+    {
+        m_rects.append(rect);
+    }
 }
 
 bool FwRegion::isEmpty() const
