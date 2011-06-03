@@ -41,7 +41,7 @@ namespace Fw
         TS_Start,
         TS_Stop,
         TS_Pause,
-        TS_UserRequest,
+        TS_UserRequest
     };
 
     enum BufferMode
@@ -49,7 +49,7 @@ namespace Fw
         BM_NoBuffer = 0,
         BM_SystemDefault,
         BM_VideoOnly,
-        BM_SystemOnly,
+        BM_SystemOnly
     };
 
     enum Orientation
@@ -77,13 +77,13 @@ namespace Fw
         Go_Previous,
         Go_Back,
         Go_First,
-        Go_Last,
+        Go_Last
     };
 
     enum ModalResult
     {
         MR_Ok,
-        MR_Cancel,
+        MR_Cancel
     };
 
     int go(Navigation nav, int size, int current, int previous = -1);

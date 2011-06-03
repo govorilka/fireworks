@@ -16,7 +16,8 @@ else {
 TEMPLATE = app
 
 LIBS += -L../../bin \
-        -lfireworks
+        -lfireworks \
+        -lqpainter
 
 INCLUDEPATH += ../../src/ \
                ../qpainter/
@@ -34,9 +35,6 @@ HEADERS  += \
     playerscene3.h \
     playerscene4.h \
     playerscene5.h
-
-
-include(../qpainter/qpainter.pri)
 
 OTHER_FILES += \
     ../../bin/example2.fwml \
