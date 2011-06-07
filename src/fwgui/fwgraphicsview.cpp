@@ -1,4 +1,6 @@
 #include <QtCore/qcoreapplication.h>
+#include <QtCore/qdatetime.h>
+#include <QtCore/qdebug.h>
 
 #include "fwgraphicsview.h"
 #include "fwscene.h"
@@ -205,18 +207,26 @@ void FwGraphicsView::invalidateChanges()
 {
     if(m_needInvalidate)
     {
+        QTime currentTime = QTime::currentTime();
+
         if(m_activeScene)
         {
             m_activeScene->invalidateChildren();
         }
 
+        qDebug() << "FwGraphicsView::invalidateChanges 1: " << currentTime.msecsTo(QTime::currentTime());
+
+        m_dirtyRegion.validation();
         if(!m_dirtyRegion.isEmpty())
         {
             invalidateCanvas(m_dirtyRegion);
             m_dirtyRegion.clear();
+            //m_dirtyRegion = FwRegion();
         }
 
         m_needPostUpdateEvent = true;
         m_needInvalidate = false;
+
+        qDebug() << "FwGraphicsView::invalidateChanges 2: " << currentTime.msecsTo(QTime::currentTime());
     }
 }

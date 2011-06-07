@@ -2,32 +2,28 @@
 #define FIREWORKS_REGION_H
 
 #include <QtCore/qrect.h>
-#include <QtCore/qlist.h>
+#include <QtCore/qvector.h>
 
 class FwRegion
 {
 public:
     FwRegion();
 
-    inline void addRect(const QRect& rect);
+    void addRect(const QRect& rect);
 
     inline void clear();
 
     inline bool isEmpty() const;
 
-    inline QList<QRect> rects() const;
+    inline QVector<QRect> rects() const;
+
+    void validation();
+
+    static bool rectLess(const QRect& r1, const QRect& r2);
 
 private:
-    QList<QRect> m_rects;
+    QVector<QRect> m_rects;
 };
-
-void FwRegion::addRect(const QRect& rect)
-{
-    if(rect.width() && rect.height() && !m_rects.contains(rect))
-    {
-        m_rects.append(rect);
-    }
-}
 
 bool FwRegion::isEmpty() const
 {
@@ -39,7 +35,7 @@ void FwRegion::clear()
     m_rects.clear();
 }
 
-QList<QRect> FwRegion::rects() const
+QVector<QRect> FwRegion::rects() const
 {
     return m_rects;
 }
