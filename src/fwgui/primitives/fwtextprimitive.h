@@ -10,7 +10,7 @@
 
 class FwPen;
 
-class FwTextPrimitive : public FwRectPrimitive
+class FIREWORKSSHARED_EXPORT FwTextPrimitive : public FwRectPrimitive
 {
     typedef FwRectPrimitive BaseClass;
 

@@ -19,7 +19,7 @@ class QTimerEvent;
 class FwShowEvent;
 class FwHideEvent;
 
-class FwWidget : public FwGraphicsObject
+class FIREWORKSSHARED_EXPORT FwWidget : public FwGraphicsObject
 {
     Q_OBJECT
     typedef FwGraphicsObject BaseClass;

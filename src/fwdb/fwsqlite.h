@@ -8,13 +8,15 @@
 #include <QtCore/qstringlist.h>
 #include <QtCore/qreadwritelock.h>
 
+#include "fireworks.h"
+
 #include "fwcore/fwcolor.h"
 
 #include "fwdb/sqlite/sqlite3.h"
 
 class FwSQLiteDatabase;
 
-class FwSQLiteException : public std::exception
+class FIREWORKSSHARED_EXPORT FwSQLiteException : public std::exception
 {
     typedef std::exception BaseClass;
 
@@ -30,7 +32,7 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwSQLiteQueryData
+class FIREWORKSSHARED_EXPORT FwSQLiteQueryData
 {
 public:
     friend class FwSQLiteDatabase;
@@ -58,7 +60,7 @@ FwSQLiteDatabase* FwSQLiteQueryData::parent() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwSQLiteQuery : protected QSharedPointer<FwSQLiteQueryData>
+class FIREWORKSSHARED_EXPORT FwSQLiteQuery : protected QSharedPointer<FwSQLiteQueryData>
 {
     typedef QSharedPointer<FwSQLiteQueryData> BaseClass;
 
@@ -101,7 +103,7 @@ void FwSQLiteQuery::bindUrl(int index, const QUrl& url)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwSQLiteDatabase : public QObject
+class FIREWORKSSHARED_EXPORT FwSQLiteDatabase : public QObject
 {
     Q_OBJECT
     typedef QObject BaseClass;
@@ -148,7 +150,7 @@ bool FwSQLiteDatabase::isTransactionBegin() const
 
 //////////////////////////////////////////////////////////////////////////
 
-class FwSQLiteDBLock
+class FIREWORKSSHARED_EXPORT FwSQLiteDBLock
 {
 public:
     FwSQLiteDBLock(FwSQLiteDatabase* db);

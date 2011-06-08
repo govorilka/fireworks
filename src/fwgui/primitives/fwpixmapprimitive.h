@@ -4,7 +4,7 @@
 #include "fwgui/primitives/fwprimitive.h"
 #include "fwgui/fwpixmap.h"
 
-class FwPixmapPrimitive : public FwPrimitive
+class FIREWORKSSHARED_EXPORT FwPixmapPrimitive : public FwPrimitive
 {
     typedef FwPrimitive BaseClass;
 

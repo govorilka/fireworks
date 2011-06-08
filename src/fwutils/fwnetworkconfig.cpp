@@ -28,10 +28,17 @@ QHostAddress FwNetworkConfig::netmask() const
     return addressList.isEmpty() ? QHostAddress() : addressList.first().netmask();
 }
 
-#if defined(Q_OS_LINUX)
-    #include "fwnetworkconfig_linux.cpp"
-#elif defined(Q_OS_WIN32)
-    #include "fwnetworkconfig_win32.cpp"
-#else
-    #error This OS is not supported
-#endif
+QString FwNetworkConfig::mac(const QNetworkInterface& interface)
+{
+    return QString("00:00:00:00:00:00");
+}
+
+QHostAddress FwNetworkConfig::firstDNS() const
+{
+    return QHostAddress();
+}
+QHostAddress FwNetworkConfig::gateway() const
+{
+    return QHostAddress();
+}
+

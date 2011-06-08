@@ -8,7 +8,7 @@
 
 class FwBrush;
 
-class FwRectPrimitive : public FwPrimitive
+class FIREWORKSSHARED_EXPORT FwRectPrimitive : public FwPrimitive
 {
     typedef FwPrimitive BaseClass;
 

@@ -5,9 +5,11 @@
 
 #include <QtNetwork/qnetworkinterface.h>
 
+#include "fireworks.h"
+
 class FwMLObject;
 
-class FwNetworkConfig : public QObject
+class FIREWORKSSHARED_EXPORT FwNetworkConfig : public QObject
 {
     Q_OBJECT
     typedef QObject BaseClass;

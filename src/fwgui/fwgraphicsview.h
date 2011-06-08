@@ -20,7 +20,7 @@ class FwPainter;
 class FwKeyPressEvent;
 class FwVertexArray;
 
-class FwGraphicsView : public QObject
+class FIREWORKSSHARED_EXPORT FwGraphicsView : public QObject
 {
     Q_OBJECT
     typedef QObject BaseClass;

@@ -11,6 +11,8 @@
 #include <QtNetwork/qnetworkaccessmanager.h>
 #include <QtNetwork/qnetworkreply.h>
 
+#include "fireworks.h"
+
 class QNetworkReply;
 class QNetworkAccessManager;
 
@@ -18,7 +20,7 @@ class FwSchedulerTask;
 class FwNetworkSchedulerTask;
 class FwSchedulerNetworkManager;
 
-class FwScheduler : public QThread
+class FIREWORKSSHARED_EXPORT FwScheduler : public QThread
 {
     Q_OBJECT
     typedef QThread BaseClass;
@@ -60,7 +62,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////
 
-class FwSchedulerNetworkManager : public QNetworkAccessManager
+class FIREWORKSSHARED_EXPORT FwSchedulerNetworkManager : public QNetworkAccessManager
 {
     Q_OBJECT
     typedef QNetworkAccessManager BaseClass;
@@ -80,7 +82,7 @@ private slots:
 
 ////////////////////////////////////////////////////////////////////
 
-class FwSchedulerTask : public QObject
+class FIREWORKSSHARED_EXPORT FwSchedulerTask : public QObject
 {
     Q_OBJECT
     typedef QObject BaseClass;
@@ -123,7 +125,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////
 
-class FwSystemSchedulerTask : public FwSchedulerTask
+class FIREWORKSSHARED_EXPORT FwSystemSchedulerTask : public FwSchedulerTask
 {
     Q_OBJECT
     typedef FwSchedulerTask BaseClass;
@@ -143,7 +145,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////
 
-class FwNetworkSchedulerTask : public FwSchedulerTask
+class FIREWORKSSHARED_EXPORT FwNetworkSchedulerTask : public FwSchedulerTask
 {
     Q_OBJECT
     typedef FwSchedulerTask BaseClass;
@@ -180,7 +182,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////
 
-class FwSchedulerTaskEvent: public QEvent
+class FIREWORKSSHARED_EXPORT FwSchedulerTaskEvent: public QEvent
 {
     typedef QEvent BaseClass;
 public:

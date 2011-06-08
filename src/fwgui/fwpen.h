@@ -37,7 +37,7 @@ FwColor FwShadow::color() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwPen
+class FIREWORKSSHARED_EXPORT FwPen
 {
 public:
     FwPen(int width, const FwColor& color);

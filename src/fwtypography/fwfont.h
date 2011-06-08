@@ -5,6 +5,8 @@
 #include <QtCore/qmetatype.h>
 #include <QtCore/qsize.h>
 
+#include "fireworks.h"
+
 class FwMLNode;
 
 class FwFontDescription
@@ -72,7 +74,7 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwFont : protected QSharedPointer<FwFontData>
+class FIREWORKSSHARED_EXPORT FwFont : protected QSharedPointer<FwFontData>
 {
     typedef QSharedPointer<FwFontData> BaseClass;
 
