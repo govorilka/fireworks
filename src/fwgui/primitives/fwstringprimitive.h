@@ -7,7 +7,7 @@
 
 #include "fwtypography/fwfont.h"
 
-class FwStringPrimitive : public FwLinePrimitive
+class FIREWORKSSHARED_EXPORT FwStringPrimitive : public FwLinePrimitive
 {
     typedef FwLinePrimitive BaseClass;
 

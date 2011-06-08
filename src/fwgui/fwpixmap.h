@@ -5,12 +5,14 @@
 #include <QtCore/qmetatype.h>
 #include <QtCore/qsize.h>
 
+#include "fireworks.h"
+
 class FwPixmap;
 class FwPixmapDescription;
 class FwRender;
 class FwMLNode;
 
-class FwPixmapDescription
+class FIREWORKSSHARED_EXPORT FwPixmapDescription
 {
 public:
 
@@ -73,7 +75,7 @@ QString FwPixmapDescription::key() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwPixmapData
+class FIREWORKSSHARED_EXPORT FwPixmapData
 {
 public:
     friend class FwPixmap;
@@ -113,7 +115,7 @@ bool FwPixmapData::isBlendEnabled() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwPixmap : protected QSharedPointer<FwPixmapData>
+class FIREWORKSSHARED_EXPORT FwPixmap : protected QSharedPointer<FwPixmapData>
 {
     typedef QSharedPointer<FwPixmapData> BaseClass;
 

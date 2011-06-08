@@ -16,7 +16,7 @@ class FwTextPrimitive;
 
 typedef FwItemLayout*(FwLayoutConstructor)(FwItemView* view);
 
-class FwItemView : public FwWidget
+class FIREWORKSSHARED_EXPORT FwItemView : public FwWidget
 {
     Q_OBJECT
     typedef FwWidget BaseClass;

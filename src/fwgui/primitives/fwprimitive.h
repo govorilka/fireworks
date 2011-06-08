@@ -23,7 +23,7 @@ class FwPixmapData;
 class FwDrawer;
 class FwItemView;
 
-class FwPrimitive
+class FIREWORKSSHARED_EXPORT FwPrimitive
 {
 public:
     friend class FwPrimitiveGroup;

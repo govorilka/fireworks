@@ -13,3 +13,5 @@ SOURCES += \
     fwutils/fwscheduler.cpp \
     fwutils/fwversion.cpp \
     fwutils/fwconsole.cpp
+
+win32:SOURCES +=

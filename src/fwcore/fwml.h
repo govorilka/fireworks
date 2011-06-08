@@ -16,7 +16,7 @@ class FwMLUIntNumber;
 class FwMLObject;
 class FwMLArray;
 
-class FwMLNode
+class FIREWORKSSHARED_EXPORT FwMLNode
 {
 public:
 
@@ -107,7 +107,7 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLString : public FwMLBase<FwMLNode::T_String>
+class FIREWORKSSHARED_EXPORT FwMLString : public FwMLBase<FwMLNode::T_String>
 {
     typedef FwMLBase<FwMLNode::T_String> BaseClass;
 public:
@@ -138,7 +138,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLUIntNumber : public FwMLBase<FwMLNode::T_UIntNumber>
+class FIREWORKSSHARED_EXPORT FwMLUIntNumber : public FwMLBase<FwMLNode::T_UIntNumber>
 {
     typedef FwMLBase<FwMLNode::T_UIntNumber> BaseClass;
 public:   
@@ -163,7 +163,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLIntNumber : public FwMLBase<FwMLNode::T_IntNumber>
+class FIREWORKSSHARED_EXPORT FwMLIntNumber : public FwMLBase<FwMLNode::T_IntNumber>
 {
     typedef FwMLBase<FwMLNode::T_IntNumber> BaseClass;
 
@@ -189,7 +189,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLDoubleNumber : public FwMLBase<FwMLNode::T_DoubleNumber>
+class FIREWORKSSHARED_EXPORT FwMLDoubleNumber : public FwMLBase<FwMLNode::T_DoubleNumber>
 {
     typedef FwMLBase<FwMLNode::T_DoubleNumber> BaseClass;
 public:
@@ -215,7 +215,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLObject : public FwMLBase<FwMLNode::T_Object>
+class FIREWORKSSHARED_EXPORT FwMLObject : public FwMLBase<FwMLNode::T_Object>
 {
     typedef FwMLBase<FwMLNode::T_Object> BaseClass;
 public:
@@ -258,7 +258,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwMLArray : public FwMLBase<FwMLNode::T_Array>
+class FIREWORKSSHARED_EXPORT FwMLArray : public FwMLBase<FwMLNode::T_Array>
 {
     typedef FwMLBase<FwMLNode::T_Array> BaseClass;
 public:
@@ -293,7 +293,7 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class FwMLBool: public FwMLBase<FwMLNode::T_Bool>
+class FIREWORKSSHARED_EXPORT FwMLBool: public FwMLBase<FwMLNode::T_Bool>
 {
   typedef FwMLBase<FwMLNode::T_Bool> BaseClass;
 

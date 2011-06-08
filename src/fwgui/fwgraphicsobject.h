@@ -15,7 +15,7 @@ class FwKeyPressEvent;
 
 class FwObjectGraphicsItem;
 
-class FwGraphicsObject : public QObject, public FwPrimitiveGroup
+class FIREWORKSSHARED_EXPORT FwGraphicsObject : public QObject, public FwPrimitiveGroup
 {
     Q_OBJECT
     typedef FwPrimitiveGroup BaseClass;

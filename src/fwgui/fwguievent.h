@@ -8,7 +8,7 @@
 
 class FwScene;
 
-class FwGuiEvent : public QEvent
+class FIREWORKSSHARED_EXPORT FwGuiEvent : public QEvent
 {
     typedef QEvent BaseClass;
 

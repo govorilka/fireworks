@@ -5,7 +5,7 @@
 
 class FwTextPrimitive;
 
-class FwTextView : public FwWidget
+class FIREWORKSSHARED_EXPORT FwTextView : public FwWidget
 {
     Q_OBJECT
     typedef FwWidget BaseClass;

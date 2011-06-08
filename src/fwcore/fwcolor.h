@@ -4,9 +4,11 @@
 #include <QtCore/qglobal.h>
 #include <QtCore/qbytearray.h>
 
+#include "fireworks.h"
+
 class FwMLNode;
 
-class FwColor
+class FIREWORKSSHARED_EXPORT FwColor
 {
 public:
     FwColor();

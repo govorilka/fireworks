@@ -5,7 +5,7 @@
 
 #include "fwgui/primitives/fwprimitive.h"
 
-class FwLinePrimitive : public FwPrimitive
+class FIREWORKSSHARED_EXPORT FwLinePrimitive : public FwPrimitive
 {
     typedef FwPrimitive BaseClass;
 

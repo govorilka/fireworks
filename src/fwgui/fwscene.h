@@ -17,7 +17,7 @@ class FwGraphicsView;
 class QResizeEvent;
 class QKeyEvent;
 
-class FwScene : public FwGraphicsObject
+class FIREWORKSSHARED_EXPORT FwScene : public FwGraphicsObject
 {
     Q_OBJECT
     typedef FwGraphicsObject BaseClass;

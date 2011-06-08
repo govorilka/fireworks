@@ -8,7 +8,7 @@
 
 class FwGraphicsObject;
 
-class FwPrimitiveGroup : public FwRectPrimitive
+class FIREWORKSSHARED_EXPORT FwPrimitiveGroup : public FwRectPrimitive
 {
     typedef FwRectPrimitive BaseClass;
 

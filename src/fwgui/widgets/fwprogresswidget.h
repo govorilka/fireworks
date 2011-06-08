@@ -8,7 +8,7 @@
 
 class FwProgressAnimation;
 
-class FwProgressWidget : public FwWidget
+class FIREWORKSSHARED_EXPORT FwProgressWidget : public FwWidget
 {
     Q_OBJECT
     typedef FwWidget BaseClass;

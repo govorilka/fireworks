@@ -58,7 +58,7 @@ namespace Fw
         O_Vertical,
         O_Diagonal
     };
-    Orientation nameToOrientation(const QByteArray& name, bool* bOk = 0);
+    FIREWORKSSHARED_EXPORT Orientation nameToOrientation(const QByteArray& name, bool* bOk = 0);
 
     enum GuiEventType
     {
@@ -86,7 +86,7 @@ namespace Fw
         MR_Cancel
     };
 
-    int go(Navigation nav, int size, int current, int previous = -1);
+    FIREWORKSSHARED_EXPORT int go(Navigation nav, int size, int current, int previous = -1);
 
     template <class T> T* goPtr(const QList<T*> list, Navigation nav, T* current, T* previous = 0)
     {
@@ -103,23 +103,23 @@ namespace Fw
         return 0;
     }
 
-    QString cacheDirectory(const QString& cacheName);
-    QString tempDirectory();
-    QString dataDirectory();
+    FIREWORKSSHARED_EXPORT QString cacheDirectory(const QString& cacheName);
+    FIREWORKSSHARED_EXPORT QString tempDirectory();
+    FIREWORKSSHARED_EXPORT QString dataDirectory();
 
-    bool changedDirectory(QDir* dir, const QString& dirName);
+    FIREWORKSSHARED_EXPORT bool changedDirectory(QDir* dir, const QString& dirName);
 
-    HorizontalPosition nameToHorizontalPosition(const QByteArray& name, bool *bOk);
-    QByteArray horizontalPositionToName(HorizontalPosition position);
+    FIREWORKSSHARED_EXPORT HorizontalPosition nameToHorizontalPosition(const QByteArray& name, bool *bOk);
+    FIREWORKSSHARED_EXPORT QByteArray horizontalPositionToName(HorizontalPosition position);
 
-    VerticalPosition nameToVerticalPosition(const QByteArray& name, bool *bOk);
-    QByteArray verticalPositionToname(VerticalPosition position);
+    FIREWORKSSHARED_EXPORT VerticalPosition nameToVerticalPosition(const QByteArray& name, bool *bOk);
+    FIREWORKSSHARED_EXPORT QByteArray verticalPositionToname(VerticalPosition position);
 
     const char constantTrue[] = "true";
     const char constantFalse[] = "false";
 
-    bool nameToBool(const QByteArray&, bool* bOk);
-    QByteArray boolToName(bool value);
+    FIREWORKSSHARED_EXPORT bool nameToBool(const QByteArray&, bool* bOk);
+    FIREWORKSSHARED_EXPORT QByteArray boolToName(bool value);
 }
 
 #endif // FIREWORKS_H
