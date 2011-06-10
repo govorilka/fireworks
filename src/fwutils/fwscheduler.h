@@ -13,6 +13,8 @@
 
 #include "fireworks.h"
 
+#include "fwcore/fwcppobject.h"
+
 class QNetworkReply;
 class QNetworkAccessManager;
 
@@ -20,15 +22,15 @@ class FwSchedulerTask;
 class FwNetworkSchedulerTask;
 class FwSchedulerNetworkManager;
 
-class FIREWORKSSHARED_EXPORT FwScheduler : public QThread
+class FIREWORKSSHARED_EXPORT FwScheduler : public QThread, public FwCPPObject
 {
     Q_OBJECT
-    typedef QThread BaseClass;
+    typedef FwCPPObject BaseClass;
 
 public:
     friend class FwSchedulerTask;
 
-    explicit FwScheduler(QObject *parent = 0);
+    explicit FwScheduler(const QByteArray& name,QObject *parent = 0);
     virtual ~FwScheduler();
 
     int addTask(FwSchedulerTask* task);
@@ -49,6 +51,10 @@ public:
     inline QString lastError() const;
 
     void release();
+
+    bool loadConfig();
+
+    void apply(FwMLObject *object);
 
 protected:
     void run();
@@ -82,15 +88,15 @@ private slots:
 
 ////////////////////////////////////////////////////////////////////
 
-class FIREWORKSSHARED_EXPORT FwSchedulerTask : public QObject
+class FIREWORKSSHARED_EXPORT FwSchedulerTask : public QObject, public FwCPPObject
 {
     Q_OBJECT
-    typedef QObject BaseClass;
+    typedef FwCPPObject BaseClass;
 
 public:
     friend class FwScheduler;
 
-    explicit FwSchedulerTask(QObject *parent = 0);
+    explicit FwSchedulerTask(const QByteArray& name, QObject *parent = 0);
     virtual ~FwSchedulerTask();
 
     bool event(QEvent * e);
@@ -100,6 +106,8 @@ public:
 
     inline bool isRunningOnStart() const;
     void setRunOnStart(bool enable);
+
+    void apply(FwMLObject *object);
 
 protected:
     void stop();
@@ -131,7 +139,7 @@ class FIREWORKSSHARED_EXPORT FwSystemSchedulerTask : public FwSchedulerTask
     typedef FwSchedulerTask BaseClass;
 
 public:
-    FwSystemSchedulerTask(QObject *parent = 0);
+    FwSystemSchedulerTask(const QByteArray& name, QObject *parent = 0);
 
     inline QString command() const;
     void setCommand(const QString& command);
@@ -154,13 +162,15 @@ public:
     friend class FwScheduler;
     friend class FwSchedulerNetworkManager;
 
-    FwNetworkSchedulerTask(QObject* parent = 0);
+    FwNetworkSchedulerTask(const QByteArray& name, QObject* parent = 0);
     virtual ~FwNetworkSchedulerTask();
 
     inline QUrl url() const;
     void setUrl(const QUrl& url);
 
     void clearReply();
+
+    void apply(FwMLObject *object);
 
 protected:
     void run();
