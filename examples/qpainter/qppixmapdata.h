@@ -3,9 +3,11 @@
 
 #include <QtGui/qpixmap.h>
 
+#include"fw_backend_qpainter.h"
+
 #include "fwgui/fwpixmap.h"
 
-class QPPixmapData : public FwPixmapData
+class FW_BACKEND_QPAINTERSHARED_EXPORT QPPixmapData : public FwPixmapData
 {
     typedef FwPixmapData BaseClass;
 

@@ -29,7 +29,6 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     addLayoutClass(FwLoopHSliderLayout::staticClassName, &FwLoopHSliderLayout::constructor);
     addLayoutClass(FwLoopVSliderLayout::staticClassName, &FwLoopVSliderLayout::constructor);
     addLayoutClass(FwPagesLayout::staticClassName, &FwPagesLayout::constructor);
-
 }
 
 FwItemView::~FwItemView()

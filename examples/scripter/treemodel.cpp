@@ -142,3 +142,14 @@ int TreeModel::nodeRow(FwMLNode* node) const
     }
     return 0;
 }
+
+void TreeModel::parseFile(const QString& fileName)
+{
+    m_rootObject->removeAttributes();
+    QFile file(fileName);
+    if(file.exists())
+    {
+        m_rootObject->parse(&file);
+    }
+    reset();
+}

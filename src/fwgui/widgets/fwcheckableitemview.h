@@ -8,7 +8,7 @@
 class FwCheckableItem;
 class FwPixmapPrimitive;
 
-class FwCheckableItemView : public FwItemView
+class FIREWORKSSHARED_EXPORT FwCheckableItemView : public FwItemView
 {
     Q_OBJECT
     typedef FwItemView BaseClass;
@@ -64,7 +64,7 @@ bool FwCheckableItemView::isExclusive() const
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class FwCheckableItem : public FwPrimitiveGroup
+class FIREWORKSSHARED_EXPORT FwCheckableItem : public FwPrimitiveGroup
 {
     typedef FwPrimitiveGroup BaseClass;
 

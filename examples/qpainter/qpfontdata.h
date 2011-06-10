@@ -1,11 +1,13 @@
 #ifndef FIREWORKS_QPFONTDATA_H
 #define FIREWORKS_QPFONTDATA_H
 
-#include "fwtypography/fwfont.h"
-
 #include <QtGui/qfont.h>
 
-class QPFontData : public FwFontData
+#include "fwtypography/fwfont.h"
+
+#include"fw_backend_qpainter.h"
+
+class FW_BACKEND_QPAINTERSHARED_EXPORT QPFontData : public FwFontData
 {
     typedef FwFontData BaseClass;
 
