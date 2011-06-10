@@ -5,10 +5,12 @@
 
 #include "fwgui/fwgraphicsview.h"
 
+#include"fw_backend_qpainter.h"
+
 class QPWidget;
 class QPGraphicsView;
 
-class QPWidget : public QWidget
+class FW_BACKEND_QPAINTERSHARED_EXPORT QPWidget : public QWidget
 {
     Q_OBJECT
     typedef QWidget BaseClass;
@@ -28,7 +30,7 @@ private:
     QPGraphicsView* m_view;
 };
 
-class QPGraphicsView : public FwGraphicsView
+class FW_BACKEND_QPAINTERSHARED_EXPORT QPGraphicsView : public FwGraphicsView
 {
     Q_OBJECT
     typedef FwGraphicsView BaseClass;

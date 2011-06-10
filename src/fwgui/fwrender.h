@@ -9,10 +9,12 @@
 
 #include "fwcore/fwcolor.h"
 
+#include "fireworks.h"
+
 class FwFontData;
 class FwPixmapData;
 
-class FwVertexArray
+class FIREWORKSSHARED_EXPORT FwVertexArray
 {
 public:
     explicit FwVertexArray();
@@ -27,7 +29,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-class FwRender
+class FIREWORKSSHARED_EXPORT FwRender
 {
 public:
     explicit FwRender();

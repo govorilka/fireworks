@@ -133,9 +133,9 @@ void FwRoundedRectDrawer::updateVertexArray(const QRect& rect)
 
 FwBorderImageDrawer::FwBorderImageDrawer(const FwPrimitive* primitive) :
     BaseClass(primitive),
-    m_lineLeftMargin(1),
-    m_lineRightMargin(1),
-    m_lineTopMargin(1),
+    m_lineLeftMargin(0),
+    m_lineRightMargin(0),
+    m_lineTopMargin(0),
     m_lineBottomMargin(0)
 {
 }

@@ -38,7 +38,7 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-class FwKeyPressEvent : public FwGuiEventTmpl<Fw::E_KeyPress>
+class FIREWORKSSHARED_EXPORT FwKeyPressEvent : public FwGuiEventTmpl<Fw::E_KeyPress>
 {
     typedef FwGuiEventTmpl<Fw::E_KeyPress> BaseClass;
 public:
@@ -93,7 +93,7 @@ int FwKeyPressEvent::count() const
 
 //////////////////////////////////////////////////////////////////////////////
 
-class FwResizeEvent : public FwGuiEventTmpl<Fw::E_Resize>
+class FIREWORKSSHARED_EXPORT FwResizeEvent : public FwGuiEventTmpl<Fw::E_Resize>
 {
     typedef FwGuiEventTmpl<Fw::E_Resize> BaseClass;
 
@@ -121,7 +121,7 @@ QSize FwResizeEvent::newSize() const
 
 //////////////////////////////////////////////////////////////////////////////
 
-class FwShowEvent : public FwGuiEventTmpl<Fw::E_Show>
+class  FIREWORKSSHARED_EXPORT FwShowEvent : public FwGuiEventTmpl<Fw::E_Show>
 {
     typedef FwGuiEventTmpl<Fw::E_Show> BaseClass;
 
@@ -141,7 +141,7 @@ bool FwShowEvent::visibleOnScreen() const
 
 //////////////////////////////////////////////////////////////////////////////
 
-class FwHideEvent : public FwGuiEventTmpl<Fw::E_Hide>
+class FIREWORKSSHARED_EXPORT FwHideEvent : public FwGuiEventTmpl<Fw::E_Hide>
 {
     typedef FwGuiEventTmpl<Fw::E_Hide> BaseClass;
 
@@ -151,7 +151,7 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-class FwSceneShowEvent : public FwGuiEventTmpl<Fw::E_SceneShow>
+class FIREWORKSSHARED_EXPORT FwSceneShowEvent : public FwGuiEventTmpl<Fw::E_SceneShow>
 {
     typedef FwGuiEventTmpl<Fw::E_SceneShow> BaseClass;
 
@@ -171,7 +171,7 @@ FwScene* FwSceneShowEvent::previous() const
 
 //////////////////////////////////////////////////////////////////////////////
 
-class FwSceneHideEvent : public FwGuiEventTmpl<Fw::E_SceneHide>
+class FIREWORKSSHARED_EXPORT FwSceneHideEvent : public FwGuiEventTmpl<Fw::E_SceneHide>
 {
     typedef FwGuiEventTmpl<Fw::E_SceneHide> BaseClass;
 

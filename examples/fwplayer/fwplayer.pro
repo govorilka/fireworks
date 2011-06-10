@@ -15,7 +15,7 @@ else {
 
 TEMPLATE = app
 
-LIBS += -L../../bin \
+LIBS += -L$(FIREWORKS_PATH)/bin \
         -lfireworks \
         -lqpainter
 

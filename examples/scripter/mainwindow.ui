@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOpen">
@@ -43,12 +43,13 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionOpen"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
    <property name="icon">
-    <iconset>
-     <normaloff>:/scripter/image/address-book--arrow.png</normaloff>:/scripter/image/address-book--arrow.png</iconset>
+    <iconset resource="scripter.qrc">
+     <normaloff>:/scripter/images/open.png</normaloff>:/scripter/images/open.png</iconset>
    </property>
    <property name="text">
     <string>Open...</string>

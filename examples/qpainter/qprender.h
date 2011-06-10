@@ -5,10 +5,12 @@
 
 #include "fwgui/fwrender.h"
 
+#include"fw_backend_qpainter.h"
+
 class QPRender;
 class QPaintDevice;
 
-class QPVertexArray : public FwVertexArray
+class FW_BACKEND_QPAINTERSHARED_EXPORT QPVertexArray : public FwVertexArray
 {
     typedef FwVertexArray BaseClass;
 
@@ -31,7 +33,7 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-class QPRender : public FwRender
+class FW_BACKEND_QPAINTERSHARED_EXPORT QPRender : public FwRender
 {
     typedef FwRender BaseClass;
 

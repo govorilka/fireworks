@@ -10,6 +10,8 @@ else {
 
 TEMPLATE = lib
 
+DEFINES += FW_BACKEND_QPAINTER_LIBRARY
+
 INCLUDEPATH += .
 
 INCLUDEPATH += $(FIREWORKS_PATH)/src
@@ -21,7 +23,8 @@ HEADERS += \
     qprender.h \
     qpgraphicsview.h \
     qpfontdata.h \
-    qppixmapdata.h
+    qppixmapdata.h \
+    fw_backend_qpainter.h
 
 SOURCES += \
     qprender.cpp \

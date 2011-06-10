@@ -1,3 +1,5 @@
 <RCC>
-  <qresource prefix="/scripter/image/"/>
+    <qresource prefix="/scripter">
+        <file>images/open.png</file>
+    </qresource>
 </RCC>

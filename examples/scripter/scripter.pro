@@ -17,7 +17,7 @@ TEMPLATE = app
 
 INCLUDEPATH += ../../src/
 
-LIBS     += -L../../bin \
+LIBS     += -L$(FIREWORKS_PATH)/bin \
             -lfireworks
 
 SOURCES  += main.cpp\

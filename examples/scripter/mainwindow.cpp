@@ -11,8 +11,11 @@ MainWindow::MainWindow(QWidget *parent) :
     m_model(new TreeModel(this))
 {
     ui->setupUi(this);
+
     ui->centralWidget->setModel(m_model);
-    connect(ui->actionOpen, SIGNAL(triggered(bool)), this, SLOT(open()));
+    ui->centralWidget->setHeaderHidden(true);
+
+    connect(ui->actionOpen, SIGNAL(triggered(bool)), this, SLOT(open()));    
 }
 
 MainWindow::~MainWindow()
@@ -28,4 +31,5 @@ void MainWindow::open()
 
 void MainWindow::open(const QString& fileName)
 {
+    m_model->parseFile(fileName);
 }

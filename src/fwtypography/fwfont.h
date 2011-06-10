@@ -56,7 +56,7 @@ bool FwFontDescription::isNull() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FwFontData
+class FIREWORKSSHARED_EXPORT FwFontData
 {
 public:
     FwFontData();

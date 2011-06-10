@@ -8,7 +8,7 @@
 
 #include "fwtypography/fwfont.h"
 
-class FwPainter
+class FIREWORKSSHARED_EXPORT FwPainter
 {
 public:
     FwPainter(const QRect& window, const QRect& clipRect, FwRender* render);
