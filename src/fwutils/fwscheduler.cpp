@@ -5,8 +5,12 @@
 #include "fwscheduler.h"
 #include "fireworks.h"
 
-FwScheduler::FwScheduler(QObject *parent) :
-    BaseClass(parent),
+#include "fwcore/fwml.h"
+#include "fwutils/fwconfig.h"
+
+FwScheduler::FwScheduler(const QByteArray& name, QObject *parent) :
+    BaseClass(name),
+    QThread(parent),
     networkManager(new FwSchedulerNetworkManager())
 {
     networkManager->setParent(0);
@@ -135,7 +139,7 @@ QList<FwSchedulerTask*> FwScheduler::loadTasks(const QString& filename, QString*
                     QString command = line.right(line.length() - separator - 1).trimmed();
                     if(!command.isEmpty())
                     {
-                        FwSystemSchedulerTask* task = new FwSystemSchedulerTask();
+                        FwSystemSchedulerTask* task = new FwSystemSchedulerTask(command.toUtf8());
                         task->setCommand(command);
                         task->setRunOnStart(true);
                         task->setInterval(time * 1000);
@@ -160,7 +164,7 @@ QList<FwSchedulerTask*> FwScheduler::loadTasks(const QString& filename, QString*
 
 void FwScheduler::run()
 {
-    BaseClass::run();
+    QThread::run();
     release();
 }
 
@@ -181,6 +185,27 @@ void FwScheduler::release()
         networkManager->deleteLater();
         networkManager = 0;
     }
+}
+
+bool FwScheduler::loadConfig()
+{
+    return FwConfig::loadConfig("scheduler", this);
+}
+
+void FwScheduler::apply(FwMLObject *object)
+{
+    foreach(FwSchedulerTask* task, m_tasks)
+    {
+        if(!task->name().isEmpty())
+        {
+            FwMLObject* node = object->attribute(task->name())->cast<FwMLObject>();
+            if(node)
+            {
+                task->apply(node);
+            }
+        }
+    }
+    BaseClass::apply(object);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -230,8 +255,9 @@ void FwSchedulerNetworkManager::replyDestroy(QObject* object)
 
 ////////////////////////////////////////////////////////////////////
 
-FwSchedulerTask::FwSchedulerTask(QObject *parent) :
+FwSchedulerTask::FwSchedulerTask(const QByteArray& name, QObject *parent) :
     QObject(parent),
+    BaseClass(name),
     scheduler(0),
     m_timerId(0),
     m_status(Fw::TS_Stop),
@@ -304,7 +330,7 @@ bool FwSchedulerTask::event(QEvent * e)
             return true;
         }
     }
-    return BaseClass::event(e);
+    return QObject::event(e);
 }
 
 void FwSchedulerTask::setInterval(int interval)
@@ -349,10 +375,22 @@ void FwSchedulerTask::setRunOnStart(bool enable)
 {
     m_runOnStart = enable;
 }
+
+void FwSchedulerTask::apply(FwMLObject *object)
+{
+    BaseClass::apply(object);
+
+    FwMLUIntNumber* node = object->attribute("interval")->cast<FwMLUIntNumber>();
+    if(node && node->value())
+    {
+        setInterval(node->value() * 1000);
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
-FwSystemSchedulerTask::FwSystemSchedulerTask(QObject *parent) :
-    BaseClass(parent)
+FwSystemSchedulerTask::FwSystemSchedulerTask(const QByteArray& name, QObject *parent) :
+    BaseClass(name, parent)
 {
 }
 
@@ -375,8 +413,8 @@ void FwSystemSchedulerTask::run()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-FwNetworkSchedulerTask::FwNetworkSchedulerTask(QObject* parent) :
-    BaseClass(parent),
+FwNetworkSchedulerTask::FwNetworkSchedulerTask(const QByteArray& name, QObject* parent) :
+    BaseClass(name, parent),
     networkManager(0),
     m_masterReply(0)
 {
@@ -473,6 +511,20 @@ void FwNetworkSchedulerTask::clearReply()
         }
     }
     m_slaves.clear();
+}
+
+void FwNetworkSchedulerTask::apply(FwMLObject *object)
+{
+    BaseClass::apply(object);
+
+    FwMLString* urlNode = object->attribute("url")->cast<FwMLString>();
+    if(urlNode)
+    {
+        if(!urlNode->value().isEmpty())
+        {
+            setUrl(QString::fromUtf8(urlNode->value()));
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
