@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DatabaseView</class>
+ <widget class="QWidget" name="DatabaseView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>280</width>
+    <height>426</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QToolBar" name="toolbar">
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <addaction name="separator"/>
+     <addaction name="actionAdd"/>
+     <addaction name="actionDelete"/>
+     <addaction name="separator"/>
+     <addaction name="actionFilterAdd"/>
+     <addaction name="actionFilterDelete"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTreeView" name="treeView">
+     <property name="editTriggers">
+      <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="animated">
+      <bool>true</bool>
+     </property>
+     <property name="headerHidden">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <action name="actionAdd">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/datatreetools/node_add.png</normaloff>:/reactor/images/datatreetools/node_add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add new node</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/datatreetools/node_delete.png</normaloff>:/reactor/images/datatreetools/node_delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete cirrent node</string>
+   </property>
+  </action>
+  <action name="actionFilterAdd">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/datatreetools/filter_add.png</normaloff>:/reactor/images/datatreetools/filter_add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Filter add</string>
+   </property>
+  </action>
+  <action name="actionFilterDelete">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/datatreetools/filter_delete.png</normaloff>:/reactor/images/datatreetools/filter_delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Filter delete</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="reactor.qrc"/>
+ </resources>
+ <connections/>
+</ui>
