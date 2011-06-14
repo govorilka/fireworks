@@ -3,9 +3,11 @@
 
 #include <QtCore/qstring.h>
 
+#include "fireworks.h"
+
 class FwCPPObject;
 
-class FwConfig
+class FIREWORKSSHARED_EXPORT FwConfig
 {
 public:
     FwConfig();

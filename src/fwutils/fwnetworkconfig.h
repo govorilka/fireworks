@@ -7,15 +7,15 @@
 
 #include "fireworks.h"
 
-class FwMLObject;
+#include "fwcore/fwcppobject.h"
 
-class FIREWORKSSHARED_EXPORT FwNetworkConfig : public QObject
+class FIREWORKSSHARED_EXPORT FwNetworkConfig : public QObject, public FwCPPObject
 {
     Q_OBJECT
-    typedef QObject BaseClass;
+    typedef FwCPPObject BaseClass;
 
 public:
-    explicit FwNetworkConfig(QObject *parent = 0);
+    explicit FwNetworkConfig(const QByteArray& name, QObject *parent = 0);
 
     inline QString activeInterfaceName() const;
     inline void setActiveInterfaceName(const QString& name);

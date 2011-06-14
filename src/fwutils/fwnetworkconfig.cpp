@@ -2,8 +2,9 @@
 
 #include "fwnetworkconfig.h"
 
-FwNetworkConfig::FwNetworkConfig(QObject *parent) :
-    BaseClass(parent)
+FwNetworkConfig::FwNetworkConfig(const QByteArray& name, QObject *parent) :
+    QObject(parent),
+    BaseClass(name)
 {
 }
 
@@ -12,6 +13,11 @@ void FwNetworkConfig::apply(FwMLObject* object)
     FwMLString* interfaceNode = object->attribute("interface")->cast<FwMLString>();
     if(interfaceNode && !interfaceNode->value().isEmpty())
     {
+        foreach(QNetworkInterface interface, QNetworkInterface::allInterfaces())
+        {
+            qDebug() << interface.name() << interface.humanReadableName();
+        }
+
         setActiveInterfaceName(QString::fromUtf8(interfaceNode->value()));
     }
 }
