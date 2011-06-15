@@ -10,7 +10,7 @@ itemView
 
   layout
   {
-    class : "fireworks.layouts.LoopVerticalSlider",
+    class : "fireworks.layouts.Pages",
     animation
     {
         class : "fireworks.layouts.Animation",
@@ -22,13 +22,14 @@ itemView
 
   item
   {
-     class : "fireworks.primitives.String",
+     class : "fireworks.primitives.Text",
      font
      {
         family : "Arial",
         pixelSize : 24
      },
-     color : "white"
+     color : "white",
+     width : 150
   },
   
   geometry
