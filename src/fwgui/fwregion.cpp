@@ -7,7 +7,7 @@ FwRegion::FwRegion() :
 
 void FwRegion::addRect(const QRect& rect)
 {
-    if(rect.width() && rect.height())
+    if(rect.width() > 0 && rect.height() > 0)
     {
         if(m_rects.isEmpty())
         {
@@ -15,6 +15,8 @@ void FwRegion::addRect(const QRect& rect)
         }
         else
         {
+            int deltaLeft = 0, deltaRight = 0, deltaTop = 0, deltaBottom = 0;
+
             QRect curr = rect;
 
             QVector<QRect>::iterator nextIter = m_rects.begin();
@@ -28,36 +30,13 @@ void FwRegion::addRect(const QRect& rect)
                     continue;
                 }
 
-                int deltaX = curr.left() - next.right();
-                if(deltaX > 1)
+                if(((deltaLeft = curr.left() - next.right()) > 1) ||
+                   ((deltaRight =  next.left() - curr.right()) > 1) ||
+                   ((deltaTop = curr.top() - next.bottom()) > 1) ||
+                   ((deltaBottom = next.top() - curr.bottom()) > 1))
                 {
                     ++nextIter;
                     continue;
-                }
-                else if(deltaX != 1)
-                {
-                    deltaX = next.left() - curr.right();
-                    if(deltaX > 1)
-                    {
-                        ++nextIter;
-                        continue;
-                    }
-                }
-
-                int deltaY = curr.top() - next.bottom();
-                if(deltaY > 1)
-                {
-                    ++nextIter;
-                    continue;
-                }
-                else if(deltaY != 1)
-                {
-                    deltaY = next.top() - curr.bottom();
-                    if(deltaY > 1)
-                    {
-                        ++nextIter;
-                        continue;
-                    }
                 }
 
                 int choiseX = curr.y() < next.y();
@@ -65,7 +44,6 @@ void FwRegion::addRect(const QRect& rect)
                 {
                     choiseX += 2;
                 }
-
                 int choiseY = curr.left() < next.left();
                 if(curr.right() > next.right())
                 {
@@ -82,7 +60,7 @@ void FwRegion::addRect(const QRect& rect)
                             return;
 
                         case 1:
-                            if(deltaX == 1)
+                            if(deltaTop == deltaBottom)
                             {
                                 curr.setRight(next.right());
                                 next = QRect();
@@ -94,7 +72,7 @@ void FwRegion::addRect(const QRect& rect)
                             break;
 
                         case 2:
-                            if(deltaX == 1)
+                            if(deltaTop == deltaBottom)
                             {
                                 curr.setLeft(next.left());
                                 next = QRect();
@@ -121,7 +99,7 @@ void FwRegion::addRect(const QRect& rect)
                         switch(choiseY)
                         {
                         case 0:
-                            if(deltaY == 1)
+                            if(deltaLeft == deltaRight)
                             {
                                 curr.setBottom(next.bottom());
                                 next = QRect();
@@ -160,7 +138,7 @@ void FwRegion::addRect(const QRect& rect)
                         switch(choiseY)
                         {
                         case 0:
-                            if(deltaY == 1)
+                            if(deltaLeft == deltaRight)
                             {
                                 curr.setTop(next.top());
                                 next = QRect();
@@ -252,9 +230,6 @@ void FwRegion::validation()
             rects.append(rect);
         }
     }
-
-    qSort(rects.begin(), rects.end(), &rectLess);
-
     m_rects = rects;
 }
 
