@@ -28,6 +28,7 @@ class FIREWORKSSHARED_EXPORT FwGraphicsView : public QObject
 public:
     friend class FwScene;
     friend class FwPrimitive;
+    friend class FwPrimitiveGroup;
 
     explicit FwGraphicsView(QObject *parent = 0);
     virtual ~FwGraphicsView();
@@ -71,6 +72,8 @@ protected:
 
     void invalidateChanges();
 
+    inline void postUpdateEvent();
+
 private:
     QSize m_size;
     QHash<QString, FwFont> m_fonts;
@@ -81,7 +84,6 @@ private:
     QList<FwScene*> m_scenes;
 
     bool m_needPostUpdateEvent;
-    bool m_needInvalidate;
 
     FwRegion m_dirtyRegion;
 };

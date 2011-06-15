@@ -44,6 +44,8 @@ public:
     inline void setRect(int x, int y, int w, int h);
     void setRect(const QRect& rect);
 
+    inline QRect oldRect() const;
+
     inline QRect contentRect() const;
 
     inline bool contains(FwPrimitive* anchor) const;
@@ -57,7 +59,6 @@ public:
     inline bool posChanged() const;
     inline bool sizeChanged() const;
 
-    void applyChanged();
     void updateChildrenRect();
 
     inline const FwMargin& margin() const;
@@ -70,8 +71,7 @@ private:
     QVarLengthArray<FwPrimitive*> anchors;
     QRect m_rect;
     QRect m_contentRect;
-    bool m_posChanged;
-    bool m_sizeChanged;
+    QRect m_oldRect;
     FwMargin m_margin;
 };
 
@@ -83,6 +83,11 @@ void FwGeometry::setRect(int x, int y, int w, int h)
 QRect FwGeometry::rect() const
 {
     return m_rect;
+}
+
+QRect FwGeometry::oldRect() const
+{
+    return m_oldRect;
 }
 
 bool FwGeometry::contains(FwPrimitive* anchor) const
@@ -115,17 +120,17 @@ QPoint FwGeometry::pos() const
 
 bool FwGeometry::isDirty() const
 {
-    return m_posChanged || m_sizeChanged;
+    return posChanged() || sizeChanged();
 }
 
 bool FwGeometry::posChanged() const
 {
-    return m_posChanged;
+    return m_rect.topLeft() != m_oldRect.topLeft();
 }
 
 bool FwGeometry::sizeChanged() const
 {
-    return m_sizeChanged;
+    return m_rect.size() != m_oldRect.size();
 }
 
 const FwMargin& FwGeometry::margin() const
