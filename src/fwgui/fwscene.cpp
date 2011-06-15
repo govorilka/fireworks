@@ -100,3 +100,18 @@ bool FwScene::isActive() const
 {
     return m_view && m_view->m_activeScene == this;
 }
+
+void FwScene::invalidate()
+{
+    m_view->m_dirtyRegion.setObjectRect(m_geometry->rect());
+    if(m_contentDirty)
+    {
+        if(m_geometry->isDirty())
+        {
+            invalidateGeometry();
+        }
+        m_view->m_dirtyRegion.addChildrenRect(m_geometry->rect());
+        m_contentDirty = false;
+    }
+    invalidateChildren();
+}

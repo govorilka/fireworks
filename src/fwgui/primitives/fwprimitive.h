@@ -31,6 +31,7 @@ public:
     friend class FwGeometry;
     friend class FwScene;
     friend class FwWidget;
+    friend class FwItemView;
 
     FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent);
     virtual ~FwPrimitive();
@@ -72,7 +73,7 @@ public:
 
     inline FwGeometry* geometry() const;
 
-    void prepareGeometryChanged();
+    inline void prepareGeometryChanged();
     void update(bool needUpdateBuffer = true);
 
     inline int zIndex() const;
@@ -142,11 +143,11 @@ protected:
     virtual void boundingRectChangedEvent(QRect& boundingRect);
     virtual void penChangedEvent(FwPen* pen);
 
-    void invalidateCanvas(const QRect& clipRect);
-
     virtual FwDrawer* createDrawer(const QByteArray& name, FwMLObject* object) const;
 
     virtual FwPrimitive* primitiveByName(const QList<QByteArray>& name, int firstElement = 0);
+
+    void invalidateGeometry();
 
 private:
     void createNewBuffer();
@@ -174,7 +175,7 @@ private:
 
     int m_zIndex;
 
-    int _startChanged;
+    int m_changedInc;
 
     QByteArray m_name;
     QVariant* m_data;
@@ -184,6 +185,7 @@ private:
     bool m_contentDirty;
 
     FwDrawer* m_drawer;
+    FwItemView* m_itemView;
 };
 
 #include "fwgui/primitives/fwprimitive_inl.h"

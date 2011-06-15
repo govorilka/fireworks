@@ -13,8 +13,7 @@ FwGraphicsView::FwGraphicsView(QObject *parent) :
     BaseClass(parent),
     m_activeScene(0),
     m_prevActiveScene(0),
-    m_needPostUpdateEvent(true),
-    m_needInvalidate(false)
+    m_needPostUpdateEvent(true)
 {
 }
 
@@ -205,28 +204,31 @@ void FwGraphicsView::render(FwPainter* painter, const QRect& clipRect)
 
 void FwGraphicsView::invalidateChanges()
 {
-    if(m_needInvalidate)
+    QTime currentTime = QTime::currentTime();
+
+    if(m_activeScene)
     {
-        QTime currentTime = QTime::currentTime();
-
-        if(m_activeScene)
-        {
-            m_activeScene->invalidateChildren();
-        }
-
-        qDebug() << "FwGraphicsView::invalidateChanges 1: " << currentTime.msecsTo(QTime::currentTime());
-
-        m_dirtyRegion.validation();
-        if(!m_dirtyRegion.isEmpty())
-        {
-            invalidateCanvas(m_dirtyRegion);
-            m_dirtyRegion.clear();
-            //m_dirtyRegion = FwRegion();
-        }
-
-        m_needPostUpdateEvent = true;
-        m_needInvalidate = false;
-
-        qDebug() << "FwGraphicsView::invalidateChanges 2: " << currentTime.msecsTo(QTime::currentTime());
+        m_activeScene->invalidate();
     }
+
+    qDebug() << "FwGraphicsView::invalidateChanges 1: " << currentTime.msecsTo(QTime::currentTime());
+
+    qDebug() << "=========================================================";
+
+    m_dirtyRegion.validation();
+    foreach(QRect rect, m_dirtyRegion.rects())
+    {
+        qDebug() << "FwGraphicsView::invalidateChanges 1: " << rect;
+    }
+
+    if(!m_dirtyRegion.isEmpty())
+    {
+        invalidateCanvas(m_dirtyRegion);
+        m_dirtyRegion.clear();
+        //m_dirtyRegion = FwRegion();
+    }
+
+    m_needPostUpdateEvent = true;
+
+    //qDebug() << "FwGraphicsView::invalidateChanges 2: " << currentTime.msecsTo(QTime::currentTime());
 }
