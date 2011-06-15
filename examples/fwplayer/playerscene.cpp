@@ -23,9 +23,25 @@ PlayerScene::PlayerScene(int id, FwGraphicsView* view) :
 
 void PlayerScene::keyPressEvent(FwKeyPressEvent *event)
 {
-    if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+    switch(event->key())
     {
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
         view()->setActiveScene(2);
         event->accept();
+        return;
+
+    case Qt::Key_1:
+        m_stringPrimitive->setVisible(!m_stringPrimitive->isVisible());
+        event->accept();
+        return;
+
+    case Qt::Key_2:
+        m_pixmapPrimitive->setVisible(!m_pixmapPrimitive->isVisible());
+        event->accept();
+        return;
+
+    default:
+        break;
     }
 }

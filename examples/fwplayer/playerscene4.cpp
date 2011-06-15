@@ -24,12 +24,12 @@ PlayerScene4::PlayerScene4(int id, FwGraphicsView* view) :
     {
         caption += (++c);
         caption += ' ';
+        m_itemView->addText(caption, false);
         if(c == 'Z')
         {
             c = 'A';
             caption = QString();
         }
-        m_itemView->addText(caption, false);
     }
 
     m_itemView->update();
