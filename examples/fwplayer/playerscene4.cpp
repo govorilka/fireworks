@@ -17,9 +17,19 @@ PlayerScene4::PlayerScene4(int id, FwGraphicsView* view) :
     m_itemView->prepareGeometryChanged();
     m_itemView->show();
 
+    char c = 'A';
+    QString caption = QChar(c);
+
     for(int i = 0; i < 100; i++)
     {
-        m_itemView->addString("item" + QString::number(i));
+        caption += (++c);
+        caption += ' ';
+        if(c == 'Z')
+        {
+            c = 'A';
+            caption = QString();
+        }
+        m_itemView->addText(caption, false);
     }
 
     m_itemView->update();
