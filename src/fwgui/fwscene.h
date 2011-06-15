@@ -26,6 +26,7 @@ public:
     friend class FwWidget;
     friend class FwGraphicsView;
     friend class FwPrimitive;
+    friend class FwPrimitiveGroup;
 
     explicit FwScene(int id, FwGraphicsView* view);
     virtual ~FwScene();
@@ -49,6 +50,8 @@ protected:
 
     void showAnimationFinished();
     void hideAnimationFinished();
+
+    void invalidate();
 
 private:
     FwGraphicsView* m_view;

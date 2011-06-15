@@ -14,8 +14,6 @@ FwPrimitiveGroup::FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* par
     BaseClass(name, parent),
     m_childrenRect(0, 0, 0, 0),
     childrenDirty(false),
-    m_childrenPosChanged(false),
-    m_childrenSizeChanged(false),
     m_invalidateChildrenRect(false)
 {
     if(parent)
@@ -135,41 +133,59 @@ void FwPrimitiveGroup::invalidateChildren()
 {
     if(childrenDirty)
     {
-        if(needSortZIndex)
+        m_scene->m_view->m_dirtyRegion.setObjectRect(object()->geometry()->rect());
+
+        while(childrenDirty)
         {
-            if(m_primitives.size() > 1)
+            childrenDirty = false;
+
+            if(needSortZIndex)
             {
                 qSort(m_primitives.begin(), m_primitives.end(), FwPrimitive::zIndexLessThan);
+                needSortZIndex = false;
             }
-            needSortZIndex = false;
-        }
 
-        if(m_childrenPosChanged || m_childrenSizeChanged)
-        {
-            childrenRectChangedEvent(m_childrenPosChanged, m_childrenSizeChanged);
-            m_childrenPosChanged = false;
-            m_childrenSizeChanged = false;
-            m_invalidateChildrenRect = true;
-        }
+            foreach(FwPrimitiveGroup* group, m_groups)
+            {
+                group->invalidateChildren();
+            }
 
-        foreach(FwPrimitiveGroup* group, m_groups)
-        {
-            group->invalidateChildren();
-        }
+            int childrenPosChanged = 0;
+            int childrenSizeChanged = 0;
+            foreach(FwPrimitive* primitive, m_primitives)
+            {
+                if(primitive->m_contentDirty)
+                {
+                    if(primitive->m_geometry->isDirty())
+                    {
+                        childrenPosChanged += primitive->m_geometry->posChanged();
+                        childrenSizeChanged += primitive->m_geometry->sizeChanged();
+                        primitive->invalidateGeometry();
+                    }
+                    m_scene->m_view->m_dirtyRegion.addChildrenRect(primitive->m_boundingRect);
+                    primitive->m_contentDirty = false;
+                }
+            }
 
-        if(m_invalidateChildrenRect)
-        {
-            invalidateChildrenRect();
-            m_invalidateChildrenRect = false;
-        }
+            if(childrenPosChanged || childrenSizeChanged)
+            {
+                childrenRectChangedEvent(childrenPosChanged, childrenSizeChanged);
+                m_invalidateChildrenRect = true;
+            }
 
-        childrenDirty = false;
+            if(m_invalidateChildrenRect)
+            {
+                invalidateChildrenRect();
+                m_invalidateChildrenRect = false;
+            }
+        }
     }
 }
 
 void FwPrimitiveGroup::invalidateChildrenRect()
 {
     m_visiblePrimitives.clear();
+
     if(object() != this)
     {
         int x1 = 0;
@@ -181,8 +197,6 @@ void FwPrimitiveGroup::invalidateChildrenRect()
             if(primitive->visibleOnScreen)
             {
                 m_visiblePrimitives.append(primitive);
-                primitive->invalidateCanvas(m_childrenRect);
-
                 x1 = qMin(x1, primitive->m_geometry->rect().left());
                 y1 = qMin(y1, primitive->m_geometry->rect().top());
                 x2 = qMax(x2, primitive->m_geometry->rect().right());
@@ -208,7 +222,6 @@ void FwPrimitiveGroup::invalidateChildrenRect()
             QRect rect = m_childrenRect.intersected(primitive->m_boundingRect);
             if(primitive->visibleOnScreen && !rect.isNull())
             {
-                primitive->invalidateCanvas(m_childrenRect);
                 m_visiblePrimitives.append(primitive);
             }
         }

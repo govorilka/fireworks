@@ -213,4 +213,9 @@ const QRect& FwPrimitive::parentRect() const
     return m_ignoreParentMargin ? m_parentGeometry->m_rect : m_parentGeometry->m_contentRect;
 }
 
+void FwPrimitive::prepareGeometryChanged()
+{
+    ++m_changedInc;
+}
+
 #endif // FIREWORKS_GRAPHICSITEM_INL_H

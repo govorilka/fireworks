@@ -72,8 +72,7 @@ bool FwMargin::apply(FwMLObject* object)
 FwGeometry::FwGeometry() :
     m_rect(0, 0, 0, 0),
     m_contentRect(0, 0, 0, 0),
-    m_posChanged(false),
-    m_sizeChanged(false)
+    m_oldRect(0, 0, 0, 0)
 {
 }
 
@@ -90,18 +89,9 @@ void FwGeometry::setRect(const QRect& rect)
 {
     if(m_rect != rect)
     {
-        m_posChanged = (m_rect.topLeft() != rect.topLeft());
-        m_sizeChanged = (m_rect.size() != rect.size());
         m_rect = rect;
         m_contentRect = m_margin.contentRect(m_rect);
     }
-}
-
-void FwGeometry::applyChanged()
-{
-    updateChildrenRect();
-    m_posChanged = false;
-    m_sizeChanged = false;
 }
 
 void FwGeometry::updateChildrenRect()
@@ -137,3 +127,5 @@ void FwGeometry::unlink(FwPrimitive* primitive)
         anchors.clear();
     }
 }
+
+
