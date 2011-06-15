@@ -29,13 +29,14 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_buffer(0),
     m_visible(true),
     visibleOnScreen(false),
-    m_zIndex(0),
-    _startChanged(0),
+    m_zIndex(-1),
+    m_changedInc(0),
     m_name(name),
     m_data(0),
     m_pen(0),
     m_contentDirty(false),
-    m_drawer(0)
+    m_drawer(0),
+    m_itemView(0)
 {
     if(m_parent)
     {
@@ -46,29 +47,27 @@ FwPrimitive::FwPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
         m_parentGeometry = m_parent->m_geometry;
         m_parentGeometry->anchors.append(this);
         updateGeometryRect();
-
-        m_parent->updateChildrenRect(true, true);
-        m_parent->sortZIndex();
     }
+
+    setZIndex(0);
 }
 
 FwPrimitive::~FwPrimitive()
 {
-    if(m_parent)
-    {
-        m_parent->m_primitives.remove(m_parent->m_primitives.indexOf(this));
-        if(m_visible)
-        {
-            m_parent->prepareGeometryChanged();
-            m_parent->updateChildren();
-            m_parent->update();
-        }
-        m_parent = 0;
-    }
-
     if(m_parentGeometry)
     {
         m_parentGeometry->unlink(this);
+    }
+
+    if(m_parent)
+    {
+        m_parent->m_primitives.remove(m_parent->m_primitives.indexOf(this));
+        if(visibleOnScreen)
+        {
+            m_parent->m_visiblePrimitives.removeOne(this);
+            m_parent->updateChildren();
+        }
+        m_parent = 0;
     }
 
     delete m_geometry;
@@ -129,47 +128,24 @@ void FwPrimitive::setBufferMode(Fw::BufferMode mode)
 
 void FwPrimitive::update(bool needUpdateBuffer)
 {
-    if(_startChanged > 0 && ((--_startChanged) == 0))
+    if((--m_changedInc) <= 0)
     {
-        if(m_geometry->isDirty())
+        m_changedInc = 0;
+
+        m_contentDirty = true;
+        if(m_parent)
         {
-            m_boundingRect = m_geometry->rect();
-            boundingRectChangedEvent(m_boundingRect);
-
-            if(m_drawer)
-            {
-                m_drawer->setPrimitiveRect(m_geometry->rect());
-            }
-
-            if(m_bufferMode)
-            {
-                if(m_buffer && m_geometry->sizeChanged())
-                {
-                    releaseBuffer();
-                    bufferDirty = true;
-                }
-                else
-                {
-                    bufferDirty = (!m_buffer || needUpdateBuffer);
-                }
-            }
-
-            bool posChanged = m_geometry->posChanged();
-            bool sizeChanged = m_geometry->sizeChanged();
-
-            m_geometry->updateChildrenRect();
-
-            if(m_parent)
-            {
-                m_contentDirty = true;
-                m_parent->updateChildrenRect(m_geometry->m_posChanged,
-                                             m_geometry->m_sizeChanged);
-            }
-            else
-            {
-                invalidateCanvas(rect());
-            }
+            m_parent->updateChildren();
         }
+
+        if(m_scene->isActive())
+        {
+            m_scene->m_view->postUpdateEvent();
+        }
+
+        m_geometry->updateChildrenRect();
+
+        bufferDirty += needUpdateBuffer;
     }
 }
 
@@ -180,7 +156,8 @@ void FwPrimitive::setZIndex(int zIndex)
         m_zIndex = zIndex;
         if(m_parent)
         {
-            m_parent->sortZIndex();
+            m_parent->needSortZIndex = true;
+            m_parent->updateChildren();
         }
     }
 }
@@ -204,16 +181,6 @@ void FwPrimitive::setVisible(bool visible)
         }
         visibleChangedEvent();
     }
-}
-
-void FwPrimitive::prepareGeometryChanged()
-{
-    if(_startChanged == 0)
-    {
-        m_contentDirty = true;
-        invalidateCanvas(m_parent ? m_parent->m_childrenRect : rect());
-    }
-    ++_startChanged;
 }
 
 void FwPrimitive::visibleChangedEvent()
@@ -836,15 +803,6 @@ void FwPrimitive::penChangedEvent(FwPen* pen)
     Q_UNUSED(pen);
 }
 
-void FwPrimitive::invalidateCanvas(const QRect& clipRect)
-{
-    if(m_contentDirty && m_scene->isActive())
-    {
-         m_scene->view()->update(clipRect.intersected(m_boundingRect));
-         m_contentDirty = false;
-    }
-}
-
 void FwPrimitive::setIgnoreParentMargin(bool enable)
 {
     if(m_ignoreParentMargin != enable)
@@ -917,4 +875,32 @@ void FwPrimitive::currentChangedEvent(FwItemView* view, bool current)
 
 void FwPrimitive::trigger()
 {
+}
+
+void FwPrimitive::invalidateGeometry()
+{
+    m_boundingRect = m_geometry->rect();
+    boundingRectChangedEvent(m_boundingRect);
+
+    if(m_drawer)
+    {
+        m_drawer->setPrimitiveRect(m_geometry->rect());
+    }
+
+    if(m_geometry->sizeChanged())
+    {
+        if(m_bufferMode && m_buffer)
+        {
+            releaseBuffer();
+            bufferDirty = true;
+        }
+
+        if(m_itemView)
+        {
+             m_itemView->needInitLayout = true;
+        }
+    }
+
+    m_scene->m_view->m_dirtyRegion.addChildrenRect(m_geometry->oldRect());
+    m_geometry->m_oldRect = m_geometry->m_rect;
 }

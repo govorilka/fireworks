@@ -9,6 +9,8 @@
 #include "fwgui/primitives/fwstringprimitive.h"
 #include "fwgui/primitives/fwtextprimitive.h"
 
+#include "fwgui/widgets/fwitemview.h"
+
 FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_layout(new FwLoopHSliderLayout(this)),
@@ -53,6 +55,7 @@ void FwItemView::setItems(const QList<FwPrimitive*> items)
         {
             if(!items.contains(item))
             {
+                item->m_itemView = 0;
                 delete item;
             }
         }
@@ -96,6 +99,8 @@ bool FwItemView::addItem(FwPrimitive* item)
         prepareItemsChanged();
 
         item->prepareGeometryChanged();
+
+        item->m_itemView = this;
 
         item->setPosition(m_itemWidthDock ? Fw::HP_CenterDock : Fw::HP_Left,
                           m_itemHeightDock ? Fw::VP_MiddleDock : Fw::VP_Top);
@@ -283,13 +288,13 @@ void FwItemView::geometryChangedEvent(const QRect &oldRect, QRect &rect)
     if(oldRect.size() != rect.size())
     {
         needInitLayout = true;
-        updateChildrenRect(false, true);
+        updateChildren();
     }
 }
 
 void FwItemView::childrenRectChangedEvent(bool posChanged, bool sizeChanged)
 {
-    if(m_current && (sizeChanged || needInitLayout))
+    if(m_current && needInitLayout)
     {
         m_layout->initItemsPos(m_items, m_current);
         needInitLayout = false;
@@ -415,7 +420,7 @@ void FwItemView::updateItems(bool init)
     {
         if(needInitLayout)
         {
-            updateChildrenRect(false, true);
+            updateChildren();
         }
 
         if(m_currentDirty)

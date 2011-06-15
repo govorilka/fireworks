@@ -29,15 +29,12 @@ public:
     virtual FwGraphicsObject* object() const;
 
     inline void updateChildren();
-    inline void updateChildrenRect(bool posChanged, bool sizeChanged);
 
     void invalidateChildren();
 
     FwPrimitive* primitiveByName(const QList<QByteArray>& name, int firstElement = 0);
 
 protected:
-    inline void sortZIndex();
-
     void paint(FwPainter *painter, const QRect &clipRect);
 
     virtual void visibleChangedEvent();
@@ -56,8 +53,6 @@ private:
 
     QRect m_childrenRect;
 
-    bool m_childrenPosChanged;
-    bool m_childrenSizeChanged;
     bool m_invalidateChildrenRect;
 };
 

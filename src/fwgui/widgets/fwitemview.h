@@ -22,6 +22,7 @@ class FIREWORKSSHARED_EXPORT FwItemView : public FwWidget
     typedef FwWidget BaseClass;
 
 public:
+    friend class FwPrimitive;
     friend class FwItemLayout;
 
     FwItemView(const QByteArray& name, FwPrimitiveGroup* parent);

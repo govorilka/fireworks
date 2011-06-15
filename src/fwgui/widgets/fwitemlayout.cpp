@@ -179,7 +179,6 @@ void FwSliderLayout::setMargin(int margin)
     {
         m_view->prepareGeometryChanged();
         m_margin = margin;
-        m_view->updateChildrenRect(false, true);
         m_view->update();
     }
 }

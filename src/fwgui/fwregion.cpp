@@ -1,6 +1,7 @@
 #include "fwregion.h"
 
-FwRegion::FwRegion()
+FwRegion::FwRegion() :
+    m_objectRect()
 {
 }
 
@@ -33,7 +34,7 @@ void FwRegion::addRect(const QRect& rect)
                     ++nextIter;
                     continue;
                 }
-                else
+                else if(deltaX != 1)
                 {
                     deltaX = next.left() - curr.right();
                     if(deltaX > 1)
@@ -49,7 +50,7 @@ void FwRegion::addRect(const QRect& rect)
                     ++nextIter;
                     continue;
                 }
-                else
+                else if(deltaY != 1)
                 {
                     deltaY = next.top() - curr.bottom();
                     if(deltaY > 1)
