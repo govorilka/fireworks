@@ -38,6 +38,11 @@ void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
     case Qt::Key_Space:
         QCoreApplication::sendEvent(m_itemView, event);
         break;
+
+    case Qt::Key_1:
+        m_itemView->setVisible(!m_itemView->isVisible());
+        event->accept();
+        break;
     }
 }
 

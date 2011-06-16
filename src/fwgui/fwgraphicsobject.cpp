@@ -86,7 +86,8 @@ void FwGraphicsObject::geometryChangedEvent(const QRect &oldRect, QRect &rect)
 {
     if(oldRect.size() != rect.size())
     {
-        QCoreApplication::sendEvent(this, &FwResizeEvent(m_oldSize, rect.size()));
+        FwResizeEvent event(m_oldSize, rect.size());
+        QCoreApplication::sendEvent(this, &event);
     }
     FwRectPrimitive::geometryChangedEvent(oldRect, rect);
     m_childrenRect = rect;

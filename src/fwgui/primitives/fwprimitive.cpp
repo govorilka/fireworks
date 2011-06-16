@@ -166,20 +166,25 @@ void FwPrimitive::setVisible(bool visible)
 {
     if(m_visible != visible)
     {
+        prepareGeometryChanged();
         m_visible = visible;
+
         if(m_parent)
         {
-            bool oldVisibleOnScreen = visibleOnScreen;
-            if(oldVisibleOnScreen != (visibleOnScreen = m_visible && m_parent->visibleOnScreen))
+            visibleOnScreen = m_visible && m_parent->visibleOnScreen;
+            if(m_parent->visibleOnScreen)
             {
-                prepareGeometryChanged();
-                m_contentDirty = true;
                 m_parent->m_invalidateChildrenRect = true;
-                m_parent->updateChildren();
-                update();
             }
         }
+        else
+        {
+            visibleOnScreen = m_visible;
+        }
+
         visibleChangedEvent();
+
+        update();
     }
 }
 
