@@ -3,6 +3,7 @@
 
 #include <QtCore/qrect.h>
 #include <QtCore/qvector.h>
+#include <QtCore/qstack.h>
 
 class FwRegion
 {
@@ -23,11 +24,17 @@ public:
     static bool rectLess(const QRect& r1, const QRect& r2);
 
     inline QRect objectRect() const;
-    inline void setObjectRect(const QRect& rect);
+
+    inline void pushObjectRect(const QRect& rect);
+    inline void popObjectRect();
 
 private:
     QVector<QRect> m_rects;
+
+    QRect m_sceneRect;
+
     QRect m_objectRect;
+    QStack<QRect> m_objectRectStack;
 };
 
 bool FwRegion::isEmpty() const
@@ -50,9 +57,15 @@ QRect FwRegion::objectRect() const
     return m_objectRect;
 }
 
-void FwRegion::setObjectRect(const QRect& rect)
+void FwRegion::pushObjectRect(const QRect& rect)
 {
+    m_objectRectStack.push(m_objectRect);
     m_objectRect = rect;
+}
+
+void FwRegion::popObjectRect()
+{
+    m_objectRect = (m_objectRectStack.isEmpty() ? QRect() : m_objectRectStack.pop());
 }
 
 void FwRegion::addChildrenRect(const QRect& rect)

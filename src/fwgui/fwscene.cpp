@@ -103,7 +103,7 @@ bool FwScene::isActive() const
 
 void FwScene::invalidate()
 {
-    m_view->m_dirtyRegion.setObjectRect(m_geometry->rect());
+    m_view->m_dirtyRegion.pushObjectRect(m_geometry->rect());
     if(m_contentDirty)
     {
         if(m_geometry->isDirty())
@@ -114,4 +114,5 @@ void FwScene::invalidate()
         m_contentDirty = false;
     }
     invalidateChildren();
+    m_view->m_dirtyRegion.popObjectRect();
 }

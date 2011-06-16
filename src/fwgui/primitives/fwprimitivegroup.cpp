@@ -133,7 +133,7 @@ void FwPrimitiveGroup::invalidateChildren()
 {
     if(childrenDirty)
     {
-        m_scene->m_view->m_dirtyRegion.setObjectRect(object()->geometry()->rect());
+        m_scene->m_view->m_dirtyRegion.pushObjectRect(object()->geometry()->rect());
 
         while(childrenDirty)
         {
@@ -152,6 +152,7 @@ void FwPrimitiveGroup::invalidateChildren()
 
             int childrenPosChanged = 0;
             int childrenSizeChanged = 0;
+
             foreach(FwPrimitive* primitive, m_primitives)
             {
                 if(primitive->m_contentDirty)
@@ -179,6 +180,8 @@ void FwPrimitiveGroup::invalidateChildren()
                 m_invalidateChildrenRect = false;
             }
         }
+
+        m_scene->m_view->m_dirtyRegion.popObjectRect();
     }
 }
 

@@ -81,9 +81,8 @@ FwBrushTexture::FwBrushTexture(FwPrimitive* primitive, const FwPixmap& pixmap) :
 
 void FwBrushTexture::drawBackground(FwPainter* painter, const QRect& clipRect)
 {
-    painter->drawPixmap(clipRect,
-                        m_displayPixmap,
-                        &clipRect.translated(-sourceRect().topLeft()));
+    QRect translateRect = clipRect.translated(-sourceRect().topLeft());
+    painter->drawPixmap(clipRect, m_displayPixmap, &translateRect);
 }
 
 void FwBrushTexture::updateSourceRect(const QRect& rect)
