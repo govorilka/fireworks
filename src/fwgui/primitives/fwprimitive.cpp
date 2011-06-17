@@ -878,8 +878,9 @@ void FwPrimitive::currentChangedEvent(FwItemView* view, bool current)
     setPenColor(current ? view->currentItemColor() : view->itemColor());
 }
 
-void FwPrimitive::trigger()
+bool FwPrimitive::trigger()
 {
+    return true;
 }
 
 void FwPrimitive::invalidateGeometry()

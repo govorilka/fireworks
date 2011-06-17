@@ -17,16 +17,17 @@ FwCheckableItem::FwCheckableItem(FwCheckableItemView* parent) :
 
 void FwCheckableItem::setCheck(bool value)
 {
-    if(m_check != value)
+    if(m_check != (value += m_parent->isExclusive()))
     {
         m_check = value;
-        if(m_check && m_parent->isExclusive())
+        if(m_parent->isExclusive())
         {
             foreach(FwCheckableItem* item, m_parent->checkableItems())
             {
                 if(item != this && item->isChecked())
                 {
-                    item->setCheck(false);
+                    item->m_check = false;
+                    item->updatePixmaps();
                 }
             }
         }
@@ -44,9 +45,11 @@ void FwCheckableItem::currentChangedEvent(FwItemView *view, bool current)
     m_caption->currentChangedEvent(view, current);
 }
 
-void FwCheckableItem::trigger()
+bool FwCheckableItem::trigger()
 {
+    bool check = m_check;
     setCheck(!isChecked());
+    return check != m_check;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

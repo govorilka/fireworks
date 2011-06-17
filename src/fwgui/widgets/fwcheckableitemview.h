@@ -31,7 +31,7 @@ public:
 
     inline QList<FwCheckableItem*> checkableItems() const;
 
-    inline bool	isExclusive() const;
+    inline bool isExclusive() const;
     void setExclusive(bool enable);
 
 private:
@@ -82,7 +82,7 @@ protected:
     void updateChildrenRect();
 
     void currentChangedEvent(FwItemView *view, bool current);
-    void trigger();
+    bool trigger();
 
 private:
     FwCheckableItemView* m_parent;

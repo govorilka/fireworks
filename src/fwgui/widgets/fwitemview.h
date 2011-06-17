@@ -72,6 +72,7 @@ public:
 
 signals:
     void currentChanged(FwPrimitive* previous, FwPrimitive* current);
+    void itemTriggered(FwPrimitive* item);
 
 protected:
     void keyPressEvent(FwKeyPressEvent* keyEvent);
@@ -84,7 +85,6 @@ protected:
     void updateCurrent();
 
     virtual void itemAddedEvent(FwPrimitive* item);
-    virtual void itemTriggered(FwPrimitive* item);
 
 private:
     QList<FwPrimitive*> m_items;

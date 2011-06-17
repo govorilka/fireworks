@@ -130,7 +130,7 @@ public:
     FwPrimitive* primitiveByName(const QByteArray& name);
 
     virtual void currentChangedEvent(FwItemView* view, bool current);
-    virtual void trigger();
+    virtual bool trigger();
 
 protected:
 

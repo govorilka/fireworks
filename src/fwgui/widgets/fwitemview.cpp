@@ -337,10 +337,12 @@ void FwItemView::keyPressEvent(FwKeyPressEvent* keyEvent)
         case Qt::Key_Space:
         case Qt::Key_Return:
         case Qt::Key_Enter:
-            m_current->trigger();
-            itemTriggered(m_current);
-            keyEvent->accept();
-            break;
+            if(m_current->trigger())
+            {
+                emit itemTriggered(m_current);
+                keyEvent->accept();
+            }
+            return;
 
         default:
             if(m_layout->canNext())
@@ -459,11 +461,6 @@ void FwItemView::setItemHeightDock(bool enable)
 }
 
 void FwItemView::itemAddedEvent(FwPrimitive* item)
-{
-    Q_UNUSED(item);
-}
-
-void FwItemView::itemTriggered(FwPrimitive* item)
 {
     Q_UNUSED(item);
 }
