@@ -380,10 +380,16 @@ void FwSchedulerTask::apply(FwMLObject *object)
 {
     BaseClass::apply(object);
 
-    FwMLUIntNumber* node = object->attribute("interval")->cast<FwMLUIntNumber>();
-    if(node && node->value())
+    FwMLUIntNumber* intervalNode = object->attribute("interval")->cast<FwMLUIntNumber>();
+    if(intervalNode && intervalNode->value())
     {
-        setInterval(node->value() * 1000);
+        setInterval(intervalNode->value() * 1000);
+    }
+
+    FwMLBool* runOnStartNode = object->attribute("runOnStart")->cast<FwMLBool>();
+    if(runOnStartNode)
+    {
+        setRunOnStart(runOnStartNode->value());
     }
 }
 

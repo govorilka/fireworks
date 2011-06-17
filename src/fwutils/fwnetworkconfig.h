@@ -18,9 +18,9 @@ public:
     explicit FwNetworkConfig(const QByteArray& name, QObject *parent = 0);
 
     inline QString activeInterfaceName() const;
-    inline void setActiveInterfaceName(const QString& name);
+    bool setActiveInterfaceName(const QString& name);
 
-    inline QNetworkInterface activeInterface() const;
+    QNetworkInterface activeInterface() const;
 
     QHostAddress ip() const;
     QHostAddress netmask() const;
@@ -39,20 +39,6 @@ private:
 QString FwNetworkConfig::activeInterfaceName() const
 {
     return m_activeInterface;
-}
-
-void FwNetworkConfig::setActiveInterfaceName(const QString& name)
-{
-    m_activeInterface = name;
-}
-
-QNetworkInterface FwNetworkConfig::activeInterface() const
-{
-    if(!m_activeInterface.isEmpty())
-    {
-        return QNetworkInterface::interfaceFromName(m_activeInterface);
-    }
-    return QNetworkInterface();
 }
 
 #endif //FIREWORKS_NETWORKCONFIG_H
