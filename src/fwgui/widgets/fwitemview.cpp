@@ -48,6 +48,7 @@ void FwItemView::setItems(const QList<FwPrimitive*> items)
     m_current = 0;
 
     m_layout->resetAnimation();
+    m_layout->cleanUp();
 
     if(!m_items.isEmpty())
     {
@@ -74,6 +75,7 @@ void FwItemView::setItems(const QList<FwPrimitive*> items)
 
     m_currentDirty = true;
     needInitLayout = true;
+
     updateItems();
 }
 
@@ -122,6 +124,7 @@ bool FwItemView::addItem(FwPrimitive* item)
 
         return true;
     }
+
     return false;
 
 }
