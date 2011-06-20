@@ -45,6 +45,8 @@ public:
 
     bool canNext() const;
 
+    virtual void cleanUp() = 0;
+
 protected:
     virtual void init(const QList<FwPrimitive*> items, const QRect& rect) = 0;
     virtual void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect) = 0;
@@ -111,6 +113,8 @@ public:
     inline void setRepeat(bool repeat);
 
     void apply(FwMLObject* object);
+
+    void cleanUp();
 
 protected:
     void updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect);
@@ -263,6 +267,8 @@ public:
 
     QByteArray className() const;
     static FwItemLayout* constructor(FwItemView* view);
+
+    void cleanUp();
 
 protected:
     FwPrimitive* nextItem(const QList<FwPrimitive *> &items, FwPrimitive *current, FwKeyPressEvent *keyEvent);

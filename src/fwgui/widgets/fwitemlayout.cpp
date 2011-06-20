@@ -268,6 +268,10 @@ void FwSliderLayout::updateHighlightPos(FwPrimitive* highlight, FwPrimitive* cur
     Q_UNUSED(rect);
 }
 
+void FwSliderLayout::cleanUp()
+{
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 const char FwHSliderLayout::staticClassName[] = "fireworks.layouts.HorizontalSlider";
@@ -786,4 +790,17 @@ QRect FwPagesLayout::highlightRect(FwPrimitive* current, const QRect& currentRec
     rect.setY(current->y() + m_view->geometry()->margin().top);
     rect.setHeight(current->height());
     return rect;
+}
+
+void FwPagesLayout::cleanUp()
+{
+    if(!m_pages.isEmpty())
+    {
+        m_pages.clear();
+        m_currentPage = -1;
+        if(!m_pageIndex.isEmpty())
+        {
+            m_pageIndex.clear();
+        }
+    }
 }
