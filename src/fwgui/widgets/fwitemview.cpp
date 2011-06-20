@@ -62,22 +62,18 @@ void FwItemView::setItems(const QList<FwPrimitive*> items)
         m_items.clear();
     }
 
-    if(items.isEmpty())
+    if(m_highlight)
     {
-        if(m_highlight)
-        {
-            m_highlight->setVisible(false);
-        }
+        m_highlight->setVisible(!items.isEmpty());
     }
-    else
+
+    foreach(FwPrimitive* item, items)
     {
-        foreach(FwPrimitive* item, items)
-        {
-            addItem(item);
-        }
+        addItem(item);
     }
 
     m_currentDirty = true;
+    needInitLayout = true;
     updateItems();
 }
 
@@ -422,6 +418,11 @@ void FwItemView::updateItems(bool init)
     {
         if(needInitLayout)
         {
+            if(m_current)
+            {
+                m_layout->initItemsPos(m_items, m_current);
+            }
+            needInitLayout = false;
             updateChildren();
         }
 
