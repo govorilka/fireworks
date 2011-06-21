@@ -24,9 +24,9 @@ bool FwItemLayout::startAnimation(FwPrimitive* previous, FwPrimitive* current)
             m_animation->resetCurve();
             m_candidate = current;
         }
-        else
+        else if(prepareAnimation(m_animation, previous, current))
         {
-            animationStart(m_animation, previous, current);
+            m_animation->start();
         }
         return m_animation->isRunning();
     }
@@ -69,9 +69,9 @@ void FwItemLayout::animationFinish()
     {
         if(m_candidate)
         {
-            if(m_candidate == m_view->current())
+            if(m_candidate == m_view->current() && prepareAnimation(m_animation, m_view->previous(), m_view->current()))
             {
-                animationStart(m_animation, m_view->previous(), m_view->current());
+                m_animation->start();
             }
             m_candidate = 0;
         }
@@ -79,7 +79,8 @@ void FwItemLayout::animationFinish()
         {
             animationFinish(m_animation, m_view->current());
             m_animation->restoreCurve();
-            m_view->updateCurrent();
+
+            m_view->updateCurrent(false);
         }
     }
 }
@@ -363,13 +364,13 @@ void FwHSliderLayout::applyAnimationStep(int step)
     }
 }
 
-void FwHSliderLayout::animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current)
+bool FwHSliderLayout::prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current)
 {
     Q_UNUSED(previous);
     m_deltaValue = current->x();
     animation->setStartValue(m_deltaValue);
     animation->setEndValue(static_cast<int>((m_view->rect().width() - current->width()) * 0.5));
-    animation->start();
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -464,13 +465,13 @@ void FwVSliderLayout::applyAnimationStep(int step)
     }
 }
 
-void FwVSliderLayout::animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current)
+bool FwVSliderLayout::prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current)
 {
     Q_UNUSED(previous);
     m_deltaValue = current->y();
     animation->setStartValue(m_deltaValue);
     animation->setEndValue(static_cast<int>((m_view->rect().height() - current->height()) * 0.5));
-    animation->start();
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -696,9 +697,15 @@ void FwPagesLayout::update(const QList<FwPrimitive*>& items, FwPrimitive* curren
 {
     Q_UNUSED(rect);
     calculatePosition(items, current);
+
+    FwPrimitive* highlight = m_view->highlight();
+    if(highlight)
+    {
+        updateHighlightPos(highlight, current, rect);
+    }
 }
 
-void FwPagesLayout::animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current)
+bool FwPagesLayout::prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current)
 {
     Q_UNUSED(animation);
     Q_UNUSED(previous);
@@ -715,8 +722,10 @@ void FwPagesLayout::animationStart(FwItemAnimation* animation, FwPrimitive *prev
         rect.setHeight(current->height());
         animation->setEndValue(rect);
 
-        animation->start();
+        return true;
     }
+
+    return false;
 }
 
 void FwPagesLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current)
@@ -782,14 +791,6 @@ void FwPagesLayout::updateHighlightPos(FwPrimitive* highlight, FwPrimitive* curr
     highlight->setY(highlight->mapFromScene(currentItem->mapToScene(currentItem->pos())).y());
     highlight->setHeight(currentItem->height());
     highlight->update();
-}
-
-QRect FwPagesLayout::highlightRect(FwPrimitive* current, const QRect& currentRect) const
-{
-    QRect rect = currentRect;
-    rect.setY(current->y() + m_view->geometry()->margin().top);
-    rect.setHeight(current->height());
-    return rect;
 }
 
 void FwPagesLayout::cleanUp()

@@ -82,7 +82,7 @@ protected:
 
     bool needInitLayout;
 
-    void updateCurrent();
+    void updateCurrent(bool updateLayout);
 
     virtual void itemAddedEvent(FwPrimitive* item);
 

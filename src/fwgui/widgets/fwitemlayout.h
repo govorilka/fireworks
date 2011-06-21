@@ -23,6 +23,7 @@ class FwItemLayout : public QObject
 
 public:
     friend class FwItemAnimation;
+    friend class FwItemView;
 
     FwItemLayout(FwItemView* view);
 
@@ -52,7 +53,7 @@ protected:
     virtual void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect) = 0;
     virtual void updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect) = 0;
 
-    virtual void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current) = 0;
+    virtual bool prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current) = 0;
     virtual void animationFinish(FwItemAnimation* animation, FwPrimitive* current);
     virtual void updateAnimationValue(const QVariant& value) = 0;
 
@@ -175,7 +176,7 @@ protected:
 
     FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent);
 
-    void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
+    bool prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
 
     void applyAnimationStep(int step);
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
@@ -203,7 +204,7 @@ protected:
 
     FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent);
 
-    void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
+    bool prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
 
     void applyAnimationStep(int step);
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
@@ -277,13 +278,11 @@ protected:
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
     void updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect);
 
-    void animationStart(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
+    bool prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
     void updateAnimationValue(const QVariant &value);
     void applyAnimationStep(int step);
 
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
-
-    QRect highlightRect(FwPrimitive* current, const QRect& currentRect) const;
 
 private:
     QHash<FwPrimitive*, int> m_pageIndex;
