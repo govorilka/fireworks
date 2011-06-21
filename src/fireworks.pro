@@ -30,3 +30,4 @@ include (fwtypography/fwtypography.pri)
 include (fwgui/fwgui.pri)
 include (fwdb/fwdb.pri)
 include (fwutils/fwutils.pri)
+
