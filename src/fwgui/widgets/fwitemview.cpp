@@ -359,12 +359,17 @@ void FwItemView::keyPressEvent(FwKeyPressEvent* keyEvent)
     BaseClass::keyPressEvent(keyEvent);
 }
 
-void FwItemView::updateCurrent()
+void FwItemView::updateCurrent(bool updateLayout)
 {
     if(m_current)
     {
         m_current->currentChangedEvent(this, true);
+        if(updateLayout)
+        {
+            m_layout->update(m_items, m_current, m_geometry->rect());
+        }
     }
+
     emit currentChanged(m_previous, m_current);
 }
 
@@ -435,10 +440,12 @@ void FwItemView::updateItems(bool init)
             {
                 m_highlight->setVisible(m_current != 0);
             }
-            if(!m_current || !m_previous || !m_layout->startAnimation(m_previous, m_current))
+
+            if(!visibleOnScreen || !m_current || !m_previous || !m_layout->startAnimation(m_previous, m_current))
             {
-                updateCurrent();
+                updateCurrent(true);
             }
+
             m_currentDirty = false;
         }
     }
