@@ -175,8 +175,11 @@ bool FwGraphicsView::event(QEvent *e)
         switch(fwEvent->eventType())
         {
         case Fw::E_KeyPress:
-            keyPressEvent(static_cast<FwKeyPressEvent*>(fwEvent));
-            return true;
+            if(m_activeScene)
+            {
+                return m_activeScene->keyEventProccessed(static_cast<FwKeyPressEvent*>(fwEvent));
+            }
+            break;
 
         default:
             break;
@@ -184,14 +187,6 @@ bool FwGraphicsView::event(QEvent *e)
     }
 
     return BaseClass::event(e);
-}
-
-void FwGraphicsView::keyPressEvent(FwKeyPressEvent* event)
-{
-    if(m_activeScene)
-    {
-        m_activeScene->keyPressEvent(event);
-    }
 }
 
 void FwGraphicsView::render(FwPainter* painter, const QRect& clipRect)

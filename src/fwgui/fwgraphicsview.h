@@ -61,8 +61,6 @@ public:
     virtual FwVertexArray* createVertexArray() const = 0;
 
 protected:
-    virtual void keyPressEvent(FwKeyPressEvent* event);
-
     virtual void invalidateCanvas(const FwRegion& region) = 0;
 
     virtual FwFontData* createFontData(const FwFontDescription& desc) = 0;

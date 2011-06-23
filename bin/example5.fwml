@@ -70,4 +70,11 @@ itemView
     },
 
     exclusive : false
+},
+
+messagebox
+{
+  width : 300, height : 200,
+  bgcolor : red
 }
+

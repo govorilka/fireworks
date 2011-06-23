@@ -15,6 +15,8 @@ class FwKeyPressEvent;
 
 class FwObjectGraphicsItem;
 
+class FwResult;
+
 class FIREWORKSSHARED_EXPORT FwGraphicsObject : public QObject, public FwPrimitiveGroup
 {
     Q_OBJECT
@@ -46,6 +48,7 @@ protected:
 
     virtual void keyPressEvent(FwKeyPressEvent* event);
     virtual void resizeEvent(FwResizeEvent* event);
+    virtual void requestAcceptEvent(FwResult* result);
 
 protected slots:
     virtual void showAnimationFinished() = 0;

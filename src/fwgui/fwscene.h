@@ -13,6 +13,8 @@ class FwSceneHideEvent;
 class FwSceneGraphicsItem;
 class FwWidget;
 class FwGraphicsView;
+class FwMessageBox;
+class FwRequest;
 
 class QResizeEvent;
 class QKeyEvent;
@@ -27,6 +29,7 @@ public:
     friend class FwGraphicsView;
     friend class FwPrimitive;
     friend class FwPrimitiveGroup;
+    friend class FwMessageBox;
 
     explicit FwScene(int id, FwGraphicsView* view);
     virtual ~FwScene();
@@ -41,6 +44,17 @@ public:
 
     bool isActive() const;
 
+    inline FwMessageBox* messagebox() const;
+
+    inline FwMLObject* messageBoxTemplate() const;
+    void setMessageBoxTemplate(FwMLObject* temp);
+
+    void apply(FwMLObject *object);
+
+    void postRequest(const FwRequest& request);
+
+    FwMessageBox* createMessageBox(FwMLObject* messageBoxTemplate);
+
 protected:
     void showEventProcessed(FwSceneShowEvent* e);
     void hideEventProcessed(FwSceneHideEvent* e);
@@ -53,11 +67,16 @@ protected:
 
     void invalidate();
 
+    bool keyEventProccessed(FwKeyPressEvent* event);
+
 private:
     FwGraphicsView* m_view;
     int m_id;
 
     QList<FwWidget*> m_widgets;
+
+    FwMessageBox* m_messageBox;
+    FwMLObject* m_messageBoxTemplate;
 };
 
 int FwScene::id() const
@@ -68,6 +87,16 @@ int FwScene::id() const
 FwGraphicsView* FwScene::view() const
 {
     return m_view;
+}
+
+FwMessageBox* FwScene::messagebox() const
+{
+    return m_messageBox;
+}
+
+FwMLObject* FwScene::messageBoxTemplate() const
+{
+    return m_messageBoxTemplate;
 }
 
 #endif // FWSCENE_H

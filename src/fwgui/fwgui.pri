@@ -35,7 +35,8 @@ HEADERS += \
     fwgui/fwvertexarray.h \
     fwgui/widgets/fwprogresswidget.h \
     fwgui/widgets/fwcheckableitemview.h \
-    fwgui/fwregion.h
+    fwgui/fwregion.h \
+    fwgui/widgets/fwmessagebox.h
 
 SOURCES += \
     fwgui/fwgraphicsview.cpp \
@@ -65,4 +66,5 @@ SOURCES += \
     fwgui/fwvertexarray.cpp \
     fwgui/widgets/fwprogresswidget.cpp \
     fwgui/widgets/fwcheckableitemview.cpp \
-    fwgui/fwregion.cpp
+    fwgui/fwregion.cpp \
+    fwgui/widgets/fwmessagebox.cpp

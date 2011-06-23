@@ -7,12 +7,18 @@
 #include "fwgraphicsview.h"
 #include "fwguievent.h"
 
+#include "fwgui/widgets/fwmessagebox.h"
+
 #include "fwgui/widgets/fwwidget.h"
+
+#include "fwcore/fwml.h"
 
 FwScene::FwScene(int id, FwGraphicsView* view) :
     BaseClass("scene", 0),
     m_view(view),
-    m_id(id)
+    m_id(id),
+    m_messageBox(0),
+    m_messageBoxTemplate(0)
 {
     visibleOnScreen = true;
 
@@ -63,6 +69,9 @@ bool FwScene::event(QEvent * e)
         FwGuiEvent* fwEvent = static_cast<FwGuiEvent*>(e);
         switch(fwEvent->eventType())
         {
+        case Fw::E_KeyPress:
+            return keyEventProccessed(static_cast<FwKeyPressEvent*>(fwEvent));
+
         case Fw::E_SceneShow:
             showEvent(static_cast<FwSceneShowEvent*>(fwEvent));
             return true;
@@ -115,4 +124,62 @@ void FwScene::invalidate()
     }
     invalidateChildren();
     m_view->m_dirtyRegion.popObjectRect();
+}
+
+void FwScene::apply(FwMLObject *object)
+{
+    FwMLObject* temp = object->attribute("messagebox")->cast<FwMLObject>();
+    if(temp)
+    {
+        setMessageBoxTemplate(static_cast<FwMLObject*>(temp->clone()));
+    }
+
+    BaseClass::apply(object);
+}
+
+void FwScene::setMessageBoxTemplate(FwMLObject* temp)
+{
+    if(m_messageBoxTemplate != temp)
+    {
+        delete m_messageBoxTemplate;
+        m_messageBoxTemplate = temp;
+        if(m_messageBox)
+        {
+            m_messageBox->apply(m_messageBoxTemplate);
+        }
+    }
+}
+
+void FwScene::postRequest(const FwRequest& request)
+{
+    if(!request.isNull())
+    {
+        if(!m_messageBox)
+        {
+            m_messageBox = createMessageBox(m_messageBoxTemplate);
+            m_messageBox->show();
+        }
+        m_messageBox->setRequest(request);
+    }
+}
+
+FwMessageBox* FwScene::createMessageBox(FwMLObject* messageBoxTemplate)
+{
+    FwMessageBox* box = new FwMessageBox("messagebox", this);
+    if(messageBoxTemplate)
+    {
+        box->apply(messageBoxTemplate);
+    }
+    return box;
+}
+
+bool FwScene::keyEventProccessed(FwKeyPressEvent* event)
+{
+    if(m_messageBox)
+    {
+        QCoreApplication::sendEvent(m_messageBox, event);
+        return true;
+    }
+
+    return BaseClass::event(event);
 }

@@ -21,7 +21,7 @@ LIBS += -L$(FIREWORKS_PATH)/bin \
         -lfireworks \
         -lqpainter
 
-INCLUDEPATH += ../../src/ \
+INCLUDEPATH += $(FIREWORKS_PATH)/src/ \
                ../qpainter/
 
 SOURCES += main.cpp \
@@ -39,8 +39,8 @@ HEADERS  += \
     playerscene5.h
 
 OTHER_FILES += \
-    ../../bin/example2.fwml \
-    ../../bin/example.fwml \
-    ../../bin/example3.fwml \
-    ../../bin/example4.fwml \
-    ../../bin/example5.fwml
+    $(FIREWORKS_PATH)/bin/example2.fwml \
+    $(FIREWORKS_PATH)/bin/example.fwml \
+    $(FIREWORKS_PATH)/bin/example3.fwml \
+    $(FIREWORKS_PATH)/bin/example4.fwml \
+    $(FIREWORKS_PATH)/bin/example5.fwml
