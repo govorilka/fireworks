@@ -10,6 +10,8 @@
 
 #include "fwgui/widgets/fwcheckableitemview.h"
 
+#include "fwutils/fwrequest.h"
+
 PlayerScene5::PlayerScene5(int id, FwGraphicsView* view) :
     BaseClass(id, view),
     m_itemView(new FwCheckableItemView("itemView", this))
@@ -25,8 +27,12 @@ void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
     {
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        view()->setActiveScene(1);
-        event->accept();
+        {
+            FwRequest request(this);
+            request.addAnswer(FwRequestAnswer::SR_Ok, "Ok", Qt::Key_Return);
+            request.addAnswer(FwRequestAnswer::SR_Cancel, "Cancel", Qt::Key_Escape);
+            postRequest(request);
+        }
         return;
 
     case Qt::Key_Right:
@@ -61,4 +67,12 @@ void PlayerScene5::apply(FwMLObject *object)
 void PlayerScene5::showEvent(FwSceneShowEvent *event)
 {
     BaseClass::showEvent(event);
+}
+
+void PlayerScene5::requestAcceptEvent(FwResult* result)
+{
+    if(result->result() == FwRequestAnswer::SR_Ok)
+    {
+        view()->setActiveScene(1);
+    }
 }

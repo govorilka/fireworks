@@ -20,6 +20,8 @@ protected:
 
     void invalidateChildrenRect();
 
+    void requestAcceptEvent(FwResult* result);
+
 private:
     FwCheckableItemView* m_itemView;
 };

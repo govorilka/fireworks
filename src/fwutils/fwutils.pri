@@ -6,7 +6,8 @@ HEADERS += \
     fwutils/fwscheduler_inl.h \
     fwutils/fwversion.h \
     fwutils/fwconsole.h \
-    fwutils/fwconfig.h
+    fwutils/fwconfig.h \
+    fwutils/fwrequest.h
 
 SOURCES += \
     fwutils/fwnetworkconfig.cpp \
@@ -14,6 +15,7 @@ SOURCES += \
     fwutils/fwscheduler.cpp \
     fwutils/fwversion.cpp \
     fwutils/fwconsole.cpp \
-    fwutils/fwconfig.cpp
+    fwutils/fwconfig.cpp \
+    fwutils/fwrequest.cpp
 
 win32:SOURCES +=

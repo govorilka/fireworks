@@ -8,6 +8,8 @@
 #include "fwscene.h"
 #include "fwguievent.h"
 
+#include "fwutils/fwrequest.h"
+
 FwGraphicsObject::FwGraphicsObject(const QByteArray& name, FwPrimitiveGroup* parent) :
     QObject(),
     BaseClass(name, parent),
@@ -112,6 +114,11 @@ bool FwGraphicsObject::event(QEvent *e)
             break;
         }
     }
+    else if(e->type() == FwResult::typeID())
+    {
+        requestAcceptEvent(static_cast<FwResult*>(e));
+        return true;
+    }
 
     return QObject::event(e);
 }
@@ -129,4 +136,9 @@ void FwGraphicsObject::resizeEvent(FwResizeEvent* event)
 FwGraphicsObject* FwGraphicsObject::object() const
 {
     return const_cast<FwGraphicsObject*>(this);
+}
+
+void FwGraphicsObject::requestAcceptEvent(FwResult* result)
+{
+    Q_UNUSED(result);
 }
