@@ -166,6 +166,8 @@ void FwScene::postRequest(const FwRequest& request)
 FwMessageBox* FwScene::createMessageBox(FwMLObject* messageBoxTemplate)
 {
     FwMessageBox* box = new FwMessageBox("messagebox", this);
+    FwRectPrimitive* button = new FwRectPrimitive("buttonOk", box);
+    new FwStringPrimitive("caption", box);
     if(messageBoxTemplate)
     {
         box->apply(messageBoxTemplate);

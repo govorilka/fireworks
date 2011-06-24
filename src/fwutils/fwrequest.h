@@ -6,7 +6,9 @@
 #include <QtCore/quuid.h>
 #include <QtCore/qcoreevent.h>
 
-class FwRequestAnswer
+#include "fireworks.h"
+
+class FIREWORKSSHARED_EXPORT FwRequestAnswer
 {
 public:
 
@@ -42,7 +44,7 @@ int FwRequestAnswer::result() const
 
 /////////////////////////////////////////////////////////////////////////
 
-class FwRequest
+class FIREWORKSSHARED_EXPORT FwRequest
 {
 public:
     FwRequest(QObject *sender = 0);
@@ -103,7 +105,7 @@ void FwRequest::addAnswer(const FwRequestAnswer& answer)
 
 /////////////////////////////////////////////////////////////////////////
 
-class FwPostRequestEvent : public QEvent
+class FIREWORKSSHARED_EXPORT FwPostRequestEvent : public QEvent
 {
     typedef QEvent BaseClass;
 
@@ -120,7 +122,7 @@ private:
 
 ////////////////////////////////////////////////////////////////////////
 
-class FwResult: public QEvent
+class FIREWORKSSHARED_EXPORT FwResult: public QEvent
 {
     typedef QEvent BaseClass;
 
