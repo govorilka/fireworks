@@ -25,6 +25,7 @@ public:
 
     inline Qt::Key key() const;
     inline int result() const;
+    inline const QString& caption () const;
 
 private:
     Qt::Key m_key;
@@ -41,6 +42,12 @@ int FwRequestAnswer::result() const
 {
     return m_modalResult;
 }
+
+const QString& FwRequestAnswer::caption() const
+{
+    return m_caption;
+}
+
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -64,6 +71,8 @@ public:
     inline void addAnswer(int result, const QString& caption, Qt::Key key);
 
     int result(int key);
+
+    inline QList<FwRequestAnswer> answers() const;
 
 private:
     QUuid m_uid;
@@ -103,6 +112,11 @@ void FwRequest::addAnswer(const FwRequestAnswer& answer)
     m_answers.append(answer);
 }
 
+QList<FwRequestAnswer> FwRequest::answers() const
+{
+    return m_answers;
+}
+
 /////////////////////////////////////////////////////////////////////////
 
 class FIREWORKSSHARED_EXPORT FwPostRequestEvent : public QEvent
@@ -119,6 +133,11 @@ public:
 private:
     FwRequest m_request;
 };
+
+const FwRequest& FwPostRequestEvent::request() const
+{
+    return m_request;
+}
 
 ////////////////////////////////////////////////////////////////////////
 

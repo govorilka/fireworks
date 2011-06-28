@@ -5,6 +5,7 @@
 #include <QtCore/qrect.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qplugin.h>
+#include <QtCore/qqueue.h>
 
 #include "fireworks.h"
 
@@ -19,6 +20,7 @@ class FwRender;
 class FwPainter;
 class FwKeyPressEvent;
 class FwVertexArray;
+class FwRequest;
 
 class FIREWORKSSHARED_EXPORT FwGraphicsView : public QObject
 {
@@ -60,6 +62,8 @@ public:
 
     virtual FwVertexArray* createVertexArray() const = 0;
 
+    void postRequest(const FwRequest& request);
+
 protected:
     virtual void invalidateCanvas(const FwRegion& region) = 0;
 
@@ -72,6 +76,8 @@ protected:
 
     inline void postUpdateEvent();
 
+    bool keyEventProccessed(FwKeyPressEvent* event);
+
 private:
     QSize m_size;
     QHash<QString, FwFont> m_fonts;
@@ -80,6 +86,7 @@ private:
     FwScene* m_activeScene;
     FwScene* m_prevActiveScene;
     QList<FwScene*> m_scenes;
+    QQueue<FwRequest> m_requests;
 
     bool m_needPostUpdateEvent;
 

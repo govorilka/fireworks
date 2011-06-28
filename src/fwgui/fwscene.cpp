@@ -18,7 +18,8 @@ FwScene::FwScene(int id, FwGraphicsView* view) :
     m_view(view),
     m_id(id),
     m_messageBox(0),
-    m_messageBoxTemplate(0)
+    m_messageBoxTemplate(0),
+    m_messageBoxAllow(true)
 {
     visibleOnScreen = true;
 
@@ -133,6 +134,12 @@ void FwScene::apply(FwMLObject *object)
     {
         setMessageBoxTemplate(static_cast<FwMLObject*>(temp->clone()));
     }
+    FwMLBool* messageboxAllow = object->attribute("messageBoxAllow")->cast<FwMLBool>();
+    if(messageboxAllow)
+    {
+        setMessageBoxAllow(messageboxAllow->value());
+    }
+
 
     BaseClass::apply(object);
 }
@@ -150,7 +157,7 @@ void FwScene::setMessageBoxTemplate(FwMLObject* temp)
     }
 }
 
-void FwScene::postRequest(const FwRequest& request)
+void FwScene::showMessageBox(const FwRequest& request)
 {
     if(!request.isNull())
     {
@@ -160,13 +167,13 @@ void FwScene::postRequest(const FwRequest& request)
             m_messageBox->show();
         }
         m_messageBox->setRequest(request);
+        //m_messageBox->
     }
 }
 
 FwMessageBox* FwScene::createMessageBox(FwMLObject* messageBoxTemplate)
 {
     FwMessageBox* box = new FwMessageBox("messagebox", this);
-    FwRectPrimitive* button = new FwRectPrimitive("buttonOk", box);
     if(messageBoxTemplate)
     {
         box->apply(messageBoxTemplate);

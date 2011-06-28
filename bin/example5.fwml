@@ -72,9 +72,11 @@ itemView
     exclusive : false
 },
 
+messageBoxAllow : true,
+
 messagebox
 {
-  width : 300, height : 200,
+  width : 400, height : 300,
   bgcolor : red,
   geometry
   {
@@ -82,17 +84,80 @@ messagebox
     hPosition : "center",
     vPosition : "middle"
   },
-  buttonOk
+  buttons
   {
-   width : 100, height : 70,
-   bgcolor : green,
-   x : 0, y : -2,
+    width : 300, height : 140,
+    geometry
+    {
+      vPosition : middle,
+      hPosition : center
+    },
+    Ok
+    {
+      caption
+      {
+	zindex : 6,
+	font
+	{
+	  family : "Arial",
+	  pixelSize : 24
+	},
+	color : "white",
+	geometry
+	{
+	hPosition : "Center",
+	vPosition : "Middle"
+	}
+      },
+      width : 100, height : 70,
+      bgcolor : green,
+      geometry
+      {
+	hPosition : "left",
+	vPosition : "bottom"
+      }
+    },
+    Cancel
+    {
+      caption
+      {
+	zindex : 6,
+	font
+	{
+	  family : "Arial",
+	  pixelSize : 24
+	},
+	color : "white",
+	geometry
+	{
+	hPosition : "Center",
+	vPosition : "Middle"
+	}
+      },
+      width : 100, height : 70,
+      bgcolor : green,
+      geometry
+      {
+	hPosition : "right",
+	vPosition : "bottom"
+      }
+    },
+  },
+  text
+  {
+   zindex : 6,
+   font
+   {
+      family : "Arial",
+      pixelSize : 24
+   },
+   color : "white",
+   string : "Hello world!",
    geometry
    {
-      hPosition : "center",
-      vPosition : "bottom"
+      hPosition : "Center",
+      vPosition : "Middle"
    }
-   },
-  }
+  },
+  
 }
-

@@ -9,11 +9,15 @@
 
 #include "fwcore/fwml.h"
 
+#include "fwutils/fwrequest.h"
+#include "fwgui/widgets/fwmessagebox.h"
+
 FwGraphicsView::FwGraphicsView(QObject *parent) :
     BaseClass(parent),
     m_activeScene(0),
     m_prevActiveScene(0),
-    m_needPostUpdateEvent(true)
+    m_needPostUpdateEvent(true),
+    m_requests()
 {
 }
 
@@ -155,6 +159,11 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
 
             FwSceneShowEvent sceneShowEvent(m_prevActiveScene);
             QCoreApplication::sendEvent(m_activeScene, &sceneShowEvent);
+
+            if(!m_requests.isEmpty() && m_activeScene->messageBoxAllow())
+            {
+                m_activeScene->showMessageBox(m_requests.dequeue());
+            }
         }
 
         update();
@@ -185,6 +194,12 @@ bool FwGraphicsView::event(QEvent *e)
             break;
         }
     }
+    else if(e->type() == FwPostRequestEvent::typeID())
+    {
+        postRequest(static_cast<FwPostRequestEvent*>(e)->request());
+        e->accept();
+        return true;
+    }
 
     return BaseClass::event(e);
 }
@@ -212,4 +227,32 @@ void FwGraphicsView::invalidateChanges()
     }
 
     m_needPostUpdateEvent = true;
+}
+
+void FwGraphicsView::postRequest(const FwRequest& request)
+{
+    if(!request.isNull())
+    {
+        if(m_activeScene && m_activeScene->messageBoxAllow())
+        {
+            m_activeScene->showMessageBox(request);
+            return;
+        }
+        m_requests.enqueue(request);
+    }
+}
+
+bool FwGraphicsView::keyEventProccessed(FwKeyPressEvent* event)
+{
+    if(m_activeScene)
+    {
+        FwMessageBox* temp = m_activeScene->messagebox();
+        if(temp)
+        {
+            QCoreApplication::sendEvent(temp, event);
+            return true;
+        }
+    }
+
+    return BaseClass::event(event);
 }
