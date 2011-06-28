@@ -21,16 +21,18 @@ public:
         SR_Ok = SR_Yes
     };
 
-    explicit FwRequestAnswer(int result, QString caption, Qt::Key n_key);
+    explicit FwRequestAnswer(int result, const QByteArray& buttonname, QString caption, Qt::Key n_key);
 
     inline Qt::Key key() const;
     inline int result() const;
     inline const QString& caption () const;
+    inline const QByteArray& name() const;
 
 private:
     Qt::Key m_key;
     int m_modalResult;
     QString m_caption;
+    QByteArray m_name;
 };
 
 Qt::Key FwRequestAnswer::key() const
@@ -46,6 +48,11 @@ int FwRequestAnswer::result() const
 const QString& FwRequestAnswer::caption() const
 {
     return m_caption;
+}
+
+const QByteArray& FwRequestAnswer::name() const
+{
+    return m_name;
 }
 
 
@@ -68,7 +75,7 @@ public:
     void postAnswer(int result);
 
     inline void addAnswer(const FwRequestAnswer& answer);
-    inline void addAnswer(int result, const QString& caption, Qt::Key key);
+    inline void addAnswer(int result, const QByteArray& buttonname, const QString& caption, Qt::Key key);
 
     int result(int key);
 
@@ -102,9 +109,9 @@ bool FwRequest::isNull() const
     return !m_sender;
 }
 
-void FwRequest::addAnswer(int result, const QString& caption, Qt::Key key)
+void FwRequest::addAnswer(int result, const QByteArray& buttonname, const QString& caption, Qt::Key key)
 {
-    addAnswer(FwRequestAnswer(result, caption, key));
+    addAnswer(FwRequestAnswer(result, buttonname, caption, key));
 }
 
 void FwRequest::addAnswer(const FwRequestAnswer& answer)
