@@ -1,6 +1,6 @@
 #include <QtCore/qcoreevent.h>
 
-#include "fwcore/fwml.h"#
+#include "fwcore/fwml.h"
 
 #include "fwgui/fwguievent.h"
 #include "fwgui/fwscene.h"
@@ -14,7 +14,7 @@ FwMessageBox::FwMessageBox(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_caption(new FwStringPrimitive("caption", this)),
     m_messageText(new FwStringPrimitive("text", this)),
-    m_messageboxbuttons(0)
+    m_buttonBox(0)
 {
 }
 
@@ -60,23 +60,21 @@ void FwMessageBox::setRequest(const FwRequest& request)
     m_request = request;
     m_messageText->setString(m_request.text());
 
-    delete m_messageboxbuttons;
-    m_messageboxbuttons = new FwMessageBoxButtons(request.answers(), this);
+    delete m_buttonBox;
+    m_buttonBox = new FwButtonsBox(request.answers(), this);
 
     if(scene()->m_messageBoxTemplate)
     {
-        FwMLObject* buttonTemplate = scene()->m_messageBoxTemplate->attribute("buttons")->cast<FwMLObject>();
-        if(buttonTemplate)
-        {
-            m_messageboxbuttons->apply(buttonTemplate);
-        }
+        apply(scene()->m_messageBoxTemplate);
     }
 }
 
 /////////////////////////////////////////////////////////
 
-FwMessageBoxButtons::FwMessageBoxButtons(const QList<FwRequestAnswer> answers, FwMessageBox *parent) :
-    BaseClass("buttons", parent)
+FwButtonsBox::FwButtonsBox(const QList<FwRequestAnswer> answers, FwMessageBox *parent) :
+    BaseClass("buttonBox", parent),
+    m_orientation(FwButtonsBox::O_Left),
+    m_margin(0)
 {
     foreach(FwRequestAnswer answer, answers)
     {
@@ -85,24 +83,41 @@ FwMessageBoxButtons::FwMessageBoxButtons(const QList<FwRequestAnswer> answers, F
     }
 }
 
-void FwMessageBoxButtons::apply(FwMLObject *object)
+void FwButtonsBox::apply(FwMLObject *object)
 {
-    FwMLObject* buttonNode = object->attribute("buttons")->cast<FwMLObject>();
+    FwMLObject* buttonNode = object->attribute("button")->cast<FwMLObject>();
     if(buttonNode)
     {
         foreach(FwMessageBoxButton* button, m_buttons)
         {
-            FwMLObject*currentButton = buttonNode->attribute(button->name())->cast<FwMLObject>();
-            if(currentButton)
-            {
-                button->apply(currentButton);
-            }
+            button->apply(buttonNode);
         }
     }
+
+    bool bOk = true;
+
+    FwMLNode* marginValue = object->attribute("margin");
+    if(marginValue)
+    {
+        m_margin = marginValue->toInt(&bOk);
+    }
+
+    FwMLString* buttonOrientation = object->attribute("orientation")->cast<FwMLString>();
+    if(buttonOrientation)
+    {
+        Orientation value = nameToOrientation(buttonOrientation->value(), &bOk);
+        if(bOk)
+        {
+            setOrientation(value, false);
+        }
+    }
+
     BaseClass::apply(object);
+
+    updateButtonsPos();
 }
 
-FwMessageBoxButtons::Orientation FwMessageBoxButtons::nameToOrientation(const QByteArray& name, bool* bOk)
+FwButtonsBox::Orientation FwButtonsBox::nameToOrientation(const QByteArray& name, bool* bOk)
 {
     if(!name.isEmpty())
     {
@@ -149,7 +164,7 @@ FwMessageBoxButtons::Orientation FwMessageBoxButtons::nameToOrientation(const QB
     return O_Left;
 }
 
-QByteArray FwMessageBoxButtons::orientationToName(Orientation value)
+QByteArray FwButtonsBox::orientationToName(Orientation value)
 {
     switch(value)
     {
@@ -178,13 +193,102 @@ QByteArray FwMessageBoxButtons::orientationToName(Orientation value)
     return "left";
 }
 
+void FwButtonsBox::setOrientation(Orientation value, bool needUpdatePos)
+{
+    if(m_orientation != value)
+    {
+        m_orientation = value;
+        if(needUpdatePos)
+        {
+            updateButtonsPos();
+        }
+    }
+}
+
+void FwButtonsBox::updateButtonsPos()
+{
+    switch(m_orientation)
+    {
+    case FwButtonsBox::O_Left:
+        updateHorizontalButtonsPos(0);
+        return;
+
+    case FwButtonsBox::O_Center:
+        updateHorizontalButtonsPos((width() - totalWidth())/2);
+        return;
+
+    case FwButtonsBox::O_Right:
+        updateHorizontalButtonsPos(width() - totalWidth());
+        return;
+
+    case FwButtonsBox::O_Top:
+        updateVerticalButtonsPos(0);
+        return;
+
+    case FwButtonsBox::O_Middle:
+        updateVerticalButtonsPos((height() - totalHeight())/2);
+        return;
+
+    case FwButtonsBox::O_Bottom:
+        updateVerticalButtonsPos(height() - totalHeight());
+        return;
+
+
+    default:
+        qDebug() << "FwButtonsBox::updateButtonsPos" << m_orientation;
+        Q_ASSERT(false);
+        break;
+    }
+}
+
+void FwButtonsBox::updateHorizontalButtonsPos(int x)
+{
+    int h = height();
+    foreach(FwMessageBoxButton* button, m_buttons)
+    {
+        button->setPos(x, (h - button->height()) / 2);
+        x += (button->geometry()->rect().width() + m_margin);
+    }
+}
+
+void FwButtonsBox::updateVerticalButtonsPos(int y)
+{
+    int h = width();
+    foreach(FwMessageBoxButton* button, m_buttons)
+    {
+        button->setPos((h - button->width()) / 2, y);
+        y += (button->geometry()->rect().height() + m_margin);
+    }
+}
+
+int FwButtonsBox::totalWidth()
+{
+    int totalwidth = 0;
+    foreach(FwMessageBoxButton* button, m_buttons)
+    {
+        totalwidth += button->width() + m_margin;
+    }
+    totalwidth -= m_margin;
+    return totalwidth;
+}
+
+int FwButtonsBox::totalHeight()
+{
+    int totalheight = 0;
+    foreach(FwMessageBoxButton* button, m_buttons)
+    {
+        totalheight += button->height() + m_margin;
+    }
+    totalheight -= m_margin;
+    return totalheight;
+}
+
 /////////////////////////////////////////////////////////
 
-FwMessageBoxButton::FwMessageBoxButton(const FwRequestAnswer& answer, FwMessageBoxButtons* parent) :
-    BaseClass(answer.caption().toUtf8(), parent),
+FwMessageBoxButton::FwMessageBoxButton(const FwRequestAnswer& answer, FwButtonsBox* parent) :
+    BaseClass(answer.name(), parent),
     m_caption(new FwStringPrimitive("caption", this)),
-    m_icon(new FwPixmapPrimitive("icon", this)),
-    m_result(answer.result())
+    m_icon(new FwPixmapPrimitive("icon", this))
 {
     m_caption->setString(answer.caption());
 }

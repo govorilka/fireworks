@@ -29,8 +29,8 @@ void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
     case Qt::Key_Return:
         {
             FwRequest request(this);
-            request.addAnswer(FwRequestAnswer::SR_Ok, "Ok", Qt::Key_Return);
-            request.addAnswer(FwRequestAnswer::SR_Cancel, "Cancel", Qt::Key_Escape);
+            request.addAnswer(FwRequestAnswer::SR_Ok,"ok", "Ok", Qt::Key_Return);
+            request.addAnswer(FwRequestAnswer::SR_Cancel,"cancel", "Cancel", Qt::Key_Escape);
             request.setText(QString::fromUtf8("Are you sure?"));
             request.postRequest(view());
         }
