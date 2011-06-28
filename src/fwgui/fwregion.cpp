@@ -7,9 +7,6 @@ FwRegion::FwRegion() :
 
 void FwRegion::addRect(const QRect& rect)
 {
-    m_rects.append(rect);
-    return;
-
     if(rect.width() > 0 && rect.height() > 0)
     {
         if(m_rects.isEmpty())

@@ -283,7 +283,7 @@ protected:
     void updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect);
 
     bool prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
-    void updateAnimationValue(const QVariant &value);
+    void updateAnimationValue(int currentTime, const QVariant &value);
     void applyAnimationStep(int step);
 
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);

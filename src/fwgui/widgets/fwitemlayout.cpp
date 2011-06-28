@@ -226,6 +226,8 @@ void FwSliderLayout::updateAnimationValue(int currentTime, const QVariant& value
 
     if(m_startPoint >= 0 || m_endPoint <= m_maxValue)
     {
+        m_startPoint = m_view->current()->x();
+        m_endPoint = m_startPoint + m_view->current()->width() + m_margin;
         calculatePosition(m_view->items(), m_view->current());
     }
 }
@@ -308,7 +310,7 @@ void FwHSliderLayout::update(const QList<FwPrimitive*>& items, FwPrimitive* curr
     if(items.size() > 1)
     {
         m_startPoint = current->x();
-        m_endPoint = current->x() + current->width() + m_margin;
+        m_endPoint = m_startPoint + current->width() + m_margin;
         updateArrowPrimitives(current);
         calculatePosition(items, current);
     }
@@ -789,8 +791,9 @@ void FwPagesLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimit
     }
 }
 
-void FwPagesLayout::updateAnimationValue(const QVariant &value)
+void FwPagesLayout::updateAnimationValue(int currentTime, const QVariant &value)
 {
+    Q_UNUSED(currentTime)
     FwPrimitive* highlight = m_view->highlight();
     if(highlight)
     {

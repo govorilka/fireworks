@@ -29,14 +29,16 @@ SOURCES += main.cpp \
     playerscene2.cpp \
     playerscene3.cpp \
     playerscene4.cpp \
-    playerscene5.cpp
+    playerscene5.cpp \
+    playerscene6.cpp
 
 HEADERS  += \
     playerscene.h \
     playerscene2.h \
     playerscene3.h \
     playerscene4.h \
-    playerscene5.h
+    playerscene5.h \
+    playerscene6.h
 
 OTHER_FILES += \
     $(FIREWORKS_PATH)/bin/example2.fwml \
