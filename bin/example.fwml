@@ -1,0 +1,67 @@
+bgcolor : "black",
+
+rectItem
+{
+    zindex :1,
+    border
+    {
+        color : "green",
+        width : 5
+    },
+    rect
+    {
+        x : 0,
+        y : 0,
+        width : 480,
+        height : 320
+    },
+    drawer
+    {
+        name : "BorderImage",
+        bgcolor : "purple",
+        topLeft
+        {
+            source : "./images/corners/topleft.png",
+            blending : true
+        },
+        topRight
+        {
+            source : "./images/corners/topright.png",
+            blending : true
+        },
+        bottomLeft
+        {
+            source : "./images/corners/bottomleft.png",
+            blending : true
+        },
+        bottomRight
+        {
+            source : "./images/corners/bottomright.png",
+            blending : true
+        }
+
+    }
+},
+
+pixmapItem
+{
+   zindex : 2,
+   source : "./images/browser.png"
+},
+
+stringItem
+{
+   zindex : 3,
+   font
+   {
+      family : "Arial",
+      pixelSize : 48
+   },
+   color : "orange",
+   string : "Hello world!",
+   geometry
+   {
+      hPosition : "Center",
+      vPosition : "Middle"
+   }
+}

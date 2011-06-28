@@ -1,0 +1,163 @@
+bgcolor : "black",
+
+itemView
+{
+    class : "fireworks.widgets.ItemView",
+
+    width : 150,
+    height : 300,
+
+    bgcolor : "purple",
+
+    layout
+    {
+        class : "fireworks.layouts.Pages",
+        animation
+        {
+            class : "fireworks.layouts.Animation",
+            curve : "InOutQuart",
+            duration : 300
+        },
+        margin : 16
+    },
+
+    item
+    {
+        width : 120, height : 32,
+        caption
+        {
+            x : 10,
+            class : "fireworks.primitives.String",
+            font
+            {
+                family : "Arial",
+                pixelSize : 24
+            },
+            color : "white",
+            geometry
+            {
+                hPosition : "afterright",
+                vPosition : "middle",
+                link : "checkbox"
+            }
+        },
+        checkbox
+        {
+            x : 10,
+            geometry
+            {
+               vPosition : "middle",
+            },
+        },
+    },
+
+    geometry
+    {
+        hPosition : "center",
+        vPosition : "middle"
+    },
+
+    pixmapCheckOn
+    {
+        source : "./images/checkon.png",
+        blending : true
+    },
+
+    pixmapCheckOff
+    {
+        source : "./images/checkoff.png",
+        blending : true
+    },
+
+    exclusive : false
+},
+
+messageBoxAllow : true,
+
+messagebox
+{
+  width : 400, height : 300,
+  bgcolor : red,
+  geometry
+  {
+    link : "scene",
+    hPosition : "center",
+    vPosition : "middle"
+  },
+  buttons
+  {
+    width : 300, height : 140,
+    geometry
+    {
+      vPosition : middle,
+      hPosition : center
+    },
+    Ok
+    {
+      caption
+      {
+	zindex : 6,
+	font
+	{
+	  family : "Arial",
+	  pixelSize : 24
+	},
+	color : "white",
+	geometry
+	{
+	hPosition : "Center",
+	vPosition : "Middle"
+	}
+      },
+      width : 100, height : 70,
+      bgcolor : green,
+      geometry
+      {
+	hPosition : "left",
+	vPosition : "bottom"
+      }
+    },
+    Cancel
+    {
+      caption
+      {
+	zindex : 6,
+	font
+	{
+	  family : "Arial",
+	  pixelSize : 24
+	},
+	color : "white",
+	geometry
+	{
+	hPosition : "Center",
+	vPosition : "Middle"
+	}
+      },
+      width : 100, height : 70,
+      bgcolor : green,
+      geometry
+      {
+	hPosition : "right",
+	vPosition : "bottom"
+      }
+    },
+  },
+  text
+  {
+   zindex : 6,
+   font
+   {
+      family : "Arial",
+      pixelSize : 24
+   },
+   color : "white",
+   string : "Hello world!",
+   geometry
+   {
+      hPosition : "Center",
+      vPosition : "Middle"
+   }
+  },
+  
+}
