@@ -13,6 +13,7 @@ class FwItemLayout;
 class FwPrimitive;
 class FwStringPrimitive;
 class FwTextPrimitive;
+class FwPixmapPrimitive;
 
 typedef FwItemLayout*(FwLayoutConstructor)(FwItemView* view);
 
@@ -70,6 +71,9 @@ public:
     inline bool isItemHeightDockEnable() const;
     void setItemHeightDock(bool enable);
 
+    inline FwPixmapPrimitive* leftArrow() const;
+    inline FwPixmapPrimitive* rightArrow() const;
+
 signals:
     void currentChanged(FwPrimitive* previous, FwPrimitive* current);
     void itemTriggered(FwPrimitive* item);
@@ -103,6 +107,9 @@ private:
 
     bool m_itemWidthDock;
     bool m_itemHeightDock;
+
+    FwPixmapPrimitive* m_leftArrow;
+    FwPixmapPrimitive* m_rightArrow;
 };
 
 FwItemLayout* FwItemView::layout() const
@@ -153,6 +160,16 @@ void FwItemView::prepareItemsChanged()
 void FwItemView::clear()
 {
     setItems(QList<FwPrimitive*>());
+}
+
+FwPixmapPrimitive* FwItemView::leftArrow() const
+{
+    return m_leftArrow;
+}
+
+FwPixmapPrimitive* FwItemView::rightArrow() const
+{
+    return m_rightArrow;
 }
 
 #endif // FIREWORKS_ITEMVIEW_H

@@ -54,7 +54,7 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
         QRect oldClipRect = painter->setClipRect(newClipRect);
         foreach(FwPrimitive* item, m_visiblePrimitives)
         {
-            QRect childClipRect = newClipRect.intersect(item->geometry()->rect());
+            QRect childClipRect = newClipRect.intersect(item->m_boundingRect);
             if(!childClipRect.isEmpty())
             {
                 if(item->m_bufferMode)
@@ -72,7 +72,7 @@ void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
                     }
                     painter->drawBuffer(newClipRect,
                                         item->m_buffer,
-                                        childClipRect.translated(item->geometry()->rect().topLeft()));
+                                        childClipRect.translated(item->m_boundingRect.topLeft()));
                 }
                 else
                 {

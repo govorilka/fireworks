@@ -1,0 +1,54 @@
+bgcolor : "black",
+
+itemView
+{
+  class : "fireworks.widgets.ItemView",
+
+  height : 50,
+  
+  bgcolor : "red",
+
+  layout
+  {
+    class : "fireworks.layouts.LoopHorizontalSlider",
+    animation
+    {
+        class : "fireworks.layouts.Animation",
+        curve : "InOutQuart",
+        duration : 300
+    },
+    margin : 32
+  },
+
+  item
+  {
+     class : "fireworks.primitives.Text",
+     font
+     {
+        family : "Arial",
+        pixelSize : 24
+     },
+     color : "white",
+     width : 150
+  },
+  
+  geometry
+  {
+     hPosition : "centerdock",
+     vPosition : "middle"
+  },
+  
+  leftArrow
+  {
+      source : "./images/left.png";
+      blending : true,
+      zindex : 10
+  },
+  
+  rightArrow
+  {
+      source : "./images/right.png";
+      blending : true,
+      zindex : 10
+  }
+}

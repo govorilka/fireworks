@@ -8,6 +8,7 @@
 #include "fwgui/primitives/fwprimitive.h"
 #include "fwgui/primitives/fwstringprimitive.h"
 #include "fwgui/primitives/fwtextprimitive.h"
+#include "fwgui/primitives/fwpixmapprimitive.h"
 
 #include "fwgui/widgets/fwitemview.h"
 
@@ -24,7 +25,9 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_itemWidthDock(false),
     m_itemHeightDock(false),
     m_itemColor(0xFFFFFFFF),
-    m_currentItemColor(0xFF000000)
+    m_currentItemColor(0xFF000000),
+    m_leftArrow(0),
+    m_rightArrow(0)
 {
     addLayoutClass(FwHSliderLayout::staticClassName, &FwHSliderLayout::constructor);
     addLayoutClass(FwVSliderLayout::staticClassName, &FwVSliderLayout::constructor);
@@ -35,7 +38,7 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
 
 FwItemView::~FwItemView()
 {
-    m_items.clear();
+    clear();
     delete m_itemTemplate;
     delete m_layout;
 }
@@ -272,6 +275,28 @@ void FwItemView::apply(FwMLObject *object)
         if(bOk)
         {
             setItemHeightDock(dock);
+        }
+    }
+
+    FwMLNode* leftArrowNode = object->attribute("leftArrow");
+    if(leftArrowNode)
+    {
+        FwPixmap leftArrow = createPixmap(leftArrowNode);
+        if(!leftArrow.isNull())
+        {
+            m_leftArrow = new FwPixmapPrimitive("leftArrow", this);
+            m_leftArrow->setPixmap(leftArrow);
+        }
+    }
+
+    FwMLNode* rightArrowNode = object->attribute("rightArrow");
+    if(rightArrowNode)
+    {
+        FwPixmap rightArrow = createPixmap(rightArrowNode);
+        if(!rightArrow.isNull())
+        {
+            m_rightArrow = new FwPixmapPrimitive("rightArrow", this);
+            m_rightArrow->setPixmap(rightArrow);
         }
     }
 
