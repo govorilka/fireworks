@@ -11,25 +11,21 @@ class FwStringPrimitive;
 class FwPixmapPrimitive;
 
 class FwMessageBox;
-class FwMessageBoxButtons;
+class FwButtonsBox;
 
 class FIREWORKSSHARED_EXPORT FwMessageBoxButton : public FwPrimitiveGroup
 {
     typedef FwPrimitiveGroup BaseClass;
 
 public:
-    FwMessageBoxButton(const FwRequestAnswer& answer, FwMessageBoxButtons* parent);
+    FwMessageBoxButton(const FwRequestAnswer& answer, FwButtonsBox* parent);
 
     inline FwStringPrimitive* caption() const;
     inline FwPixmapPrimitive* icon() const;
 
-    inline int result() const;
-    inline void setResult(int value);
-
 private:
     FwStringPrimitive* m_caption;
     FwPixmapPrimitive* m_icon;
-    int m_result;
 };
 
 FwStringPrimitive* FwMessageBoxButton::caption() const
@@ -42,19 +38,9 @@ FwPixmapPrimitive* FwMessageBoxButton::icon() const
     return m_icon;
 }
 
-int FwMessageBoxButton::result() const
-{
-    return m_result;
-}
-
-void FwMessageBoxButton::setResult(int value)
-{
-    m_result = value;
-}
-
 //////////////////////////////////////////////////////////////
 
-class FIREWORKSSHARED_EXPORT FwMessageBoxButtons : public FwPrimitiveGroup
+class FIREWORKSSHARED_EXPORT FwButtonsBox : public FwPrimitiveGroup
 {
 typedef FwPrimitiveGroup BaseClass;
 
@@ -71,10 +57,10 @@ public:
         O_Right
     };
 
-    FwMessageBoxButtons(const QList<FwRequestAnswer> answers, FwMessageBox* parent);
+    FwButtonsBox(const QList<FwRequestAnswer> answers, FwMessageBox* parent);
 
     inline int orientation() const;
-    inline void setOrientation(Orientation value);
+    void setOrientation(Orientation value, bool needUpdatePos = true);
 
     static Orientation nameToOrientation(const QByteArray& name, bool*bOk = 0);
     static QByteArray orientationToName(Orientation value);
@@ -84,27 +70,31 @@ public:
 
     void apply(FwMLObject *object);
 
+protected:
+
+    void updateButtonsPos();
+    void updateVerticalButtonsPos(int y);
+    void updateHorizontalButtonsPos(int x);
+    int totalWidth();
+    int totalHeight();
+
 private:
     QList<FwMessageBoxButton*> m_buttons;
     Orientation m_orientation;
     int m_margin;
+    FwStringPrimitive* m_captionTemplate;
 };
 
-int FwMessageBoxButtons::orientation() const
+int FwButtonsBox::orientation() const
 {
     return m_orientation;
 }
 
-void FwMessageBoxButtons::setOrientation(Orientation value)
-{
-    m_orientation = value;
-}
-
-int FwMessageBoxButtons::margin() const
+int FwButtonsBox::margin() const
 {
     return m_margin;
 }
-void FwMessageBoxButtons::setMargin(int value)
+void FwButtonsBox::setMargin(int value)
 {
     m_margin = value;
 }
@@ -137,7 +127,7 @@ private:
     FwStringPrimitive* m_caption;
     FwRequest m_request;
     FwStringPrimitive* m_messageText;
-    FwMessageBoxButtons* m_messageboxbuttons;
+    FwButtonsBox* m_buttonBox;
 };
 
 FwStringPrimitive* FwMessageBox::caption() const

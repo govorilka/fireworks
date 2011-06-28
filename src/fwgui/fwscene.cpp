@@ -167,7 +167,6 @@ void FwScene::showMessageBox(const FwRequest& request)
             m_messageBox->show();
         }
         m_messageBox->setRequest(request);
-        //m_messageBox->
     }
 }
 
