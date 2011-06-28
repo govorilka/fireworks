@@ -7,6 +7,8 @@
 
 #include "fwgui/fwguievent.h"
 
+#include "fwgui/primitives/fwpixmapprimitive.h"
+
 FwItemLayout::FwItemLayout(FwItemView* view) :
     BaseClass(view),
     m_view(view),
@@ -50,16 +52,13 @@ void FwItemLayout::setAnimationEnabled(bool enable)
         m_animation = new FwItemAnimation(this);
         connect(m_animation, SIGNAL(finished()), this, SLOT(animationFinish()));
     }
-    else if(!enable && m_animation)
+    else if(!enable && m_animation && (m_animation->state() == QAbstractAnimation::Running))
     {
-        if(m_animation->state() == QAbstractAnimation::Running)
-        {
-            m_animation->setCurrentTime(m_animation->duration());
-            m_animation->stop();
-            animationFinish();
-            m_animation->deleteLater();
-            m_animation = 0;
-        }
+        m_animation->setCurrentTime(m_animation->duration());
+        m_animation->stop();
+        animationFinish();
+        m_animation->deleteLater();
+        m_animation = 0;
     }
 }
 
@@ -157,7 +156,7 @@ FwItemAnimation::FwItemAnimation(FwItemLayout* parent) :
 
 void FwItemAnimation::updateCurrentValue(const QVariant & value)
 {
-    m_parent->updateAnimationValue(value);
+    m_parent->updateAnimationValue(currentTime(), value);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -211,8 +210,10 @@ void FwSliderLayout::apply(FwMLObject* object)
     BaseClass::apply(object);
 }
 
-void FwSliderLayout::updateAnimationValue(const QVariant& value)
+void FwSliderLayout::updateAnimationValue(int currentTime, const QVariant& value)
 {
+    Q_UNUSED(currentTime);
+
     int point = value.toInt();
 
     int step = point - m_deltaValue;
@@ -298,6 +299,7 @@ void FwHSliderLayout::init(const QList<FwPrimitive*> items, const QRect& rect)
     {
         primitive->setY(0.5 * (rect.height() - primitive->height()));
     }
+    initArrowPrimitives(rect);
 }
 
 void FwHSliderLayout::update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect)
@@ -305,6 +307,9 @@ void FwHSliderLayout::update(const QList<FwPrimitive*>& items, FwPrimitive* curr
     current->setX((rect.width() - current->width()) * 0.5);
     if(items.size() > 1)
     {
+        m_startPoint = current->x();
+        m_endPoint = current->x() + current->width() + m_margin;
+        updateArrowPrimitives(current);
         calculatePosition(items, current);
     }
 }
@@ -312,9 +317,6 @@ void FwHSliderLayout::update(const QList<FwPrimitive*>& items, FwPrimitive* curr
 
 void FwHSliderLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current)
 {
-    m_startPoint = current->x();
-    m_endPoint = m_startPoint + current->width() + m_margin;
-
     QList<FwPrimitive*>::const_iterator currentIter = items.begin();
     currentIter += items.indexOf(current);
 
@@ -371,6 +373,43 @@ bool FwHSliderLayout::prepareAnimation(FwItemAnimation* animation, FwPrimitive *
     animation->setStartValue(m_deltaValue);
     animation->setEndValue(static_cast<int>((m_view->rect().width() - current->width()) * 0.5));
     return true;
+}
+
+void FwHSliderLayout::initArrowPrimitives(const QRect& rect)
+{
+    FwPixmapPrimitive* leftArrow = view()->leftArrow();
+    if(leftArrow)
+    {
+        leftArrow->setY(0.5 * (rect.height() - leftArrow->geometry()->rect().height()));
+    }
+    FwPixmapPrimitive* rightArrow = view()->rightArrow();
+    if(rightArrow)
+    {
+        rightArrow->setY(0.5 * (rect.height() - rightArrow->geometry()->rect().height()));
+    }
+}
+
+void FwHSliderLayout::animationFinish(FwItemAnimation* animation, FwPrimitive* current)
+{
+    updateArrowPrimitives(current);
+    BaseClass::animationFinish(animation, current);
+}
+
+void FwHSliderLayout::updateArrowPrimitives(FwPrimitive* current)
+{
+    int startPoint = current->x();
+    FwPixmapPrimitive* leftArrow = view()->leftArrow();
+    if(leftArrow)
+    {
+        leftArrow->setX(startPoint - (m_margin + leftArrow->geometry()->rect().width()) * 0.5);
+    }
+
+    int endPoint = current->x() + current->width() + m_margin;
+    FwPixmapPrimitive* rightArrow = view()->rightArrow();
+    if(rightArrow)
+    {
+        rightArrow->setX(endPoint - (m_margin + rightArrow->geometry()->rect().width()) * 0.5);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -504,13 +543,12 @@ void FwLoopHSliderLayout::init(const QList<FwPrimitive*> items, const QRect& rec
         m_criticalPoint += primitive->width();
     }
     m_criticalPoint = 0.5 * m_criticalPoint;
+
+    initArrowPrimitives(rect);
 }
 
 void FwLoopHSliderLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current)
 {
-    m_startPoint = current->x();
-    m_endPoint = m_startPoint + current->width() + m_margin;
-
     QList<FwPrimitive*>::const_iterator currentIter = items.begin();
     currentIter += items.indexOf(current);
 

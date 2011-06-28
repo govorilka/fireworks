@@ -74,6 +74,6 @@ void PlayerScene5::requestAcceptEvent(FwResult* result)
 {
     if(result->result() == FwRequestAnswer::SR_Ok)
     {
-        view()->setActiveScene(1);
+        view()->setActiveScene(6);
     }
 }

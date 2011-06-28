@@ -55,7 +55,7 @@ protected:
 
     virtual bool prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current) = 0;
     virtual void animationFinish(FwItemAnimation* animation, FwPrimitive* current);
-    virtual void updateAnimationValue(const QVariant& value) = 0;
+    virtual void updateAnimationValue(int currentTime, const QVariant& value) = 0;
 
     FwItemView* m_view;
     QRect m_rect;
@@ -120,7 +120,7 @@ public:
 protected:
     void updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect);
 
-    void updateAnimationValue(const QVariant& value);
+    void updateAnimationValue(int currentTime, const QVariant& value);
 
     FwPrimitive* nextPrimitive(const QList<FwPrimitive*>& items, FwPrimitive* current) const;
     FwPrimitive* prevPrimtive(const QList<FwPrimitive*>& items, FwPrimitive* current) const;
@@ -177,9 +177,13 @@ protected:
     FwPrimitive* nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent);
 
     bool prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current);
+    void animationFinish(FwItemAnimation* animation, FwPrimitive* current);
 
     void applyAnimationStep(int step);
     void calculatePosition(const QList<FwPrimitive*>& items, FwPrimitive* current);
+
+    void initArrowPrimitives(const QRect& rect);
+    void updateArrowPrimitives(FwPrimitive* current);
 };
 
 ///////////////////////////////////////////////////////////////////////

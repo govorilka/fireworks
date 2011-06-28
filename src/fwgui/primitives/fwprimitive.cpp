@@ -886,7 +886,8 @@ bool FwPrimitive::trigger()
 
 void FwPrimitive::invalidateGeometry()
 {
-    QRect oldRect = m_boundingRect;
+    m_scene->m_view->m_dirtyRegion.addRect(m_scene->geometry()->rect().intersect(m_boundingRect));
+
     m_boundingRect = m_geometry->rect();
     boundingRectChangedEvent(m_boundingRect);
 
@@ -909,6 +910,5 @@ void FwPrimitive::invalidateGeometry()
         }
     }
 
-    m_scene->m_view->m_dirtyRegion.addRect(m_scene->geometry()->rect().intersect(oldRect));
     m_geometry->m_oldRect = m_geometry->m_rect;
 }
