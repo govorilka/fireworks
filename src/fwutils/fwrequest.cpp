@@ -2,10 +2,11 @@
 
 #include "fwrequest.h"
 
-FwRequestAnswer::FwRequestAnswer(int modalResult, QString caption, Qt::Key n_key) :
+FwRequestAnswer::FwRequestAnswer(int modalResult, const QByteArray& buttonname, QString caption, Qt::Key n_key) :
     m_modalResult(modalResult),
     m_caption(caption),
-    m_key(n_key)
+    m_key(n_key),
+    m_name(buttonname)
 {
 }
 
