@@ -51,9 +51,12 @@ public:
 
     void apply(FwMLObject *object);
 
-    void postRequest(const FwRequest& request);
+    void showMessageBox(const FwRequest& request);
 
     FwMessageBox* createMessageBox(FwMLObject* messageBoxTemplate);
+
+    inline bool messageBoxAllow();
+    inline void setMessageBoxAllow(bool value);
 
 protected:
     void showEventProcessed(FwSceneShowEvent* e);
@@ -77,6 +80,8 @@ private:
 
     FwMessageBox* m_messageBox;
     FwMLObject* m_messageBoxTemplate;
+
+    bool m_messageBoxAllow;
 };
 
 int FwScene::id() const
@@ -97,6 +102,16 @@ FwMessageBox* FwScene::messagebox() const
 FwMLObject* FwScene::messageBoxTemplate() const
 {
     return m_messageBoxTemplate;
+}
+
+bool FwScene::messageBoxAllow()
+{
+    return m_messageBoxAllow;
+}
+
+void FwScene::setMessageBoxAllow(bool value)
+{
+    m_messageBoxAllow = value;
 }
 
 #endif // FWSCENE_H

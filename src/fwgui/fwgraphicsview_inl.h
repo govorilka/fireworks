@@ -48,5 +48,4 @@ void FwGraphicsView::postUpdateEvent()
     }
 }
 
-
 #endif // FIREWORKS_GRAPHICSVIEW_INL_H
