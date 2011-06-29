@@ -145,8 +145,18 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
         if(m_prevActiveScene)
         {
             m_activeScene = 0;
+
             FwSceneHideEvent sceneHideEvent(scene);
             QCoreApplication::sendEvent(m_prevActiveScene, &sceneHideEvent);
+
+            foreach(FwWidget* widget, m_prevActiveScene->m_widgets)
+            {
+                if(widget->isVisibleOnScreen())
+                {
+                    FwHideEvent hideEvent;
+                    QCoreApplication::sendEvent(widget, &hideEvent);
+                }
+            }
         }
 
         if(scene)
@@ -159,6 +169,15 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
 
             FwSceneShowEvent sceneShowEvent(m_prevActiveScene);
             QCoreApplication::sendEvent(m_activeScene, &sceneShowEvent);
+
+            foreach(FwWidget* widget, m_activeScene->m_widgets)
+            {
+                if(widget->isVisibleOnScreen())
+                {
+                    FwShowEvent showEvent(true);
+                    QCoreApplication::sendEvent(widget, &showEvent);
+                }
+            }
 
             if(!m_requests.isEmpty() && m_activeScene->messageBoxAllow())
             {

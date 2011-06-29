@@ -185,12 +185,16 @@ void FwWidget::hideAnimationFinished()
 void FwWidget::visibleChangedEvent()
 {
     BaseClass::visibleChangedEvent();
-    if(isVisibleOnScreen())
+    if(m_scene->isActive())
     {
-        QCoreApplication::sendEvent(this, &FwShowEvent(isVisibleOnScreen()));
+        if(isVisible())
+        {
+            QCoreApplication::sendEvent(this, &FwShowEvent(isVisibleOnScreen()));
+        }
+        else
+        {
+            QCoreApplication::sendEvent(this, &FwHideEvent());
+        }
     }
-    else
-    {
-        QCoreApplication::sendEvent(this, &FwHideEvent());
-    }
+
 }
