@@ -1,3 +1,4 @@
+
 #ifndef FIREWORKS_WIDGET_H
 #define FIREWORKS_WIDGET_H
 
