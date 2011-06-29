@@ -17,7 +17,7 @@ FwGraphicsView::FwGraphicsView(QObject *parent) :
     m_activeScene(0),
     m_prevActiveScene(0),
     m_needPostUpdateEvent(true),
-    m_requests()
+    m_dirtyRegion(new FwRegion())
 {
 }
 
@@ -31,6 +31,8 @@ FwGraphicsView::~FwGraphicsView()
     m_scenes.clear();
 
     clearCache();
+
+    delete m_dirtyRegion;
 }
 
 FwFont FwGraphicsView::font(const FwFontDescription& desc)
@@ -238,11 +240,11 @@ void FwGraphicsView::invalidateChanges()
         m_activeScene->invalidate();
     }
 
-    m_dirtyRegion.validation();
-    if(!m_dirtyRegion.isEmpty())
+    m_dirtyRegion->validation();
+    if(!m_dirtyRegion->isEmpty())
     {
-        invalidateCanvas(m_dirtyRegion);
-        m_dirtyRegion.clear();
+        invalidateCanvas(*m_dirtyRegion);
+        m_dirtyRegion->clear();
     }
 
     m_needPostUpdateEvent = true;

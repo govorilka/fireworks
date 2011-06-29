@@ -133,7 +133,7 @@ void FwPrimitiveGroup::invalidateChildren()
 {
     if(childrenDirty)
     {
-        m_scene->m_view->m_dirtyRegion.pushObjectRect(object()->geometry()->rect());
+        m_scene->m_view->m_dirtyRegion->pushObjectRect(object()->geometry()->rect());
 
         while(childrenDirty)
         {
@@ -163,7 +163,7 @@ void FwPrimitiveGroup::invalidateChildren()
                         childrenSizeChanged += primitive->m_geometry->sizeChanged();
                         primitive->invalidateGeometry();
                     }
-                    m_scene->m_view->m_dirtyRegion.addChildrenRect(primitive->m_boundingRect);
+                    m_scene->m_view->m_dirtyRegion->addChildrenRect(primitive->m_boundingRect);
                     primitive->m_contentDirty = false;
                 }
             }
@@ -181,7 +181,7 @@ void FwPrimitiveGroup::invalidateChildren()
             }
         }
 
-        m_scene->m_view->m_dirtyRegion.popObjectRect();
+        m_scene->m_view->m_dirtyRegion->popObjectRect();
     }
 }
 
