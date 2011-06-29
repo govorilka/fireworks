@@ -27,7 +27,8 @@ FwItemView::FwItemView(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_itemColor(0xFFFFFFFF),
     m_currentItemColor(0xFF000000),
     m_leftArrow(0),
-    m_rightArrow(0)
+    m_rightArrow(0),
+    m_centerPixmap(0)
 {
     addLayoutClass(FwHSliderLayout::staticClassName, &FwHSliderLayout::constructor);
     addLayoutClass(FwVSliderLayout::staticClassName, &FwVSliderLayout::constructor);
@@ -297,6 +298,20 @@ void FwItemView::apply(FwMLObject *object)
         {
             m_rightArrow = new FwPixmapPrimitive("rightArrow", this);
             m_rightArrow->setPixmap(rightArrow);
+        }
+    }
+
+    FwMLNode* centerPixmapNode = object->attribute("centerPixmap");
+    if(centerPixmapNode)
+    {
+        FwPixmap centerPixmap = createPixmap(centerPixmapNode);
+        if(!centerPixmap.isNull())
+        {
+            m_centerPixmap = new FwPixmapPrimitive("centerPixmap", this);
+            m_centerPixmap->prepareGeometryChanged();
+            m_centerPixmap->setPosition(Fw::HP_Center, Fw::VP_Middle);
+            m_centerPixmap->setPixmap(centerPixmap);
+            m_centerPixmap->update();
         }
     }
 

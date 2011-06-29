@@ -73,6 +73,7 @@ public:
 
     inline FwPixmapPrimitive* leftArrow() const;
     inline FwPixmapPrimitive* rightArrow() const;
+    inline FwPixmapPrimitive* centerPixmap() const;
 
 signals:
     void currentChanged(FwPrimitive* previous, FwPrimitive* current);
@@ -110,6 +111,7 @@ private:
 
     FwPixmapPrimitive* m_leftArrow;
     FwPixmapPrimitive* m_rightArrow;
+    FwPixmapPrimitive* m_centerPixmap;
 };
 
 FwItemLayout* FwItemView::layout() const
