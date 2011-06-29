@@ -162,6 +162,7 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
         if(scene)
         {
             m_activeScene = scene;
+
             if(m_activeScene->size() != m_size)
             {
                 m_activeScene->setSize(m_size);
@@ -184,7 +185,6 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
                 m_activeScene->showMessageBox(m_requests.dequeue());
             }
         }
-
         update();
     }
 }
