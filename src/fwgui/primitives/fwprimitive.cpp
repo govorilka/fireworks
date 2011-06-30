@@ -64,7 +64,6 @@ FwPrimitive::~FwPrimitive()
         m_parent->m_primitives.remove(m_parent->m_primitives.indexOf(this));
         if(visibleOnScreen)
         {
-            qDebug() << "FwPrimitive::~FwPrimitive" << m_boundingRect;
             m_scene->m_view->update(m_scene->geometry()->rect().intersect(m_boundingRect));
             m_parent->m_visiblePrimitives.removeOne(this);
             m_parent->updateChildren();
