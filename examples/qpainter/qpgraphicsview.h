@@ -21,6 +21,9 @@ public:
     QPWidget(QPGraphicsView* view, QWidget* parent = 0);
     virtual ~QPWidget();
 
+    inline bool isSaveFrameEnable() const;
+    inline void setSaveFrame(bool enable);
+
 protected:
     void resizeEvent(QResizeEvent *e);
     void paintEvent(QPaintEvent *e);
@@ -28,7 +31,20 @@ protected:
 
 private:
     QPGraphicsView* m_view;
+    bool m_saveFrame;
 };
+
+bool QPWidget::isSaveFrameEnable() const
+{
+    return m_saveFrame;
+}
+
+void QPWidget::setSaveFrame(bool enable)
+{
+    m_saveFrame = enable;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 class FW_BACKEND_QPAINTERSHARED_EXPORT QPGraphicsView : public FwGraphicsView
 {

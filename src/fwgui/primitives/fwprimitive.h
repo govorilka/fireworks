@@ -149,6 +149,8 @@ protected:
 
     void invalidateGeometry();
 
+    inline QRect dirtyRect(const QRect& rect);
+
 private:
     void createNewBuffer();
     void releaseBuffer();
