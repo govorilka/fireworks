@@ -17,7 +17,6 @@ public:
     friend class FwPrimitive;
     friend class FwScene;
 
-
     FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* parent);
     virtual ~FwPrimitiveGroup();
 

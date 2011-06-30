@@ -14,7 +14,8 @@
 
 QPWidget::QPWidget(QPGraphicsView* view, QWidget* parent) :
     BaseClass(parent),
-    m_view(view)
+    m_view(view),
+    m_saveFrame(false)
 {
 }
 
@@ -38,6 +39,18 @@ void QPWidget::paintEvent(QPaintEvent *e)
     m_view->render(&painter, e->rect());
     painter.setColor(FwColor(0xFF, 0xFF, 0xFF, 0xFF));
     e->accept();
+
+    if(m_saveFrame)
+    {
+        static int imageInc = 0;
+        QImage image(size(), QImage::Format_ARGB32);
+        foreach(QRect rect, e->region().rects())
+        {
+            FwPainter painter(QRect(QPoint(0, 0), size()), e->rect(), new QPRender(&image));
+            m_view->render(&painter, rect);
+        }
+        image.save(QString("/home/user/debug/img%1.png").arg(++imageInc));
+    }
 }
 
 void QPWidget::keyPressEvent(QKeyEvent *e)
