@@ -233,9 +233,7 @@ void FwButtonsBox::updateButtonsPos()
         updateVerticalButtonsPos(height() - totalHeight());
         return;
 
-
     default:
-        qDebug() << "FwButtonsBox::updateButtonsPos" << m_orientation;
         Q_ASSERT(false);
         break;
     }

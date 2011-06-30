@@ -23,13 +23,6 @@ void FwRegion::addRect(const QRect& rect)
         return;
     }
 
-    qDebug() << "==============================================";
-    foreach(QRect rect, m_rects)
-    {
-        qDebug() << rect;
-    }
-    qDebug() << "<<<<<< " << rect;
-
     QRect curr = rect;
 
     int index = 0;
