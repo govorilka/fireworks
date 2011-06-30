@@ -43,6 +43,8 @@ public:
 
     FwGraphicsObject* object() const;
 
+    inline QRect dirtyRect(const QRect &rect) const;
+
 protected:
     void geometryChangedEvent(const QRect &oldRect, QRect &rect);
 

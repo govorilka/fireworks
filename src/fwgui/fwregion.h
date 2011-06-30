@@ -13,7 +13,7 @@ public:
     void addRect(const QRect& rect);
     inline void addChildrenRect(const QRect& rect);
 
-    inline void clear();
+    void clear();
 
     inline bool isEmpty() const;
 
@@ -42,10 +42,10 @@ bool FwRegion::isEmpty() const
     return m_rects.isEmpty();
 }
 
-void FwRegion::clear()
-{
-    m_rects.clear();
-}
+//void FwRegion::clear()
+//{
+//    m_rects.clear();
+//}
 
 QVector<QRect> FwRegion::rects() const
 {

@@ -24,24 +24,32 @@ FwPrimitiveGroup::FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* par
 
 FwPrimitiveGroup::~FwPrimitiveGroup()
 {
+    removeItems();
     if(m_parent)
     {
         m_parent->m_groups.removeOne(this);
     }
-    removeItems();
 }
 
 void FwPrimitiveGroup::removeItems()
 {
     m_visiblePrimitives.clear();
 
+    m_scene->m_view->m_dirtyRegion->pushObjectRect(object()->geometry()->rect());
+
     foreach(FwPrimitive* item, m_primitives)
     {
         Q_ASSERT(item->m_parent == this);
+        m_scene->m_view->m_dirtyRegion->addChildrenRect(item->m_boundingRect);
         item->m_parent = 0;
         delete item;
     }
     m_primitives.clear();
+
+    m_scene->m_view->m_dirtyRegion->popObjectRect();
+    m_scene->m_view->postUpdateEvent();
+
+    m_childrenRect = QRect();
 }
 
 void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)

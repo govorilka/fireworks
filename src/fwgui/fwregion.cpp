@@ -9,6 +9,9 @@ FwRegion::FwRegion() :
 
 void FwRegion::addRect(const QRect& rect)
 {
+    //m_rects.append(rect);
+    //return;
+
     if(rect.width() <= 0 && rect.height() <= 0)
     {
         return;
@@ -19,6 +22,13 @@ void FwRegion::addRect(const QRect& rect)
         m_rects.append(rect);
         return;
     }
+
+    qDebug() << "==============================================";
+    foreach(QRect rect, m_rects)
+    {
+        qDebug() << rect;
+    }
+    qDebug() << "<<<<<< " << rect;
 
     QRect curr = rect;
 
@@ -234,6 +244,7 @@ void FwRegion::addRect(const QRect& rect)
 
 void FwRegion::validation()
 {
+    qDebug() << "**************** validation *****************";
     QVector<QRect> rects;
     foreach(QRect rect, m_rects)
     {
@@ -254,3 +265,8 @@ bool FwRegion::rectLess(const QRect& r1, const QRect& r2)
     return r1.x() == r2.x() ? r1.y() < r2.y() : false;
 }
 
+void FwRegion::clear()
+{
+    qDebug() << "********************* clear *****************";
+    m_rects.clear();
+}
