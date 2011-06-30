@@ -68,7 +68,6 @@ QNetworkInterface FwNetworkConfig::activeInterface() const
         return QNetworkInterface();
     }
 
-    qDebug() << "FwNetworkConfig::activeInterface()" << m_activeInterface;
     return QNetworkInterface::interfaceFromName(m_activeInterface);
 }
 
