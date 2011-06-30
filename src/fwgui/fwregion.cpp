@@ -237,7 +237,6 @@ void FwRegion::addRect(const QRect& rect)
 
 void FwRegion::validation()
 {
-    qDebug() << "**************** validation *****************";
     QVector<QRect> rects;
     foreach(QRect rect, m_rects)
     {
@@ -260,6 +259,5 @@ bool FwRegion::rectLess(const QRect& r1, const QRect& r2)
 
 void FwRegion::clear()
 {
-    qDebug() << "********************* clear *****************";
     m_rects.clear();
 }
