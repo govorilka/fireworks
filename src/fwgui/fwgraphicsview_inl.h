@@ -32,8 +32,8 @@ void FwGraphicsView::update()
 
 void FwGraphicsView::update(const QRect& rect)
 {
-    m_dirtyRegion.addRect(rect);
-    if(!m_dirtyRegion.isEmpty() && m_needPostUpdateEvent)
+    m_dirtyRegion->addRect(rect);
+    if(!m_dirtyRegion->isEmpty() && m_needPostUpdateEvent)
     {
         postUpdateEvent();
     }

@@ -90,7 +90,7 @@ private:
 
     bool m_needPostUpdateEvent;
 
-    FwRegion m_dirtyRegion;
+    FwRegion* m_dirtyRegion;
 };
 
 #include "fwgui/fwgraphicsview_inl.h"

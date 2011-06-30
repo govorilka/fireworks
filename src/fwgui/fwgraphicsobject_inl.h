@@ -18,4 +18,9 @@ QPropertyAnimation* FwGraphicsObject::hideAnimation() const
     return m_hideAnimation;
 }
 
+QRect FwGraphicsObject::dirtyRect(const QRect& rect) const
+{
+    return geometry()->rect().intersect(rect);
+}
+
 #endif // FIREWORKS_GRAPHICSOBJECT_INL_H

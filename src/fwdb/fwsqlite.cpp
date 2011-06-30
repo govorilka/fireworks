@@ -109,10 +109,9 @@ bool FwSQLiteQuery::step() throw (FwSQLiteException&)
             return false;
 
         case SQLITE_ERROR:
+        case SQLITE_IOERR:
             throw FwSQLiteException(data->db);
             return false;
-
-
 
         default:
             Q_ASSERT(false);

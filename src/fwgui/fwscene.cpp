@@ -113,18 +113,18 @@ bool FwScene::isActive() const
 
 void FwScene::invalidate()
 {
-    m_view->m_dirtyRegion.pushObjectRect(m_geometry->rect());
+    m_view->m_dirtyRegion->pushObjectRect(m_geometry->rect());
     if(m_contentDirty)
     {
         if(m_geometry->isDirty())
         {
             invalidateGeometry();
         }
-        m_view->m_dirtyRegion.addChildrenRect(m_geometry->rect());
+        m_view->m_dirtyRegion->addChildrenRect(m_geometry->rect());
         m_contentDirty = false;
     }
     invalidateChildren();
-    m_view->m_dirtyRegion.popObjectRect();
+    m_view->m_dirtyRegion->popObjectRect();
 }
 
 void FwScene::apply(FwMLObject *object)

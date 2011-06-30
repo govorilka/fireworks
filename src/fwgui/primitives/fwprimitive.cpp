@@ -64,6 +64,7 @@ FwPrimitive::~FwPrimitive()
         m_parent->m_primitives.remove(m_parent->m_primitives.indexOf(this));
         if(visibleOnScreen)
         {
+            qDebug() << "FwPrimitive::~FwPrimitive" << m_boundingRect;
             m_scene->m_view->update(m_scene->geometry()->rect().intersect(m_boundingRect));
             m_parent->m_visiblePrimitives.removeOne(this);
             m_parent->updateChildren();
@@ -886,7 +887,7 @@ bool FwPrimitive::trigger()
 
 void FwPrimitive::invalidateGeometry()
 {
-    m_scene->m_view->m_dirtyRegion.addRect(m_scene->geometry()->rect().intersect(m_boundingRect));
+    m_scene->m_view->m_dirtyRegion->addRect(m_scene->dirtyRect(m_boundingRect));
 
     m_boundingRect = m_geometry->rect();
     boundingRectChangedEvent(m_boundingRect);
@@ -911,5 +912,4 @@ void FwPrimitive::invalidateGeometry()
     }
 
     m_geometry->m_oldRect = m_geometry->m_rect;
-    //m_scene->m_view->m_dirtyRegion.addRect(m_scene->geometry()->rect().intersect(m_geometry->m_oldRect));
 }
