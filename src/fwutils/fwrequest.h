@@ -124,6 +124,11 @@ QList<FwRequestAnswer> FwRequest::answers() const
     return m_answers;
 }
 
+QUuid FwRequest::id() const
+{
+    return m_uid;
+}
+
 /////////////////////////////////////////////////////////////////////////
 
 class FIREWORKSSHARED_EXPORT FwPostRequestEvent : public QEvent
