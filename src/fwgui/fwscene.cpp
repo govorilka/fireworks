@@ -32,6 +32,7 @@ FwScene::FwScene(int id, FwGraphicsView* view) :
 
 FwScene::~FwScene()
 {
+    removeItems();
     if(m_view)
     {
         if(m_view->m_activeScene == this)
@@ -39,6 +40,7 @@ FwScene::~FwScene()
             m_view->setActiveScene(0);
         }
         m_view->m_scenes.removeAll(this);
+        m_view = 0;
     }
 }
 

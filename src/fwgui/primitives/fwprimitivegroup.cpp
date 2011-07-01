@@ -33,23 +33,26 @@ FwPrimitiveGroup::~FwPrimitiveGroup()
 
 void FwPrimitiveGroup::removeItems()
 {
-    m_visiblePrimitives.clear();
-
-    m_scene->m_view->m_dirtyRegion->pushObjectRect(object()->geometry()->rect());
-
-    foreach(FwPrimitive* item, m_primitives)
+    if(!m_primitives.isEmpty())
     {
-        Q_ASSERT(item->m_parent == this);
-        m_scene->m_view->m_dirtyRegion->addChildrenRect(item->m_boundingRect);
-        item->m_parent = 0;
-        delete item;
+        m_visiblePrimitives.clear();
+
+        m_scene->m_view->m_dirtyRegion->pushObjectRect(object()->geometry()->rect());
+
+        foreach(FwPrimitive* item, m_primitives)
+        {
+            Q_ASSERT(item->m_parent == this);
+            m_scene->m_view->m_dirtyRegion->addChildrenRect(item->m_boundingRect);
+            item->m_parent = 0;
+            delete item;
+        }
+        m_primitives.clear();
+
+        m_scene->m_view->m_dirtyRegion->popObjectRect();
+        m_scene->m_view->postUpdateEvent();
+
+        m_childrenRect = QRect();
     }
-    m_primitives.clear();
-
-    m_scene->m_view->m_dirtyRegion->popObjectRect();
-    m_scene->m_view->postUpdateEvent();
-
-    m_childrenRect = QRect();
 }
 
 void FwPrimitiveGroup::paint(FwPainter *painter, const QRect &clipRect)
@@ -134,7 +137,7 @@ void FwPrimitiveGroup::apply(FwMLObject *object)
 
 FwGraphicsObject* FwPrimitiveGroup::object() const
 {
-    return m_parent ? m_parent->object() : 0;
+    return m_parent ? m_parent->object() : m_scene;
 }
 
 void FwPrimitiveGroup::invalidateChildren()

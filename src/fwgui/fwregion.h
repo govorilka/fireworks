@@ -5,7 +5,9 @@
 #include <QtCore/qvector.h>
 #include <QtCore/qstack.h>
 
-class FwRegion
+#include "fireworks.h"
+
+class FIREWORKSSHARED_EXPORT FwRegion
 {
 public:
     FwRegion();
