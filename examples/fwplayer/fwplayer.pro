@@ -30,7 +30,8 @@ SOURCES += main.cpp \
     playerscene3.cpp \
     playerscene4.cpp \
     playerscene5.cpp \
-    playerscene6.cpp
+    playerscene6.cpp \
+    playerscene7.cpp
 
 HEADERS  += \
     playerscene.h \
@@ -38,7 +39,8 @@ HEADERS  += \
     playerscene3.h \
     playerscene4.h \
     playerscene5.h \
-    playerscene6.h
+    playerscene6.h \
+    playerscene7.h
 
 OTHER_FILES += \
     $(FIREWORKS_PATH)/bin/example2.fwml \

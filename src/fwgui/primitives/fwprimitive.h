@@ -132,6 +132,9 @@ public:
     virtual void currentChangedEvent(FwItemView* view, bool current);
     virtual bool trigger();
 
+    inline QRect boundingRect() const;
+
+
 protected:
 
     virtual void paint(FwPainter* painter, const QRect& clipRect) = 0;
