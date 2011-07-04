@@ -218,4 +218,9 @@ void FwPrimitive::prepareGeometryChanged()
     ++m_changedInc;
 }
 
+QRect FwPrimitive::boundingRect() const
+{
+    return m_boundingRect;
+}
+
 #endif // FIREWORKS_GRAPHICSITEM_INL_H
