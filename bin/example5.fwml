@@ -7,8 +7,6 @@ itemView
     width : 150,
     height : 300,
 
-    bgcolor : "purple",
-
     layout
     {
         class : "fireworks.layouts.Pages",
@@ -23,6 +21,7 @@ itemView
 
     item
     {
+        zindex : 2,
         width : 120, height : 32,
         caption
         {
@@ -69,7 +68,29 @@ itemView
         blending : true
     },
 
-    exclusive : false
+    exclusive : false,
+
+    highlight
+    {
+        zindex : 1,
+        class : "fwgui.primitives.pixmapbar",
+        bgcolor : red,
+        left
+        {
+            source : "./images/pixmap_test/left.png",
+            blending : true,
+        },
+        center
+        {
+            source : "./images/pixmap_test/center.png",
+            blending : false,
+        },
+        right
+        {
+            source : "./images/pixmap_test/right.png",
+            blending : true,
+        }
+    }
 },
 
 messageBoxAllow : true,

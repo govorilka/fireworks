@@ -21,6 +21,7 @@ public:
 
     virtual void apply(FwMLObject *object);
 
+
 protected:
     void geometryChangedEvent(const QRect &oldRect, QRect &rect);
 
