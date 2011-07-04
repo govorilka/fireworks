@@ -44,7 +44,7 @@ void PlayerScene6::keyPressEvent(FwKeyPressEvent *event)
     {
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        view()->setActiveScene(7);
+        view()->setActiveScene(1);
         event->accept();
         return;
     case Qt::Key_Right:

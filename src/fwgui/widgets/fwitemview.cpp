@@ -4,6 +4,7 @@
 #include "fwcore/fwml.h"
 
 #include "fwgui/fwguievent.h"
+#include "fwgui/fwguifactory.h"
 
 #include "fwgui/primitives/fwprimitive.h"
 #include "fwgui/primitives/fwstringprimitive.h"
@@ -254,9 +255,12 @@ void FwItemView::apply(FwMLObject *object)
     FwMLObject* highlightNode = object->attribute("highlight")->cast<FwMLObject>();
     if(highlightNode && !m_highlight)
     {
-        FwRectPrimitive* hightlight = new FwRectPrimitive("highlight", this);
-        hightlight->setPosition(Fw::HP_CenterDock, Fw::VP_Top);
-        setHighlight(hightlight);
+        FwRectPrimitive* hightlight = FwGuiFactory::createRectPrimitive(highlightNode->className(), "highlight", this);
+        if(hightlight)
+        {
+            hightlight->setPosition(Fw::HP_CenterDock, Fw::VP_Top);
+            setHighlight(hightlight);
+        }
     }
 
     FwMLNode* itemWidthDock = object->attribute("itemwidthdock");
