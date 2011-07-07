@@ -6,6 +6,8 @@
 #include <QtCore/quuid.h>
 #include <QtCore/qcoreevent.h>
 
+#include <QtCore/qvector.h>
+
 #include "fireworks.h"
 
 class FIREWORKSSHARED_EXPORT FwRequestAnswer
@@ -21,23 +23,38 @@ public:
         SR_Ok = SR_Yes
     };
 
-    explicit FwRequestAnswer(int result, const QByteArray& buttonname, QString caption, Qt::Key n_key);
+    FwRequestAnswer();
+    explicit FwRequestAnswer(int result, const QByteArray &name);
 
-    inline Qt::Key key() const;
     inline int result() const;
-    inline const QString& caption () const;
     inline const QByteArray& name() const;
 
+    inline int key() const;
+    inline void setKey(Qt::Key key);
+
+    inline const QString& caption () const;
+    inline void setCaption (const QString& caption);
+
+    inline QByteArray icon() const;
+    inline void setIcon(const QByteArray& name);
+
 private:
-    Qt::Key m_key;
+    int m_key;
     int m_modalResult;
-    QString m_caption;
     QByteArray m_name;
+
+    QString m_caption;
+    QByteArray m_icon;
 };
 
-Qt::Key FwRequestAnswer::key() const
+int FwRequestAnswer::key() const
 {
     return m_key;
+}
+
+void FwRequestAnswer::setKey(Qt::Key key)
+{
+    m_key = key;
 }
 
 int FwRequestAnswer::result() const
@@ -50,18 +67,33 @@ const QString& FwRequestAnswer::caption() const
     return m_caption;
 }
 
+void FwRequestAnswer::setCaption(const QString &caption)
+{
+    m_caption = caption;
+}
+
 const QByteArray& FwRequestAnswer::name() const
 {
     return m_name;
 }
 
 
+QByteArray FwRequestAnswer::icon() const
+{
+    return m_icon;
+}
+
+void FwRequestAnswer::setIcon(const QByteArray& name)
+{
+    m_icon = name;
+}
+
 /////////////////////////////////////////////////////////////////////////
 
 class FIREWORKSSHARED_EXPORT FwRequest
 {
 public:
-    FwRequest(QObject *sender = 0);
+    FwRequest(QObject *sender = 0, const QString& text = QString());
 
     inline bool isNull() const;
 
@@ -71,20 +103,19 @@ public:
     inline QString text() const;
     inline void setText(const QString& text);
 
-    void postRequest(QObject* receiver);
+    QUuid postRequest(QObject* receiver);
     void postAnswer(int result);
 
-    inline void addAnswer(const FwRequestAnswer& answer);
-    inline void addAnswer(int result, const QByteArray& buttonname, const QString& caption, Qt::Key key);
+    inline FwRequestAnswer& addAnswer(int result, const QByteArray &name);
 
     int result(int key);
 
-    inline QList<FwRequestAnswer> answers() const;
+    inline QVector<FwRequestAnswer> answers() const;
 
 private:
     QUuid m_uid;
     QPointer<QObject> m_sender;
-    QList<FwRequestAnswer> m_answers;
+    QVector<FwRequestAnswer> m_answers;
     QString m_text;
 };
 
@@ -109,17 +140,7 @@ bool FwRequest::isNull() const
     return !m_sender;
 }
 
-void FwRequest::addAnswer(int result, const QByteArray& buttonname, const QString& caption, Qt::Key key)
-{
-    addAnswer(FwRequestAnswer(result, buttonname, caption, key));
-}
-
-void FwRequest::addAnswer(const FwRequestAnswer& answer)
-{
-    m_answers.append(answer);
-}
-
-QList<FwRequestAnswer> FwRequest::answers() const
+QVector<FwRequestAnswer> FwRequest::answers() const
 {
     return m_answers;
 }
@@ -127,6 +148,12 @@ QList<FwRequestAnswer> FwRequest::answers() const
 QUuid FwRequest::id() const
 {
     return m_uid;
+}
+
+FwRequestAnswer& FwRequest::addAnswer(int result, const QByteArray &name)
+{
+    m_answers.append(FwRequestAnswer(result, name));
+    return m_answers.last();
 }
 
 /////////////////////////////////////////////////////////////////////////

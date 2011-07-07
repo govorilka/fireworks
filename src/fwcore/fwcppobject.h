@@ -15,6 +15,8 @@ public:
 
     virtual void apply(FwMLObject* object);
 
+    bool loadData(const QString& fileName);
+
 private:
     QByteArray m_name;
 };

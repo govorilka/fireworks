@@ -1,5 +1,7 @@
 #include <QtCore/qcoreevent.h>
 
+#include <QtCore/qdebug.h>
+
 #include "fwcore/fwml.h"
 
 #include "fwgui/fwguievent.h"
@@ -9,12 +11,18 @@
 #include "fwgui/primitives/fwpixmapprimitive.h"
 
 #include "fwmessagebox.h"
+#include "fwgui/fwguifactory.h"
+
+#include "fwgui/fwimagelibrary.h"
+
+#include "fwgui/fwgraphicsview.h"
 
 FwMessageBox::FwMessageBox(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_caption(new FwStringPrimitive("caption", this)),
     m_messageText(new FwStringPrimitive("text", this)),
-    m_buttonBox(0)
+    m_buttonBox(0),
+    m_background(0)
 {
 }
 
@@ -61,7 +69,7 @@ void FwMessageBox::setRequest(const FwRequest& request)
     m_messageText->setString(m_request.text());
 
     delete m_buttonBox;
-    m_buttonBox = new FwButtonsBox(request.answers(), this);
+    m_buttonBox = new FwButtonsBox(request.answers(), this, scene()->view()->library());
 
     if(scene()->m_messageBoxTemplate)
     {
@@ -69,12 +77,43 @@ void FwMessageBox::setRequest(const FwRequest& request)
     }
 }
 
+void FwMessageBox::setBackground(FwRectPrimitive* primitive)
+{
+    if(m_background != primitive)
+    {
+        prepareGeometryChanged();
+        delete m_background;
+        m_background = primitive;
+        update();
+    }
+}
+
+void FwMessageBox::apply(FwMLObject *object)
+{
+    prepareGeometryChanged();
+
+    FwMLObject* backgroundNode = object->attribute("barBackground")->cast<FwMLObject>();
+    if(backgroundNode && !m_background)
+    {
+        FwRectPrimitive* background = FwGuiFactory::createRectPrimitive(backgroundNode->className(), "barBackground", this);
+        if(background)
+        {
+            background->setPosition(Fw::HP_CenterDock, Fw::VP_MiddleDock);
+            setBackground(background);
+        }
+    }
+
+    BaseClass::apply(object);
+    update();
+}
+
 /////////////////////////////////////////////////////////
 
-FwButtonsBox::FwButtonsBox(const QList<FwRequestAnswer> answers, FwMessageBox *parent) :
+FwButtonsBox::FwButtonsBox(const QVector<FwRequestAnswer> answers, FwMessageBox *parent, FwImageLibrary *library) :
     BaseClass("buttonBox", parent),
     m_orientation(FwButtonsBox::O_Left),
-    m_margin(0)
+    m_margin(0),
+    m_buttonsLibrary(library)
 {
     foreach(FwRequestAnswer answer, answers)
     {
@@ -286,7 +325,12 @@ int FwButtonsBox::totalHeight()
 FwMessageBoxButton::FwMessageBoxButton(const FwRequestAnswer& answer, FwButtonsBox* parent) :
     BaseClass(answer.name(), parent),
     m_caption(new FwStringPrimitive("caption", this)),
-    m_icon(new FwPixmapPrimitive("icon", this))
+    m_icon(0)
 {
     m_caption->setString(answer.caption());
+    if(!answer.icon().isEmpty())
+    {
+        m_icon = new FwPixmapPrimitive("icon", this);
+        m_icon->setPixmap(parent->buttonsLibrary()->icon(answer.icon()));
+    }
 }

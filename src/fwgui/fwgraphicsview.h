@@ -22,6 +22,8 @@ class FwKeyPressEvent;
 class FwVertexArray;
 class FwRequest;
 
+class FwImageLibrary;
+
 class FIREWORKSSHARED_EXPORT FwGraphicsView : public QObject
 {
     Q_OBJECT
@@ -34,6 +36,8 @@ public:
 
     explicit FwGraphicsView(QObject *parent = 0);
     virtual ~FwGraphicsView();
+
+    bool up();
 
     FwFont font(const FwFontDescription& desc);
 
@@ -64,6 +68,8 @@ public:
 
     void postRequest(const FwRequest& request);
 
+    inline FwImageLibrary* library() const;
+
 protected:
     virtual void invalidateCanvas(const FwRegion& region) = 0;
 
@@ -78,6 +84,8 @@ protected:
 
     bool keyEventProccessed(FwKeyPressEvent* event);
 
+    virtual bool init() = 0;
+
 private:
     QSize m_size;
     QHash<QString, FwFont> m_fonts;
@@ -91,6 +99,8 @@ private:
     bool m_needPostUpdateEvent;
 
     FwRegion* m_dirtyRegion;
+
+    FwImageLibrary* m_library;
 };
 
 #include "fwgui/fwgraphicsview_inl.h"

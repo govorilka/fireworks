@@ -6,6 +6,7 @@
 
 #include "fwgui/fwrender.h"
 
+
 FwPixmapDescription::FwPixmapDescription() :
     m_source(QString()),
     m_blending(false)

@@ -12,12 +12,17 @@
 #include "fwutils/fwrequest.h"
 #include "fwgui/widgets/fwmessagebox.h"
 
+#include "fwgui/fwimagelibrary.h"
+
+#include "fwutils/fwconfig.h"
+
 FwGraphicsView::FwGraphicsView(QObject *parent) :
     BaseClass(parent),
     m_activeScene(0),
     m_prevActiveScene(0),
     m_needPostUpdateEvent(true),
-    m_dirtyRegion(new FwRegion())
+    m_dirtyRegion(new FwRegion()),
+    m_library(new FwImageLibrary("images", this))
 {
 }
 
@@ -277,4 +282,21 @@ bool FwGraphicsView::keyEventProccessed(FwKeyPressEvent* event)
     }
 
     return BaseClass::event(event);
+}
+
+
+bool FwGraphicsView::up()
+{
+    if(!init())
+    {
+        qWarning("Cannot init view");
+        return false;
+    }
+
+    if(!m_library->loadData("images/library.fwml"))
+    {
+        qWarning("Cannot load image library");
+    }
+
+    return true;
 }
