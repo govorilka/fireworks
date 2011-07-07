@@ -38,7 +38,8 @@ HEADERS += \
     fwgui/fwregion.h \
     fwgui/widgets/fwmessagebox.h \
     fwgui/widgets/fwpixmapbar.h \
-    fwgui/fwguifactory.h
+    fwgui/fwguifactory.h \
+    fwgui/fwimagelibrary.h
 
 SOURCES += \
     fwgui/fwgraphicsview.cpp \
@@ -71,4 +72,5 @@ SOURCES += \
     fwgui/fwregion.cpp \
     fwgui/widgets/fwmessagebox.cpp \
     fwgui/widgets/fwpixmapbar.cpp \
-    fwgui/fwguifactory.cpp
+    fwgui/fwguifactory.cpp \
+    fwgui/fwimagelibrary.cpp

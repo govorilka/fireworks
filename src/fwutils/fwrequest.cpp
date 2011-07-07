@@ -2,21 +2,28 @@
 
 #include "fwrequest.h"
 
-FwRequestAnswer::FwRequestAnswer(int modalResult, const QByteArray& buttonname, QString caption, Qt::Key n_key) :
+FwRequestAnswer::FwRequestAnswer() :
+    m_modalResult(0),
+    m_key(0)
+{
+}
+
+FwRequestAnswer::FwRequestAnswer(int modalResult, const QByteArray& name) :
     m_modalResult(modalResult),
-    m_caption(caption),
-    m_key(n_key),
-    m_name(buttonname)
+    m_name(name),
+    m_key(0)
 {
 }
 
 //////////////////////////////////////////////////////////
 
-FwRequest::FwRequest(QObject* sender) :
-    m_sender(sender)
+FwRequest::FwRequest(QObject* sender, const QString& text) :
+    m_sender(sender),
+    m_text(text)
 {
     m_uid = QUuid::createUuid();
 }
+
 
 void FwRequest::postAnswer(int result)
 {
@@ -26,18 +33,19 @@ void FwRequest::postAnswer(int result)
     }
 }
 
-void FwRequest::postRequest(QObject* receiver)
+QUuid FwRequest::postRequest(QObject* receiver)
 {
     QCoreApplication::postEvent(receiver, new FwPostRequestEvent(*this));
+    return id();
 }
 
 int FwRequest::result(int key)
 {
-    foreach(const FwRequestAnswer& answerItem, m_answers)
+    foreach(FwRequestAnswer answer, m_answers)
     {
-        if(answerItem.key() == key)
+        if(answer.key() == key)
         {
-            return answerItem.result();
+            return answer.result();
         }
     }
     return 0;

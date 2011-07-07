@@ -13,6 +13,8 @@ class FwPixmapPrimitive;
 class FwMessageBox;
 class FwButtonsBox;
 
+class FwImageLibrary;
+
 class FIREWORKSSHARED_EXPORT FwMessageBoxButton : public FwPrimitiveGroup
 {
     typedef FwPrimitiveGroup BaseClass;
@@ -57,7 +59,7 @@ public:
         O_Right
     };
 
-    FwButtonsBox(const QList<FwRequestAnswer> answers, FwMessageBox* parent);
+    FwButtonsBox(const QVector<FwRequestAnswer> answers, FwMessageBox* parent, FwImageLibrary* library);
 
     inline int orientation() const;
     void setOrientation(Orientation value, bool needUpdatePos = true);
@@ -69,6 +71,8 @@ public:
     inline void setMargin(int value);
 
     void apply(FwMLObject *object);
+
+    inline FwImageLibrary* buttonsLibrary() const;
 
 protected:
 
@@ -83,6 +87,7 @@ private:
     Orientation m_orientation;
     int m_margin;
     FwStringPrimitive* m_captionTemplate;
+    FwImageLibrary* m_buttonsLibrary;
 };
 
 int FwButtonsBox::orientation() const
@@ -97,6 +102,11 @@ int FwButtonsBox::margin() const
 void FwButtonsBox::setMargin(int value)
 {
     m_margin = value;
+}
+
+FwImageLibrary* FwButtonsBox::buttonsLibrary() const
+{
+    return m_buttonsLibrary;
 }
 
 //////////////////////////////////////////////////////////////
@@ -117,8 +127,13 @@ public:
     bool accept(int result);
     bool acceptKey(int key);
 
+    void apply(FwMLObject *object);
+
     inline FwStringPrimitive* messageText() const;
     inline void setMessageText(const QString& value);
+
+    inline FwRectPrimitive* background() const;
+    void setBackground(FwRectPrimitive* primitive);
 
 protected:
     void keyPressEvent(FwKeyPressEvent *event);
@@ -128,6 +143,7 @@ private:
     FwRequest m_request;
     FwStringPrimitive* m_messageText;
     FwButtonsBox* m_buttonBox;
+    FwRectPrimitive* m_background;
 };
 
 FwStringPrimitive* FwMessageBox::caption() const
@@ -138,6 +154,11 @@ FwStringPrimitive* FwMessageBox::caption() const
 FwStringPrimitive* FwMessageBox::messageText() const
 {
     return m_messageText;
+}
+
+FwRectPrimitive* FwMessageBox::background() const
+{
+    return m_background;
 }
 
 #endif // FIREWORKS_MESSAGEBOX_H
