@@ -75,6 +75,7 @@ void FwScheduler::startAllTasks()
 {
     foreach(FwSchedulerTask* task, m_tasks.values())
     {
+        qDebug() << "FwScheduler::startAllTasks:" << task;
         startTask(task);
     }
 }
@@ -471,6 +472,7 @@ void FwNetworkSchedulerTask::replyFinished(QNetworkReply* reply)
         }
         else
         {
+            qDebug() << "ERROR: FwNetworkSchedulerTask: " << reply->errorString();
             clearReply();
         }
 
