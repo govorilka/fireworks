@@ -2,6 +2,8 @@
 #include <QtCore/qcoreapplication.h>
 #include <QtCore/qdebug.h>
 
+#include "fwcore/fwml.h"
+
 #include "fwwidget.h"
 
 #include "fwgui/fwscene.h"
@@ -14,7 +16,8 @@
 FwWidget::FwWidget(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_visibleTime(0),
-    m_visibleTimerId(0)
+    m_visibleTimerId(0),
+    m_darkBackground(false)
 {
     m_scene->m_widgets.append(this);
 }
@@ -197,4 +200,14 @@ void FwWidget::visibleChangedEvent()
         }
     }
 
+}
+
+void FwWidget::apply(FwMLObject *object)
+{
+    BaseClass::apply(object);
+    FwMLBool* darkBackground = object->attribute("darkBackground")->cast<FwMLBool>();
+    if(darkBackground)
+    {
+        setDarkBackground(darkBackground);
+    }
 }
