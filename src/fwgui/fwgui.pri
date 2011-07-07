@@ -27,7 +27,6 @@ HEADERS += \
     fwgui/primitives/fwgeometry.h \
     fwgui/widgets/fwwidget.h \
     fwgui/widgets/fwitemview.h \
-    fwgui/widgets/fwwidget_inl.h \
     fwgui/widgets/fwitemlayout.h \
     fwgui/widgets/fwanimation.h \
     fwgui/widgets/fwtextview.h \

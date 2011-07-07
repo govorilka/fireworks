@@ -38,6 +38,11 @@ public:
 
     bool event(QEvent * event);
 
+    inline bool isDarkBackgroundEnable() const;
+    inline void setDarkBackground(bool value);
+
+    void apply(FwMLObject *object);
+
 protected:
     virtual void timerEvent(QTimerEvent* event);
     virtual void showEvent(FwShowEvent* event);
@@ -52,8 +57,30 @@ protected:
 private:
     int m_visibleTime;
     int m_visibleTimerId;
+    bool m_darkBackground;
 };
 
-#include "fwgui/widgets/fwwidget_inl.h"
+int FwWidget::visibleTime() const
+{
+    return m_visibleTime;
+}
+
+void FwWidget::setVisibleTime(int msec)
+{
+    if(m_visibleTime != msec)
+    {
+        (m_visibleTime = msec) ? startVisibleTimer() : stopVisibleTimer();
+    }
+}
+
+bool FwWidget::isDarkBackgroundEnable() const
+{
+    return m_darkBackground;
+}
+
+void FwWidget::setDarkBackground(bool value)
+{
+    m_darkBackground = value;
+}
 
 #endif // FIREWORKS_WIDGET_H

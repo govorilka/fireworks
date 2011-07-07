@@ -119,6 +119,7 @@ class FIREWORKSSHARED_EXPORT FwMessageBox : public FwWidget
 
 public:
     explicit FwMessageBox(const QByteArray& name, FwPrimitiveGroup* parent);
+    ~FwMessageBox();
 
     inline FwStringPrimitive* caption() const;
 

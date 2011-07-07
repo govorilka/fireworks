@@ -19,7 +19,8 @@ FwScene::FwScene(int id, FwGraphicsView* view) :
     m_id(id),
     m_messageBox(0),
     m_messageBoxTemplate(0),
-    m_messageBoxAllow(true)
+    m_messageBoxAllow(true),
+    m_darkBackground(0)
 {
     visibleOnScreen = true;
 
@@ -136,12 +137,29 @@ void FwScene::apply(FwMLObject *object)
     {
         setMessageBoxTemplate(static_cast<FwMLObject*>(temp->clone()));
     }
+
     FwMLBool* messageboxAllow = object->attribute("messageBoxAllow")->cast<FwMLBool>();
     if(messageboxAllow)
     {
         setMessageBoxAllow(messageboxAllow->value());
     }
 
+    FwMLObject* darkBackgroundNode = object->attribute("darkBackgroundColor")->cast<FwMLObject>();
+    if(darkBackgroundNode)
+    {
+        FwBrush* brush = createBrush(darkBackgroundNode);
+        if(brush)
+        {
+            m_darkBackground = new FwRectPrimitive("darkBackground", this);
+            m_darkBackground->prepareGeometryChanged();
+            m_darkBackground->setPosition(Fw::HP_CenterDock, Fw::VP_MiddleDock);
+            m_darkBackground->setBrush(brush);
+            m_darkBackground->setZIndex(1000); //STUB!!!
+            m_darkBackground->setIgnoreParentMargin(true);
+            m_darkBackground->hide();
+            m_darkBackground->update();
+        }
+    }
 
     BaseClass::apply(object);
 }
@@ -167,6 +185,10 @@ void FwScene::showMessageBox(const FwRequest& request)
         {
             m_messageBox = createMessageBox(m_messageBoxTemplate);
             m_messageBox->show();
+            if(m_darkBackground)
+            {
+                m_darkBackground->show();
+            }
         }
         m_messageBox->setRequest(request);
     }

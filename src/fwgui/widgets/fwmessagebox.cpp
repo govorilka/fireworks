@@ -24,6 +24,17 @@ FwMessageBox::FwMessageBox(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_buttonBox(0),
     m_background(0)
 {
+    setZIndex(1001); //STUB!!!
+}
+
+FwMessageBox::~FwMessageBox()
+{
+    //STUB!!!
+    FwScene* scene = this->scene();
+    if(scene && scene->m_darkBackground)
+    {
+        scene->m_darkBackground->hide();
+    }
 }
 
 void FwMessageBox::keyPressEvent(FwKeyPressEvent *event)

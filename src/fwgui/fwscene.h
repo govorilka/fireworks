@@ -58,6 +58,8 @@ public:
     inline bool messageBoxAllow();
     inline void setMessageBoxAllow(bool value);
 
+    inline FwRectPrimitive* darkBackground() const;
+
 protected:
     void showEventProcessed(FwSceneShowEvent* e);
     void hideEventProcessed(FwSceneHideEvent* e);
@@ -82,6 +84,8 @@ private:
     FwMLObject* m_messageBoxTemplate;
 
     bool m_messageBoxAllow;
+
+    FwRectPrimitive* m_darkBackground;
 };
 
 int FwScene::id() const
@@ -112,6 +116,11 @@ bool FwScene::messageBoxAllow()
 void FwScene::setMessageBoxAllow(bool value)
 {
     m_messageBoxAllow = value;
+}
+
+FwRectPrimitive* FwScene::darkBackground() const
+{
+    return m_darkBackground;
 }
 
 #endif // FWSCENE_H
