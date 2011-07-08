@@ -8,6 +8,7 @@
 #include "fwutils/fwrequest.h"
 
 class FwStringPrimitive;
+class FwTextPrimitive;
 class FwPixmapPrimitive;
 
 class FwMessageBox;
@@ -130,8 +131,8 @@ public:
 
     void apply(FwMLObject *object);
 
-    inline FwStringPrimitive* messageText() const;
-    inline void setMessageText(const QString& value);
+    QString text() const;
+    void setText(const QString& text);
 
     inline FwRectPrimitive* background() const;
     void setBackground(FwRectPrimitive* primitive);
@@ -142,7 +143,7 @@ protected:
 private:
     FwStringPrimitive* m_caption;
     FwRequest m_request;
-    FwStringPrimitive* m_messageText;
+    FwTextPrimitive* m_text;
     FwButtonsBox* m_buttonBox;
     FwRectPrimitive* m_background;
 };
@@ -150,11 +151,6 @@ private:
 FwStringPrimitive* FwMessageBox::caption() const
 {
     return m_caption;
-}
-
-FwStringPrimitive* FwMessageBox::messageText() const
-{
-    return m_messageText;
 }
 
 FwRectPrimitive* FwMessageBox::background() const
