@@ -188,10 +188,13 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
                 }
             }
 
-            if(!m_requests.isEmpty() && m_activeScene->messageBoxAllow())
+            if(!m_requests.isEmpty() &&
+                m_activeScene->isMessageBoxAllow() &&
+                m_activeScene->showMessageBox(m_requests.first()))
             {
-                m_activeScene->showMessageBox(m_requests.dequeue());
+                m_requests.removeFirst();
             }
+
         }
         update();
     }
@@ -260,9 +263,8 @@ void FwGraphicsView::postRequest(const FwRequest& request)
 {
     if(!request.isNull())
     {
-        if(m_activeScene && m_activeScene->messageBoxAllow())
+        if(m_activeScene && m_activeScene->isMessageBoxAllow() && m_activeScene->showMessageBox(request))
         {
-            m_activeScene->showMessageBox(request);
             return;
         }
         m_requests.enqueue(request);
