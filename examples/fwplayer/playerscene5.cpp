@@ -28,10 +28,16 @@ void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
     case Qt::Key_Enter:
     case Qt::Key_Return:
         {
-            FwRequest request(this);
-            request.addAnswer(FwRequestAnswer::SR_Ok,"ok", "Ok", Qt::Key_Return);
-            request.addAnswer(FwRequestAnswer::SR_Cancel,"cancel", "Cancel", Qt::Key_Escape);
-            request.setText(QString::fromUtf8("Are you sure?"));
+            FwRequest request(this, tr("Are you sure?"));
+
+            FwRequestAnswer& answerOk = request.addAnswer(FwRequestAnswer::SR_Ok,"ok");
+            answerOk.setCaption("Ok");
+            answerOk.setKey(Qt::Key_Return);
+
+            FwRequestAnswer& answerCancel = request.addAnswer(FwRequestAnswer::SR_Ok,"cancel");
+            answerCancel.setCaption("Cancel");
+            answerCancel.setKey(Qt::Key_Escape);
+
             request.postRequest(view());
         }
         return;

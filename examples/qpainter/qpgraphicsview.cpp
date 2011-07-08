@@ -129,3 +129,8 @@ QRegion QPGraphicsView::convert(const FwRegion& region)
     }
     return qregion;
 }
+
+bool QPGraphicsView::init()
+{
+    return true;
+}

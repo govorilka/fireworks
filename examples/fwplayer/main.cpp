@@ -22,6 +22,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QPGraphicsView view;
+    if(!view.up())
+    {
+        qDebug() << "Cannot init view";
+        return -1;
+    }
 
     PlayerScene* playerScene = new PlayerScene(1, &view);
     view.setActiveScene(playerScene);
