@@ -97,7 +97,7 @@ messageBoxAllow : true,
 
 messagebox
 {
-  width : 600, height : 500,
+  width : 320, height : 240,
   bgcolor : red,
   geometry
   {
@@ -108,12 +108,14 @@ messagebox
 
   buttonBox
   {
-    width : 550, height : 350,
+    y : 100,
+    width : 320, height : 80,
     bgcolor : yellow,
     geometry
     {
-      vPosition : bottom,
-      hPosition : center
+      hPosition : center,
+      vPosition : afterbottom,
+      link : "parent.text"
     },
 
     button
@@ -132,24 +134,24 @@ messagebox
         bgcolor : green
     },
 
-    orientation : "bottom",
+    orientation : center,
     margin : 10,
   },
 
   text
   {
-   zindex : 6,
-   font
-   {
-      family : "Arial",
-      pixelSize : 24
-   },
-   color : "white",
-   geometry
-   {
-      hPosition : "Center",
-      vPosition : "Middle"
-   }
+    height : 40,
+    zindex : 6,
+    font
+    {
+        family : "Arial",
+        pixelSize : 24
+    },
+    geometry
+    {
+        hPosition : "centerdock"
+    },
+    color : white
   },
   
 }

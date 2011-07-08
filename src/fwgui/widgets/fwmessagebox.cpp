@@ -9,6 +9,7 @@
 
 #include "fwgui/primitives/fwstringprimitive.h"
 #include "fwgui/primitives/fwpixmapprimitive.h"
+#include "fwgui/primitives/fwtextprimitive.h"
 
 #include "fwmessagebox.h"
 #include "fwgui/fwguifactory.h"
@@ -20,7 +21,7 @@
 FwMessageBox::FwMessageBox(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_caption(new FwStringPrimitive("caption", this)),
-    m_messageText(new FwStringPrimitive("text", this)),
+    m_text(0),
     m_buttonBox(0),
     m_background(0)
 {
@@ -77,7 +78,7 @@ bool FwMessageBox::acceptKey(int key)
 void FwMessageBox::setRequest(const FwRequest& request)
 {
     m_request = request;
-    m_messageText->setString(m_request.text());
+    setText(m_request.text());
 
     delete m_buttonBox;
     m_buttonBox = new FwButtonsBox(request.answers(), this, scene()->view()->library());
@@ -114,8 +115,32 @@ void FwMessageBox::apply(FwMLObject *object)
         }
     }
 
+    FwMLObject* textNode = object->attribute("text")->cast<FwMLObject>();
+    if(textNode && !m_text)
+    {
+        m_text = new FwTextPrimitive("text", this);
+    }
+
     BaseClass::apply(object);
     update();
+}
+
+QString FwMessageBox::text() const
+{
+    if(m_text)
+    {
+        return m_text->text();
+    }
+    return QString();
+}
+
+void FwMessageBox::setText(const QString& text)
+{
+    if(!m_text)
+    {
+        m_text = new FwTextPrimitive("text", this);
+    }
+    m_text->setText(text);
 }
 
 /////////////////////////////////////////////////////////
