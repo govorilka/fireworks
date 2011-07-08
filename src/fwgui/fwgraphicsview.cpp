@@ -150,10 +150,10 @@ void FwGraphicsView::setActiveScene(FwScene* scene)
         Q_ASSERT(scene->m_view == this);
 
         m_prevActiveScene = m_activeScene;
+        m_activeScene = 0;
+
         if(m_prevActiveScene)
         {
-            m_activeScene = 0;
-
             FwSceneHideEvent sceneHideEvent(scene);
             QCoreApplication::sendEvent(m_prevActiveScene, &sceneHideEvent);
 

@@ -74,6 +74,8 @@ protected:
     FwPixmapData* createBuffer(const FwPixmapDescription& desc);
     FwPixmapData* createBuffer(Fw::BufferMode mode, const QSize& size);
 
+    bool init();
+
 private:
     QPWidget* m_widget;
 };
