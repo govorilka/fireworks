@@ -51,11 +51,7 @@ public:
 
     void apply(FwMLObject *object);
 
-    void showMessageBox(const FwRequest& request);
-
-    FwMessageBox* createMessageBox(FwMLObject* messageBoxTemplate);
-
-    inline bool messageBoxAllow();
+    inline bool isMessageBoxAllow() const;
     inline void setMessageBoxAllow(bool value);
 
     inline FwRectPrimitive* darkBackground() const;
@@ -69,6 +65,9 @@ protected:
 
     void showAnimationFinished();
     void hideAnimationFinished();
+
+    virtual FwMessageBox* createMessageBox(FwMLObject* messageBoxTemplate);
+    bool showMessageBox(const FwRequest& request);
 
     void invalidate();
 
@@ -108,7 +107,7 @@ FwMLObject* FwScene::messageBoxTemplate() const
     return m_messageBoxTemplate;
 }
 
-bool FwScene::messageBoxAllow()
+bool FwScene::isMessageBoxAllow() const
 {
     return m_messageBoxAllow;
 }

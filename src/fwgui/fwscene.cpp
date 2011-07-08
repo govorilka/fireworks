@@ -177,21 +177,23 @@ void FwScene::setMessageBoxTemplate(FwMLObject* temp)
     }
 }
 
-void FwScene::showMessageBox(const FwRequest& request)
+bool FwScene::showMessageBox(const FwRequest& request)
 {
     if(!request.isNull())
     {
         if(!m_messageBox)
         {
             m_messageBox = createMessageBox(m_messageBoxTemplate);
+            m_messageBox->setRequest(request);
             m_messageBox->show();
             if(m_darkBackground)
             {
                 m_darkBackground->show();
             }
+            return true;
         }
-        m_messageBox->setRequest(request);
     }
+    return false;
 }
 
 FwMessageBox* FwScene::createMessageBox(FwMLObject* messageBoxTemplate)
