@@ -21,7 +21,7 @@ class FwPainter;
 class FwKeyPressEvent;
 class FwVertexArray;
 class FwRequest;
-
+class FwMLEngine;
 class FwImageLibrary;
 
 class FIREWORKSSHARED_EXPORT FwGraphicsView : public QObject
@@ -69,6 +69,8 @@ public:
     void postRequest(const FwRequest& request);
 
     inline FwImageLibrary* library() const;
+
+    bool loadData(FwMLEngine* engine);
 
 protected:
     virtual void invalidateCanvas(const FwRegion& region) = 0;
