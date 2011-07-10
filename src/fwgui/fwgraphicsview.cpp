@@ -8,6 +8,7 @@
 #include "fwguievent.h"
 
 #include "fwcore/fwml.h"
+#include "fwcore/fwmlengine.h"
 
 #include "fwutils/fwrequest.h"
 #include "fwgui/widgets/fwmessagebox.h"
@@ -300,5 +301,10 @@ bool FwGraphicsView::up()
         qWarning("Cannot load image library");
     }
 
+    return true;
+}
+
+bool FwGraphicsView::loadData(FwMLEngine* engine)
+{
     return true;
 }

@@ -5,6 +5,7 @@
 #include <QtGui/QApplication>
 
 #include "fwcore/fwml.h"
+#include "fwcore/fwmlengine.h"
 
 #include "fwgui/fwgraphicsview.h"
 
@@ -94,6 +95,12 @@ int main(int argc, char *argv[])
         {
             playerScene6->apply(&rootObject);
         }
+    }
+
+    {
+        FwMLEngine engine;
+        engine.setRootDirectory(a.applicationDirPath() + QDir::separator() + "examples");
+        view.loadData(&engine);
     }
 
     QWidget* widget = view.createWidget(0);
