@@ -55,7 +55,9 @@ void QPWidget::paintEvent(QPaintEvent *e)
 
 void QPWidget::keyPressEvent(QKeyEvent *e)
 {
-    QApplication::postEvent(m_view, new FwKeyPressEvent(e->key(), e->isAutoRepeat()));
+    FwKeyPressEvent* event = new FwKeyPressEvent(e->key(), e->isAutoRepeat());
+    event->setText(e->text());
+    QApplication::postEvent(m_view, event);
 }
 
 ///////////////////////////////////////////////////////////////////////

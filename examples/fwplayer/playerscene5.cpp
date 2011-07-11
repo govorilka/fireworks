@@ -18,6 +18,7 @@ PlayerScene5::PlayerScene5(FwGraphicsView* view) :
     m_itemView(new FwCheckableItemView("itemView", this)),
     m_digitInput(new FwDigitInputWidget("digitInput", this))
 {
+    connect(m_itemView, SIGNAL(currentChanged(FwPrimitive*,FwPrimitive*)), this, SLOT(currentChanged(FwPrimitive*,FwPrimitive*)));
     m_itemView->show();
 
     connect(m_digitInput, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
@@ -26,8 +27,7 @@ PlayerScene5::PlayerScene5(FwGraphicsView* view) :
 
 void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
 {
-    int digit = event->digit();
-    if(digit != -1)
+    if(event->isDigitKey())
     {
         QCoreApplication::sendEvent(m_digitInput, event);
         return;
@@ -68,14 +68,15 @@ void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
 
 void PlayerScene5::apply(FwMLObject *object)
 {
-    BaseClass::apply(object);
-
     m_itemView->prepareItemsChanged();
     for(int i = 0; i < 100; i++)
     {
         m_itemView->addItem("item" + QString::number(i), false);
     }
     m_itemView->updateItems();
+    m_digitInput->setMaxValue(m_itemView->items().count());
+
+    BaseClass::apply(object);
 }
 
 void PlayerScene5::showEvent(FwSceneShowEvent *event)
@@ -97,5 +98,14 @@ void PlayerScene5::valueChanged(int value)
     if(value >= 0 && value < items.count())
     {
         m_itemView->setCurrent(items.at(value));
+    }
+}
+
+void PlayerScene5::currentChanged(FwPrimitive* previous, FwPrimitive* current)
+{
+    Q_UNUSED(previous);
+    if(current)
+    {
+        m_digitInput->setValue(m_itemView->items().indexOf(current));
     }
 }

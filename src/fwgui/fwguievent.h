@@ -55,7 +55,8 @@ public:
 
     inline int count() const;
 
-    int digit() const;
+    int digitValue() const;
+    inline bool isDigitKey() const;
 
 private:
     int m_key;
@@ -91,6 +92,11 @@ void FwKeyPressEvent::setText(const QString& text)
 int FwKeyPressEvent::count() const
 {
     return m_autoRepeatCount + 1;
+}
+
+bool FwKeyPressEvent::isDigitKey() const
+{
+    return digitValue() != -1;
 }
 
 //////////////////////////////////////////////////////////////////////////////

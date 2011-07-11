@@ -20,7 +20,7 @@ FwKeyPressEvent::FwKeyPressEvent(int key, int autoRepeatCount) :
 {
 }
 
-int FwKeyPressEvent::digit() const
+int FwKeyPressEvent::digitValue() const
 {
     switch(m_key)
     {
