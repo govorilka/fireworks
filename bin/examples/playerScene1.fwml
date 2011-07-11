@@ -18,28 +18,11 @@ rectItem
     drawer
     {
         name : "BorderImage",
-        bgcolor : "purple",
-        topLeft
-        {
-            source : "./images/corners/topleft.png",
-            blending : true
-        },
-        topRight
-        {
-            source : "./images/corners/topright.png",
-            blending : true
-        },
-        bottomLeft
-        {
-            source : "./images/corners/bottomleft.png",
-            blending : true
-        },
-        bottomRight
-        {
-            source : "./images/corners/bottomright.png",
-            blending : true
-        }
-
+        bgcolor : "white",
+        topLeft : "corners/topleft.png",
+        topRight : "corners/topright.png",
+        bottomLeft : "corners/bottomleft.png",
+        bottomRight : "corners/bottomright.png"
     }
 },
 
