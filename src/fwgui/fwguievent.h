@@ -55,6 +55,8 @@ public:
 
     inline int count() const;
 
+    int digit() const;
+
 private:
     int m_key;
     int m_autoRepeatCount;

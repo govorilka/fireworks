@@ -132,4 +132,32 @@ messagebox
     color : white
   },
   
+},
+
+digitInput
+{
+    width : 100, height : 30,
+    y : -10,
+    bgcolor : red,
+    geometry
+    {
+        hPosition : "center",
+        vPosition : "beforetop",
+        link : "itemView"
+    },
+    text
+    {
+        class : "fireworks.primitives.String",
+        font
+        {
+            family : "Arial",
+            pixelSize : 24
+        },
+        color : "white",
+        geometry
+        {
+            hPosition : "center",
+            vPosition : "middle"
+	    }
+    },
 }

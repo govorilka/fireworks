@@ -38,7 +38,8 @@ HEADERS += \
     fwgui/fwregion.h \
     fwgui/widgets/fwmessagebox.h \
     fwgui/fwguifactory.h \
-    fwgui/fwimagelibrary.h
+    fwgui/fwimagelibrary.h \
+    fwgui/widgets/fwdigitinputwidget.h
 
 SOURCES += \
     fwgui/fwgraphicsview.cpp \
@@ -72,4 +73,5 @@ SOURCES += \
     fwgui/fwregion.cpp \
     fwgui/widgets/fwmessagebox.cpp \
     fwgui/fwguifactory.cpp \
-    fwgui/fwimagelibrary.cpp
+    fwgui/fwimagelibrary.cpp \
+    fwgui/widgets/fwdigitinputwidget.cpp

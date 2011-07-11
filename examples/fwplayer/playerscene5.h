@@ -4,6 +4,7 @@
 #include "fwgui/fwscene.h"
 
 class FwCheckableItemView;
+class FwDigitInputWidget;
 
 class PlayerScene5 : public FwScene
 {
@@ -24,6 +25,10 @@ protected:
 
 private:
     FwCheckableItemView* m_itemView;
+    FwDigitInputWidget* m_digitInput;
+
+private slots:
+    void valueChanged(int value);
 };
 
 #endif // PLAYERSCENE5_H
