@@ -2,6 +2,10 @@
 
 #include "fwcore/fwml.h"
 
+#include "fwgui/fwscene.h"
+#include "fwgui/fwgraphicsview.h"
+#include "fwgui/fwimagelibrary.h"
+
 #include "fwgui/primitives/fwpixmapprimitive.h"
 #include "fwgui/primitives/fwstringprimitive.h"
 
@@ -104,24 +108,16 @@ void FwCheckableItemView::setPixmapCheckOff(const FwPixmap& pixmap)
 
 void FwCheckableItemView::apply(FwMLObject *object)
 {
-    FwMLNode* pixmapCheckOnNode = object->attribute("pixmapCheckOn");
-    if(pixmapCheckOnNode)
+    FwPixmap pixmapCheckOn = scene()->view()->imageLibrary()->image(object, "pixmapCheckOn");
+    if(!pixmapCheckOn.isNull())
     {
-        FwPixmap pixmapCheckOn = createPixmap(pixmapCheckOnNode);
-        if(!pixmapCheckOn.isNull())
-        {
-            setPixmapCheckOn(pixmapCheckOn);
-        }
+        setPixmapCheckOn(pixmapCheckOn);
     }
 
-    FwMLNode* pixmapCheckOffNode = object->attribute("pixmapCheckOff");
-    if(pixmapCheckOffNode)
+    FwPixmap pixmapCheckOff = scene()->view()->imageLibrary()->image(object, "pixmapCheckOff");
+    if(!pixmapCheckOff.isNull())
     {
-        FwPixmap pixmapCheckOff = createPixmap(pixmapCheckOffNode);
-        if(!pixmapCheckOff.isNull())
-        {
-            setPixmapCheckOff(pixmapCheckOff);
-        }
+        setPixmapCheckOn(pixmapCheckOff);
     }
 
     FwMLBool* exclusiveNode = object->attribute("exclusive")->cast<FwMLBool>();

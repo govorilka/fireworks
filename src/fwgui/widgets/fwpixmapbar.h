@@ -8,6 +8,7 @@ class FwPainter;
 class FwPixmapBar : public FwRectPrimitive
 {
     typedef FwRectPrimitive BaseClass;
+
 public:
     FwPixmapBar(const QByteArray& name, FwPrimitiveGroup* parent);
 

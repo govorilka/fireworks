@@ -5,6 +5,9 @@
 #include "fwcore/fwml.h"
 
 #include "fwgui/fwpainter.h"
+#include "fwgui/fwscene.h"
+#include "fwgui/fwgraphicsview.h"
+#include "fwgui/fwimagelibrary.h"
 
 FwPixmapPrimitive::FwPixmapPrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent)
@@ -22,6 +25,11 @@ void FwPixmapPrimitive::setPixmap(const FwPixmap& pixmap)
     }
 }
 
+void FwPixmapPrimitive::setPixmap(const QByteArray& name)
+{
+    setPixmap(scene()->view()->imageLibrary()->image(name));
+}
+
 void FwPixmapPrimitive::boundingRectChangedEvent(QRect &boundingRect)
 {
     boundingRect.setSize(m_pixmap.size());
@@ -36,13 +44,12 @@ void FwPixmapPrimitive::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
 
-    FwPixmap pixmap = createPixmap(object);
-    if(!pixmap.isNull())
+    FwMLString* sourceNode = object->attribute("source")->cast<FwMLString>();
+    if(sourceNode && !sourceNode->isEmpty())
     {
-        setPixmap(pixmap);
+        setPixmap(sourceNode->value());
     }
 
     BaseClass::apply(object);
-
     update();
 }

@@ -46,7 +46,7 @@ rectItem
 pixmapItem
 {
    zindex : 2,
-   source : "./images/browser.png"
+   source : "browser.png"
 },
 
 stringItem

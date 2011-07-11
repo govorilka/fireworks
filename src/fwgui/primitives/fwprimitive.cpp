@@ -301,31 +301,6 @@ void FwPrimitive::apply(FwMLObject* object)
     update();
 }
 
-FwPixmap FwPrimitive::createPixmap(const QSize& size) const
-{
-    return m_scene->view()->pixmap(size);
-}
-
-FwPixmap FwPrimitive::createPixmap(const FwPixmapDescription& desc) const
-{
-    return m_scene->view()->pixmap(desc);
-}
-
-FwPixmap FwPrimitive::createPixmap(FwMLNode* node) const
-{
-    FwPixmapDescription desc;
-    if(desc.apply(node))
-    {
-        return createPixmap(desc);
-    }
-    return FwPixmap();
-}
-
-FwPixmap FwPrimitive::createPixmap(const QByteArray& name) const
-{
-    return m_scene->view()->imageLibrary()->image(name);
-}
-
 FwFont FwPrimitive::createFont(const FwFontDescription& desc)
 {
     return m_scene->view()->font(desc);
@@ -433,10 +408,10 @@ FwBrush* FwPrimitive::createBrush(FwMLObject* object)
 {
     FwBrush* brush = 0;
 
-    FwMLNode* background = object->attribute("background");
-    if(background)
+    FwMLString* background = object->attribute("background")->cast<FwMLString>();
+    if(background && !background->isEmpty())
     {
-        FwPixmap px = createPixmap(background);
+        FwPixmap px = scene()->view()->imageLibrary()->image(background->value());
         if(!px.isNull())
         {
             brush = new FwBrushTexture(this, px);
