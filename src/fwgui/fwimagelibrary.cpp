@@ -43,3 +43,13 @@ FwPixmap FwImageLibrary::image(const QByteArray &name)
 
     return FwPixmap();
 }
+
+FwPixmap FwImageLibrary::image(FwMLObject* object, const QByteArray &name)
+{
+    FwMLString* imageNode = object->attribute(name)->cast<FwMLString>();
+    if(imageNode && !imageNode->isEmpty())
+    {
+        return image(imageNode->value());
+    }
+    return FwPixmap();
+}

@@ -365,6 +365,6 @@ FwMessageBoxButton::FwMessageBoxButton(const FwRequestAnswer& answer, FwButtonsB
     if(!answer.icon().isEmpty())
     {
         m_icon = new FwPixmapPrimitive("icon", this);
-        m_icon->setPixmap(createPixmap(answer.icon()));
+        m_icon->setPixmap(answer.icon());
     }
 }

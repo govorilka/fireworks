@@ -5,6 +5,9 @@
 
 #include "fwgui/fwguievent.h"
 #include "fwgui/fwguifactory.h"
+#include "fwgui/fwscene.h"
+#include "fwgui/fwgraphicsview.h"
+#include "fwgui/fwimagelibrary.h"
 
 #include "fwgui/primitives/fwprimitive.h"
 #include "fwgui/primitives/fwstringprimitive.h"
@@ -283,40 +286,28 @@ void FwItemView::apply(FwMLObject *object)
         }
     }
 
-    FwMLNode* leftArrowNode = object->attribute("leftArrow");
-    if(leftArrowNode)
+    FwPixmap leftArrow = scene()->view()->imageLibrary()->image(object, "leftArrow");
+    if(!leftArrow.isNull())
     {
-        FwPixmap leftArrow = createPixmap(leftArrowNode);
-        if(!leftArrow.isNull())
-        {
-            m_leftArrow = new FwPixmapPrimitive("leftArrow", this);
-            m_leftArrow->setPixmap(leftArrow);
-        }
+        m_leftArrow = new FwPixmapPrimitive("leftArrow", this);
+        m_leftArrow->setPixmap(leftArrow);
     }
 
-    FwMLNode* rightArrowNode = object->attribute("rightArrow");
-    if(rightArrowNode)
+    FwPixmap rightArrow = scene()->view()->imageLibrary()->image(object, "rightArrow");
+    if(!rightArrow.isNull())
     {
-        FwPixmap rightArrow = createPixmap(rightArrowNode);
-        if(!rightArrow.isNull())
-        {
-            m_rightArrow = new FwPixmapPrimitive("rightArrow", this);
-            m_rightArrow->setPixmap(rightArrow);
-        }
+        m_rightArrow = new FwPixmapPrimitive("rightArrow", this);
+        m_rightArrow->setPixmap(rightArrow);
     }
 
-    FwMLNode* centerPixmapNode = object->attribute("centerPixmap");
-    if(centerPixmapNode)
+    FwPixmap centerPixmap = scene()->view()->imageLibrary()->image(object, "centerPixmap");
+    if(!centerPixmap.isNull())
     {
-        FwPixmap centerPixmap = createPixmap(centerPixmapNode);
-        if(!centerPixmap.isNull())
-        {
-            m_centerPixmap = new FwPixmapPrimitive("centerPixmap", this);
-            m_centerPixmap->prepareGeometryChanged();
-            m_centerPixmap->setPosition(Fw::HP_Center, Fw::VP_Middle);
-            m_centerPixmap->setPixmap(centerPixmap);
-            m_centerPixmap->update();
-        }
+        m_centerPixmap = new FwPixmapPrimitive("centerPixmap", this);
+        m_centerPixmap->prepareGeometryChanged();
+        m_centerPixmap->setPosition(Fw::HP_Center, Fw::VP_Middle);
+        m_centerPixmap->setPixmap(centerPixmap);
+        m_centerPixmap->update();
     }
 
     BaseClass::apply(object);

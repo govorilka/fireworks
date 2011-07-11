@@ -13,6 +13,7 @@ public:
 
     inline FwPixmap pixmap() const;
     void setPixmap(const FwPixmap& pixmap);
+    void setPixmap(const QByteArray& name);
 
     void apply(FwMLObject *object);
 

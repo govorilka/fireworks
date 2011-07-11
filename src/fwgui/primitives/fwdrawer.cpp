@@ -8,6 +8,7 @@
 #include "fwgui/fwpainter.h"
 #include "fwgui/fwscene.h"
 #include "fwgui/fwgraphicsview.h"
+#include "fwgui/fwimagelibrary.h"
 
 FwDrawer::FwDrawer(const FwPrimitive* primitive) :
     m_primitive(primitive)
@@ -156,29 +157,12 @@ void FwBorderImageDrawer::setPrimitiveRect(const QRect& rect)
 
 void FwBorderImageDrawer::apply(FwMLObject* object)
 {
-    FwMLNode* topLeftNode = object->attribute("topLeft");
-    if(topLeftNode)
-    {
-        setTopLeft(primitive()->createPixmap(topLeftNode));
-    }
-
-    FwMLNode* topRightNode = object->attribute("topRight");
-    if(topRightNode)
-    {
-        setTopRight(primitive()->createPixmap(topRightNode));
-    }
-
-    FwMLNode* bottomLeftNode = object->attribute("bottomLeft");
-    if(bottomLeftNode)
-    {
-        setBottomLeft(primitive()->createPixmap(bottomLeftNode));
-    }
-
-    FwMLNode* bottomRightNode = object->attribute("bottomRight");
-    if(bottomRightNode)
-    {
-        setBottomRight(primitive()->createPixmap(bottomRightNode));
-    }
+    FwImageLibrary* library = primitive()->scene()->view()->imageLibrary();
+    setTopLeft(library->image(object, "topLeft"));
+    setTopRight(library->image(object, "topRight"));
+    setBottomLeft(library->image(object, "bottomLeft"));
+    setBottomRight(library->image(object, "bottomRight"));
+    BaseClass::apply(object);
 }
 
 void FwBorderImageDrawer::setupCoordinates(int &ax, int &ay, int &bx, int& by, const QRect& rect)

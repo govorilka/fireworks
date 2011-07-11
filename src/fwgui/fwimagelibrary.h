@@ -19,6 +19,7 @@ public:
     bool loadData(FwMLObject *object);
 
     FwPixmap image(const QByteArray& name);
+    FwPixmap image(FwMLObject* object, const QByteArray &name);
 
 private:
     QHash<QByteArray, FwPixmap> m_images;

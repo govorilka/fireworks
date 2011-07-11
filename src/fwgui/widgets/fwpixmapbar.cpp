@@ -5,7 +5,9 @@
 #include "fwcore/fwml.h"
 
 #include "fwgui/fwpainter.h"
-
+#include "fwgui/fwscene.h"
+#include "fwgui/fwgraphicsview.h"
+#include "fwgui/fwimagelibrary.h"
 
 FwPixmapBar::FwPixmapBar(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
@@ -17,27 +19,28 @@ FwPixmapBar::FwPixmapBar(const QByteArray& name, FwPrimitiveGroup* parent) :
 
 void FwPixmapBar::apply(FwMLObject *object)
 {
+    prepareGeometryChanged();
+
+    FwMLString* pixmapNode = object->attribute("leftPixmap")->cast<FwMLString>();
+    if(pixmapNode && !pixmapNode->isEmpty())
+    {
+        setLeftPixmap(scene()->view()->imageLibrary()->image(pixmapNode->value()));
+    }
+
+    pixmapNode = object->attribute("centerPixmap")->cast<FwMLString>();
+    if(pixmapNode && !pixmapNode->isEmpty())
+    {
+        setCenterPixmap(scene()->view()->imageLibrary()->image(pixmapNode->value()));
+    }
+
+    pixmapNode = object->attribute("rightPixmap")->cast<FwMLString>();
+    if(pixmapNode && !pixmapNode->isEmpty())
+    {
+        setRightPixmap(scene()->view()->imageLibrary()->image(pixmapNode->value()));
+    }
+
     BaseClass::apply(object);
-
-    FwMLNode* pixmapNode = object->attribute("left");
-    if(pixmapNode)
-    {
-        setLeftPixmap(createPixmap(pixmapNode));
-    }
-
-    pixmapNode = 0;
-    pixmapNode = object->attribute("center");
-    if(pixmapNode)
-    {
-        setCenterPixmap(createPixmap(pixmapNode));
-    }
-
-    pixmapNode = 0;
-    pixmapNode = object->attribute("right");
-    if(pixmapNode)
-    {
-        setRightPixmap(createPixmap(pixmapNode));
-    }
+    update();
 }
 
 void FwPixmapBar::setLeftPixmap(const FwPixmap &value)
