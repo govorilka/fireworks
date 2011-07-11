@@ -9,7 +9,7 @@ class PlayerScene3 : public FwScene
     typedef FwScene BaseClass;
 
 public:
-     PlayerScene3(int id, FwGraphicsView* view);
+     PlayerScene3(FwGraphicsView* view);
 
 protected:
     void keyPressEvent(FwKeyPressEvent *event);

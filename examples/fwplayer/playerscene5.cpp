@@ -12,8 +12,8 @@
 
 #include "fwutils/fwrequest.h"
 
-PlayerScene5::PlayerScene5(int id, FwGraphicsView* view) :
-    BaseClass(id, view),
+PlayerScene5::PlayerScene5(FwGraphicsView* view) :
+    BaseClass("playerScene5", view),
     m_itemView(new FwCheckableItemView("itemView", this))
 {
     m_itemView->prepareGeometryChanged();
@@ -80,6 +80,6 @@ void PlayerScene5::requestAcceptEvent(FwResult* result)
 {
     if(result->result() == FwRequestAnswer::SR_Ok)
     {
-        view()->setActiveScene(6);
+        view()->setActiveScene("playerScene6");
     }
 }

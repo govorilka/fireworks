@@ -81,7 +81,7 @@ void FwMessageBox::setRequest(const FwRequest& request)
     setText(m_request.text());
 
     delete m_buttonBox;
-    m_buttonBox = new FwButtonsBox(request.answers(), this, scene()->view()->library());
+    m_buttonBox = new FwButtonsBox(this);
 
     if(scene()->m_messageBoxTemplate)
     {
@@ -145,16 +145,14 @@ void FwMessageBox::setText(const QString& text)
 
 /////////////////////////////////////////////////////////
 
-FwButtonsBox::FwButtonsBox(const QVector<FwRequestAnswer> answers, FwMessageBox *parent, FwImageLibrary *library) :
+FwButtonsBox::FwButtonsBox(FwMessageBox *parent) :
     BaseClass("buttonBox", parent),
     m_orientation(FwButtonsBox::O_Left),
-    m_margin(0),
-    m_buttonsLibrary(library)
+    m_margin(0)
 {
-    foreach(FwRequestAnswer answer, answers)
+    foreach(FwRequestAnswer answer, parent->request().answers())
     {
-        FwMessageBoxButton* button = new FwMessageBoxButton(answer, this);
-        m_buttons.append(button);
+        m_buttons.append(new FwMessageBoxButton(answer, this));
     }
 }
 
@@ -367,6 +365,6 @@ FwMessageBoxButton::FwMessageBoxButton(const FwRequestAnswer& answer, FwButtonsB
     if(!answer.icon().isEmpty())
     {
         m_icon = new FwPixmapPrimitive("icon", this);
-        m_icon->setPixmap(parent->buttonsLibrary()->icon(answer.icon()));
+        m_icon->setPixmap(createPixmap(answer.icon()));
     }
 }

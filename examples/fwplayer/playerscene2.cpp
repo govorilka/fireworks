@@ -10,8 +10,8 @@
 #include "fwgui/primitives/fwrectprimitive.h"
 #include "fwgui/primitives/fwpixmapprimitive.h"
 
-PlayerScene2::PlayerScene2(int id, FwGraphicsView* view) :
-    BaseClass(id, view),
+PlayerScene2::PlayerScene2(FwGraphicsView* view) :
+    BaseClass("playerScene2", view),
     m_rectPrimitive(new FwRectPrimitive("rectItem", this)),
     m_progressPrimitive(new FwProgressWidget("progressItem", this)),
     m_pixmapPrimitive(new FwPixmapPrimitive("pixmapItem", this))
@@ -32,7 +32,7 @@ void PlayerScene2::keyPressEvent(FwKeyPressEvent *event)
     {
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        view()->setActiveScene(3);
+        view()->setActiveScene("playerScene3");
         event->accept();
         return;
 

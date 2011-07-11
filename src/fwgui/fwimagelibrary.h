@@ -16,12 +16,13 @@ class FwImageLibrary : public FwCPPObject
 public:
     FwImageLibrary(const QByteArray& name, FwGraphicsView* view);
 
-    void apply(FwMLObject *object);
+    bool loadData(FwMLObject *object);
 
-    FwPixmap icon(const QByteArray& name);
+    FwPixmap image(const QByteArray& name);
 
 private:
-    QHash<QByteArray, FwPixmapDescription> m_icons;
+    QHash<QByteArray, FwPixmap> m_images;
+    QHash<QByteArray, FwPixmapDescription> m_descriptions;
     FwGraphicsView* m_view;
 };
 

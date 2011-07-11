@@ -45,8 +45,7 @@ FwPixmapPrimitive* FwMessageBoxButton::icon() const
 
 class FIREWORKSSHARED_EXPORT FwButtonsBox : public FwPrimitiveGroup
 {
-typedef FwPrimitiveGroup BaseClass;
-
+    typedef FwPrimitiveGroup BaseClass;
 public:
 
     enum Orientation
@@ -60,7 +59,7 @@ public:
         O_Right
     };
 
-    FwButtonsBox(const QVector<FwRequestAnswer> answers, FwMessageBox* parent, FwImageLibrary* library);
+    FwButtonsBox(FwMessageBox* parent);
 
     inline int orientation() const;
     void setOrientation(Orientation value, bool needUpdatePos = true);
@@ -72,8 +71,6 @@ public:
     inline void setMargin(int value);
 
     void apply(FwMLObject *object);
-
-    inline FwImageLibrary* buttonsLibrary() const;
 
 protected:
 
@@ -88,7 +85,6 @@ private:
     Orientation m_orientation;
     int m_margin;
     FwStringPrimitive* m_captionTemplate;
-    FwImageLibrary* m_buttonsLibrary;
 };
 
 int FwButtonsBox::orientation() const
@@ -105,13 +101,7 @@ void FwButtonsBox::setMargin(int value)
     m_margin = value;
 }
 
-FwImageLibrary* FwButtonsBox::buttonsLibrary() const
-{
-    return m_buttonsLibrary;
-}
-
 //////////////////////////////////////////////////////////////
-
 
 class FIREWORKSSHARED_EXPORT FwMessageBox : public FwWidget
 {
@@ -124,6 +114,7 @@ public:
 
     inline FwStringPrimitive* caption() const;
 
+    inline FwRequest request() const;
     void setRequest(const FwRequest& request);
 
     bool accept(int result);
@@ -147,6 +138,11 @@ private:
     FwButtonsBox* m_buttonBox;
     FwRectPrimitive* m_background;
 };
+
+FwRequest FwMessageBox::request() const
+{
+    return m_request;
+}
 
 FwStringPrimitive* FwMessageBox::caption() const
 {

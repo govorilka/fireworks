@@ -9,6 +9,7 @@
 
 #include "fwcore/fwml.h"
 #include "fwcore/fwmlengine.h"
+#include "fwcore/fwmldocument.h"
 
 #include "fwutils/fwrequest.h"
 #include "fwgui/widgets/fwmessagebox.h"
@@ -18,12 +19,13 @@
 #include "fwutils/fwconfig.h"
 
 FwGraphicsView::FwGraphicsView(QObject *parent) :
-    BaseClass(parent),
+    BaseClass("view"),
+    QObject(parent),
     m_activeScene(0),
     m_prevActiveScene(0),
     m_needPostUpdateEvent(true),
     m_dirtyRegion(new FwRegion()),
-    m_library(new FwImageLibrary("images", this))
+    m_imageLibrary(new FwImageLibrary("images", this))
 {
 }
 
@@ -232,7 +234,7 @@ bool FwGraphicsView::event(QEvent *e)
         return true;
     }
 
-    return BaseClass::event(e);
+    return QObject::event(e);
 }
 
 void FwGraphicsView::render(FwPainter* painter, const QRect& clipRect)
@@ -284,27 +286,49 @@ bool FwGraphicsView::keyEventProccessed(FwKeyPressEvent* event)
         }
     }
 
-    return BaseClass::event(event);
+    return QObject::event(event);
 }
 
-
-bool FwGraphicsView::up()
+bool FwGraphicsView::loadData(FwMLEngine* engine)
 {
-    if(!init())
+    FwMLDocument* document = engine->addDocument("view.fwml");
+    if(document)
     {
-        qWarning("Cannot init view");
-        return false;
+        loadData(document->rootObject());
     }
 
-    if(!m_library->loadData("images/library.fwml"))
+    foreach(FwScene* scene, m_scenes)
     {
-        qWarning("Cannot load image library");
+        if(!scene->name().isEmpty())
+        {
+            FwMLDocument* document = engine->addDocument(scene->name() + ".fwml");
+            if(document)
+            {
+                if(document->errorString().isEmpty())
+                {
+                    scene->apply(document->rootObject());
+                }
+                else
+                {
+                    qWarning() << document->errorString();
+                }
+            }
+        }
     }
 
     return true;
 }
 
-bool FwGraphicsView::loadData(FwMLEngine* engine)
+bool FwGraphicsView::loadData(FwMLObject* object)
 {
+    FwMLString* imagesPath = object->attribute("imagesPath")->cast<FwMLString>();
+    if(imagesPath && !imagesPath->isEmpty())
+    {
+        if(!m_imageLibrary->loadFile(imagesPath->toQString()))
+        {
+            qWarning("Cannot load image library");
+        }
+    }
+
     return true;
 }

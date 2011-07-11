@@ -38,8 +38,7 @@ bool FwConfig::loadConfig(const QString& name, FwCPPObject* object)
         FwMLObject rootObject;
         if(rootObject.parse(&fwmlConfig))
         {
-            object->apply(&rootObject);
-            return true;
+            return object->loadData(&rootObject);
         }
     }
 

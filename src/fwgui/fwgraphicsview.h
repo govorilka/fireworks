@@ -9,6 +9,8 @@
 
 #include "fireworks.h"
 
+#include "fwcore/fwcppobject.h"
+
 #include "fwgui/fwpixmap.h"
 #include "fwgui/fwregion.h"
 
@@ -24,10 +26,10 @@ class FwRequest;
 class FwMLEngine;
 class FwImageLibrary;
 
-class FIREWORKSSHARED_EXPORT FwGraphicsView : public QObject
+class FIREWORKSSHARED_EXPORT FwGraphicsView : public QObject, public FwCPPObject
 {
     Q_OBJECT
-    typedef QObject BaseClass;
+    typedef FwCPPObject BaseClass;
 
 public:
     friend class FwScene;
@@ -36,8 +38,6 @@ public:
 
     explicit FwGraphicsView(QObject *parent = 0);
     virtual ~FwGraphicsView();
-
-    bool up();
 
     FwFont font(const FwFontDescription& desc);
 
@@ -68,9 +68,12 @@ public:
 
     void postRequest(const FwRequest& request);
 
-    inline FwImageLibrary* library() const;
+    inline FwImageLibrary* imageLibrary() const;
 
     bool loadData(FwMLEngine* engine);
+    bool loadData(FwMLObject* object);
+
+    virtual bool init() = 0;
 
 protected:
     virtual void invalidateCanvas(const FwRegion& region) = 0;
@@ -86,8 +89,6 @@ protected:
 
     bool keyEventProccessed(FwKeyPressEvent* event);
 
-    virtual bool init() = 0;
-
 private:
     QSize m_size;
     QHash<QString, FwFont> m_fonts;
@@ -102,7 +103,7 @@ private:
 
     FwRegion* m_dirtyRegion;
 
-    FwImageLibrary* m_library;
+    FwImageLibrary* m_imageLibrary;
 };
 
 #include "fwgui/fwgraphicsview_inl.h"

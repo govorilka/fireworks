@@ -18,89 +18,35 @@
 
 #include "qpgraphicsview.h"
 
+bool loadScene(FwGraphicsView* view)
+{
+    new PlayerScene(view);
+    new PlayerScene2(view);
+    new PlayerScene3(view);
+    new PlayerScene4(view);
+    new PlayerScene5(view);
+    new PlayerScene6(view);
+
+    FwMLEngine engine;
+    engine.setRootDirectory(QCoreApplication::applicationDirPath() + QDir::separator() + "examples");
+    return view->loadData(&engine);
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     QPGraphicsView view;
-    if(!view.up())
+    if(!view.init())
     {
         qDebug() << "Cannot init view";
         return -1;
     }
 
-    PlayerScene* playerScene = new PlayerScene(1, &view);
-    view.setActiveScene(playerScene);
-
-    QFile fwmlFile(a.applicationDirPath() + QDir::separator() + "example.fwml");
-    if(fwmlFile.exists())
+    if(!loadScene(&view))
     {
-        FwMLObject rootObject;
-        if(rootObject.parse(&fwmlFile))
-        {
-            playerScene->apply(&rootObject);
-        }
-    }
-
-    PlayerScene2* playerScene2 = new PlayerScene2(2, &view);
-    QFile fwmlFile2(a.applicationDirPath() + QDir::separator() + "example2.fwml");
-    if(fwmlFile2.exists())
-    {
-        FwMLObject rootObject;
-        if(rootObject.parse(&fwmlFile2))
-        {
-            playerScene2->apply(&rootObject);
-        }
-    }
-
-    PlayerScene3* playerScene3 = new PlayerScene3(3, &view);
-    QFile fwmlFile3(a.applicationDirPath() + QDir::separator() + "example3.fwml");
-    if(fwmlFile3.exists())
-    {
-        FwMLObject rootObject;
-        if(rootObject.parse(&fwmlFile3))
-        {
-            playerScene3->apply(&rootObject);
-        }
-    }
-
-    PlayerScene4* playerScene4 = new PlayerScene4(4, &view);
-    QFile fwmlFile4(a.applicationDirPath() + QDir::separator() + "example4.fwml");
-    if(fwmlFile4.exists())
-    {
-        FwMLObject rootObject;
-        if(rootObject.parse(&fwmlFile4))
-        {
-            playerScene4->apply(&rootObject);
-        }
-    }
-
-    PlayerScene5* playerScene5 = new PlayerScene5(5, &view);
-    QFile fwmlFile5(a.applicationDirPath() + QDir::separator() + "example5.fwml");
-    if(fwmlFile5.exists())
-    {
-        FwMLObject rootObject;
-        if(rootObject.parse(&fwmlFile5))
-        {
-            playerScene5->apply(&rootObject);
-        }
-    }
-
-    PlayerScene6* playerScene6 = new PlayerScene6(6, &view);
-    QFile fwmlFile6(a.applicationDirPath() + QDir::separator() + "example6.fwml");
-    if(fwmlFile6.exists())
-    {
-        FwMLObject rootObject;
-        if(rootObject.parse(&fwmlFile6))
-        {
-            playerScene6->apply(&rootObject);
-        }
-    }
-
-    {
-        FwMLEngine engine;
-        engine.setRootDirectory(a.applicationDirPath() + QDir::separator() + "examples");
-        view.loadData(&engine);
+        qDebug() << "Cannot load scenes";
+        return -1;
     }
 
     QWidget* widget = view.createWidget(0);

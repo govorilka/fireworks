@@ -10,10 +10,11 @@ class PlayerScene4 : public FwScene
     Q_OBJECT
     typedef FwScene BaseClass;
 public:
-    PlayerScene4(int id, FwGraphicsView* view);
+    PlayerScene4(FwGraphicsView* view);
 
 protected:
     void keyPressEvent(FwKeyPressEvent *event);
+
 private:
         FwItemView* m_itemView;
 };
