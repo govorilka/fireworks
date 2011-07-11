@@ -15,9 +15,9 @@ FwScene* FwGraphicsView::activeScene() const
     return m_activeScene;
 }
 
-void FwGraphicsView::setActiveScene(int id)
+void FwGraphicsView::setActiveScene(const QByteArray& name)
 {
-    setActiveScene(scene(id));
+    setActiveScene(scene(name));
 }
 
 QRect FwGraphicsView::rect() const

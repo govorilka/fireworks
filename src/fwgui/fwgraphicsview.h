@@ -51,10 +51,10 @@ public:
 
     void clearCache();
 
-    FwScene* scene(int id) const;
+    FwScene* scene(const QByteArray& name) const;
 
     inline FwScene* activeScene() const;
-    inline void setActiveScene(int id);
+    inline void setActiveScene(const QByteArray& name);
     void setActiveScene(FwScene* scene);
 
     bool event(QEvent *e);
