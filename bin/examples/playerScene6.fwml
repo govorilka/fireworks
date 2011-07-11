@@ -40,15 +40,13 @@ itemView
   
   leftArrow
   {
-      source : "./images/left.png";
-      blending : true,
+      source : "arrows/left.png";
       zindex : 10
   },
   
   rightArrow
   {
-      source : "./images/right.png";
-      blending : true,
+      source : "arrows/right.png";
       zindex : 10
   }
 }

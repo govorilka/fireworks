@@ -286,18 +286,16 @@ void FwItemView::apply(FwMLObject *object)
         }
     }
 
-    FwPixmap leftArrow = scene()->view()->imageLibrary()->image(object, "leftArrow");
-    if(!leftArrow.isNull())
+    FwMLObject* leftArrowNode = object->attribute("leftArrow")->cast<FwMLObject>();
+    if(leftArrowNode)
     {
         m_leftArrow = new FwPixmapPrimitive("leftArrow", this);
-        m_leftArrow->setPixmap(leftArrow);
     }
 
-    FwPixmap rightArrow = scene()->view()->imageLibrary()->image(object, "rightArrow");
-    if(!rightArrow.isNull())
+    FwMLObject* rightArrowNode = object->attribute("rightArrow")->cast<FwMLObject>();
+    if(rightArrowNode)
     {
         m_rightArrow = new FwPixmapPrimitive("rightArrow", this);
-        m_rightArrow->setPixmap(rightArrow);
     }
 
     FwPixmap centerPixmap = scene()->view()->imageLibrary()->image(object, "centerPixmap");
