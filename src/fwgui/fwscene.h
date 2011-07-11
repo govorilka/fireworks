@@ -31,10 +31,9 @@ public:
     friend class FwPrimitiveGroup;
     friend class FwMessageBox;
 
-    explicit FwScene(int id, FwGraphicsView* view);
+    explicit FwScene(const QByteArray& name, FwGraphicsView* view);
     virtual ~FwScene();
 
-    inline int id() const;
 
     bool event(QEvent* event);
 
@@ -75,7 +74,6 @@ protected:
 
 private:
     FwGraphicsView* m_view;
-    int m_id;
 
     QList<FwWidget*> m_widgets;
 
@@ -86,11 +84,6 @@ private:
 
     FwRectPrimitive* m_darkBackground;
 };
-
-int FwScene::id() const
-{
-    return m_id;
-}
 
 FwGraphicsView* FwScene::view() const
 {

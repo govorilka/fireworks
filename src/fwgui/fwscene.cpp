@@ -13,10 +13,9 @@
 
 #include "fwcore/fwml.h"
 
-FwScene::FwScene(int id, FwGraphicsView* view) :
-    BaseClass("scene", 0),
+FwScene::FwScene(const QByteArray& name, FwGraphicsView* view) :
+    BaseClass(name, 0),
     m_view(view),
-    m_id(id),
     m_messageBox(0),
     m_messageBoxTemplate(0),
     m_messageBoxAllow(true),
@@ -26,7 +25,7 @@ FwScene::FwScene(int id, FwGraphicsView* view) :
 
     setParent(m_view);
 
-    Q_ASSERT(!m_view->scene(id));
+    Q_ASSERT(!m_view->scene(name));
     m_view->m_scenes.append(this);
     m_scene = this;
 }

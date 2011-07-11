@@ -132,11 +132,11 @@ void FwGraphicsView::clearCache()
     m_pixmaps.clear();
 }
 
-FwScene* FwGraphicsView::scene(int id) const
+FwScene* FwGraphicsView::scene(const QByteArray& name) const
 {
     foreach(FwScene* scene, m_scenes)
     {
-        if(scene->id() == id)
+        if(scene->name() == name)
         {
             return scene;
         }
