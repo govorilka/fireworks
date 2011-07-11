@@ -9,20 +9,30 @@
 #include "fwgui/primitives/fwstringprimitive.h"
 
 #include "fwgui/widgets/fwcheckableitemview.h"
+#include "fwgui/widgets/fwdigitinputwidget.h"
 
 #include "fwutils/fwrequest.h"
 
 PlayerScene5::PlayerScene5(FwGraphicsView* view) :
     BaseClass("playerScene5", view),
-    m_itemView(new FwCheckableItemView("itemView", this))
+    m_itemView(new FwCheckableItemView("itemView", this)),
+    m_digitInput(new FwDigitInputWidget("digitInput", this))
 {
-    m_itemView->prepareGeometryChanged();
     m_itemView->show();
-    m_itemView->update();
+
+    connect(m_digitInput, SIGNAL(valueChanged(int)), this, SLOT(valueChanged(int)));
+    m_digitInput->show();
 }
 
 void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
 {
+    int digit = event->digit();
+    if(digit != -1)
+    {
+        QCoreApplication::sendEvent(m_digitInput, event);
+        return;
+    }
+
     switch(event->key())
     {
     case Qt::Key_Enter:
@@ -53,11 +63,6 @@ void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
     case Qt::Key_PageDown:
         QCoreApplication::sendEvent(m_itemView, event);
         break;
-
-    case Qt::Key_1:
-        m_itemView->setVisible(!m_itemView->isVisible());
-        event->accept();
-        break;
     }
 }
 
@@ -83,5 +88,14 @@ void PlayerScene5::requestAcceptEvent(FwResult* result)
     if(result->result() == FwRequestAnswer::SR_Ok)
     {
         view()->setActiveScene("playerScene6");
+    }
+}
+
+void PlayerScene5::valueChanged(int value)
+{
+    QList<FwPrimitive*> items = m_itemView->items();
+    if(value >= 0 && value < items.count())
+    {
+        m_itemView->setCurrent(items.at(value));
     }
 }
