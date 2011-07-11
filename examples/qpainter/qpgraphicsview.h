@@ -65,6 +65,8 @@ public:
 
     static QRegion convert(const FwRegion& region);
 
+    bool init();
+
 protected:
 
     void invalidateCanvas(const FwRegion& region);
@@ -73,8 +75,6 @@ protected:
 
     FwPixmapData* createBuffer(const FwPixmapDescription& desc);
     FwPixmapData* createBuffer(Fw::BufferMode mode, const QSize& size);
-
-    bool init();
 
 private:
     QPWidget* m_widget;

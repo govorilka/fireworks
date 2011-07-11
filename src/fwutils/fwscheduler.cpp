@@ -193,7 +193,7 @@ bool FwScheduler::loadConfig()
     return FwConfig::loadConfig("scheduler", this);
 }
 
-void FwScheduler::apply(FwMLObject *object)
+bool FwScheduler::loadData(FwMLObject *object)
 {
     foreach(FwSchedulerTask* task, m_tasks)
     {
@@ -202,11 +202,11 @@ void FwScheduler::apply(FwMLObject *object)
             FwMLObject* node = object->attribute(task->name())->cast<FwMLObject>();
             if(node)
             {
-                task->apply(node);
+                task->loadData(node);
             }
         }
     }
-    BaseClass::apply(object);
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -377,10 +377,8 @@ void FwSchedulerTask::setRunOnStart(bool enable)
     m_runOnStart = enable;
 }
 
-void FwSchedulerTask::apply(FwMLObject *object)
+bool FwSchedulerTask::loadData(FwMLObject *object)
 {
-    BaseClass::apply(object);
-
     FwMLUIntNumber* intervalNode = object->attribute("interval")->cast<FwMLUIntNumber>();
     if(intervalNode && intervalNode->value())
     {
@@ -392,6 +390,8 @@ void FwSchedulerTask::apply(FwMLObject *object)
     {
         setRunOnStart(runOnStartNode->value());
     }
+
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -521,10 +521,8 @@ void FwNetworkSchedulerTask::clearReply()
     m_slaves.clear();
 }
 
-void FwNetworkSchedulerTask::apply(FwMLObject *object)
+bool FwNetworkSchedulerTask::loadData(FwMLObject *object)
 {
-    BaseClass::apply(object);
-
     FwMLString* urlNode = object->attribute("url")->cast<FwMLString>();
     if(urlNode)
     {
@@ -533,6 +531,7 @@ void FwNetworkSchedulerTask::apply(FwMLObject *object)
             setUrl(QString::fromUtf8(urlNode->value()));
         }
     }
+    return BaseClass::loadData(object);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

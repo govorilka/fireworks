@@ -1,4 +1,5 @@
 #include <QtCore/qfile.h>
+#include <QtCore/qdir.h>
 
 #include "fwmlengine.h"
 #include "fwmldocument.h"
@@ -28,11 +29,19 @@ FwMLDocument* FwMLEngine::addDocument(const QString& fileName)
     document = new FwMLDocument(this);
     m_documents.insert(fileName, document);
 
-    QFile documentData(fileName);
-    if(documentData.exists())
+    QString path = QDir::toNativeSeparators(fileName);
+    if(!QFile::exists(path) && !m_rootDirectory.isEmpty())
     {
-        document->load(&documentData);
+        path = QDir(m_rootDirectory).absoluteFilePath(fileName);
     }
 
+    QFile documentData(path);
+    if(!QFile::exists(path))
+    {
+        qWarning(qPrintable(QString("File %1 not found").arg(path)));
+        return 0;
+    }
+
+    document->load(&documentData);
     return document;
 }

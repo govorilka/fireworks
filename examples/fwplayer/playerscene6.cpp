@@ -8,10 +8,8 @@
 
 #include "fwgui/primitives/fwrectprimitive.h"
 
-
-
-PlayerScene6::PlayerScene6(int id, FwGraphicsView* view) :
-    BaseClass(id, view),
+PlayerScene6::PlayerScene6(FwGraphicsView* view) :
+    BaseClass("playerScene6", view),
     m_itemView(new FwItemView("itemView", this))
 {
     m_itemView->prepareGeometryChanged();
@@ -44,7 +42,7 @@ void PlayerScene6::keyPressEvent(FwKeyPressEvent *event)
     {
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        view()->setActiveScene(1);
+        view()->setActiveScene("playerScene1");
         event->accept();
         return;
     case Qt::Key_Right:

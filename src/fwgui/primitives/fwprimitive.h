@@ -86,6 +86,7 @@ public:
     FwPixmap createPixmap(const QSize& size) const;
     FwPixmap createPixmap(const FwPixmapDescription& desc) const;
     FwPixmap createPixmap(FwMLNode* node) const;
+    FwPixmap createPixmap(const QByteArray& name) const;
 
     FwFont createFont(const FwFontDescription& desc);
     FwFont createFont(FwMLObject* object, const QByteArray& attribute);

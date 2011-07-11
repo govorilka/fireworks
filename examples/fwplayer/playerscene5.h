@@ -10,7 +10,7 @@ class PlayerScene5 : public FwScene
     Q_OBJECT
     typedef FwScene BaseClass;
 public:
-    PlayerScene5(int id, FwGraphicsView* view);
+    PlayerScene5(FwGraphicsView* view);
 
     void apply(FwMLObject *object);
 

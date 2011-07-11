@@ -21,13 +21,16 @@ FwScene::FwScene(const QByteArray& name, FwGraphicsView* view) :
     m_messageBoxAllow(true),
     m_darkBackground(0)
 {
+    m_scene = this;
     visibleOnScreen = true;
 
-    setParent(m_view);
-
     Q_ASSERT(!m_view->scene(name));
+    setParent(m_view);
     m_view->m_scenes.append(this);
-    m_scene = this;
+    if(!m_view->m_activeScene)
+    {
+        m_view->setActiveScene(this);
+    }
 }
 
 FwScene::~FwScene()

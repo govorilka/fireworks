@@ -53,8 +53,7 @@ public:
     void release();
 
     bool loadConfig();
-
-    void apply(FwMLObject *object);
+    bool loadData(FwMLObject *object);
 
 protected:
     void run();
@@ -107,7 +106,7 @@ public:
     inline bool isRunningOnStart() const;
     void setRunOnStart(bool enable);
 
-    void apply(FwMLObject *object);
+    bool loadData(FwMLObject *object);
 
 protected:
     void stop();
@@ -170,7 +169,7 @@ public:
 
     void clearReply();
 
-    void apply(FwMLObject *object);
+    bool loadData(FwMLObject *object);
 
 protected:
     void run();

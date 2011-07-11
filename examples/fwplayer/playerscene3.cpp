@@ -8,10 +8,8 @@
 
 #include "fwgui/primitives/fwrectprimitive.h"
 
-
-
-PlayerScene3::PlayerScene3(int id, FwGraphicsView* view) :
-    BaseClass(id, view),
+PlayerScene3::PlayerScene3(FwGraphicsView* view) :
+    BaseClass("playerScene3", view),
     m_PrimitiveGroup(new FwPrimitiveGroup("rectItemGroup",this)),
     m_rectPrimitive1(new FwRectPrimitive("rectItem1", m_PrimitiveGroup)),
     m_rectPrimitive2(new FwRectPrimitive("rectItem2", m_PrimitiveGroup)),
@@ -25,7 +23,7 @@ void PlayerScene3::keyPressEvent(FwKeyPressEvent *event)
     {
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        view()->setActiveScene(4);
+        view()->setActiveScene("playerScene4");
         event->accept();
         return;
     }

@@ -48,9 +48,9 @@ void FwGraphicsView::postUpdateEvent()
     }
 }
 
-FwImageLibrary* FwGraphicsView::library() const
+FwImageLibrary* FwGraphicsView::imageLibrary() const
 {
-    return m_library;
+    return m_imageLibrary;
 }
 
 #endif // FIREWORKS_GRAPHICSVIEW_INL_H

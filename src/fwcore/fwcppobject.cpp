@@ -9,34 +9,24 @@ FwCPPObject::FwCPPObject(const QByteArray& name) :
 {
 }
 
-void FwCPPObject::apply(FwMLObject *object)
+bool FwCPPObject::loadFile(const QString& fileName)
 {
-    Q_UNUSED(object);
-}
-
-bool FwCPPObject::loadData(const QString& fileName)
-{
-    QString path = QDir::toNativeSeparators(fileName);
-    if(!QFile::exists(path))
+    QFile fwmlData(QDir::toNativeSeparators(fileName));
+    if(!fwmlData.exists())
     {
-        path = QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + "/resources/") + path;
-        if(!QFile::exists(path))
-        {
-            qWarning(qPrintable(QString("File %1 not found").arg(path)));
-            return false;
-        }
+        qWarning(qPrintable(QString("File %1 not found").arg(fileName)));
+        return false;
     }
 
     QString error;
     FwMLObject rootObject;
-    QFile fwmlData(path);
     if(!rootObject.parse(&fwmlData, &error))
     {
-        qWarning(qPrintable(QString("FwML error in %1 file: %2").arg(path).arg(error)));
+        qWarning(qPrintable(QString("FwML error in %1 file: %2").arg(fileName).arg(error)));
         return false;
     }
 
-    apply(&rootObject);
+    loadData(&rootObject);
     return true;
 }
 

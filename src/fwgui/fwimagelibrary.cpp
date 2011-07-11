@@ -13,7 +13,7 @@ FwImageLibrary::FwImageLibrary(const QByteArray& name, FwGraphicsView* view) :
 {
 }
 
-void FwImageLibrary::apply(FwMLObject *object)
+bool FwImageLibrary::loadData(FwMLObject *object)
 {
     QHash<QByteArray, FwMLNode*> iconsNode = object->attributes();
     foreach(FwMLNode* item, iconsNode)
@@ -21,20 +21,25 @@ void FwImageLibrary::apply(FwMLObject *object)
         FwPixmapDescription iconDescription;
         if(iconDescription.apply(item))
         {
-            m_icons.insert(item->name(), iconDescription);
+            m_descriptions.insert(item->name(), iconDescription);
         }
     }
+    return true;
 }
 
-FwPixmap FwImageLibrary::icon(const QByteArray &name)
+FwPixmap FwImageLibrary::image(const QByteArray &name)
 {
-    if(!m_icons.isEmpty())
+    FwPixmap pixmap = m_images.value(name, FwPixmap());
+    if(!pixmap.isNull())
     {
-        FwPixmapDescription desc = m_icons.value(name, FwPixmapDescription());
-        if(!desc.isNull())
-        {
-            return m_view->pixmap(desc);
-        }
+        return pixmap;
     }
+
+    FwPixmapDescription desc = m_descriptions.value(name, FwPixmapDescription());
+    if(!desc.isNull())
+    {
+        return m_view->pixmap(desc);
+    }
+
     return FwPixmap();
 }

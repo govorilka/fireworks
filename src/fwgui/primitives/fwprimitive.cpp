@@ -8,6 +8,7 @@
 #include "fwgui/fwpixmap.h"
 #include "fwgui/fwpainter.h"
 #include "fwgui/fwpen.h"
+#include "fwgui/fwimagelibrary.h"
 
 #include "fwgui/widgets/fwwidget.h"
 #include "fwgui/widgets/fwitemview.h"
@@ -318,6 +319,11 @@ FwPixmap FwPrimitive::createPixmap(FwMLNode* node) const
         return createPixmap(desc);
     }
     return FwPixmap();
+}
+
+FwPixmap FwPrimitive::createPixmap(const QByteArray& name) const
+{
+    return m_scene->view()->imageLibrary()->image(name);
 }
 
 FwFont FwPrimitive::createFont(const FwFontDescription& desc)
