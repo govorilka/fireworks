@@ -56,40 +56,18 @@ itemView
         vPosition : "middle"
     },
 
-    pixmapCheckOn
-    {
-        source : "./images/checkon.png",
-        blending : true
-    },
-
-    pixmapCheckOff
-    {
-        source : "./images/checkoff.png",
-        blending : true
-    },
-
+    pixmapCheckOn : "checkon.png",
+    pixmapCheckOff : "checkoff.png",
+ 
     exclusive : false,
 
     highlight
     {
         zindex : 1,
         class : "fwgui.primitives.pixmapbar",
-        bgcolor : red,
-        left
-        {
-            source : "./images/pixmap_test/left.png",
-            blending : true,
-        },
-        center
-        {
-            source : "./images/pixmap_test/center.png",
-            blending : false,
-        },
-        right
-        {
-            source : "./images/pixmap_test/right.png",
-            blending : true,
-        }
+        leftPixmap : "bar/left.png",
+        centerPixmap : "bar/center.png",
+        rightPixmap : "bar/right.png",
     }
 },
 

@@ -117,7 +117,7 @@ void FwCheckableItemView::apply(FwMLObject *object)
     FwPixmap pixmapCheckOff = scene()->view()->imageLibrary()->image(object, "pixmapCheckOff");
     if(!pixmapCheckOff.isNull())
     {
-        setPixmapCheckOn(pixmapCheckOff);
+        setPixmapCheckOff(pixmapCheckOff);
     }
 
     FwMLBool* exclusiveNode = object->attribute("exclusive")->cast<FwMLBool>();

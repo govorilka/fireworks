@@ -1,4 +1,4 @@
-#include "fwpixmapbar.h"
+#include "fwpixmapbarprimitive.h"
 
 #include "fwgui/primitives/fwpixmapprimitive.h"
 
@@ -9,7 +9,7 @@
 #include "fwgui/fwgraphicsview.h"
 #include "fwgui/fwimagelibrary.h"
 
-FwPixmapBar::FwPixmapBar(const QByteArray& name, FwPrimitiveGroup* parent) :
+FwPixmapBarPrimtive::FwPixmapBarPrimtive(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_leftWidth(0),
     m_centerWidth(0),
@@ -17,7 +17,7 @@ FwPixmapBar::FwPixmapBar(const QByteArray& name, FwPrimitiveGroup* parent) :
 {
 }
 
-void FwPixmapBar::apply(FwMLObject *object)
+void FwPixmapBarPrimtive::apply(FwMLObject *object)
 {
     prepareGeometryChanged();
 
@@ -43,7 +43,7 @@ void FwPixmapBar::apply(FwMLObject *object)
     update();
 }
 
-void FwPixmapBar::setLeftPixmap(const FwPixmap &value)
+void FwPixmapBarPrimtive::setLeftPixmap(const FwPixmap &value)
 {
     if(m_leftPixmap != value)
     {
@@ -54,7 +54,7 @@ void FwPixmapBar::setLeftPixmap(const FwPixmap &value)
     }
 }
 
-void FwPixmapBar::setCenterPixmap(const FwPixmap &value)
+void FwPixmapBarPrimtive::setCenterPixmap(const FwPixmap &value)
 {
     if(m_centerPixmap != value)
     {
@@ -65,7 +65,7 @@ void FwPixmapBar::setCenterPixmap(const FwPixmap &value)
     }
 }
 
-void FwPixmapBar::setRightPixmap(const FwPixmap &value)
+void FwPixmapBarPrimtive::setRightPixmap(const FwPixmap &value)
 {
     if(m_rightPixmap != value)
     {
@@ -76,7 +76,7 @@ void FwPixmapBar::setRightPixmap(const FwPixmap &value)
     }
 }
 
-void FwPixmapBar::paint(FwPainter *painter, const QRect &clipRect)
+void FwPixmapBarPrimtive::paint(FwPainter *painter, const QRect &clipRect)
 {
     QRect boundingRect = this->boundingRect();
 

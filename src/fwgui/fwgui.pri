@@ -25,6 +25,7 @@ HEADERS += \
     fwgui/primitives/fwlineprimitive_inl.h \
     fwgui/primitives/fwlineprimitive.h \
     fwgui/primitives/fwgeometry.h \
+    fwgui/primitives/fwpixmapbarprimitive.h \
     fwgui/widgets/fwwidget.h \
     fwgui/widgets/fwitemview.h \
     fwgui/widgets/fwitemlayout.h \
@@ -36,7 +37,6 @@ HEADERS += \
     fwgui/widgets/fwcheckableitemview.h \
     fwgui/fwregion.h \
     fwgui/widgets/fwmessagebox.h \
-    fwgui/widgets/fwpixmapbar.h \
     fwgui/fwguifactory.h \
     fwgui/fwimagelibrary.h
 
@@ -59,6 +59,7 @@ SOURCES += \
     fwgui/primitives/fwpixmapprimitive.cpp \
     fwgui/primitives/fwlineprimitive.cpp \
     fwgui/primitives/fwgeometry.cpp \
+    fwgui/primitives/fwpixmapbarprimitive.cpp \
     fwgui/widgets/fwwidget.cpp \
     fwgui/widgets/fwitemview.cpp \
     fwgui/widgets/fwitemlayout.cpp \
@@ -70,6 +71,5 @@ SOURCES += \
     fwgui/widgets/fwcheckableitemview.cpp \
     fwgui/fwregion.cpp \
     fwgui/widgets/fwmessagebox.cpp \
-    fwgui/widgets/fwpixmapbar.cpp \
     fwgui/fwguifactory.cpp \
     fwgui/fwimagelibrary.cpp

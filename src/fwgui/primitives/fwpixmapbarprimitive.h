@@ -1,16 +1,16 @@
-#ifndef FIREWORKS_PIXMAPBAR_H
-#define FIREWORKS_PIXMAPBAR_H
+#ifndef FIREWORKS_PIXMAPBAR_PRIMITIVE_H
+#define FIREWORKS_PIXMAPBAR_PRIMITIVE_H
 
 #include "fwgui/primitives/fwrectprimitive.h"
 
 class FwPainter;
 
-class FwPixmapBar : public FwRectPrimitive
+class FwPixmapBarPrimtive : public FwRectPrimitive
 {
     typedef FwRectPrimitive BaseClass;
 
 public:
-    FwPixmapBar(const QByteArray& name, FwPrimitiveGroup* parent);
+    FwPixmapBarPrimtive(const QByteArray& name, FwPrimitiveGroup* parent);
 
     void apply(FwMLObject *object);
 
@@ -37,20 +37,20 @@ private:
     FwPixmap m_rightPixmap;
 };
 
-FwPixmap FwPixmapBar::leftPixmap() const
+FwPixmap FwPixmapBarPrimtive::leftPixmap() const
 {
     return m_leftPixmap;
 }
 
-FwPixmap FwPixmapBar::centerPixmap() const
+FwPixmap FwPixmapBarPrimtive::centerPixmap() const
 {
     return m_centerPixmap;
 }
 
-FwPixmap FwPixmapBar::rightPixmap() const
+FwPixmap FwPixmapBarPrimtive::rightPixmap() const
 {
     return m_rightPixmap;
 }
 
 
-#endif // FIREWORKS_PIXMAPBAR_H
+#endif //FIREWORKS_PIXMAPBAR_PRIMITIVE_H
