@@ -1,6 +1,7 @@
 #include "fwcore/fwml.h"
 
-#include "fwgui/widgets/fwpixmapbar.h"
+#include "fwgui/primitives/fwrectprimitive.h"
+#include "fwgui/primitives/fwpixmapbarprimitive.h"
 
 #include "fwguifactory.h"
 
@@ -15,7 +16,7 @@ FwRectPrimitive* FwGuiFactory::createRectPrimitive(const QByteArray& className, 
         }
         else if(lowerClassName == "fwgui.primitives.pixmapbar")
         {
-            return new FwPixmapBar(name, parent);
+            return new FwPixmapBarPrimtive(name, parent);
         }
     }
     return 0;
