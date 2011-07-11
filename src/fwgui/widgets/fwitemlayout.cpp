@@ -688,7 +688,8 @@ const char FwPagesLayout::staticClassName[] = "fireworks.layouts.Pages";
 
 FwPagesLayout::FwPagesLayout(FwItemView* view) :
     BaseClass(view),
-    m_currentPage(-1)
+    m_currentPage(-1),
+    m_maxPageIndex(-1)
 {
     setRepeat(true);
 }
@@ -730,6 +731,7 @@ void FwPagesLayout::init(const QList<FwPrimitive*> items, const QRect& rect)
 
         y += (primitive->height() + m_margin);
     }
+    m_maxPageIndex = m_currentPage;
     m_currentPage = -1;
 }
 
@@ -820,6 +822,12 @@ FwPrimitive* FwPagesLayout::nextItem(const QList<FwPrimitive *> &items, FwPrimit
     case Qt::Key_Down:
         return nextPrimitive(items, current);
 
+    case Qt::Key_PageUp:
+        return prevPage(items, current);
+
+    case Qt::Key_PageDown:
+        return nextPage(items, current);
+
     default:
         break;
     }
@@ -840,9 +848,39 @@ void FwPagesLayout::cleanUp()
     {
         m_pages.clear();
         m_currentPage = -1;
+        m_maxPageIndex = -1;
         if(!m_pageIndex.isEmpty())
         {
             m_pageIndex.clear();
         }
     }
 }
+
+FwPrimitive* FwPagesLayout::nextPage(const QList<FwPrimitive*>& items, FwPrimitive* current) const
+{
+    if(current)
+    {
+        int index = m_pageIndex.value(current);
+        QList<FwPrimitive*> items = m_pages.values(index == m_maxPageIndex ? 0 : index + 1);
+        if(!items.isEmpty())
+        {
+            return items.last();
+        }
+    }
+    return 0;
+}
+
+FwPrimitive* FwPagesLayout::prevPage(const QList<FwPrimitive*>& items, FwPrimitive* current) const
+{
+    if(current)
+    {
+        int index = m_pageIndex.value(current);
+        QList<FwPrimitive*> items =  m_pages.values(index == 0 ? m_maxPageIndex : index - 1);
+        if(!items.isEmpty())
+        {
+            return items.last();
+        }
+    }
+    return 0;
+}
+

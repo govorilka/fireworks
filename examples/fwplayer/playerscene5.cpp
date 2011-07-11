@@ -49,6 +49,8 @@ void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
     case Qt::Key_Home:
     case Qt::Key_End:
     case Qt::Key_Space:
+    case Qt::Key_PageUp:
+    case Qt::Key_PageDown:
         QCoreApplication::sendEvent(m_itemView, event);
         break;
 
