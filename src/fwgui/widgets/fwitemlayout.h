@@ -278,6 +278,9 @@ public:
 protected:
     FwPrimitive* nextItem(const QList<FwPrimitive *> &items, FwPrimitive *current, FwKeyPressEvent *keyEvent);
 
+    FwPrimitive* nextPage(const QList<FwPrimitive*>& items, FwPrimitive* current) const;
+    FwPrimitive* prevPage(const QList<FwPrimitive*>& items, FwPrimitive* current) const;
+
     void init(const QList<FwPrimitive*> items, const QRect& rect);
     void update(const QList<FwPrimitive*>& items, FwPrimitive* current, const QRect& rect);
     void updateHighlightPos(FwPrimitive* highlight, FwPrimitive* currentItem, const QRect& rect);
@@ -292,7 +295,7 @@ private:
     QHash<FwPrimitive*, int> m_pageIndex;
     QMultiHash<int, FwPrimitive*> m_pages;
     int m_currentPage;
+    int m_maxPageIndex;
 };
-
 
 #endif // FIREWORKS_ITEMLAYOUT_H
