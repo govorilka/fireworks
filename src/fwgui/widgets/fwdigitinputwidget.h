@@ -15,6 +15,14 @@ class FIREWORKSSHARED_EXPORT FwDigitInputWidget : public FwWidget
 public:
     FwDigitInputWidget(const QByteArray& name, FwPrimitiveGroup* parent);
 
+    inline int value() const;
+
+    inline int maxValue() const;
+    void setMaxValue(int maxValue);
+
+public slots:
+    void setValue(int value);
+
 signals:
     void valueChanged(int value);
 
@@ -34,6 +42,8 @@ private:
     int m_inputTimer;
 
     int m_value;
+    int m_maxValue;
+
     int m_digitsCount;
 
     FwStringPrimitive* m_digitsLabel;
@@ -52,6 +62,16 @@ void FwDigitInputWidget::resetInputTimer()
 {
     killInputTimer();
     m_inputTimer = startTimer(1000);
+}
+
+int FwDigitInputWidget::value() const
+{
+    return m_value;
+}
+
+int FwDigitInputWidget::maxValue() const
+{
+    return m_maxValue;
 }
 
 #endif // FIREWORKS_DIGITINPUT_WIDGET_H

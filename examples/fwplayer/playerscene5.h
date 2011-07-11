@@ -29,6 +29,7 @@ private:
 
 private slots:
     void valueChanged(int value);
+    void currentChanged(FwPrimitive* previous, FwPrimitive* current);
 };
 
 #endif // PLAYERSCENE5_H
