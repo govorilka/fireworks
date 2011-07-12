@@ -30,7 +30,7 @@ public:
 
     QString mac(const QNetworkInterface& interface);
 
-    void apply(FwMLObject* object);
+    bool loadData(FwMLObject* object);
 
 private:
     QString m_activeInterface;

@@ -4,9 +4,11 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qhash.h>
 
+#include "fwcore/fwml.h"
+
 class FwMLDocument;
 
-class FwMLEngine : public QObject
+class FIREWORKSSHARED_EXPORT FwMLEngine : public QObject
 {
     Q_OBJECT
     typedef QObject BaseClass;
