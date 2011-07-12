@@ -1,0 +1,50 @@
+bgcolor : "black",
+
+rectItem
+{
+    zindex :1,
+    border
+    {
+        color : "green",
+        width : 5
+    },
+    rect
+    {
+        x : 0,
+        y : 0,
+        width : 480,
+        height : 320
+    },
+    drawer
+    {
+        name : "BorderImage",
+        bgcolor : "white",
+        topLeft : "corners/topleft.png",
+        topRight : "corners/topright.png",
+        bottomLeft : "corners/bottomleft.png",
+        bottomRight : "corners/bottomright.png"
+    }
+},
+
+pixmapItem
+{
+   zindex : 2,
+   source : "browser.png"
+},
+
+stringItem
+{
+   zindex : 3,
+   font
+   {
+      family : "Arial",
+      pixelSize : 48
+   },
+   color : "orange",
+   string : "Hello world!",
+   geometry
+   {
+      hPosition : "Center",
+      vPosition : "Middle"
+   }
+}
