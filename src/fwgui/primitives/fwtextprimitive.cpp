@@ -119,7 +119,9 @@ void FwTextPrimitive::setFixedHeight(bool enable)
 {
     if(m_fixedHeight != enable)
     {
+        prepareGeometryChanged();
         m_fixedHeight = enable;
         updateText();
+        update();
     }
 }
