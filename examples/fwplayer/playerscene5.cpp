@@ -1,3 +1,5 @@
+#include <QtCore/qcoreapplication.h>
+
 #include "playerscene5.h"
 
 #include "fwcore/fwml.h"
