@@ -3,12 +3,14 @@
 
 #include <QtCore/qobject.h>
 
+#include "fwcore/fwml.h"
+
 class QIODevice;
 
 class FwMLEngine;
 class FwMLObject;
 
-class FwMLDocument : public QObject
+class FIREWORKSSHARED_EXPORT FwMLDocument : public QObject
 {
     Q_OBJECT
     typedef QObject BaseClass;

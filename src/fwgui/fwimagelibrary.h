@@ -9,7 +9,7 @@
 
 class FwGraphicsView;
 
-class FwImageLibrary : public FwCPPObject
+class FIREWORKSSHARED_EXPORT FwImageLibrary : public FwCPPObject
 {
     typedef FwCPPObject BaseClass;
 

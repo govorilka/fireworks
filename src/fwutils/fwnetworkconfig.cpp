@@ -18,13 +18,14 @@ FwNetworkConfig::FwNetworkConfig(const QByteArray& name, QObject *parent) :
 {
 }
 
-void FwNetworkConfig::apply(FwMLObject* object)
+bool FwNetworkConfig::loadData(FwMLObject* object)
 {
     FwMLString* interfaceNode = object->attribute("interface")->cast<FwMLString>();
     if(interfaceNode && !interfaceNode->value().isEmpty())
     {
         setActiveInterfaceName(QString::fromUtf8(interfaceNode->value()));
     }
+    return true;
 }
 
 bool FwNetworkConfig::setActiveInterfaceName(const QString& name)
