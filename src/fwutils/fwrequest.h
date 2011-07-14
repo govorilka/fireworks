@@ -103,6 +103,9 @@ public:
     inline QString text() const;
     inline void setText(const QString& text);
 
+    inline QString title() const;
+    inline void setTitle(const QString& title);
+
     QUuid postRequest(QObject* receiver);
     void postAnswer(int result);
 
@@ -117,6 +120,7 @@ private:
     QPointer<QObject> m_sender;
     QVector<FwRequestAnswer> m_answers;
     QString m_text;
+    QString m_title;
 };
 
 QPointer<QObject> FwRequest::sender() const
@@ -133,6 +137,16 @@ QString FwRequest::text() const
 void FwRequest::setText(const QString& text)
 {
     m_text = text;
+}
+
+QString FwRequest::title() const
+{
+    return m_title;
+}
+
+void FwRequest::setTitle(const QString& title)
+{
+    m_title = title;
 }
 
 bool FwRequest::isNull() const

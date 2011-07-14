@@ -112,7 +112,8 @@ public:
     explicit FwMessageBox(const QByteArray& name, FwPrimitiveGroup* parent);
     ~FwMessageBox();
 
-    inline FwStringPrimitive* caption() const;
+    inline FwStringPrimitive* title() const;
+    inline FwTextPrimitive* text() const;
 
     inline FwRequest request() const;
     void setRequest(const FwRequest& request);
@@ -122,9 +123,6 @@ public:
 
     void apply(FwMLObject *object);
 
-    QString text() const;
-    void setText(const QString& text);
-
     inline FwRectPrimitive* background() const;
     void setBackground(FwRectPrimitive* primitive);
 
@@ -132,10 +130,12 @@ protected:
     void keyPressEvent(FwKeyPressEvent *event);
 
 private:
-    FwStringPrimitive* m_caption;
     FwRequest m_request;
+
+    FwStringPrimitive* m_title;
     FwTextPrimitive* m_text;
     FwButtonsBox* m_buttonBox;
+
     FwRectPrimitive* m_background;
 };
 
@@ -144,9 +144,14 @@ FwRequest FwMessageBox::request() const
     return m_request;
 }
 
-FwStringPrimitive* FwMessageBox::caption() const
+FwStringPrimitive* FwMessageBox::title() const
 {
-    return m_caption;
+    return m_title;
+}
+
+FwTextPrimitive* FwMessageBox::text() const
+{
+    return m_text;
 }
 
 FwRectPrimitive* FwMessageBox::background() const

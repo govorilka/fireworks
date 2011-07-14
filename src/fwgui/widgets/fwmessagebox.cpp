@@ -20,8 +20,8 @@
 
 FwMessageBox::FwMessageBox(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
-    m_caption(new FwStringPrimitive("caption", this)),
-    m_text(0),
+    m_title(new FwStringPrimitive("caption", this)), //Historical :)
+    m_text(new FwTextPrimitive("text", this)),
     m_buttonBox(0),
     m_background(0)
 {
@@ -78,7 +78,8 @@ bool FwMessageBox::acceptKey(int key)
 void FwMessageBox::setRequest(const FwRequest& request)
 {
     m_request = request;
-    setText(m_request.text());
+    m_title->setString(m_request.title());
+    m_text->setText(m_request.text());
 
     delete m_buttonBox;
     m_buttonBox = new FwButtonsBox(this);
@@ -123,24 +124,6 @@ void FwMessageBox::apply(FwMLObject *object)
 
     BaseClass::apply(object);
     update();
-}
-
-QString FwMessageBox::text() const
-{
-    if(m_text)
-    {
-        return m_text->text();
-    }
-    return QString();
-}
-
-void FwMessageBox::setText(const QString& text)
-{
-    if(!m_text)
-    {
-        m_text = new FwTextPrimitive("text", this);
-    }
-    m_text->setText(text);
 }
 
 /////////////////////////////////////////////////////////
