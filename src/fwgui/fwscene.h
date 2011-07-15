@@ -55,6 +55,8 @@ public:
 
     inline FwRectPrimitive* darkBackground() const;
 
+    virtual void cleanup();
+
 protected:
     void showEventProcessed(FwSceneShowEvent* e);
     void hideEventProcessed(FwSceneHideEvent* e);

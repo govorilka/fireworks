@@ -33,7 +33,7 @@ FwGraphicsView::~FwGraphicsView()
 {
     foreach(FwScene* scene, m_scenes)
     {
-        scene->removeItems();
+        scene->cleanup();
         scene->m_view = 0;
         delete scene;
     }
