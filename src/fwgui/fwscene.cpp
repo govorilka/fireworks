@@ -218,3 +218,8 @@ bool FwScene::keyEventProccessed(FwKeyPressEvent* event)
 
     return BaseClass::event(event);
 }
+
+void FwScene::cleanup()
+{
+    removeItems();
+}
