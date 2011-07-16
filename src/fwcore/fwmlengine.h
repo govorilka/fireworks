@@ -20,6 +20,7 @@ public:
     inline QHash<QString, FwMLDocument*> documents() const;
 
     FwMLDocument* addDocument(const QString& fileName);
+    FwMLDocument* addDocument(const QString &fileName, FwMLDocument* currentDocument);
 
     inline QString rootDirectory() const;
     inline void setRootDirectory(const QString& path);

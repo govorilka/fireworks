@@ -25,6 +25,16 @@ public:
 
     bool load(QIODevice* device);
 
+    FwMLObject* findObject(const QByteArray& objectName);
+
+    inline static QByteArray objectName(const QByteArray& className,
+                                        int numberSignIndex);
+
+protected:
+
+    void bindingClassTravel(FwMLObject* object);
+    void bindingClass(FwMLObject* object);
+
 private:
     FwMLEngine* m_engine;
     FwMLObject* m_rootObject;
@@ -44,6 +54,16 @@ FwMLObject* FwMLDocument::rootObject() const
 QString FwMLDocument::errorString() const
 {
     return m_errorString;
+}
+
+QByteArray FwMLDocument::objectName(const QByteArray& className,
+                                    int numberSignIndex)
+{
+    if(numberSignIndex != -1)
+    {
+        return className.right(className.length() - signIndex - 1);
+    }
+    return className;
 }
 
 #endif // FWMLDOCUMENT_H

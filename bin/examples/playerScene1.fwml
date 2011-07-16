@@ -1,4 +1,5 @@
-bgcolor : "black",
+
+class : "scene.fwml#",
 
 rectItem
 {

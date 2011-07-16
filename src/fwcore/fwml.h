@@ -229,6 +229,9 @@ public:
 
     inline QByteArray className() const;
 
+    inline FwMLObject* classObject() const;
+    void setClassObject(FwMLObject* object);
+
     void addAttribute(const QByteArray& name, FwMLNode* value, bool replace = true);
 
     inline FwMLNode* attribute(const QByteArray& name) const;
@@ -254,6 +257,9 @@ public:
 
 private:
     QHash<QByteArray, FwMLNode*> m_attributes;
+
+    FwMLObject* m_classObject;
+    QVector<FwMLObject*> m_inheritedObjects;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
