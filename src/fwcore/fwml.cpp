@@ -1005,23 +1005,32 @@ FwMLNode* FwMLDoubleNumber::clone() const
 ////////////////////////////////////////////////////////////////////////////////
 
 FwMLObject::FwMLObject() :
-    BaseClass()
+    BaseClass(),
+    m_classObject(0)
 {
 }
 
 FwMLObject::FwMLObject(const QByteArray& attrName, FwMLObject* parent) :
-    BaseClass(attrName, parent)
+    BaseClass(attrName, parent),
+    m_classObject(0)
 {
 }
 
 FwMLObject::FwMLObject(FwMLArray* parent) :
-   BaseClass(parent)
+   BaseClass(parent),
+   m_classObject(0)
 {
 }
 
 FwMLObject::~FwMLObject()
 {
     removeAttributes();
+
+    setClassObject(0);
+    foreach(FwMLObject* object, m_inheritedObjects)
+    {
+        object->m_classObject = 0;
+    }
 }
 
 /*!
@@ -1246,6 +1255,21 @@ FwMLNode* FwMLObject::clone() const
         newObject->m_attributes.insert(iter.key(), child);
     }
     return newObject;
+}
+
+void FwMLObject::setClassObject(FwMLObject* object)
+{
+    if(m_classObject != object)
+    {
+        if(m_classObject)
+        {
+            m_classObject->m_inheritedObjects.remove(m_classObject->m_inheritedObjects.indexOf(this));
+        }
+        if(m_classObject = object)
+        {
+            m_classObject->m_inheritedObjects.append(this);
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -45,3 +45,9 @@ FwMLDocument* FwMLEngine::addDocument(const QString& fileName)
     document->load(&documentData);
     return document;
 }
+
+FwMLDocument* FwMLEngine::addDocument(const QString &fileName, FwMLDocument* currentDocument)
+{
+    Q_UNUSED(currentDocument);
+    return addDocument(fileName);
+}

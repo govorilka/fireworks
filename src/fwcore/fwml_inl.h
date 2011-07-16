@@ -83,7 +83,12 @@ void FwMLBool::setValue(bool value)
 
 FwMLNode* FwMLObject::attribute(const QByteArray& name) const
 {
-    return m_attributes.value(name, 0);
+    FwMLNode* attr = m_attributes.value(name, 0);
+    if(!attr && m_classObject)
+    {
+        return m_classObject->attribute(name);
+    }
+    return attr;
 }
 
 QByteArray FwMLObject::attributeName(FwMLNode* child) const
@@ -122,6 +127,11 @@ QByteArray FwMLObject::className() const
         return classNode->value();
     }
     return QByteArray();
+}
+
+FwMLObject* FwMLObject::classObject() const
+{
+    return m_classObject;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
