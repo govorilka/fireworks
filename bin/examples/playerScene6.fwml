@@ -2,7 +2,7 @@ bgcolor : "black",
 
 itemView
 {
-  class : "fireworks.widgets.ItemView",
+  base : "fireworks.widgets.ItemView",
 
   height : 50,
   
@@ -10,10 +10,10 @@ itemView
 
   layout
   {
-    class : "fireworks.layouts.LoopHorizontalSlider",
+    base : "fireworks.layouts.LoopHorizontalSlider",
     animation
     {
-        class : "fireworks.layouts.Animation",
+        base : "fireworks.layouts.Animation",
         curve : "InOutQuart",
         duration : 300
     },
@@ -22,7 +22,7 @@ itemView
 
   item
   {
-     class : "fireworks.primitives.Text",
+     base : "fireworks.primitives.Text",
      font
      {
         family : "Arial",

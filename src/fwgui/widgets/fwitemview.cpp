@@ -221,10 +221,10 @@ void FwItemView::apply(FwMLObject *object)
     FwMLObject* layoutNode = object->attribute("layout")->cast<FwMLObject>();
     if(layoutNode)
     {
-        QByteArray layoutClass = layoutNode->className();
-        if(!layoutClass.isEmpty() && m_layout->className() != layoutClass)
+        QByteArray layoutBase = layoutNode->baseName();
+        if(!layoutBase.isEmpty() && m_layout->className() != layoutBase)
         {
-            setLayout(createLayout(layoutClass));
+            setLayout(createLayout(layoutBase));
         }
         m_layout->apply(layoutNode);
     }
@@ -258,7 +258,7 @@ void FwItemView::apply(FwMLObject *object)
     FwMLObject* highlightNode = object->attribute("highlight")->cast<FwMLObject>();
     if(highlightNode && !m_highlight)
     {
-        FwRectPrimitive* hightlight = FwGuiFactory::createRectPrimitive(highlightNode->className(), "highlight", this);
+        FwRectPrimitive* hightlight = FwGuiFactory::createRectPrimitive(highlightNode->baseName(), "highlight", this);
         if(hightlight)
         {
             hightlight->setPosition(Fw::HP_CenterDock, Fw::VP_Top);

@@ -228,6 +228,9 @@ public:
     ~FwMLObject();
 
     inline QByteArray className() const;
+    inline QByteArray baseName() const;
+
+    inline QByteArray stringValue(const QByteArray& attrName) const;
 
     inline FwMLObject* classObject() const;
     void setClassObject(FwMLObject* object);
