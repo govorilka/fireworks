@@ -61,7 +61,7 @@ QByteArray FwMLDocument::objectName(const QByteArray& className,
 {
     if(numberSignIndex != -1)
     {
-        return className.right(className.length() - signIndex - 1);
+        return className.right(className.length() - numberSignIndex - 1);
     }
     return className;
 }

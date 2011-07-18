@@ -10,6 +10,7 @@ class FIREWORKSSHARED_EXPORT FwGuiFactory
 {
 public:
     static FwRectPrimitive* createRectPrimitive(const QByteArray& className, const QByteArray& name, FwPrimitiveGroup* parent);
+
 };
 
 #endif // FIREWORKS_GUIFACTORY_H

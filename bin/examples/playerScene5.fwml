@@ -2,17 +2,17 @@ bgcolor : "black",
 
 itemView
 {
-    class : "fireworks.widgets.ItemView",
+    base : "fireworks.widgets.ItemView",
 
     width : 150,
     height : 300,
 
     layout
     {
-        class : "fireworks.layouts.Pages",
+        base : "fireworks.layouts.Pages",
         animation
         {
-            class : "fireworks.layouts.Animation",
+            base : "fireworks.layouts.Animation",
             curve : "InOutQuart",
             duration : 300
         },
@@ -26,7 +26,7 @@ itemView
         caption
         {
             x : 10,
-            class : "fireworks.primitives.String",
+            base : "fireworks.primitives.String",
             font
             {
                 family : "Arial",
@@ -64,7 +64,7 @@ itemView
     highlight
     {
         zindex : 1,
-        class : "fwgui.primitives.pixmapbar",
+        base : "fwgui.primitives.pixmapbar",
         leftPixmap : "bar/left.png",
         centerPixmap : "bar/center.png",
         rightPixmap : "bar/right.png",
@@ -147,7 +147,7 @@ digitInput
     },
     text
     {
-        class : "fireworks.primitives.String",
+        base : "fireworks.primitives.String",
         font
         {
             family : "Arial",

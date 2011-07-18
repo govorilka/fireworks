@@ -48,7 +48,7 @@ progressItem
 
     animation
     {
-        class : "fireworks.layouts.Animation",
+        base : "fireworks.layouts.Animation",
         curve : "OutBounce",
         duration : 300,
         smooth : true
