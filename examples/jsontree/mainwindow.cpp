@@ -3,6 +3,7 @@
 #include "mainwindow.h"
 
 #include "fwcore/fwml.h"
+#include "fwcore/fwmlparser.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     BaseClass(parent),
@@ -15,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(m_treeView);
 
-    QByteArray fwml = "\"Scene\" : {\n"
+    /*QByteArray fwml = "\"Scene\" : {\n"
                       "\"background\" : \"123.png\", \n"
                       "\"size\" : { \n"
                       "\"width\" : 100, \n"
@@ -26,9 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
                       "\"visible_str\" : \"true\", \n"
                       "\"stroka 2\" : \"true true\", \n"
                       "\"zero_str\" : \"\" \n"
-                      "}";
+                      "}";*/
 
-    //QByteArray fwml = "bgcolor : \"orange\", visible : false";
+    QByteArray fwml = "bgcolor : \"orange\", visible : false";
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);
     rootItem->setText(0, "root");
@@ -36,7 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_rootObject = new FwMLObject();
 
     QString error;
-    if(m_rootObject->parse(fwml, &error))
+    FwMLParser parser;
+    if(parser.parse(m_rootObject, fwml))
     {
         addNode(rootItem, m_rootObject);
     }
