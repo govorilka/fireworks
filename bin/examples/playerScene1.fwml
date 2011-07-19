@@ -48,4 +48,19 @@ stringItem
       hPosition : "Center",
       vPosition : "Middle"
    }
+},
+
+lineItem
+{
+    zindex : 3,
+    pen
+    {
+        color : "orange",
+        width : 3
+    },
+    geometry
+    {
+       hPosition : "CenterDock",
+       vPosition : "AfterBottom"
+    }
 }

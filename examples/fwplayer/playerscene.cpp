@@ -13,12 +13,15 @@ PlayerScene::PlayerScene(FwGraphicsView* view) :
     BaseClass("playerScene1", view),
     m_rectPrimitive(new FwRectPrimitive("rectItem", this)),
     m_stringPrimitive(new FwStringPrimitive("stringItem", this)),
-    m_pixmapPrimitive(new FwPixmapPrimitive("pixmapItem", this))
+    m_pixmapPrimitive(new FwPixmapPrimitive("pixmapItem", this)),
+    m_linePrimitive(new FwLinePrimitive("lineItem", this))
 {
     m_rectPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
     m_pixmapPrimitive->setPosition(Fw::HP_Center, Fw::VP_Middle);
     m_stringPrimitive->link(m_rectPrimitive->geometry());
-    //m_stringPrimitive->setPosition(Fw::HP_Right, Fw::VP_Middle);
+
+    m_linePrimitive->setLine(0, 0, 250, 0);
+    m_linePrimitive->link(m_stringPrimitive->geometry());
 }
 
 void PlayerScene::keyPressEvent(FwKeyPressEvent *event)

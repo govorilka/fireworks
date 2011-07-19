@@ -5,7 +5,7 @@
 
 QLine FwLinePrimitive::line() const
 {
-    return QLine(pos(), m_p2);
+    return QLine(pos(), m_p2 + pos());
 }
 
 void FwLinePrimitive::setLine(int x1, int y1, int x2, int y2)

@@ -16,7 +16,9 @@ void FwLinePrimitive::setLine(const QLine& line)
     {
         prepareGeometryChanged();
         setPos(line.p1());
-        m_p2 = line.p2();
+
+        m_p2 = line.p2() - line.p1();
+
         if(line.y1() == line.y2())
         {
             m_orientation = Fw::O_Horizontal;
@@ -73,6 +75,6 @@ void FwLinePrimitive::paint(FwPainter *painter, const QRect &clipRect)
     FwPen* pen = this->pen();
     if(m_lenght && pen)
     {
-        pen->drawLine(painter, line());
+        pen->drawLine(painter, QLine(geometry()->pos(), m_p2 + geometry()->pos()));
     }
 }
