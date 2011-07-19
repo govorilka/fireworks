@@ -3,25 +3,12 @@
 #include <QtCore/qdebug.h>
 
 #include "fwml.h"
+#include "fwmlparser.h"
 
 //Parse utils
 namespace
 {
     struct ParseData;
-
-    class FwMLParserException : public std::exception
-    {
-        typedef std::exception BaseClass;
-    public:
-        FwMLParserException(const QString& err);
-        FwMLParserException(char c, ParseData* data);
-        FwMLParserException(const QString& err, ParseData* data);
-        ~FwMLParserException() throw();
-
-        const char* what() const throw();
-
-        QString message;
-    };
 
     enum CharType
     {
@@ -266,7 +253,7 @@ namespace
                 quint32 value = buffer.toUInt(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), this);
+                    throw FwMLParserException(QString("Invalid number value"), line, column);
                 }
                 new FwMLUIntNumber(value, attribute, static_cast<FwMLObject*>(parent));
                 buffer = QByteArray();
@@ -279,7 +266,7 @@ namespace
                 int value = buffer.toInt(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), this);
+                    throw FwMLParserException(QString("Invalid number value"), line, column);
                 }
                 new FwMLIntNumber(value, attribute, static_cast<FwMLObject*>(parent));
                 buffer = QByteArray();
@@ -292,7 +279,7 @@ namespace
                 double value = buffer.toDouble(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), this);
+                    throw FwMLParserException(QString("Invalid number value"), line, column);
                 }
                 new FwMLDoubleNumber(value, attribute, static_cast<FwMLObject*>(parent));
                 buffer = QByteArray();
@@ -352,7 +339,7 @@ namespace
                 quint32 value = buffer.toUInt(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), this);
+                    throw FwMLParserException(QString("Invalid number value"), line, column);
                 }
                 new FwMLUIntNumber(value, static_cast<FwMLArray*>(parent));
                 buffer = QByteArray();
@@ -365,7 +352,7 @@ namespace
                 int value = buffer.toInt(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), this);
+                    throw FwMLParserException(QString("Invalid number value"), line, column);
                 }
                 new FwMLIntNumber(value, static_cast<FwMLArray*>(parent));
                 buffer = QByteArray();
@@ -378,7 +365,7 @@ namespace
                 double value = buffer.toDouble(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), this);
+                    throw FwMLParserException(QString("Invalid number value"), line, column);
                 }
                 new FwMLDoubleNumber(value, static_cast<FwMLArray*>(parent));
                 buffer = QByteArray();
@@ -403,39 +390,6 @@ namespace
         type = FwMLNode::T_Null;
     }
 
-    FwMLParserException::FwMLParserException(char c, ParseData* data) :
-        BaseClass()
-    {
-        message = QString("Unexcepted char '%1', line %2, column %3")
-                  .arg(c)
-                  .arg(data->line)
-                  .arg(data->column);
-    }
-
-    FwMLParserException::FwMLParserException(const QString& err) :
-        BaseClass(),
-        message(err)
-    {
-    }
-
-    FwMLParserException::FwMLParserException(const QString& err, ParseData* data) :
-        BaseClass()
-    {
-        message = QString("%1, line %2, column %3")
-                  .arg(err)
-                  .arg(data->line)
-                  .arg(data->column);
-    }
-
-    const char* FwMLParserException::what() const throw()
-    {
-        return qPrintable(message);
-    }
-
-    FwMLParserException::~FwMLParserException() throw()
-    {
-    }
-
     void x_doc(char c, ParseData* data) throw(FwMLParserException&)
     {
         data->xcmd = X_ATR;
@@ -452,7 +406,7 @@ namespace
             data->buffer += c;
             return;
         }
-        throw FwMLParserException(c, data);
+        throw FwMLParserException(c, data->line, data->column);
     }
 
     void x_bst(char c, ParseData* data) throw(FwMLParserException&)
@@ -464,7 +418,7 @@ namespace
             data->isVariable = false;
             return;
         }
-        throw FwMLParserException(c, data);
+        throw FwMLParserException(c, data->line, data->column);
     }
 
     void x_est(char c, ParseData* data) throw(FwMLParserException&)
@@ -489,7 +443,7 @@ namespace
     {
         if(data->parent->type() != FwMLNode::T_Object)
         {
-            throw FwMLParserException(c, data);
+            throw FwMLParserException(c, data->line, data->column);
         }
         data->setupAttributeName();
         data->xcmd = X_VAL;
@@ -575,7 +529,7 @@ namespace
             data->structureUp();
             return;
         }
-        throw FwMLParserException(c, data);
+        throw FwMLParserException(c, data->line, data->column);
     }
 
     void x_ar1(char c, ParseData* data) throw(FwMLParserException&)
@@ -598,12 +552,12 @@ namespace
             data->structureUp();
             return;
         }
-        throw FwMLParserException(c, data);
+        throw FwMLParserException(c, data->line, data->column);
     }
 
     void x_err(char c, ParseData* data) throw(FwMLParserException&)
     {
-        throw FwMLParserException(c, data);
+        throw FwMLParserException(c, data->line, data->column);
     }
 
     void x_val(char c, ParseData* data) throw(FwMLParserException&)
@@ -627,7 +581,7 @@ namespace
             }
             return;
         }
-        throw FwMLParserException(c, data);
+        throw FwMLParserException(c, data->line, data->column);
     }
 
     void x_ign(char c, ParseData* data) throw(FwMLParserException&)
@@ -1129,7 +1083,7 @@ bool FwMLObject::parse(QIODevice* ioDevice, QString* error)
     {
         if(!ioDevice->open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            throw FwMLParserException(ioDevice->errorString());
+            throw FwMLParserException(ioDevice->errorString(), -1, -1);
         }
 
         ParseData data;
