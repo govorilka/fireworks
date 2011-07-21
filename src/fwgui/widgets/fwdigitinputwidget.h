@@ -61,7 +61,7 @@ void FwDigitInputWidget::killInputTimer()
 void FwDigitInputWidget::resetInputTimer()
 {
     killInputTimer();
-    m_inputTimer = startTimer(qMin(visibleTime(), 1000));
+    m_inputTimer = startTimer(visibleTime() == 0 ? 1000 : qMin(visibleTime(), 1000));
     startVisibleTimer();
 }
 
