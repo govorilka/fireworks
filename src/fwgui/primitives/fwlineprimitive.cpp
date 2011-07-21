@@ -3,6 +3,8 @@
 #include "fwgui/fwpen.h"
 #include "fwgui/fwpainter.h"
 
+#include "fwcore/fwml.h"
+
 FwLinePrimitive::FwLinePrimitive(const QByteArray& name, FwPrimitiveGroup* parent) :
     BaseClass(name, parent),
     m_lenght(0),
@@ -78,3 +80,45 @@ void FwLinePrimitive::paint(FwPainter *painter, const QRect &clipRect)
         pen->drawLine(painter, QLine(geometry()->pos(), m_p2 + geometry()->pos()));
     }
 }
+
+void FwLinePrimitive::apply(FwMLObject *object)
+{
+    prepareGeometryChanged();
+
+    bool bOk = false;
+
+    int x1 = 0;
+    FwMLNode* x1Node= object->attribute("x1");
+    if(x1Node)
+    {
+        x1 = x1Node->toInt(&bOk);
+    }
+
+    int y1 = 0;
+    FwMLNode* y1Node= object->attribute("y1");
+    if(y1Node)
+    {
+        y1 = y1Node->toInt(&bOk);
+    }
+
+    int x2 = 0;
+    FwMLNode* x2Node= object->attribute("x2");
+    if(x2Node)
+    {
+        x2 = x2Node->toInt(&bOk);
+    }
+
+    int y2 = 0;
+    FwMLNode* y2Node= object->attribute("y2");
+    if(y2Node)
+    {
+        y2 = y2Node->toInt(&bOk);
+    }
+
+    setLine(x1, y1, x2, y2);
+
+    BaseClass::apply(object);
+
+    update();
+}
+

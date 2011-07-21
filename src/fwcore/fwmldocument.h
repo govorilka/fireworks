@@ -2,6 +2,7 @@
 #define FWMLDOCUMENT_H
 
 #include <QtCore/qobject.h>
+#include <QtCore/qdebug.h>
 
 #include "fwcore/fwml.h"
 
