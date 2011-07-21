@@ -169,14 +169,20 @@ void FwPrimitive::setVisible(bool visible)
     if(m_visible != visible)
     {
         prepareGeometryChanged();
-        m_visible = visible;
 
+        if(visibleOnScreen)
+        {
+            scene()->view()->update(m_boundingRect);
+        }
+
+        m_visible = visible;
         if(m_parent)
         {
             visibleOnScreen = m_visible && m_parent->visibleOnScreen;
             if(m_parent->visibleOnScreen)
             {
                 m_parent->m_invalidateChildrenRect = true;
+                m_parent->updateChildren();
             }
         }
         else
@@ -185,7 +191,6 @@ void FwPrimitive::setVisible(bool visible)
         }
 
         visibleChangedEvent();
-
         update();
     }
 }
