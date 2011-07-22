@@ -31,6 +31,7 @@ protected:
 
     void keyPressEvent(FwKeyPressEvent *event);
     void hideEvent(FwHideEvent *event);
+    virtual void valueChangedEvent(int value);
 
     void inputFinished();
     void inputAbort();

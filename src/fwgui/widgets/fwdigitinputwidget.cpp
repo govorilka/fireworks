@@ -78,8 +78,13 @@ void FwDigitInputWidget::setValue(int value)
     {
         m_value = value;
         m_digitsLabel->setString(QString::number(m_value));
-        emit valueChanged(m_value);
+        valueChangedEvent(m_value);
     }
+}
+
+void FwDigitInputWidget::valueChangedEvent(int value)
+{
+    emit valueChanged(value);
 }
 
 void FwDigitInputWidget::hideEvent(FwHideEvent* event)
