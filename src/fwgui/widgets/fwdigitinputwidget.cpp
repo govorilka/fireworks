@@ -49,7 +49,7 @@ void FwDigitInputWidget::keyPressEvent(FwKeyPressEvent *event)
 
     bool bOk = false;
     int intValue = value.toInt(&bOk);
-    if(bOk && (m_maxValue == -1 || intValue < m_maxValue))
+    if(bOk && (m_maxValue == -1 || intValue <= m_maxValue))
     {
         ++m_digitsCount;
         m_digitsLabel->setString(value);
