@@ -49,10 +49,14 @@ void FwDigitInputWidget::keyPressEvent(FwKeyPressEvent *event)
 
     bool bOk = false;
     int intValue = value.toInt(&bOk);
-    if(bOk && (m_maxValue == -1 || intValue <= m_maxValue))
+    if(bOk && maxValueCheck(intValue))
     {
         ++m_digitsCount;
         m_digitsLabel->setString(value);
+        if(value.length() >= maxStringLength())
+        {
+            inputFinished();
+        }
     }
 
     event->accept();
@@ -74,11 +78,14 @@ void FwDigitInputWidget::inputAbort()
 
 void FwDigitInputWidget::setValue(int value)
 {
-    if(!m_digitsCount && m_value != value && (m_maxValue == -1 || value < m_maxValue))
+    if(!m_digitsCount)
     {
-        m_value = value;
+        if(m_value != value && maxValueCheck(value))
+        {
+            m_value = value;
+            valueChangedEvent(m_value);
+        }
         m_digitsLabel->setString(QString::number(m_value));
-        valueChangedEvent(m_value);
     }
 }
 

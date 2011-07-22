@@ -1,6 +1,8 @@
 #ifndef FIREWORKS_DIGITINPUT_WIDGET_H
 #define FIREWORKS_DIGITINPUT_WIDGET_H
 
+#include <QtCore/qmath.h>
+
 #include "fireworks.h"
 
 #include "fwgui/widgets/fwwidget.h"
@@ -39,6 +41,9 @@ protected:
     inline void resetInputTimer();
     inline void killInputTimer();
 
+    inline bool maxValueCheck(int value) const;
+    inline int maxStringLength() const;
+
 private:
     int m_inputTimer;
 
@@ -74,6 +79,15 @@ int FwDigitInputWidget::value() const
 int FwDigitInputWidget::maxValue() const
 {
     return m_maxValue;
+}
+
+bool FwDigitInputWidget::maxValueCheck(int value) const
+{
+    return m_maxValue == -1 || value <= m_maxValue;
+}
+int FwDigitInputWidget::maxStringLength() const
+{
+    return m_maxValue == -1 ? 10 : qLn(m_maxValue) / qLn(10) + 1;
 }
 
 #endif // FIREWORKS_DIGITINPUT_WIDGET_H
