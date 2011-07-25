@@ -26,13 +26,16 @@ public:
 
     void apply(FwMLObject *object);
 
-    virtual FwGraphicsObject* object() const;
-
     inline void updateChildren();
 
     void invalidateChildren();
 
     FwPrimitive* primitiveByName(const QList<QByteArray>& name, int firstElement = 0);
+
+    inline bool childrenClipRect() const;
+    void setChildrenClipRect(bool value);
+
+    QRect clipRect() const;
 
 protected:
     void paint(FwPainter *painter, const QRect &clipRect);
@@ -54,6 +57,8 @@ private:
     QRect m_childrenRect;
 
     bool m_invalidateChildrenRect;
+
+    bool m_childrenClipRect;
 };
 
 #include "fwgui/primitives/fwprimitivegroup_inl.h"

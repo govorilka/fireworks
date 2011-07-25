@@ -19,6 +19,8 @@ FwWidget::FwWidget(const QByteArray& name, FwPrimitiveGroup* parent) :
     m_visibleTimerId(0),
     m_darkBackground(false)
 {
+    setChildrenClipRect(false);
+
     m_scene->m_widgets.append(this);
 }
 

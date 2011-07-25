@@ -1,8 +1,11 @@
 #include <QtCore/qdebug.h>
+#include <QtCore/qdir.h>
 
 #include <QtGui/qwidget.h>
 #include <QtGui/qevent.h>
 #include <QtGui/qapplication.h>
+
+#include "fwcore/fwml.h"
 
 #include "fwgui/fwpainter.h"
 #include "fwgui/fwguievent.h"
@@ -14,8 +17,7 @@
 
 QPWidget::QPWidget(QPGraphicsView* view, QWidget* parent) :
     BaseClass(parent),
-    m_view(view),
-    m_saveFrame(false)
+    m_view(view)
 {
 }
 
@@ -40,7 +42,7 @@ void QPWidget::paintEvent(QPaintEvent *e)
     painter.setColor(FwColor(0xFF, 0xFF, 0xFF, 0xFF));
     e->accept();
 
-    if(m_saveFrame)
+    if(m_view->isSaveFrameEnable() && !m_view->debugLogDir().isEmpty())
     {
         static int imageInc = 0;
         QImage image(size(), QImage::Format_ARGB32);
@@ -49,7 +51,13 @@ void QPWidget::paintEvent(QPaintEvent *e)
             FwPainter painter(QRect(QPoint(0, 0), size()), e->rect(), new QPRender(&image));
             m_view->render(&painter, rect);
         }
-        image.save(QString("/home/user/debug/img%1.png").arg(++imageInc));
+
+        if(!QDir(m_view->debugLogDir()).exists())
+        {
+            QDir().mkpath(m_view->debugLogDir());
+        }
+
+        image.save(QString(m_view->debugLogDir() + "img%1.png").arg(++imageInc));
     }
 }
 
@@ -64,7 +72,9 @@ void QPWidget::keyPressEvent(QKeyEvent *e)
 
 QPGraphicsView::QPGraphicsView(QObject* parent) :
     BaseClass(parent),
-    m_widget(0)
+    m_widget(0),
+    m_saveFrame(false),
+    m_debugLogDir(QString(QCoreApplication::applicationDirPath() + "/debug/"))
 {
 }
 
@@ -135,4 +145,20 @@ QRegion QPGraphicsView::convert(const FwRegion& region)
 bool QPGraphicsView::init()
 {
     return true;
+}
+
+bool QPGraphicsView::loadData(FwMLObject* object)
+{
+    FwMLBool* debugMode = object->attribute("debugMode")->cast<FwMLBool>();
+    if(debugMode)
+    {
+        setSaveFrame(debugMode->value());
+    }
+    FwMLString* debugPath = object->attribute("debugDir")->cast<FwMLString>();
+    if(debugPath)
+    {
+        setDebugLogDir(debugPath->value());
+    }
+
+    return BaseClass::loadData(object);
 }

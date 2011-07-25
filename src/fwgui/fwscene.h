@@ -8,6 +8,8 @@
 
 #include "fwtypography/fwfont.h"
 
+#include "fwgui/primitives/fwprimitivegroup.h"
+
 class FwSceneShowEvent;
 class FwSceneHideEvent;
 class FwSceneGraphicsItem;
@@ -19,10 +21,10 @@ class FwRequest;
 class QResizeEvent;
 class QKeyEvent;
 
-class FIREWORKSSHARED_EXPORT FwScene : public FwGraphicsObject
+class FIREWORKSSHARED_EXPORT FwScene : public QObject, public FwPrimitiveGroup
 {
     Q_OBJECT
-    typedef FwGraphicsObject BaseClass;
+    typedef FwPrimitiveGroup BaseClass;
 
 public:
     friend class FwWidget;
@@ -33,7 +35,6 @@ public:
 
     explicit FwScene(const QByteArray& name, FwGraphicsView* view);
     virtual ~FwScene();
-
 
     bool event(QEvent* event);
 
@@ -63,6 +64,9 @@ protected:
 
     virtual void showEvent(FwSceneShowEvent* event);
     virtual void hideEvent(FwSceneHideEvent* event);
+    virtual void resizeEvent(FwResizeEvent* event);
+
+    virtual void keyPressEvent(FwKeyPressEvent* event);
 
     void showAnimationFinished();
     void hideAnimationFinished();
