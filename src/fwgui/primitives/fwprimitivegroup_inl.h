@@ -22,4 +22,9 @@ void FwPrimitiveGroup::updateChildren()
     }
 }
 
+inline bool FwPrimitiveGroup::childrenClipRect() const
+{
+    return m_childrenClipRect;
+}
+
 #endif // FIREWORKS_GRAPHICSITEMGROUP_INL_H

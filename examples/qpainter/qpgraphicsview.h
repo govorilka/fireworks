@@ -21,8 +21,7 @@ public:
     QPWidget(QPGraphicsView* view, QWidget* parent = 0);
     virtual ~QPWidget();
 
-    inline bool isSaveFrameEnable() const;
-    inline void setSaveFrame(bool enable);
+
 
 protected:
     void resizeEvent(QResizeEvent *e);
@@ -31,18 +30,10 @@ protected:
 
 private:
     QPGraphicsView* m_view;
-    bool m_saveFrame;
+
 };
 
-bool QPWidget::isSaveFrameEnable() const
-{
-    return m_saveFrame;
-}
 
-void QPWidget::setSaveFrame(bool enable)
-{
-    m_saveFrame = enable;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -67,6 +58,14 @@ public:
 
     bool init();
 
+    inline bool isSaveFrameEnable() const;
+    inline void setSaveFrame(bool enable);
+
+    inline QString debugLogDir() const;
+    inline void setDebugLogDir(const QString& dir);
+
+    bool loadData(FwMLObject* object);
+
 protected:
 
     void invalidateCanvas(const FwRegion& region);
@@ -78,11 +77,33 @@ protected:
 
 private:
     QPWidget* m_widget;
+    bool m_saveFrame;
+    QString m_debugLogDir;
 };
 
 QWidget* QPGraphicsView::widget() const
 {
     return m_widget;
+}
+
+bool QPGraphicsView::isSaveFrameEnable() const
+{
+    return m_saveFrame;
+}
+
+void QPGraphicsView::setSaveFrame(bool enable)
+{
+    m_saveFrame = enable;
+}
+
+QString QPGraphicsView::debugLogDir() const
+{
+    return m_debugLogDir;
+}
+
+void QPGraphicsView::setDebugLogDir(const QString& dir)
+{
+    m_debugLogDir = dir;
 }
 
 #endif // FIREWORKS_QPGRAPHICSVIEW_H

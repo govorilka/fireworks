@@ -14,6 +14,7 @@
 #include "fwcore/fwml.h"
 
 FwScene::FwScene(const QByteArray& name, FwGraphicsView* view) :
+    QObject(view),
     BaseClass(name, 0),
     m_view(view),
     m_messageBox(0),
@@ -21,11 +22,15 @@ FwScene::FwScene(const QByteArray& name, FwGraphicsView* view) :
     m_messageBoxAllow(true),
     m_darkBackground(0)
 {
+    setObjectName(QString::fromUtf8(name));
+
+    setChildrenClipRect(true);
+
     m_scene = this;
+    m_visible = true;
     visibleOnScreen = true;
 
     Q_ASSERT(!m_view->scene(name));
-    setParent(m_view);
     m_view->m_scenes.append(this);
     if(!m_view->m_activeScene)
     {
@@ -86,12 +91,16 @@ bool FwScene::event(QEvent * e)
             hideEvent(static_cast<FwSceneHideEvent*>(e));
             return true;
 
+        case Fw::E_Resize:
+            resizeEvent(static_cast<FwResizeEvent*>(e));
+            return true;
+
         default:
             break;
         }
     }
 
-    return BaseClass::event(e);
+    return QObject::event(e);
 }
 
 FwFont FwScene::font(const FwFontDescription& description)
@@ -215,11 +224,25 @@ bool FwScene::keyEventProccessed(FwKeyPressEvent* event)
         QCoreApplication::sendEvent(m_messageBox, event);
         return true;
     }
-
-    return BaseClass::event(event);
+    else
+    {
+        keyPressEvent(event);
+    }
+    return event->isAccepted();
 }
 
 void FwScene::cleanup()
 {
     removeItems();
 }
+
+void FwScene::keyPressEvent(FwKeyPressEvent* event)
+{
+    Q_UNUSED(event);
+}
+
+void FwScene::resizeEvent(FwResizeEvent* event)
+{
+    Q_UNUSED(event);
+}
+

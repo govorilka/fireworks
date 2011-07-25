@@ -14,7 +14,8 @@ FwPrimitiveGroup::FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* par
     BaseClass(name, parent),
     m_childrenRect(0, 0, 0, 0),
     childrenDirty(false),
-    m_invalidateChildrenRect(false)
+    m_invalidateChildrenRect(false),
+    m_childrenClipRect(true)
 {
     if(parent)
     {
@@ -37,7 +38,7 @@ void FwPrimitiveGroup::removeItems()
     {
         m_visiblePrimitives.clear();
 
-        m_scene->m_view->m_dirtyRegion->pushObjectRect(object()->geometry()->rect());
+        m_scene->m_view->m_dirtyRegion->pushObjectRect(clipRect());
 
         foreach(FwPrimitive* item, m_primitives)
         {
@@ -135,16 +136,11 @@ void FwPrimitiveGroup::apply(FwMLObject *object)
     update();
 }
 
-FwGraphicsObject* FwPrimitiveGroup::object() const
-{
-    return m_parent ? m_parent->object() : m_scene;
-}
-
 void FwPrimitiveGroup::invalidateChildren()
 {
     if(childrenDirty)
     {
-        m_scene->m_view->m_dirtyRegion->pushObjectRect(object()->geometry()->rect());
+        m_scene->m_view->m_dirtyRegion->pushObjectRect(clipRect());
 
         while(childrenDirty)
         {
@@ -200,15 +196,18 @@ void FwPrimitiveGroup::invalidateChildrenRect()
 {
     m_visiblePrimitives.clear();
 
-    if(object() != this)
+    QRect clipRect = this->clipRect();
+
+    int x1 = 0;
+    int y1 = 0;
+    int x2 = 0;
+    int y2 = 0;
+    foreach(FwPrimitive* primitive, m_primitives)
     {
-        int x1 = 0;
-        int y1 = 0;
-        int x2 = 0;
-        int y2 = 0;
-        foreach(FwPrimitive* primitive, m_primitives)
+        if(primitive->visibleOnScreen)
         {
-            if(primitive->visibleOnScreen)
+            QRect rect = clipRect.intersected(primitive->m_boundingRect);
+            if(!rect.isNull())
             {
                 m_visiblePrimitives.append(primitive);
                 x1 = qMin(x1, primitive->m_geometry->rect().left());
@@ -217,29 +216,21 @@ void FwPrimitiveGroup::invalidateChildrenRect()
                 y2 = qMax(y2, primitive->m_geometry->rect().bottom());
             }
         }
-        foreach(FwPrimitiveGroup* group, m_groups)
-        {
-            if(group->visibleOnScreen)
-            {
-                x1 = qMin(x1, group->m_childrenRect.left());
-                y1 = qMin(y1, group->m_childrenRect.top());
-                x2 = qMax(x2, group->m_childrenRect.right());
-                y2 = qMax(y2, group->m_childrenRect.bottom());
-            }
-        }
-        m_childrenRect.setCoords(x1, y1, x2, y2);
     }
-    else
+
+    foreach(FwPrimitiveGroup* group, m_groups)
     {
-        foreach(FwPrimitive* primitive, m_primitives)
+        if(group->visibleOnScreen)
         {
-            QRect rect = m_childrenRect.intersected(primitive->m_boundingRect);
-            if(primitive->visibleOnScreen && !rect.isNull())
-            {
-                m_visiblePrimitives.append(primitive);
-            }
+            x1 = qMin(x1, group->m_childrenRect.left());
+            y1 = qMin(y1, group->m_childrenRect.top());
+            x2 = qMax(x2, group->m_childrenRect.right());
+            y2 = qMax(y2, group->m_childrenRect.bottom());
         }
     }
+
+    m_childrenRect.setCoords(x1, y1, x2, y2);
+    m_childrenRect = clipRect.intersected(m_childrenRect);
 }
 
 FwPrimitive* FwPrimitiveGroup::primitiveByName(const QList<QByteArray>& name, int firstElement)
@@ -265,4 +256,26 @@ void FwPrimitiveGroup::childrenRectChangedEvent(bool posChanged, bool sizeChange
 {
     Q_UNUSED(posChanged);
     Q_UNUSED(sizeChanged);
+}
+
+void FwPrimitiveGroup::setChildrenClipRect(bool value)
+{
+    if(m_childrenClipRect != value)
+    {
+        prepareGeometryChanged();
+        m_childrenClipRect = value;
+        m_invalidateChildrenRect = true;
+        updateChildren();
+        update();
+    }
+}
+
+QRect FwPrimitiveGroup::clipRect() const
+{
+    QRect rect = (m_parent ? m_parent->clipRect() : m_scene->geometry()->rect());
+    if(!m_childrenClipRect)
+    {
+        rect = rect.intersected(m_geometry->rect());
+    }
+    return rect;
 }
