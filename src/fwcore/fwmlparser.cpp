@@ -230,10 +230,16 @@ void FwMLParser::parseAttrValue(str_interator& c, str_interator& endChar) throw(
 
 void FwMLParser::parseAttrValueEnd(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
 {
+    qDebug() << "FwMLParser::parseAttrValueEnd" << m_attrName << m_buffer;
+    throw FwMLParserException(*c, m_lineIndex, column(c));
 }
 
 void FwMLParser::parseValue(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
 {
+    m_attrName = m_buffer;
+    m_buffer = QByteArray();
+    m_bufferType = BT_Empty;
+
     ignoreSpace(c, endChar);
     if(c == endChar)
     {
@@ -246,7 +252,14 @@ void FwMLParser::parseValue(str_interator& c, str_interator& endChar) throw(FwML
         {
         case C_AZ:
             popState();
+            pushState(&FwMLParser::parseAttrValueEnd);
             pushState(&FwMLParser::parseName);
+            return;
+
+        case C_Str:
+            popState();
+            pushState(&FwMLParser::parseAttrValueEnd);
+            pushState(&FwMLParser::parseString);
             return;
 
         default:
@@ -255,4 +268,31 @@ void FwMLParser::parseValue(str_interator& c, str_interator& endChar) throw(FwML
     }
 
     throw FwMLParserException(*c, m_lineIndex, column(c));
+}
+
+void FwMLParser::parseString(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
+{
+    if(chars_type[*c] != C_Str)
+    {
+        throw FwMLParserException(*c, m_lineIndex, column(c));
+        return;
+    }
+
+    ++c;
+    m_bufferType = BT_String;
+    while(c != endChar)
+    {
+        const char & nextChar = *c;
+        switch(chars_type[nextChar])
+        {
+        case C_Str:
+            popState();
+            return;
+
+        default:
+            m_buffer += nextChar;
+            break;
+        }
+        ++c;
+    }
 }

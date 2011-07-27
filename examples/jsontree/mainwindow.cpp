@@ -36,7 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_rootObject = new FwMLObject();
 
-    QString error;
     FwMLParser parser;
     if(parser.parse(m_rootObject, fwml))
     {
@@ -46,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         QTreeWidgetItem* errorItem = new QTreeWidgetItem(rootItem);
         errorItem->setText(0, "Error");
-        errorItem->setText(1, error);
+        errorItem->setText(1, parser.errorString());
     }
 }
 

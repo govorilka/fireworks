@@ -83,7 +83,9 @@ protected:
     void parseObject(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
 
     void parseValue(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
+
     void parseName(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
+    void parseString(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
 
     void parseAttr(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
     void parseAttrValue(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
