@@ -1,0 +1,22 @@
+sourceencoding = UTF-8
+outputencoding = UTF-8
+
+headerdirs = $FIREWORKS_PATH/src
+sourcedirs = $FIREWORKS_PATH/src
+
+sources.fileextensions = *.cpp *.qdoc
+
+outputdir = html
+
+project                 = Fireworks
+
+qhp.projects            = Fireworks
+
+qhp.Fireworks.file         = fireworks.qhp
+qhp.Fireworks.namespace    = com.fireworks.020
+qhp.Fireworks.virtualFolder       = qdoc
+qhp.Fireworks.indexTitle          = Fireworks Reference Documentation
+
+qhp.Fireworks.filterAttributes    = Fireworks 0.2.0 fwrefdoc
+qhp.Fireworks.customFilters.Qt.name = Fireworks 0.2.0
+qhp.Fireworks.customFilters.Qt.filterAttributes = Fireworks 0.2.0
