@@ -1,0 +1,56 @@
+bgcolor : "black",
+
+rectItem
+{
+    zindex :1,
+    border
+    {
+        color : "orange",
+        width : 5
+    },
+    rect
+    {
+        x : 0,
+        y : 0,
+        width : 480,
+        height : 320
+    },
+    drawer
+    {
+        name : "RoundedRect",
+        bgcolor : "orange",
+        radius : 20
+    }
+},
+
+pixmapItem
+{
+   zindex : 2,
+   source : "browser.png"
+},
+
+progressItem
+{
+    zindex : 3,
+    width : 200,
+    height: 40,
+    bgcolor : "#A0000000",
+
+    progress
+    {
+        bgcolor : "#A0FFFFFF",
+    },
+
+    geometry
+    {
+        hPosition : "CenterDock"
+    },
+
+    animation
+    {
+        base : "fireworks.layouts.Animation",
+        curve : "OutBounce",
+        duration : 300,
+        smooth : true
+    }
+}
