@@ -7,6 +7,7 @@
 FwCPPObject::FwCPPObject(const QByteArray& name) :
     m_name(name)
 {
+
 }
 
 bool FwCPPObject::loadFile(const QString& fileName)
