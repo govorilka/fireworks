@@ -201,7 +201,6 @@ void FwWidget::visibleChangedEvent()
             QCoreApplication::sendEvent(this, &FwHideEvent());
         }
     }
-
 }
 
 void FwWidget::apply(FwMLObject *object)

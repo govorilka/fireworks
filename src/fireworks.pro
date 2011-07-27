@@ -8,12 +8,11 @@ QT       += core network
 QT       -= gui
 
 win32 {
-   TARGET = ../../bin/fireworks
+   TARGET = ../../bin/fireworks1
 }
 else {
-   TARGET = ../bin/fireworks
+   TARGET = ../bin/fireworks1
 }
-
 
 TEMPLATE = lib
 
