@@ -463,7 +463,6 @@ void FwItemView::updateItems(bool init)
             {
                 m_layout->initItemsPos(m_items, m_current);
             }
-            needInitLayout = false;
             updateChildren();
         }
 
@@ -474,13 +473,19 @@ void FwItemView::updateItems(bool init)
                 m_highlight->setVisible(m_current != 0);
             }
 
-            if(!visibleOnScreen || !m_current || !m_previous || !m_layout->startAnimation(m_previous, m_current))
+            if(needInitLayout ||
+               !visibleOnScreen ||
+               !m_current ||
+               !m_previous ||
+               !m_layout->startAnimation(m_previous, m_current))
             {
                 updateCurrent(true);
             }
 
             m_currentDirty = false;
         }
+
+        needInitLayout = false;
     }
 }
 
