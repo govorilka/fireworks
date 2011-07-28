@@ -371,10 +371,15 @@ void FwHSliderLayout::applyAnimationStep(int step)
 bool FwHSliderLayout::prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current)
 {
     Q_UNUSED(previous);
-    m_deltaValue = current->x();
-    animation->setStartValue(m_deltaValue);
-    animation->setEndValue(static_cast<int>((m_view->rect().width() - current->width()) * 0.5));
-    return true;
+    int startValue = current->x();
+    int endValue = static_cast<int>((m_view->rect().width() - current->width()) * 0.5);
+    if(startValue != endValue)
+    {
+        animation->setStartValue(m_deltaValue = startValue);
+        animation->setEndValue(endValue);
+        return true;
+    }
+    return false;
 }
 
 void FwHSliderLayout::initArrowPrimitives(const QRect& rect)
@@ -509,10 +514,15 @@ void FwVSliderLayout::applyAnimationStep(int step)
 bool FwVSliderLayout::prepareAnimation(FwItemAnimation* animation, FwPrimitive *previous, FwPrimitive* current)
 {
     Q_UNUSED(previous);
-    m_deltaValue = current->y();
-    animation->setStartValue(m_deltaValue);
-    animation->setEndValue(static_cast<int>((m_view->rect().height() - current->height()) * 0.5));
-    return true;
+    int startValue = current->y();
+    int endValue = static_cast<int>((m_view->rect().height() - current->height()) * 0.5);
+    if(startValue != endValue)
+    {
+        animation->setStartValue(m_deltaValue = startValue);
+        animation->setEndValue(endValue);
+        return true;
+    }
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -756,15 +766,16 @@ bool FwPagesLayout::prepareAnimation(FwItemAnimation* animation, FwPrimitive *pr
     FwPrimitive* highlight = m_view->highlight();
     if(highlight)
     {
-        QRect rect = highlight->rect();
-
-        animation->setStartValue(rect);
-
-        rect.setY(highlight->mapFromScene(current->mapToScene(current->pos())).y());
-        rect.setHeight(current->height());
-        animation->setEndValue(rect);
-
-        return true;
+        QRect startRect = highlight->rect();
+        QRect endRect = startRect;
+        endRect.setY(highlight->mapFromScene(current->mapToScene(current->pos())).y());
+        endRect.setHeight(current->height());
+        if(startRect != endRect)
+        {
+            animation->setStartValue(startRect);
+            animation->setEndValue(endRect);
+            return true;
+        }
     }
 
     return false;
