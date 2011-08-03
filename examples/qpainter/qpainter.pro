@@ -16,7 +16,7 @@ INCLUDEPATH += .
 
 INCLUDEPATH += $(FIREWORKS_PATH)/src
 LIBS += -L$(FIREWORKS_PATH)/bin \
-        -lfireworks \
+        -lfireworks1 \
 
 
 HEADERS += \
