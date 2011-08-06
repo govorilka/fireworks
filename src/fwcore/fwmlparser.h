@@ -93,6 +93,8 @@ protected:
 
     inline void ignoreSpace(str_interator& c, str_interator& endChar);
 
+    FwMLNode* createValue(str_interator& c) throw(FwMLParserException&);
+
 private:
 
     QString m_errorString;
@@ -149,6 +151,7 @@ bool FwMLParser::popState()
         m_stateFunction = m_stateFunctionStack.pop();
         return true;
     }
+    m_stateFunction = 0;
     return false;
 }
 

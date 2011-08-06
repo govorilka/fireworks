@@ -109,20 +109,27 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
 
         m_lineIndex = 0;
 
+        const char* c = 0;
+        const char* endChar = 0;
         while(!ioDevice->atEnd())
         {
             ++m_lineIndex;
             m_currentLine = ioDevice->readLine().trimmed();
             if(!m_currentLine.isEmpty())
             {
-                const char* c = m_currentLine.data();
-                const char* endChar = c + m_currentLine.size();
+                c = m_currentLine.data();
+                endChar = c + m_currentLine.size();
                 while(c != endChar)
                 {
                     (this->*FwMLParser::m_stateFunction)(c, endChar);
                 }
             }
+        }
 
+        while(m_stateFunction)
+        {
+            (this->*FwMLParser::m_stateFunction)(c, endChar);
+            popState();
         }
     }
     catch(FwMLParserException& e)
@@ -147,33 +154,6 @@ void FwMLParser::parseObject(str_interator& c, str_interator& endChar) throw(FwM
     }
 }
 
-void FwMLParser::parseName(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
-{
-    popState();
-    m_bufferType = BT_Name;
-
-    ignoreSpace(c, endChar);
-    while(c != endChar)
-    {
-        if(*c > 127)
-        {
-            throw FwMLParserException(*c, m_lineIndex, column(c));
-        }
-
-        switch(chars_type[*c])
-        {
-        case C_AZ:
-        case C_Num:
-            m_buffer += (*c);
-            ++c;
-            break;
-
-        default:
-            return;
-        }
-    }
-}
-
 void FwMLParser::parseAttr(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
 {
     ignoreSpace(c, endChar);
@@ -187,6 +167,8 @@ void FwMLParser::parseAttr(str_interator& c, str_interator& endChar) throw(FwMLP
         switch(chars_type[*c])
         {
         case C_AZ:
+            popState();
+            pushState(&FwMLParser::parseAttrValueEnd);
             pushState(&FwMLParser::parseAttrValue);
             pushState(&FwMLParser::parseName);
             return;
@@ -215,8 +197,6 @@ void FwMLParser::parseAttrValue(str_interator& c, str_interator& endChar) throw(
             ++c;
             popState();
             m_attrName = m_buffer;
-            m_bufferType = BT_Empty;
-            pushState(&FwMLParser::parseAttrValueEnd);
             pushState(&FwMLParser::parseValue);
             return;
 
@@ -229,14 +209,47 @@ void FwMLParser::parseAttrValue(str_interator& c, str_interator& endChar) throw(
 }
 
 void FwMLParser::parseAttrValueEnd(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
-{
+{    
+    if(m_bufferType != BT_Empty)
+    {
+        FwMLNode* child = createValue(c);
+        if(m_attrName.isEmpty())
+        {
+            throw FwMLParserException(QString("Attribute name is empty"), m_lineIndex, column(c));
+            return;
+        }
+
+        static_cast<FwMLObject*>(m_currentNode)->addAttribute(m_attrName, child);
+        m_attrName = QByteArray();
+    }
+
+    ignoreSpace(c, endChar);
+    if(c == endChar)
+    {
+        return;
+    }
+
+    if(*c < 127)
+    {
+        switch(chars_type[*c])
+        {
+        case C_Sep:
+            popState();
+            pushState(&FwMLParser::parseAttr);
+            ++c;
+            return;
+
+        default:
+            break;
+        }
+    }
+
     qDebug() << "FwMLParser::parseAttrValueEnd" << m_attrName << m_buffer;
     throw FwMLParserException(*c, m_lineIndex, column(c));
 }
 
 void FwMLParser::parseValue(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
 {
-    m_attrName = m_buffer;
     m_buffer = QByteArray();
     m_bufferType = BT_Empty;
 
@@ -252,13 +265,11 @@ void FwMLParser::parseValue(str_interator& c, str_interator& endChar) throw(FwML
         {
         case C_AZ:
             popState();
-            pushState(&FwMLParser::parseAttrValueEnd);
             pushState(&FwMLParser::parseName);
             return;
 
         case C_Str:
             popState();
-            pushState(&FwMLParser::parseAttrValueEnd);
             pushState(&FwMLParser::parseString);
             return;
 
@@ -270,6 +281,34 @@ void FwMLParser::parseValue(str_interator& c, str_interator& endChar) throw(FwML
     throw FwMLParserException(*c, m_lineIndex, column(c));
 }
 
+void FwMLParser::parseName(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
+{
+    popState();
+    m_bufferType = BT_Name;
+
+    ignoreSpace(c, endChar);
+    while(c != endChar)
+    {
+        if(*c > 127)
+        {
+            throw FwMLParserException(*c, m_lineIndex, column(c));
+        }
+
+        switch(chars_type[*c])
+        {
+        case C_AZ:
+        case C_Num:
+        case C_Ee:
+            m_buffer += (*c);
+            ++c;
+            break;
+
+        default:
+            return;
+        }
+    }
+}
+
 void FwMLParser::parseString(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
 {
     if(chars_type[*c] != C_Str)
@@ -278,21 +317,62 @@ void FwMLParser::parseString(str_interator& c, str_interator& endChar) throw(FwM
         return;
     }
 
-    ++c;
     m_bufferType = BT_String;
-    while(c != endChar)
+
+    while(++c != endChar)
     {
         const char & nextChar = *c;
         switch(chars_type[nextChar])
         {
         case C_Str:
             popState();
+            ++c;
             return;
 
         default:
             m_buffer += nextChar;
             break;
         }
-        ++c;
+
     }
+}
+
+FwMLNode* FwMLParser::createValue(str_interator& c) throw(FwMLParserException&)
+{
+    if(!m_currentNode || m_bufferType == BT_Empty)
+    {
+        throw FwMLParserException(QString("Syntax error"), m_lineIndex, column(c));
+        return 0;
+    }
+
+    FwMLNode* child = 0;
+    switch(m_bufferType)
+    {
+        case BT_String:
+            child = new FwMLString(m_buffer);
+            break;
+
+        case BT_Name:
+            {
+                bool bOk = false;
+                bool value = Fw::nameToBool(m_buffer, &bOk);
+                if(bOk)
+                {
+                    child = new FwMLBool(value);
+                }
+                else
+                {
+                    child = new FwMLString(m_buffer);
+                }
+            }
+            break;
+
+        default:
+            Q_ASSERT(false);
+            return 0;
+    }
+
+    m_buffer = QByteArray();
+    m_bufferType = BT_Empty;
+    return child;
 }

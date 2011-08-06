@@ -1346,6 +1346,12 @@ FwMLBool::FwMLBool() :
 {
 }
 
+FwMLBool::FwMLBool(bool value) :
+    BaseClass(),
+    m_value(value)
+{
+}
+
 FwMLBool::FwMLBool(bool value, const QByteArray &attrName, FwMLObject *parent) :
     BaseClass(attrName, parent),
     m_value(value)
