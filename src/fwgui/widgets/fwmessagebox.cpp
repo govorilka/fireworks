@@ -108,7 +108,7 @@ void FwMessageBox::apply(FwMLObject *object)
     FwMLObject* backgroundNode = object->attribute("barBackground")->cast<FwMLObject>();
     if(backgroundNode && !m_background)
     {
-        FwRectPrimitive* background = FwGuiFactory::createRectPrimitive(backgroundNode->className(), "barBackground", this);
+        FwRectPrimitive* background = FwGuiFactory::createRectPrimitive(backgroundNode->baseName(), "barBackground", this);
         if(background)
         {
             background->setPosition(Fw::HP_CenterDock, Fw::VP_MiddleDock);
