@@ -6,7 +6,6 @@
 #include "fwcore/fwml.h"
 
 #include "fwgui/fwpainter.h"
-#include "fwgui/fwgraphicsobject.h"
 #include "fwgui/fwscene.h"
 #include "fwgui/fwgraphicsview.h"
 
