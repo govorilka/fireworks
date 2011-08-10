@@ -10,7 +10,6 @@ HEADERS += \
     fwgui/fwpen.h \
     fwgui/fwrender.h \
     fwgui/fwpainter.h \
-    fwgui/fwpainter_inl.h \
     fwgui/fwguievent.h \
     fwgui/primitives/fwtextprimitive.h \
     fwgui/primitives/fwprimitivegroup_inl.h \
