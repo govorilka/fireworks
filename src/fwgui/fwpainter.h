@@ -11,8 +11,11 @@
 class FIREWORKSSHARED_EXPORT FwPainter
 {
 public:
-    FwPainter(const QRect& window, const QRect& clipRect, FwRender* render);
+
+    FwPainter(const QRect& window, FwRender* render);
     virtual ~FwPainter();
+
+    inline void begin(const QRect& clipRect);
 
     inline int nullX() const;
     inline int nullY() const;

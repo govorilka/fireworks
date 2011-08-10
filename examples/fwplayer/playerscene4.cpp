@@ -22,7 +22,6 @@ PlayerScene4::PlayerScene4(FwGraphicsView* view) :
     for(int i = 0; i < 100; i++)
     {
         m_itemView->addText(caption, false);
-
         if(c == 'Z')
         {
             c = 'A';
@@ -47,6 +46,7 @@ void PlayerScene4::keyPressEvent(FwKeyPressEvent *event)
         view()->setActiveScene("playerScene5");
         event->accept();
         return;
+
     case Qt::Key_Right:
     case Qt::Key_Left:
     case Qt::Key_Up:

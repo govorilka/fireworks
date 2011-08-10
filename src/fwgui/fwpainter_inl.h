@@ -3,6 +3,21 @@
 
 #include "fwgui/fwpainter.h"
 
+void FwPainter::begin(const QRect& clipRect)
+{
+    m_opacity = 1.0;
+    setColor(0xFF, 0x00, 0x00, 0x00);
+    if(window() != clipRect)
+    {
+        m_clipRect = QRect(0, 0, 0, 0);
+        setClipRect(clipRect);
+    }
+    else
+    {
+        m_clipRect = clipRect;
+    }
+}
+
 int FwPainter::nullX() const
 {
     return m_nullX;
