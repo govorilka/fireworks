@@ -21,13 +21,17 @@ PlayerScene4::PlayerScene4(FwGraphicsView* view) :
 
     for(int i = 0; i < 100; i++)
     {
-        caption += (++c);
-        caption += ' ';
         m_itemView->addText(caption, false);
+
         if(c == 'Z')
         {
             c = 'A';
-            caption = QString();
+            caption = QChar(c);
+        }
+        else
+        {
+            caption += ' ';
+            caption += (++c);
         }
     }
 

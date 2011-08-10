@@ -2,10 +2,10 @@
 QT += gui core
 
 win32 {
-   TARGET = ../../../bin/qpainter
+   TARGET = ../../../bin/qpainter1
 }
 else {
-   TARGET = ../../bin/qpainter
+   TARGET = ../../bin/qpainter1
 }
 
 TEMPLATE = lib

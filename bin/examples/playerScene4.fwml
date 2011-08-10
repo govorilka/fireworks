@@ -10,14 +10,14 @@ itemView
 
   layout
   {
-    base : "fireworks.layouts.LoopVerticalSlider",
-    animation
-    {
-        base : "fireworks.layouts.Animation",
-        curve : "InOutQuart",
-        duration : 300
-    },
-    margin : 16
+      base : "fireworks.layouts.Pages",
+      animation
+      {
+          base : "fireworks.layouts.Animation",
+          curve : "InOutQuart",
+          duration : 300
+      },
+      margin : 16
   },
 
   item
