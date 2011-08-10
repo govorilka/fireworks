@@ -9,19 +9,29 @@
 #include "fwgui/fwscene.h"
 #include "fwgui/fwguievent.h"
 
+#include "fwutils/fwrequest.h"
+
 /*!
 \class FwWidget
 Класс реализует различные элементы пользовательского интерфейса.
 */
 FwWidget::FwWidget(const QByteArray& name, FwPrimitiveGroup* parent) :
+    QObject(),
     BaseClass(name, parent),
+    m_showAnimation(0),
+    m_hideAnimation(0),
+    m_oldSize(0, 0),
     m_visibleTime(0),
     m_visibleTimerId(0),
     m_darkBackground(false)
 {
-    setChildrenClipRect(false);
-
+    setParent(m_scene);
     m_scene->m_widgets.append(this);
+
+    m_visible = false;
+    visibleOnScreen = false;
+
+    setChildrenClipRect(false);
 }
 
 FwWidget::~FwWidget()
@@ -75,17 +85,6 @@ void FwWidget::startVisibleTimer()
 
 bool FwWidget::event(QEvent * e)
 {
-    switch(e->type())
-    {
-    case QEvent::FontChange:
-        e->accept();
-        fontChangedEvent(font());
-        return true;
-
-    default:
-        break;
-    }
-
     if(e->type() == FwGuiEvent::qtTypeID())
     {
         FwGuiEvent* fwEvent = static_cast<FwGuiEvent*>(e);
@@ -101,12 +100,36 @@ bool FwWidget::event(QEvent * e)
             stopVisibleTimer();
             return true;
 
+        case Fw::E_KeyPress:
+            keyPressEvent(static_cast<FwKeyPressEvent*>(fwEvent));
+            return true;
+
+        case Fw::E_Resize:
+            resizeEvent(static_cast<FwResizeEvent*>(e));
+            return true;
+
         default:
             break;
         }
     }
+    else if(e->type() == FwResult::typeID())
+    {
+        requestAcceptEvent(static_cast<FwResult*>(e));
+        return true;
+    }
 
-    return BaseClass::event(e);
+    switch(e->type())
+    {
+    case QEvent::FontChange:
+        e->accept();
+        fontChangedEvent(font());
+        return true;
+
+    default:
+        break;
+    }
+
+    return QObject::event(e);
 }
 
 //void FwWidget::showEventProcessed(QShowEvent* event)
@@ -211,4 +234,84 @@ void FwWidget::apply(FwMLObject *object)
     {
         setDarkBackground(darkBackground);
     }
+}
+
+void FwWidget::setFont(const FwFont& font)
+{
+    if(m_font != font)
+    {
+        m_font = font;
+        QEvent event(QEvent::FontChange);
+        QCoreApplication::sendEvent(this, &event);
+    }
+}
+
+void FwWidget::setShowAnimation(QPropertyAnimation* animation)
+{
+    if(m_showAnimation != animation)
+    {
+        if(m_showAnimation)
+        {
+            m_showAnimation->stop();
+            m_showAnimation->disconnect(this);
+            this->disconnect(m_showAnimation);
+            m_showAnimation->deleteLater();
+            m_showAnimation = 0;
+        }
+        if(animation)
+        {
+            m_showAnimation = animation;
+            m_showAnimation->setParent(this);
+            m_showAnimation->setObjectName("showAnimation");
+            connect(m_showAnimation, SIGNAL(finished()), this, SLOT(showAnimationFinished()));
+        }
+    }
+}
+
+void FwWidget::setHideAnimation(QPropertyAnimation* animation)
+{
+    if(m_hideAnimation != animation)
+    {
+        if(m_hideAnimation)
+        {
+            m_hideAnimation->stop();
+            m_hideAnimation->disconnect(this);
+            this->disconnect(m_hideAnimation);
+            m_hideAnimation->deleteLater();
+            m_hideAnimation = 0;
+        }
+        if(animation)
+        {
+            m_hideAnimation = animation;
+            m_hideAnimation->setParent(this);
+            m_hideAnimation->setObjectName("hideAnimation");
+            connect(m_hideAnimation, SIGNAL(finished()), this, SLOT(hideAnimationFinishel()));
+        }
+    }
+}
+
+void FwWidget::geometryChangedEvent(const QRect &oldRect, QRect &rect)
+{
+    if(oldRect.size() != rect.size())
+    {
+        FwResizeEvent event(m_oldSize, rect.size());
+        QCoreApplication::sendEvent(this, &event);
+    }
+    FwRectPrimitive::geometryChangedEvent(oldRect, rect);
+    m_childrenRect = rect;
+}
+
+void FwWidget::keyPressEvent(FwKeyPressEvent* event)
+{
+    Q_UNUSED(event);
+}
+
+void FwWidget::resizeEvent(FwResizeEvent* event)
+{
+    Q_UNUSED(event);
+}
+
+void FwWidget::requestAcceptEvent(FwResult* result)
+{
+    Q_UNUSED(result);
 }
