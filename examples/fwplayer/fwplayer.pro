@@ -18,8 +18,8 @@ TEMPLATE = app
 #Fireworks library
 message("Fireworks library path: $(FIREWORKS_PATH)")
 LIBS += -L$(FIREWORKS_PATH)/bin \
-        -lfireworks \
-        -lqpainter
+        -lfireworks1 \
+        -lqpainter1
 
 INCLUDEPATH += $(FIREWORKS_PATH)/src/ \
                ../qpainter/
