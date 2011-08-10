@@ -4,8 +4,6 @@ HEADERS += \
     fwgui/fwgraphicsview_inl.h \
     fwgui/fwpixmap.h \
     fwgui/fwscene.h \
-    fwgui/fwgraphicsobject_inl.h \
-    fwgui/fwgraphicsobject.h \
     fwgui/fwbrush.h \
     fwgui/fwpen.h \
     fwgui/fwrender.h \
@@ -44,7 +42,6 @@ SOURCES += \
     fwgui/fwgraphicsview.cpp \
     fwgui/fwpixmap.cpp \
     fwgui/fwscene.cpp \
-    fwgui/fwgraphicsobject.cpp \
     fwgui/fwbrush.cpp \
     fwgui/fwpen.cpp \
     fwgui/fwrender.cpp \

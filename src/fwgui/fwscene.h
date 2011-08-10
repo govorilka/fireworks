@@ -4,22 +4,22 @@
 #include <QtCore/qlist.h>
 #include <QtCore/qcoreevent.h>
 
-#include "fwgui/fwgraphicsobject.h"
-
 #include "fwtypography/fwfont.h"
 
 #include "fwgui/primitives/fwprimitivegroup.h"
 
-class FwSceneShowEvent;
-class FwSceneHideEvent;
 class FwSceneGraphicsItem;
 class FwWidget;
 class FwGraphicsView;
 class FwMessageBox;
-class FwRequest;
 
-class QResizeEvent;
-class QKeyEvent;
+class FwRequest;
+class FwResult;
+
+class FwSceneShowEvent;
+class FwSceneHideEvent;
+class FwResizeEvent;
+class FwKeyPressEvent;
 
 class FIREWORKSSHARED_EXPORT FwScene : public QObject, public FwPrimitiveGroup
 {

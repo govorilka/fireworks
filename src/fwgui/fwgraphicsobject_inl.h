@@ -1,6 +1,0 @@
-#ifndef FIREWORKS_GRAPHICSOBJECT_INL_H
-#define FIREWORKS_GRAPHICSOBJECT_INL_H
-
-#include "fwgui/fwgraphicsobject.h"
-
-#endif // FIREWORKS_GRAPHICSOBJECT_INL_H

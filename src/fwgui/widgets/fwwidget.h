@@ -7,7 +7,7 @@
 
 #include "fwtypography/fwfont.h"
 
-#include "fwgui/fwgraphicsobject.h"
+#include "fwgui/primitives/fwprimitivegroup.h"
 
 class FwScene;
 
@@ -19,6 +19,10 @@ class QTimerEvent;
 
 class FwShowEvent;
 class FwHideEvent;
+class FwKeyPressEvent;
+class FwResizeEvent;
+
+class FwResult;
 
 class FIREWORKSSHARED_EXPORT FwWidget :  public QObject, public FwPrimitiveGroup
 {
