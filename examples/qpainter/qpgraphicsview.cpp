@@ -36,19 +36,24 @@ void QPWidget::resizeEvent(QResizeEvent *e)
 }
 
 void QPWidget::paintEvent(QPaintEvent *e)
-{
-    FwPainter painter(QRect(QPoint(0, 0), size()), e->rect(), new QPRender(this));
-    m_view->render(&painter, e->rect());
-    painter.setColor(FwColor(0xFF, 0xFF, 0xFF, 0xFF));
+{ 
+    FwPainter painter(QRect(QPoint(0, 0), size()), new QPRender(this));
+    foreach(QRect rect, e->region().rects())
+    {
+        painter.begin(rect);
+        m_view->render(&painter, e->rect());
+    }
+
     e->accept();
 
     if(m_view->isSaveFrameEnable() && !m_view->debugLogDir().isEmpty())
     {
         static int imageInc = 0;
         QImage image(size(), QImage::Format_ARGB32);
+        FwPainter painter(QRect(QPoint(0, 0), size()), new QPRender(&image));
         foreach(QRect rect, e->region().rects())
         {
-            FwPainter painter(QRect(QPoint(0, 0), size()), e->rect(), new QPRender(&image));
+            painter.begin(rect);
             m_view->render(&painter, rect);
         }
 

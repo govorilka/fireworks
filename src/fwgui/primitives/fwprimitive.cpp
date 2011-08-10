@@ -109,7 +109,8 @@ void FwPrimitive::updateBuffer()
         FwRender* render = m_buffer->createRender();
         if(render)
         {
-            FwPainter painter(m_geometry->rect(), m_geometry->rect(), render);
+            FwPainter painter(m_geometry->rect(), render);
+            painter.begin(m_geometry->rect());
             paint(&painter, m_geometry->rect());
             bufferDirty = false;
         }
