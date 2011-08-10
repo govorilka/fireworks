@@ -13,9 +13,9 @@ class FIREWORKSSHARED_EXPORT FwPrimitiveGroup : public FwRectPrimitive
     typedef FwRectPrimitive BaseClass;
 
 public:
-    friend class FwGraphicsObject;
     friend class FwPrimitive;
     friend class FwScene;
+    friend class FwWidget;
 
     FwPrimitiveGroup(const QByteArray& name, FwPrimitiveGroup* parent);
     virtual ~FwPrimitiveGroup();
