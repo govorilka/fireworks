@@ -106,7 +106,7 @@ void FwItemLayout::apply(FwMLObject* object)
 FwPrimitive* FwItemLayout::nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent)
 {
     Q_UNUSED(current);
-    switch(keyEvent->key())
+    switch(keyEvent->key().qtKey())
     {
     case Qt::Key_Home:
         return items.first();
@@ -346,7 +346,7 @@ void FwHSliderLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrim
 
 FwPrimitive* FwHSliderLayout::nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent)
 {
-    switch(keyEvent->key())
+    switch(keyEvent->key().qtKey())
     {
     case Qt::Key_Right:
         return nextPrimitive(items, current);
@@ -489,7 +489,7 @@ void FwVSliderLayout::calculatePosition(const QList<FwPrimitive*>& items, FwPrim
 
 FwPrimitive* FwVSliderLayout::nextItem(const QList<FwPrimitive*>& items, FwPrimitive* current, FwKeyPressEvent* keyEvent)
 {
-    switch(keyEvent->key())
+    switch(keyEvent->key().qtKey())
     {
     case Qt::Key_Up:
         return nextPrimitive(items, current);
@@ -825,7 +825,7 @@ void FwPagesLayout::applyAnimationStep(int step)
 
 FwPrimitive* FwPagesLayout::nextItem(const QList<FwPrimitive *> &items, FwPrimitive *current, FwKeyPressEvent *keyEvent)
 {
-    switch(keyEvent->key())
+    switch(keyEvent->key().qtKey())
     {
     case Qt::Key_Up:
         return prevPrimtive(items, current);

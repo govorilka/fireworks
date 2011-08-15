@@ -40,7 +40,7 @@ FwMessageBox::~FwMessageBox()
 
 void FwMessageBox::keyPressEvent(FwKeyPressEvent *event)
 {
-    if(acceptKey(event->key()))
+    if(acceptKey(event->key().qtKey()))
     {
         event->accept();
         return;

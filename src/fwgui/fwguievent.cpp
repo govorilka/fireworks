@@ -11,54 +11,29 @@ int FwGuiEvent::qtTypeID()
     return _typeID;
 }
 
-//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-FwKeyPressEvent::FwKeyPressEvent(int key, int autoRepeatCount) :
+FwKey::FwKey() :
+    m_qtKey(0),
+    m_number(-1),
+    m_ansciiChar(0)
+{
+}
+
+FwKey::FwKey(quint32 qtKey, qint8 number, char ansciiChar) :
+    m_qtKey(qtKey),
+    m_number(number),
+    m_ansciiChar(ansciiChar)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+FwKeyPressEvent::FwKeyPressEvent(const FwKey& key, int autoRepeatCount) :
     BaseClass(),
     m_key(key),
     m_autoRepeatCount(autoRepeatCount)
 {
-}
-
-int FwKeyPressEvent::digitValue() const
-{
-    switch(m_key)
-    {
-    case Qt::Key_0:
-        return 0;
-
-    case Qt::Key_1:
-        return 1;
-
-    case Qt::Key_2:
-        return 2;
-
-    case Qt::Key_3:
-        return 3;
-
-    case Qt::Key_4:
-        return 4;
-
-    case Qt::Key_5:
-        return 5;
-
-    case Qt::Key_6:
-        return 6;
-
-    case Qt::Key_7:
-        return 7;
-
-    case Qt::Key_8:
-        return 8;
-
-    case Qt::Key_9:
-        return 9;
-
-    default:
-        break;
-    }
-
-    return -1;
 }
 
 //////////////////////////////////////////////////////////////////////////////

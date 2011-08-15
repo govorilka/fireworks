@@ -38,15 +38,62 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
+class FIREWORKSSHARED_EXPORT FwKey
+{
+public:
+    FwKey();
+    FwKey(quint32 qtKey, qint8 number = -1, char ansciiChar = 0);
+
+    inline bool isNull() const;
+
+    inline quint32 qtKey() const;
+    inline qint8 number() const;
+    inline char ansciiChar() const;
+
+    inline bool isNumder() const;
+
+private:
+    quint32 m_qtKey;
+    qint8 m_number;
+    char m_ansciiChar;
+};
+
+bool FwKey::isNull() const
+{
+    return m_qtKey == 0;
+}
+
+quint32 FwKey::qtKey() const
+{
+    return m_qtKey;
+}
+
+qint8 FwKey::number() const
+{
+    return m_number;
+}
+
+char FwKey::ansciiChar() const
+{
+    return m_ansciiChar;
+}
+
+bool FwKey::isNumder() const
+{
+    return m_number != -1;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 class FIREWORKSSHARED_EXPORT FwKeyPressEvent : public FwGuiEventTmpl<Fw::E_KeyPress>
 {
     typedef FwGuiEventTmpl<Fw::E_KeyPress> BaseClass;
 public:
     FwKeyPressEvent();
-    FwKeyPressEvent(int key, int autoRepeatCount);
+    FwKeyPressEvent(const FwKey& key, int autoRepeatCount);
 
-    inline int key() const;
-    inline void setKey(int newKey);
+    inline FwKey key() const;
+    inline void setKey(const FwKey& key);
 
     inline bool isAutoRepeat() const;
 
@@ -55,28 +102,25 @@ public:
 
     inline int count() const;
 
-    int digitValue() const;
-    inline bool isDigitKey() const;
-
 private:
-    int m_key;
+    FwKey m_key;
     int m_autoRepeatCount;
     QString m_text;
 };
 
-int FwKeyPressEvent::key() const
+FwKey FwKeyPressEvent::key() const
 {
     return m_key;
 }
 
-void FwKeyPressEvent::setKey(int newKey)
+void FwKeyPressEvent::setKey(const FwKey& key)
 {
-    m_key = newKey;
+    m_key = key;
 }
 
 bool FwKeyPressEvent::isAutoRepeat() const
 {
-    return m_autoRepeatCount > 0;
+    return m_autoRepeatCount > 1;
 }
 
 QString FwKeyPressEvent::text() const
@@ -91,12 +135,7 @@ void FwKeyPressEvent::setText(const QString& text)
 
 int FwKeyPressEvent::count() const
 {
-    return m_autoRepeatCount + 1;
-}
-
-bool FwKeyPressEvent::isDigitKey() const
-{
-    return digitValue() != -1;
+    return m_autoRepeatCount;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -129,7 +168,7 @@ QSize FwResizeEvent::newSize() const
 
 //////////////////////////////////////////////////////////////////////////////
 
-class  FIREWORKSSHARED_EXPORT FwShowEvent : public FwGuiEventTmpl<Fw::E_Show>
+class FIREWORKSSHARED_EXPORT FwShowEvent : public FwGuiEventTmpl<Fw::E_Show>
 {
     typedef FwGuiEventTmpl<Fw::E_Show> BaseClass;
 

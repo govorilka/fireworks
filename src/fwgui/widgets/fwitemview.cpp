@@ -364,7 +364,7 @@ void FwItemView::keyPressEvent(FwKeyPressEvent* keyEvent)
 {
     if(m_current)
     {
-        switch(keyEvent->key())
+        switch(keyEvent->key().qtKey())
         {
         case Qt::Key_Space:
         case Qt::Key_Return:
