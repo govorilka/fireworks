@@ -75,7 +75,8 @@ public:
     inline FwPixmapPrimitive* rightArrow() const;
     inline FwPixmapPrimitive* centerPixmap() const;
 
-    void setNextItem();
+    void goNext();
+    void goPrev();
 
 signals:
     void currentChanged(FwPrimitive* previous, FwPrimitive* current);
