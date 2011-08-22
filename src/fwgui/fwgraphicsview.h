@@ -57,6 +57,8 @@ public:
     inline void setActiveScene(const QByteArray& name);
     void setActiveScene(FwScene* scene);
 
+    inline FwScene* prevActiveScene() const;
+
     bool event(QEvent *e);
 
     void render(FwPainter* painter, const QRect& clipRect);
