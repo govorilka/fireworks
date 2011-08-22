@@ -53,4 +53,9 @@ FwImageLibrary* FwGraphicsView::imageLibrary() const
     return m_imageLibrary;
 }
 
+FwScene* FwGraphicsView::prevActiveScene() const
+{
+    return m_prevActiveScene;
+}
+
 #endif // FIREWORKS_GRAPHICSVIEW_INL_H

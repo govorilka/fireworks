@@ -3,6 +3,7 @@
 
 #include <QtCore/qlist.h>
 #include <QtCore/qcoreevent.h>
+#include <QtCore/qpointer.h>
 
 #include "fwtypography/fwfont.h"
 
@@ -57,6 +58,8 @@ public:
     inline FwRectPrimitive* darkBackground() const;
 
     virtual void cleanup();
+
+    inline QPointer<FwScene> lastScene() const;
 
 protected:
     void showEventProcessed(FwSceneShowEvent* e);
