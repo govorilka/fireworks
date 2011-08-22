@@ -75,6 +75,8 @@ public:
     inline FwPixmapPrimitive* rightArrow() const;
     inline FwPixmapPrimitive* centerPixmap() const;
 
+    void setNextItem();
+
 signals:
     void currentChanged(FwPrimitive* previous, FwPrimitive* current);
     void itemTriggered(FwPrimitive* item);

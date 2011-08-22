@@ -513,3 +513,14 @@ void FwItemView::itemAddedEvent(FwPrimitive* item)
 {
     Q_UNUSED(item);
 }
+
+void FwItemView::setNextItem()
+{
+    if(!m_items.isEmpty() && m_current)
+    {
+        int index = m_items.indexOf(m_current) + 1;
+        setCurrent(index == m_items.size() ? m_items.first() : m_items.at(index));
+        //QList<FwPrimitive*>::iterator iter = m_items.begin() + m_items.indexOf(m_current) + 1;
+        //setCurrent(iter == m_items.end() ? *(m_items.begin()) : *iter);
+    }
+}
