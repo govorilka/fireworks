@@ -34,12 +34,18 @@ FwKeyPressEvent::FwKeyPressEvent(const FwKey& key, int autoRepeatCount) :
     m_key(key),
     m_autoRepeatCount(autoRepeatCount)
 {
+    if(key.ansciiChar())
+    {
+        m_text = QChar(key.ansciiChar());
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-FwResizeEvent::FwResizeEvent(const QSize& olsSize, const QSize& newSize) :
-    BaseClass()
+FwResizeEvent::FwResizeEvent(const QSize& oldSize, const QSize& newSize) :
+    BaseClass(),
+    m_oldSize(oldSize),
+    m_newSize(newSize)
 {
 }
 
