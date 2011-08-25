@@ -217,11 +217,8 @@ bool FwGraphicsView::event(QEvent *e)
         switch(fwEvent->eventType())
         {
         case Fw::E_KeyPress:
-            if(m_activeScene)
-            {
-                return m_activeScene->keyEventProccessed(static_cast<FwKeyPressEvent*>(fwEvent));
-            }
-            break;
+            keyEvent(static_cast<FwKeyPressEvent*>(fwEvent));
+            return true;
 
         default:
             break;
@@ -274,7 +271,7 @@ void FwGraphicsView::postRequest(const FwRequest& request)
     }
 }
 
-bool FwGraphicsView::keyEventProccessed(FwKeyPressEvent* event)
+void FwGraphicsView::keyEvent(FwKeyPressEvent* event)
 {
     if(m_activeScene)
     {
@@ -282,11 +279,10 @@ bool FwGraphicsView::keyEventProccessed(FwKeyPressEvent* event)
         if(temp)
         {
             QCoreApplication::sendEvent(temp, event);
-            return true;
+            return;
         }
+        QCoreApplication::sendEvent(m_activeScene, event);
     }
-
-    return QObject::event(event);
 }
 
 bool FwGraphicsView::loadData(FwMLEngine* engine)
@@ -304,14 +300,12 @@ bool FwGraphicsView::loadData(FwMLEngine* engine)
             FwMLDocument* document = engine->addDocument(scene->name() + ".fwml");
             if(document)
             {
-                if(document->errorString().isEmpty())
-                {
-                    scene->apply(document->rootObject());
-                }
-                else
+                if(!document->errorString().isEmpty())
                 {
                     qWarning() << document->errorString();
+                    continue;
                 }
+                scene->apply(document->rootObject());
             }
         }
     }
