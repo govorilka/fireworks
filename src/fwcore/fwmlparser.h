@@ -176,12 +176,8 @@ bool FwMLParser::popNode()
 
 void FwMLParser::ignoreSpace(str_interator& c, str_interator& endChar)
 {
-    while(c != endChar)
+    while(c != endChar && (*c) && chars_type[*c] == C_Sp)
     {
-        if(*c > 128 || chars_type[*c] != C_Sp)
-        {
-            return;
-        }
         ++c;
     }
 }

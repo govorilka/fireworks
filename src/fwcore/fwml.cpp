@@ -392,6 +392,7 @@ namespace
 
     void x_doc(char c, ParseData* data) throw(FwMLParserException&)
     {
+        Q_UNUSED(c);
         data->xcmd = X_ATR;
         data->declareRoot = true;
     }
@@ -411,6 +412,7 @@ namespace
 
     void x_bst(char c, ParseData* data) throw(FwMLParserException&)
     {
+        Q_UNUSED(c);
         if(data->parent)
         {
             data->type = FwMLNode::T_String;
@@ -472,6 +474,7 @@ namespace
 
     void x_enu(char c, ParseData* data) throw(FwMLParserException&)
     {
+        Q_UNUSED(c);
         switch(data->parent->type())
         {
         case FwMLNode::T_Array:

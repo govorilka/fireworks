@@ -89,7 +89,7 @@ protected:
 
     inline void postUpdateEvent();
 
-    bool keyEventProccessed(FwKeyPressEvent* event);
+    virtual void keyEvent(FwKeyPressEvent* event);
 
 private:
     QSize m_size;
