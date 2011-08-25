@@ -145,8 +145,7 @@ class FIREWORKSSHARED_EXPORT FwResizeEvent : public FwGuiEventTmpl<Fw::E_Resize>
     typedef FwGuiEventTmpl<Fw::E_Resize> BaseClass;
 
 public:
-    FwResizeEvent();
-    FwResizeEvent(const QSize& olsSize, const QSize& newSize);
+    FwResizeEvent(const QSize& oldSize, const QSize& nSize);
 
     inline QSize oldSize() const;
     inline QSize newSize() const;
