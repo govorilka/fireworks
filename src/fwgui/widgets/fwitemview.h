@@ -78,6 +78,8 @@ public:
     void goNext();
     void goPrev();
 
+    FwPrimitive* nextItem(FwKeyPressEvent* keyEvent);
+
 signals:
     void currentChanged(FwPrimitive* previous, FwPrimitive* current);
     void itemTriggered(FwPrimitive* item);

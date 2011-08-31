@@ -377,19 +377,25 @@ void FwItemView::keyPressEvent(FwKeyPressEvent* keyEvent)
             return;
 
         default:
-            if(m_layout->canNext())
+            FwPrimitive* candidatPrimitive = nextItem(keyEvent);
+            if(candidatPrimitive)
             {
-                FwPrimitive* candidatPrimitive = m_layout->nextItem(m_items, m_current, keyEvent);
-                if(candidatPrimitive)
-                {
-                    setCurrent(candidatPrimitive);
-                    keyEvent->accept();
-                }
+                setCurrent(candidatPrimitive);
+                keyEvent->accept();
             }
         }
     }
 
     BaseClass::keyPressEvent(keyEvent);
+}
+
+FwPrimitive* FwItemView::nextItem(FwKeyPressEvent* keyEvent)
+{
+    if(m_layout->canNext())
+    {
+        return m_layout->nextItem(m_items, m_current, keyEvent);
+    }
+    return 0;
 }
 
 void FwItemView::updateCurrent(bool updateLayout)
