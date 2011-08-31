@@ -35,10 +35,7 @@ public:
     virtual ~FwWidget();
 
     inline int visibleTime() const;
-    inline void setVisibleTime(int msec);
-
-    void stopVisibleTimer();
-    void startVisibleTimer();
+    void setVisibleTime(int msec);
 
     bool event(QEvent * event);
 
@@ -57,6 +54,8 @@ public:
     void setHideAnimation(QPropertyAnimation* animation);
 
     inline QRect dirtyRect(const QRect &rect) const;
+
+    virtual bool setVisible(bool visible);
 
 protected:
     void geometryChangedEvent(const QRect &oldRect, QRect &rect);
@@ -77,6 +76,10 @@ protected slots:
     virtual void hideAnimationFinished();
 
 private:
+
+    void stopVisibleTimer();
+    void startVisibleTimer();
+
     int m_visibleTime;
     int m_visibleTimerId;
     bool m_darkBackground;
@@ -91,14 +94,6 @@ private:
 int FwWidget::visibleTime() const
 {
     return m_visibleTime;
-}
-
-void FwWidget::setVisibleTime(int msec)
-{
-    if(m_visibleTime != msec)
-    {
-        (m_visibleTime = msec) ? startVisibleTimer() : stopVisibleTimer();
-    }
 }
 
 bool FwWidget::isDarkBackgroundEnable() const

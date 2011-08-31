@@ -315,3 +315,21 @@ void FwWidget::requestAcceptEvent(FwResult* result)
 {
     Q_UNUSED(result);
 }
+
+void FwWidget::setVisibleTime(int msec)
+{
+    if(m_visibleTime != msec)
+    {
+        (m_visibleTime = msec) ? startVisibleTimer() : stopVisibleTimer(); //TODO: Refactoring function startVisibleTimer!
+    }
+}
+
+bool FwWidget::setVisible(bool visible)
+{
+    if(!BaseClass::setVisible(visible))
+    {
+        startVisibleTimer();
+        return false;
+    }
+    return true;
+}
