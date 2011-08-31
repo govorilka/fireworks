@@ -42,7 +42,7 @@ public:
 
     inline bool isVisible() const;
     inline bool isVisibleOnScreen() const;
-    void setVisible(bool visible);
+    virtual bool setVisible(bool visible);
 
     inline void show();
     inline void hide();

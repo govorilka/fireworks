@@ -165,35 +165,39 @@ void FwPrimitive::setZIndex(int zIndex)
     }
 }
 
-void FwPrimitive::setVisible(bool visible)
+bool FwPrimitive::setVisible(bool visible)
 {
-    if(m_visible != visible)
+    if(m_visible == visible)
     {
-        prepareGeometryChanged();
-
-        if(visibleOnScreen)
-        {
-            scene()->view()->update(m_boundingRect);
-        }
-
-        m_visible = visible;
-        if(m_parent)
-        {
-            visibleOnScreen = m_visible && m_parent->visibleOnScreen;
-            if(m_parent->visibleOnScreen)
-            {
-                m_parent->m_invalidateChildrenRect = true;
-                m_parent->updateChildren();
-            }
-        }
-        else
-        {
-            visibleOnScreen = m_visible;
-        }
-
-        visibleChangedEvent();
-        update();
+        return false;
     }
+
+    prepareGeometryChanged();
+
+    if(visibleOnScreen)
+    {
+        scene()->view()->update(m_boundingRect);
+    }
+
+    m_visible = visible;
+    if(m_parent)
+    {
+        visibleOnScreen = m_visible && m_parent->visibleOnScreen;
+        if(m_parent->visibleOnScreen)
+        {
+            m_parent->m_invalidateChildrenRect = true;
+            m_parent->updateChildren();
+        }
+    }
+    else
+    {
+        visibleOnScreen = m_visible;
+    }
+
+    visibleChangedEvent();
+    update();
+
+    return true;
 }
 
 void FwPrimitive::visibleChangedEvent()
