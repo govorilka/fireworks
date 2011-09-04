@@ -27,7 +27,10 @@ SOURCES += main.cpp\
     datatype.cpp \
     datanode.cpp \
     dataedit.cpp \
-    selectdatatypedialog.cpp
+    selectdatatypedialog.cpp \
+    testdocument.cpp \
+    testdocumentmodel.cpp \
+    testdocumentview.cpp
 
 HEADERS  += mainwindow.h \
     database.h \
@@ -35,13 +38,17 @@ HEADERS  += mainwindow.h \
     datatype.h \
     datanode.h \
     dataedit.h \
-    selectdatatypedialog.h
+    selectdatatypedialog.h \
+    testdocument.h \
+    testdocumentmodel.h \
+    testdocumentview.h
 
 FORMS    += mainwindow.ui \
     databaseview.ui \
     selectdatatypedialog.ui \
     dataeditroot.ui \
-    dataeditquestion.ui
+    dataeditquestion.ui \
+    testdocumentview.ui
 
 RESOURCES += \
     reactor.qrc

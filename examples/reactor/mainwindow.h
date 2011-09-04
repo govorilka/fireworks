@@ -17,6 +17,12 @@ class DataEdit;
 
 class QPrinter;
 
+namespace Test
+{
+    class Document;
+    class DocumentModel;
+}
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -27,6 +33,8 @@ public:
     ~MainWindow();
 
 public slots:
+    void documentNew();
+
     void print();
 
 private:
@@ -38,6 +46,8 @@ private:
 
     Database* m_db;
     DataEdit* m_currentEdit;
+
+    Test::DocumentModel* m_testDocument;
 
 private slots:
     void currentChanged(DataNode* node);
