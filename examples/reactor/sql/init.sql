@@ -3,13 +3,12 @@ PRAGMA FOREIGN_KEYS = ON;
 
 PRAGMA ENCODING="UTF-8";
 
-CREATE TABLE IF NOT EXISTS question (
-     questionid INTEGER PRIMARY KEY,
-     htmltext TEXT,
-     parentid INTEGER DEFAULT 0);
+CREATE TABLE IF NOT EXISTS settings (
+     settingid INTEGER PRIMARY KEY,
+     settingkey TEXT,
+     settingvalue TEXT);
 
-CREATE TABLE IF NOT EXISTS folder (
-     folderid INTEGER PRIMARY KEY,
-     parentid INTEGER DEFAULT 0,
-     caption TEXT,
-     description TEXT);
+CREATE TABLE IF NOT EXISTS questions (
+     questionid INTEGER PRIMARY KEY,
+     questionindex INTEGER DEFAULT 0,
+     htmltext TEXT);

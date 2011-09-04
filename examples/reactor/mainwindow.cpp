@@ -8,6 +8,8 @@
 #include <QtGui/qprintdialog.h>
 #include <QtGui/qprintpreviewdialog.h>
 #include <QtGui/qtextdocument.h>
+#include <QtGui/qfiledialog.h>
+#include <QtGui/qdesktopservices.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,13 +23,19 @@
 #include "datatype.h"
 #include "dataedit.h"
 
+#include "testdocumentmodel.h"
+#include "testdocumentview.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     BaseClass(parent),
     ui(new Ui::MainWindow),
     m_db(new Database(this)),
     m_printer(new QPrinter()),
-    m_currentEdit(0)
+    m_currentEdit(0),
+    m_testDocument(0)
 {
+    m_testDocument = new Test::DocumentModel(this);
+
     ui->setupUi(this);
 
     if(!m_db->open())
@@ -47,13 +55,13 @@ MainWindow::MainWindow(QWidget *parent) :
     addDockWidget(Qt::LeftDockWidgetArea, dataTreeDock);
     ui->menuDockPanels->addAction(dataTreeDock->toggleViewAction());
 
-    DatabaseView* databaseView = new DatabaseView(dataTreeDock);
-    dataTreeDock->setWidget(databaseView);
-    databaseView->setDatabase(m_db);
+    Test::DocumentView* documentView = new Test::DocumentView(m_testDocument, dataTreeDock);
+    dataTreeDock->setWidget(documentView);
 
     //connect(ui->actionBold, SIGNAL(triggered()), this,  SLOT(textEditBold()));
     //connect(ui->actionItalic, SIGNAL(triggered()), this,  SLOT(textEditItanic()));
     //connect(ui->actionUnderline, SIGNAL(triggered()), this,  SLOT(textEditUnderline()));
+    connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(documentNew()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionPrint, SIGNAL(triggered()), this, SLOT(print()));
 
@@ -154,5 +162,21 @@ void MainWindow::print()
         QTextDocument textDocument;
         textDocument.setHtml(QString("<html><body>%1</body><html>").arg(m_db->tickets(10, 3)));
         textDocument.print(m_printer);
+    }
+}
+
+void MainWindow::documentNew()
+{
+    QString documentPath = QFileDialog::getSaveFileName(this,
+                                                        tr("Create new test"),
+                                                        QDesktopServices::displayName(QDesktopServices::DocumentsLocation),
+                                                        "*.test");
+    if(!documentPath.isEmpty())
+    {
+        if(QFileInfo(documentPath).suffix().isEmpty())
+        {
+            documentPath += ".test"; //TODO: hard conding :)
+        }
+        m_testDocument->open(documentPath);
     }
 }

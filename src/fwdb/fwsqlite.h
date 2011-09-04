@@ -116,6 +116,7 @@ public:
 
     void open(const QString& fileName, const QString& initScript = QString()) throw(FwSQLiteException&);
     void open(const QString& fileName, const QString& initScript, int flags) throw(FwSQLiteException&);
+    inline bool isOpen() const;
 
     void close();
 
@@ -146,6 +147,11 @@ private:
 bool FwSQLiteDatabase::isTransactionBegin() const
 {
     return m_beginTransaction;
+}
+
+bool FwSQLiteDatabase::isOpen() const
+{
+    return m_db;
 }
 
 //////////////////////////////////////////////////////////////////////////
