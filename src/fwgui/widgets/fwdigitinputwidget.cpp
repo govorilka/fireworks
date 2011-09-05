@@ -15,6 +15,7 @@ FwDigitInputWidget::FwDigitInputWidget(const QByteArray& name, FwPrimitiveGroup*
     m_maxValue(-1)
 {
     m_digitsLabel->setString("00");
+    setVisibleTime(2000); //default value - 2 sec
 }
 
 
