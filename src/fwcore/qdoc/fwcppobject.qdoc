@@ -1,0 +1,11 @@
+/*!
+  \page fwcppobject.html
+  \headerfile "fwcore/fwcppobject.h"
+  \title FwCppObject
+
+  \class FwCppObject
+  \brief Данный класс связывает объекты FwML с объектами из cpp
+
+  Данный класс предназначен для связывания объектов из .fwml файла
+  с соответствующими объектами в C++ коде.
+  */
