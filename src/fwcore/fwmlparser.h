@@ -1,10 +1,14 @@
 #ifndef FIREWORKS_ML_PARSER_H
 #define FIREWORKS_ML_PARSER_H
 
-#include "fireworks.h"
-
 #include  <QtCore/qbytearray.h>
 #include  <QtCore/qstack.h>
+
+#include <limits>
+
+#include "fireworks.h"
+
+#define CHARS_COUNT UCHAR_MAX + 1
 
 class QIODevice;
 
@@ -24,6 +28,8 @@ public:
 
     QString message;
 };
+
+////////////////////////////////////////////////////////////////////////////////
 
 class FIREWORKSSHARED_EXPORT FwMLParser
 {
@@ -57,7 +63,8 @@ public:
 
         C_MAX = C_Err + 1
     };
-    static const quint8 chars_type[128];
+
+    static const quint8 chars_type[CHARS_COUNT];
 
     FwMLParser();
 
@@ -91,7 +98,7 @@ protected:
     void parseAttrValue(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
     void parseAttrValueEnd(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
 
-    inline void ignoreSpace(str_interator& c, str_interator& endChar);
+    inline str_interator& ignoreSpace(str_interator& c, str_interator& endChar);
 
     FwMLNode* createValue(str_interator& c) throw(FwMLParserException&);
 
@@ -174,12 +181,10 @@ bool FwMLParser::popNode()
     return false;
 }
 
-void FwMLParser::ignoreSpace(str_interator& c, str_interator& endChar)
+FwMLParser::str_interator& FwMLParser::ignoreSpace(str_interator& c, str_interator& endChar)
 {
-    while(c != endChar && (*c) && chars_type[*c] == C_Sp)
-    {
-        ++c;
-    }
+    while(c != endChar && chars_type[static_cast<unsigned char>(*c)] == C_Sp) ++c;
+    return c;
 }
 
 #endif // FIREWORKS_ML_PARSER_H

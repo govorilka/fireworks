@@ -5,9 +5,9 @@
 #include "fwmlparser.h"
 
 //Types of ASCII chars
-const quint8 FwMLParser::chars_type[128] = {
-
-      /*0 */ /*1 */ /*2 */ /*3 */ /*4 */ /*5 */ /*6 */ /*7 */
+const quint8 FwMLParser::chars_type[CHARS_COUNT] =
+{
+          /*0 */ /*1 */ /*2 */ /*3 */ /*4 */ /*5 */ /*6 */ /*7 */
 /*  0 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
 /*  8 */  C_Err, C_Sp,  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
 /* 16 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
@@ -28,6 +28,25 @@ const quint8 FwMLParser::chars_type[128] = {
 /* 112*/  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
 /* 120*/  C_AZ,  C_AZ,  C_AZ,  C_LCu, C_Uni, C_RCu, C_Uni, C_Err,
 
+/* 128*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 136*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 144*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 152*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+
+/* 160*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 168*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 176*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 184*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+
+/* 192*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 200*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 208*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 216*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+
+/* 224*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 232*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 240*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
+/* 248*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -145,7 +164,7 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
 void FwMLParser::parseObject(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
 {
     ignoreSpace(c, endChar);
-    switch(chars_type[*c])
+    switch(chars_type[static_cast<unsigned char>(*c)])
     {
     case C_AZ:
         pushState(&FwMLParser::parseAttrValue);
@@ -156,26 +175,19 @@ void FwMLParser::parseObject(str_interator& c, str_interator& endChar) throw(FwM
 
 void FwMLParser::parseAttr(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
 {
-    ignoreSpace(c, endChar);
-    if(c == endChar)
+    if(ignoreSpace(c, endChar) == endChar) return;
+
+    switch(chars_type[static_cast<unsigned char>(*c)])
     {
+    case C_AZ:
+        popState();
+        pushState(&FwMLParser::parseAttrValueEnd);
+        pushState(&FwMLParser::parseAttrValue);
+        pushState(&FwMLParser::parseName);
         return;
-    }
 
-    if(*c < 127)
-    {
-        switch(chars_type[*c])
-        {
-        case C_AZ:
-            popState();
-            pushState(&FwMLParser::parseAttrValueEnd);
-            pushState(&FwMLParser::parseAttrValue);
-            pushState(&FwMLParser::parseName);
-            return;
-
-        default:
-            break;
-        }
+    default:
+        break;
     }
 
     throw FwMLParserException(*c, m_lineIndex, column(c));
@@ -183,33 +195,26 @@ void FwMLParser::parseAttr(str_interator& c, str_interator& endChar) throw(FwMLP
 
 void FwMLParser::parseAttrValue(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
 {
-    ignoreSpace(c, endChar);
-    if(c == endChar)
+    if(ignoreSpace(c, endChar) == endChar) return;
+
+    switch(chars_type[static_cast<unsigned char>(*c)])
     {
+    case C_Col:
+        ++c;
+        popState();
+        m_attrName = m_buffer;
+        pushState(&FwMLParser::parseValue);
         return;
-    }
 
-    if(*c < 127)
-    {
-        switch(chars_type[*c])
-        {
-        case C_Col:
-            ++c;
-            popState();
-            m_attrName = m_buffer;
-            pushState(&FwMLParser::parseValue);
-            return;
-
-        default:
-            break;
-        }
+    default:
+        break;
     }
 
     throw FwMLParserException(*c, m_lineIndex, column(c));
 }
 
 void FwMLParser::parseAttrValueEnd(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
-{    
+{
     if(m_bufferType != BT_Empty)
     {
         FwMLNode* child = createValue(c);
@@ -223,25 +228,18 @@ void FwMLParser::parseAttrValueEnd(str_interator& c, str_interator& endChar) thr
         m_attrName = QByteArray();
     }
 
-    ignoreSpace(c, endChar);
-    if(c == endChar)
+    if(ignoreSpace(c, endChar) == endChar) return;
+
+    switch(chars_type[static_cast<unsigned char>(*c)])
     {
+    case C_Sep:
+        popState();
+        pushState(&FwMLParser::parseAttr);
+        ++c;
         return;
-    }
 
-    if(*c < 127)
-    {
-        switch(chars_type[*c])
-        {
-        case C_Sep:
-            popState();
-            pushState(&FwMLParser::parseAttr);
-            ++c;
-            return;
-
-        default:
-            break;
-        }
+    default:
+        break;
     }
 
     qDebug() << "FwMLParser::parseAttrValueEnd" << m_attrName << m_buffer;
@@ -253,29 +251,22 @@ void FwMLParser::parseValue(str_interator& c, str_interator& endChar) throw(FwML
     m_buffer = QByteArray();
     m_bufferType = BT_Empty;
 
-    ignoreSpace(c, endChar);
-    if(c == endChar)
+    if(ignoreSpace(c, endChar) == endChar) return;
+
+    switch(chars_type[static_cast<unsigned char>(*c)])
     {
+    case C_AZ:
+        popState();
+        pushState(&FwMLParser::parseName);
         return;
-    }
 
-    if(*c < 127)
-    {
-        switch(chars_type[*c])
-        {
-        case C_AZ:
-            popState();
-            pushState(&FwMLParser::parseName);
-            return;
+    case C_Str:
+        popState();
+        pushState(&FwMLParser::parseString);
+        return;
 
-        case C_Str:
-            popState();
-            pushState(&FwMLParser::parseString);
-            return;
-
-        default:
-            break;
-        }
+    default:
+        break;
     }
 
     throw FwMLParserException(*c, m_lineIndex, column(c));
@@ -289,12 +280,7 @@ void FwMLParser::parseName(str_interator& c, str_interator& endChar) throw(FwMLP
     ignoreSpace(c, endChar);
     while(c != endChar)
     {
-        if(*c > 127)
-        {
-            throw FwMLParserException(*c, m_lineIndex, column(c));
-        }
-
-        switch(chars_type[*c])
+        switch(chars_type[static_cast<unsigned char>(*c)])
         {
         case C_AZ:
         case C_Num:
@@ -302,6 +288,11 @@ void FwMLParser::parseName(str_interator& c, str_interator& endChar) throw(FwMLP
             m_buffer += (*c);
             ++c;
             break;
+
+        case C_Uni:
+        case C_Err:
+            throw FwMLParserException(*c, m_lineIndex, column(c));
+            return;
 
         default:
             return;
@@ -311,7 +302,7 @@ void FwMLParser::parseName(str_interator& c, str_interator& endChar) throw(FwMLP
 
 void FwMLParser::parseString(str_interator& c, str_interator& endChar) throw(FwMLParserException&)
 {
-    if(chars_type[*c] != C_Str)
+    if(chars_type[static_cast<unsigned char>(*c)] != C_Str)
     {
         throw FwMLParserException(*c, m_lineIndex, column(c));
         return;
@@ -333,7 +324,6 @@ void FwMLParser::parseString(str_interator& c, str_interator& endChar) throw(FwM
             m_buffer += nextChar;
             break;
         }
-
     }
 }
 

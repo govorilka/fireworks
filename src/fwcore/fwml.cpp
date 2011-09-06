@@ -425,6 +425,7 @@ namespace
 
     void x_est(char c, ParseData* data) throw(FwMLParserException&)
     {
+        Q_UNUSED(c);
         switch(data->parent->type())
         {
         case FwMLNode::T_Array:
@@ -514,6 +515,7 @@ namespace
 
     void x_ob1(char c, ParseData* data) throw(FwMLParserException&)
     {
+        Q_UNUSED(c);
         data->type = FwMLNode::T_Object;
         data->setupValue();
         data->xcmd = X_ATR;
