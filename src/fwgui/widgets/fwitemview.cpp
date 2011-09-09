@@ -524,6 +524,7 @@ void FwItemView::goNext()
 {
     if(!m_items.isEmpty() && m_current)
     {
+        qDebug() << "FwItemView::goNext success enter!!!";
         int index = m_items.indexOf(m_current) + 1;
         setCurrent(index == m_items.size() ? m_items.first() : m_items.at(index));
     }
