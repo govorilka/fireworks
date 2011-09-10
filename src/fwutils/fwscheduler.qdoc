@@ -44,5 +44,14 @@
 
  \fn QString FwScheduler::lastError() const;
  Возвращает строку с текстом последней ошибки
+ 
+ \fn void FwScheduler::release();
+ Уничтожение планировщика задач
+
+ \fn bool FwScheduler::loadConfig();
+ Загрузка конфигурации планировщика задач. В случае успеха возвращает true.
+ 
+ \fn bool FwScheduler::loadData(FwMLObject *object);
+ Загрузка из fwml объекта object.
 */
 #include "fwutils/fwscheduler.h"
