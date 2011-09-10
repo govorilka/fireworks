@@ -1,14 +1,18 @@
+
+#include "fwutils/fwscheduler.h"
+
 /*!
  \headerfile "fwsheduler.h"
  
   \class FwScheduler
-  \brief Данный класс представляет собой планеровщик задач.
+  \brief Данный класс представляет собой реализацию планировщика задач.
   \ingroup fwutils
 
   FwScheduler позволяет создавать и управлять различными задачами (например,
-  сетевые или системные).
-  Есть возможность загружать конфигурацию менеджера задач из fwml файла.
-  */
+  сетевые или системные), задавать интервал с которым каждая задача будет
+  выполняться выполнения задачи  Класс поддерживает загрузку конфигурации в
+  формате fwml.
+*/
 
 /*!
  \fn int FwScheduler::addTask(FwSchedulerTask* task);
@@ -54,4 +58,4 @@
  \fn bool FwScheduler::loadData(FwMLObject *object);
  Загрузка из fwml объекта object.
 */
-#include "fwutils/fwscheduler.h"
+
