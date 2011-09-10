@@ -30,5 +30,6 @@
         <file>images/menu/db_connect.png</file>
         <file>images/datatreetools/filter_delete.png</file>
         <file>images/datatreetools/filter_add.png</file>
+        <file>images/menu/new.png</file>
     </qresource>
 </RCC>
