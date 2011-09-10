@@ -80,27 +80,27 @@ protected:
     inline void pushNode(FwMLNode* node);
     inline bool popNode();
 
-    typedef const char* str_interator;
-    typedef void(FwMLParser::*StateFunc)(str_interator& c, str_interator& endChar);
+    typedef QByteArray Str;
+    typedef Str::const_iterator StrIterator;
+    inline static quint8 charType(const StrIterator& current);
+    typedef void(FwMLParser::*StateFunc)(StrIterator& current, StrIterator& end);
 
     inline void pushState(StateFunc function);
     inline bool popState();
 
     //State functions
-    void parseObject(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
+    void parseObject(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
-    void parseValue(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
+    void parseValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
-    void parseName(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
-    void parseString(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
+    void parseName(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
+    void parseString(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
-    void parseAttr(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
-    void parseAttrValue(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
-    void parseAttrValueEnd(str_interator& c, str_interator& endChar) throw(FwMLParserException&);
+    void parseAttr(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
+    void parseAttrValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
+    void parseAttrValueEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
-    inline str_interator& ignoreSpace(str_interator& c, str_interator& endChar);
-
-    FwMLNode* createValue(str_interator& c) throw(FwMLParserException&);
+    FwMLNode* createValue(StrIterator& current) throw(FwMLParserException&);
 
 private:
 
@@ -181,10 +181,9 @@ bool FwMLParser::popNode()
     return false;
 }
 
-FwMLParser::str_interator& FwMLParser::ignoreSpace(str_interator& c, str_interator& endChar)
+quint8 FwMLParser::charType(const StrIterator& current)
 {
-    while(c != endChar && chars_type[static_cast<unsigned char>(*c)] == C_Sp) ++c;
-    return c;
+    return chars_type[static_cast<unsigned char>(*current)];
 }
 
 #endif // FIREWORKS_ML_PARSER_H
