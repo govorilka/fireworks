@@ -92,8 +92,11 @@ FwMLParser::FwMLParser() :
     m_bufferType(BT_Empty),
     m_lineIndex(0),
     m_stateFunction(0),
-    m_currentNode(0)
+    m_currentNode(0),
+    m_bufferUint(0),
+    m_bufferNegative(false)
 {
+    clearBuffer();
 }
 
 bool FwMLParser::parse(FwMLObject* object, const QByteArray& fwml)
@@ -247,18 +250,21 @@ void FwMLParser::parseAttrValueEnd(StrIterator& current, StrIterator& end) throw
 void FwMLParser::parseValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
     Q_UNUSED(end);
-    m_buffer = QByteArray();
-    m_bufferType = BT_Empty;
+    popState();
+    clearBuffer();
     switch(charType(current))
     {
-    case C_AZ:
-        popState();
+    case C_AZ: 
         pushState(&FwMLParser::parseName);
         return;
 
     case C_Str:
-        popState();
         pushState(&FwMLParser::parseString);
+        return;
+
+    case C_Num:
+        m_bufferType = BT_UInt;
+        pushState(&FwMLParser::parseUInt);
         return;
 
     default:
@@ -295,12 +301,7 @@ void FwMLParser::parseName(StrIterator& current, StrIterator& end) throw(FwMLPar
 
 void FwMLParser::parseString(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
-    if(charType(current) != C_Str)
-    {
-        throw FwMLParserException(*current, m_lineIndex, column(current));
-        return;
-    }
-
+    ++current; //Skip first quote
     m_bufferType = BT_String;
     while(++current != end)
     {
@@ -314,6 +315,32 @@ void FwMLParser::parseString(StrIterator& current, StrIterator& end) throw(FwMLP
             m_buffer += (*current);
             break;
         }
+    }
+}
+
+void FwMLParser::parseUInt(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+{
+    popState();
+    int digitCount = 0;
+    int firstDigit = (*current) - '0';
+    while(current != end)
+    {
+        switch(charType(current))
+        {
+        case C_Num:
+            m_bufferUint = m_bufferUint * 10 + (*current) - '0';
+            if(m_bufferType && ++digitCount == 9 && charType(current + 1) == C_Num)
+            {
+                int digit = (*(++current)) - '0';
+                if(firstDigit > 4 || (firstDigit == 4 && digit > 6))
+                {
+                    throw FwMLParserException(QString("Number is big"), m_lineIndex, column(current));
+                }
+                m_bufferUint = m_bufferUint * 10 + digit;
+                return;
+            }
+        }
+        ++current;
     }
 }
 
@@ -345,6 +372,10 @@ FwMLNode* FwMLParser::createValue(StrIterator& current) throw(FwMLParserExceptio
                     child = new FwMLString(m_buffer);
                 }
             }
+            break;
+
+        case BT_UInt:
+            child = new FwMLUIntNumber(m_bufferUint);
             break;
 
         default:

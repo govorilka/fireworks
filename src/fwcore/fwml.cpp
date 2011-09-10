@@ -780,6 +780,12 @@ FwMLUIntNumber::FwMLUIntNumber() :
 {
 }
 
+FwMLUIntNumber::FwMLUIntNumber(quint32 value) :
+    BaseClass(),
+    m_value(value)
+{
+}
+
 FwMLUIntNumber::FwMLUIntNumber(quint32 value, const QByteArray& attrName, FwMLObject* parent) :
    BaseClass(attrName, parent),
    m_value(value)

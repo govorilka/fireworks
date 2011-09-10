@@ -92,14 +92,15 @@ protected:
     void parseObject(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
     void parseValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
-
     void parseName(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
     void parseString(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
+    void parseUInt(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
     void parseAttr(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
     void parseAttrValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
     void parseAttrValueEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
+    inline void clearBuffer();
     FwMLNode* createValue(StrIterator& current) throw(FwMLParserException&);
 
 private:
@@ -117,10 +118,14 @@ private:
     {
         BT_Empty,
         BT_Name,
-        BT_String
+        BT_String,
+        BT_UInt,
     };
+
     BufferType m_bufferType;
     QByteArray m_buffer;
+    quint32 m_bufferUint;
+    bool m_bufferNegative;
 
     QByteArray m_attrName;
 
@@ -184,6 +189,14 @@ bool FwMLParser::popNode()
 quint8 FwMLParser::charType(const StrIterator& current)
 {
     return chars_type[static_cast<unsigned char>(*current)];
+}
+
+void FwMLParser::clearBuffer()
+{
+    m_bufferType = BT_Empty;
+    m_buffer = QByteArray();
+    m_bufferUint = 0;
+    m_bufferNegative = false;
 }
 
 #endif // FIREWORKS_ML_PARSER_H
