@@ -40,9 +40,5 @@ HEADERS  += \
     playerscene5.h \
     playerscene6.h
 
-OTHER_FILES += \
-    $(FIREWORKS_PATH)/bin/example2.fwml \
-    $(FIREWORKS_PATH)/bin/example.fwml \
-    $(FIREWORKS_PATH)/bin/example3.fwml \
-    $(FIREWORKS_PATH)/bin/example4.fwml \
-    $(FIREWORKS_PATH)/bin/example5.fwml
+include(../../bin/examples/examples.pri)
+
