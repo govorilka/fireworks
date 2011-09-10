@@ -9,7 +9,7 @@ const quint8 FwMLParser::chars_type[CHARS_COUNT] =
 {
           /*0 */ /*1 */ /*2 */ /*3 */ /*4 */ /*5 */ /*6 */ /*7 */
 /*  0 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
-/*  8 */  C_Err, C_Sp,  C_Err, C_Err, C_Err, C_Sp,  C_Err, C_Err,
+/*  8 */  C_Err, C_Sp,  C_Sp,  C_Err, C_Err, C_Sp,  C_Err, C_Err,
 /* 16 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
 /* 24 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
 
@@ -136,16 +136,19 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
         while(!ioDevice->atEnd())
         {
             ++m_lineIndex;
-            m_currentLine = ioDevice->readLine();
+            m_currentLine = ioDevice->readLine().trimmed();
             current = m_currentLine.begin();
             end = m_currentLine.end();
-            while(current != end && charType(current) == C_Sp)
-            {
-                ++current;
-            }
             while(current != end)
             {
-                (this->*FwMLParser::m_stateFunction)(current, end);
+                if(charType(current) == C_Sp)
+                {
+                    ++current;
+                }
+                else
+                {
+                    (this->*FwMLParser::m_stateFunction)(current, end);
+                }
             }
         }
         while(m_stateFunction)
@@ -184,6 +187,7 @@ void FwMLParser::parseAttr(StrIterator& current, StrIterator& end) throw(FwMLPar
     {
     case C_AZ:
         popState();
+        pushState(&FwMLParser::parseAttrEnd);
         pushState(&FwMLParser::parseAttrValueEnd);
         pushState(&FwMLParser::parseAttrValue);
         pushState(&FwMLParser::parseName);
@@ -218,19 +222,22 @@ void FwMLParser::parseAttrValue(StrIterator& current, StrIterator& end) throw(Fw
 void FwMLParser::parseAttrValueEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
     Q_UNUSED(end);
-    if(m_bufferType != BT_Empty)
-    {
-        FwMLNode* child = createValue(current);
-        if(m_attrName.isEmpty())
-        {
-            throw FwMLParserException(QString("Attribute name is empty"), m_lineIndex, column(current));
-            return;
-        }
 
-        static_cast<FwMLObject*>(m_currentNode)->addAttribute(m_attrName, child);
-        m_attrName = QByteArray();
+    FwMLNode* child = createValue(current);
+    if(m_attrName.isEmpty())
+    {
+        throw FwMLParserException(QString("Attribute name is empty"), m_lineIndex, column(current));
+        return;
     }
 
+    static_cast<FwMLObject*>(m_currentNode)->addAttribute(m_attrName, child);
+    m_attrName = QByteArray();
+
+    popState();
+}
+
+void FwMLParser::parseAttrEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+{
     switch(charType(current))
     {
     case C_Sep:
@@ -246,6 +253,7 @@ void FwMLParser::parseAttrValueEnd(StrIterator& current, StrIterator& end) throw
     qDebug() << "FwMLParser::parseAttrValueEnd" << m_attrName << m_buffer;
     throw FwMLParserException(*current, m_lineIndex, column(current));
 }
+
 
 void FwMLParser::parseValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
@@ -328,17 +336,30 @@ void FwMLParser::parseUInt(StrIterator& current, StrIterator& end) throw(FwMLPar
         switch(charType(current))
         {
         case C_Num:
-            m_bufferUint = m_bufferUint * 10 + (*current) - '0';
-            if(m_bufferType && ++digitCount == 9 && charType(current + 1) == C_Num)
             {
-                int digit = (*(++current)) - '0';
-                if(firstDigit > 4 || (firstDigit == 4 && digit > 6))
+                int digit = (*current) - '0';
+                if(m_bufferType)
                 {
-                    throw FwMLParserException(QString("Number is big"), m_lineIndex, column(current));
+                    if(!firstDigit)
+                    {
+                        firstDigit = digit;
+                    }
+                    else
+                    {
+                        ++digitCount;
+                        if((digitCount == 9 && firstDigit > 4) || (digitCount == 10))
+                        {
+                            throw FwMLParserException(QString("Number is big"), m_lineIndex, column(current));
+                            return;
+                        }
+                    }
                 }
                 m_bufferUint = m_bufferUint * 10 + digit;
-                return;
             }
+            break;
+
+        default:
+            return;
         }
         ++current;
     }

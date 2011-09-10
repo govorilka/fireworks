@@ -8,7 +8,7 @@ TEMPLATE = app
 INCLUDEPATH += ../../src/
 
 LIBS += -L../../bin \
-        -lfireworks1
+        -lfireworks3
 
 SOURCES += main.cpp\
         mainwindow.cpp
