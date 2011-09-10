@@ -87,14 +87,14 @@
      <x>0</x>
      <y>0</y>
      <width>491</width>
-     <height>20</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="actionDatabaseConnect"/>
+    <addaction name="actionNew"/>
     <addaction name="separator"/>
     <addaction name="actionDatabaseAdd"/>
     <addaction name="actionDatabaseDelete"/>
@@ -133,7 +133,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionDatabaseConnect"/>
+   <addaction name="actionNew"/>
    <addaction name="separator"/>
    <addaction name="actionDatabaseAdd"/>
    <addaction name="actionDatabaseDelete"/>
@@ -164,13 +164,16 @@
     <string>Structure dock</string>
    </property>
   </action>
-  <action name="actionDatabaseConnect">
+  <action name="actionNew">
    <property name="icon">
     <iconset resource="reactor.qrc">
-     <normaloff>:/reactor/images/menu/db_connect.png</normaloff>:/reactor/images/menu/db_connect.png</iconset>
+     <normaloff>:/reactor/images/menu/new.png</normaloff>:/reactor/images/menu/new.png</iconset>
    </property>
    <property name="text">
-    <string>Database connect</string>
+    <string>New</string>
+   </property>
+   <property name="toolTip">
+    <string>Create new test</string>
    </property>
   </action>
   <action name="actionDatabaseAdd">
