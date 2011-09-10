@@ -99,6 +99,7 @@ protected:
     void parseAttr(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
     void parseAttrValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
     void parseAttrValueEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
+    void parseAttrEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
     inline void clearBuffer();
     FwMLNode* createValue(StrIterator& current) throw(FwMLParserException&);
