@@ -143,6 +143,7 @@ class FIREWORKSSHARED_EXPORT FwMLUIntNumber : public FwMLBase<FwMLNode::T_UIntNu
     typedef FwMLBase<FwMLNode::T_UIntNumber> BaseClass;
 public:   
     FwMLUIntNumber();
+    FwMLUIntNumber(quint32 value);
     FwMLUIntNumber(quint32 value, const QByteArray& attrName, FwMLObject* parent);
     FwMLUIntNumber(quint32 value, FwMLArray* parent);
 
