@@ -1,0 +1,48 @@
+/*!
+ \headerfile "fwsheduler.h"
+ 
+  \class FwScheduler
+  \brief Данный класс представляет собой планеровщик задач.
+  \ingroup fwutils
+
+  FwScheduler позволяет создавать и управлять различными задачами (например,
+  сетевые или системные).
+  Есть возможность загружать конфигурацию менеджера задач из fwml файла.
+  */
+
+/*!
+ \fn int FwScheduler::addTask(FwSchedulerTask* task);
+ Добавляет задачу task  в список задач менеджера, и возвращает
+ ее идентифекатор в списке.
+ 
+ \fn bool FwScheduler::startTask(FwSchedulerTask* task);
+ Запускает задачу task на выполнение, т.е. кладет ее в 
+ очередь событий на выполнение. В случае успеха возвращает true
+ 
+ \fn bool FwScheduler::startTask(int taskId);
+ Запускает задачу, которая имеет id = taskId. В случае успеха возвращает true.
+ 
+ \fn bool FwScheduler::stopTask(FwSchedulerTask* task);
+ Останавливает задачу task. В случае успеха возвращает true.
+ 
+ \fn bool FwScheduler::stopTask(int taskId);
+ Останавливает задачу с id = taskId. В случае успеха возвращает true.
+ 
+ \fn void FwScheduler::startAllTasks();
+ Запуск всех задач из списка менеджера
+ 
+ \fn void FwScheduler::stopAllTasks();
+ Остановка всех задач из списка менеджера
+
+ \fn bool FwScheduler::postEvent(int taskId, QEvent* event);
+ Ставит в очередь событий событие event для задачи с id = taskId. 
+ В случае успеха возвращает true.
+
+ \fn static QList<FwSchedulerTask*> FwScheduler::loadTasks(const QString& filename, QString* error);
+ Загружает список задач из файла с именем fileName, в случае возникновения ошибки
+ она заносится в error. Функция возвращает список задач.
+
+ \fn QString FwScheduler::lastError() const;
+ Возвращает строку с текстом последней ошибки
+*/
+#include "fwutils/fwscheduler.h"

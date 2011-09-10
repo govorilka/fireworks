@@ -17,5 +17,3 @@ SOURCES += \
     fwutils/fwconsole.cpp \
     fwutils/fwconfig.cpp \
     fwutils/fwrequest.cpp
-
-win32:SOURCES +=

@@ -36,9 +36,9 @@ public:
     int addTask(FwSchedulerTask* task);
 
     inline bool startTask(int taskId);
-    inline bool stopTask(int taskId);
-
     bool startTask(FwSchedulerTask* task);
+
+    inline bool stopTask(int taskId);
     bool stopTask(FwSchedulerTask* task);
 
     void startAllTasks();
