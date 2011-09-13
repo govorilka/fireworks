@@ -6,6 +6,7 @@
  
   \class FwScheduler
   \brief Данный класс представляет собой реализацию планировщика задач.
+  \inherits QThread, QObject
   \ingroup fwutils
 
   FwScheduler позволяет создавать и управлять различными задачами (например,
@@ -16,28 +17,33 @@
 
 /*!
  \fn int FwScheduler::addTask(FwSchedulerTask* task);
+ \param task - добавляемая задача
  Добавляет задачу task  в список задач менеджера, и возвращает
  ее идентификатор в списке.
  */
 
 /*! 
  \fn bool FwScheduler::startTask(FwSchedulerTask* task);
+ \param task - запускаемая задача
  Запускает задачу task на выполнение, т.е. кладет ее в 
  очередь событий на выполнение. В случае успеха возвращает true
 */
 
 /*! 
  \fn bool FwScheduler::startTask(int taskId);
+ \param taskId - уникальный номер задачи в списке задач менеджера
  Запускает задачу, которая имеет id = taskId. В случае успеха возвращает true.
 */
 
 /*! 
  \fn bool FwScheduler::stopTask(FwSchedulerTask* task);
+ \param task - останавливаемая задача
  Останавливает задачу task. В случае успеха возвращает true.
 */
 
 /*! 
  \fn bool FwScheduler::stopTask(int taskId);
+ \param taskId - уникальный номер задачи в списке задач менеджера
  Останавливает задачу с id = taskId. В случае успеха возвращает true.
 */
 
@@ -53,12 +59,16 @@
 
 /*!
  \fn bool FwScheduler::postEvent(int taskId, QEvent* event);
+ \variable taskId - уникальный номер задачи в списке задач менеджера
+ \variable event - событие, которому в соответствии ставится задача
  Ставит в очередь событий событие event для задачи с id = taskId. 
  В случае успеха возвращает true.
 */
 
 /*!
  \fn static QList<FwSchedulerTask*> FwScheduler::loadTasks(const QString& filename, QString* error);
+ \param filename - имя файла с задачами
+ \param error - строка, содержащая описание ошибки
  Загружает список задач из файла с именем fileName, в случае возникновения ошибки
  она заносится в error. Функция возвращает список задач.
 */
@@ -80,6 +90,40 @@
 
 /*! 
  \fn bool FwScheduler::loadData(FwMLObject *object);
+ \param object - объект из которого загружается информация
  Загрузка из fwml объекта object.
 */
 
+/*!
+ \fn void FwScheduler::run();
+ Запуск менеджера задач.
+*/
+
+/*!
+ \class FwSchedulerNetworkManager
+ \brief Класс-планировщик, предназначенный для сетевых задач
+ \inherits QNetworkAccessManager
+ Данный тип планировщика предназначен для управления сетевыми задачами.
+*/
+
+/*!
+FwSchedulerNetworkManager::FwSchedulerNetworkManager(QObject* parent = 0);
+ \param - родитель, потомком которого будет являться наш список. Параметр нужен для механизмов Qt.
+Конструктор, необходим для создания объектов данного класса
+*/
+
+/*!
+ \fn QNetworkReply* FwSchedulerNetworkManager::get(FwNetworkSchedulerTask* task, const QUrl& url);
+*/
+
+/*!
+   void replyFinished(QNetworkReply* reply);
+  \param reply - данные для сетевой задачи
+   Слот, обрабатывающий завершение выполнения задачи.
+*/
+
+/*!
+ void FwSchedulerNetworkManager::replyDestroy(QObject* object);
+ \param object - объект по которому ищется задача
+Удаляется из списка, найденная по параметру object, задача.
+*/
