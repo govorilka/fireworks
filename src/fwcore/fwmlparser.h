@@ -86,7 +86,7 @@ protected:
     typedef void(FwMLParser::*StateFunc)(StrIterator& current, StrIterator& end);
 
     inline void pushState(StateFunc function);
-    inline bool popState();
+    inline void popState(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
     //State functions
     void parseObject(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
@@ -99,7 +99,6 @@ protected:
 
     void parseAttr(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
     void parseAttrValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
-    void parseAttrValueEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
     void parseAttrEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
     inline void clearBuffer();
@@ -112,9 +111,7 @@ private:
     int m_lineIndex;
     QByteArray m_currentLine;
 
-
     QStack<StateFunc> m_stateFunctionStack;
-    StateFunc m_stateFunction;
 
     enum BufferType
     {
@@ -152,22 +149,13 @@ int FwMLParser::column(const char* c) const
 
 void FwMLParser::pushState(StateFunc function)
 {
-    if(m_stateFunction)
-    {
-        m_stateFunctionStack.push(m_stateFunction);
-    }
-    m_stateFunction = function;
+    m_stateFunctionStack.push(function);
 }
 
-bool FwMLParser::popState()
+void FwMLParser::popState(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
-    if(!m_stateFunctionStack.isEmpty())
-    {
-        m_stateFunction = m_stateFunctionStack.pop();
-        return true;
-    }
-    m_stateFunction = 0;
-    return false;
+    StateFunc state = m_stateFunctionStack.pop();
+    (this->*state)(current, end);
 }
 
 void FwMLParser::pushNode(FwMLNode* node)
