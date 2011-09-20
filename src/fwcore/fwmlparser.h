@@ -95,6 +95,7 @@ protected:
     void parseName(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
     void parseString(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
     void parseUInt(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
+    void parseDouble(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
 
     void parseAttr(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
     void parseAttrValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
@@ -121,6 +122,7 @@ private:
         BT_Name,
         BT_String,
         BT_UInt,
+        BT_Real
     };
 
     BufferType m_bufferType;

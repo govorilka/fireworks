@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
                       "\"zero_str\" : \"\" \n"
                       "}";*/
 
-    QByteArray fwml = "bgcolor : \"orange\", visible : false, color : white, width : 001234567890 ";
+    QByteArray fwml = "bgcolor : \"orange\", visible : false, color : white, width : 001234567890, height1 : 2.25, height2 : 3e-3, height3 : 5.";
 
     QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);
     rootItem->setText(0, "root");
