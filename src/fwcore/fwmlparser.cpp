@@ -91,7 +91,6 @@ FwMLParserException::~FwMLParserException() throw()
 FwMLParser::FwMLParser() :
     m_bufferType(BT_Empty),
     m_lineIndex(0),
-    m_stateFunction(0),
     m_currentNode(0),
     m_bufferUint(0),
     m_bufferNegative(false)
@@ -127,7 +126,7 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
         m_currentNode = object;
 
         m_stateFunctionStack.clear();
-        m_stateFunction = &FwMLParser::parseAttr;
+        pushState(&FwMLParser::parseAttr);
 
         m_lineIndex = 0;
 
@@ -147,16 +146,14 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
                 }
                 else
                 {
-                    (this->*FwMLParser::m_stateFunction)(current, end);
+                    popState(current, end);
                 }
             }
         }
-        while(m_stateFunction)
+        while(!m_stateFunctionStack.isEmpty())
         {
-            (this->*FwMLParser::m_stateFunction)(current, end);
-            popState();
+            popState(current, end);
         }
-
     }
     catch(FwMLParserException& e)
     {
@@ -182,47 +179,49 @@ void FwMLParser::parseObject(StrIterator& current, StrIterator& end) throw(FwMLP
 
 void FwMLParser::parseAttr(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
+    Q_UNUSED(current);
     Q_UNUSED(end);
-    switch(charType(current))
-    {
-    case C_AZ:
-        popState();
-        pushState(&FwMLParser::parseAttrEnd);
-        pushState(&FwMLParser::parseAttrValueEnd);
-        pushState(&FwMLParser::parseAttrValue);
-        pushState(&FwMLParser::parseName);
-        return;
-
-    default:
-        break;
-    }
-
-    throw FwMLParserException(*current, m_lineIndex, column(current));
+    pushState(&FwMLParser::parseAttrEnd);
+    pushState(&FwMLParser::parseAttrValue);
+    pushState(&FwMLParser::parseValue);
 }
 
 void FwMLParser::parseAttrValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
     Q_UNUSED(end);
+
+    switch(m_bufferType)
+    {
+    case BT_String:
+    case BT_Name:
+        m_attrName = m_buffer;
+        if(m_attrName.isEmpty())
+        {
+            throw FwMLParserException(QString("Attribute name is empty"), m_lineIndex, column(current));
+        }
+        clearBuffer();
+        break;
+
+    default:
+        throw FwMLParserException(QString("Invalid attribute name"), m_lineIndex, column(current));
+        break;
+    }
+
     switch(charType(current))
     {
     case C_Col:
         ++current;
-        popState();
-        m_attrName = m_buffer;
         pushState(&FwMLParser::parseValue);
-        return;
+        break;
 
     default:
+        throw FwMLParserException(*current, m_lineIndex, column(current));
         break;
     }
-
-    throw FwMLParserException(*current, m_lineIndex, column(current));
 }
 
-void FwMLParser::parseAttrValueEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
-{
-    Q_UNUSED(end);
-
+void FwMLParser::parseAttrEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+{  
     FwMLNode* child = createValue(current);
     if(m_attrName.isEmpty())
     {
@@ -233,47 +232,52 @@ void FwMLParser::parseAttrValueEnd(StrIterator& current, StrIterator& end) throw
     static_cast<FwMLObject*>(m_currentNode)->addAttribute(m_attrName, child);
     m_attrName = QByteArray();
 
-    popState();
-}
-
-void FwMLParser::parseAttrEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
-{
-    switch(charType(current))
+    if(current != end)
     {
-    case C_Sep:
-        popState();
-        pushState(&FwMLParser::parseAttr);
-        ++current;
-        return;
+        switch(charType(current))
+        {
+        case C_Sep:
+            pushState(&FwMLParser::parseAttr);
+            ++current;
+            return;
 
-    default:
-        break;
+        default:
+            break;
+        }
+
+        qDebug() << "FwMLParser::parseAttrValueEnd" << m_attrName << m_buffer;
+        throw FwMLParserException(*current, m_lineIndex, column(current));
     }
-
-    qDebug() << "FwMLParser::parseAttrValueEnd" << m_attrName << m_buffer;
-    throw FwMLParserException(*current, m_lineIndex, column(current));
 }
 
 
 void FwMLParser::parseValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
     Q_UNUSED(end);
-    popState();
+
     clearBuffer();
     switch(charType(current))
     {
     case C_AZ: 
     case C_Ee:
+        m_bufferType = BT_Name;
         pushState(&FwMLParser::parseName);
         return;
 
     case C_Str:
+        ++current; //Skip first quote
+        m_bufferType = BT_String;
         pushState(&FwMLParser::parseString);
         return;
 
     case C_Num:
         m_bufferType = BT_UInt;
         pushState(&FwMLParser::parseUInt);
+        return;
+
+    case C_Fra:
+        m_bufferType = BT_Real;
+        pushState(&FwMLParser::parseDouble);
         return;
 
     default:
@@ -284,8 +288,6 @@ void FwMLParser::parseValue(StrIterator& current, StrIterator& end) throw(FwMLPa
 
 void FwMLParser::parseName(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
-    popState();
-    m_bufferType = BT_Name;
     while(current != end)
     {
         switch(charType(current))
@@ -310,16 +312,12 @@ void FwMLParser::parseName(StrIterator& current, StrIterator& end) throw(FwMLPar
 
 void FwMLParser::parseString(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
-    ++current; //Skip first quote
-
-    m_bufferType = BT_String;
     while(++current != end)
     {
         switch(charType(current))
         {
         case C_Str:
             ++current;
-            popState();
             return;
 
         default:
@@ -331,7 +329,6 @@ void FwMLParser::parseString(StrIterator& current, StrIterator& end) throw(FwMLP
 
 void FwMLParser::parseUInt(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
-    popState();
     int digitCount = 0;
     int firstDigit = (*current) - '0';
     while(current != end)
@@ -375,7 +372,6 @@ void FwMLParser::parseUInt(StrIterator& current, StrIterator& end) throw(FwMLPar
 
 void FwMLParser::parseDouble(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
-    popState();
     m_bufferType = BT_Real;
     m_buffer = QByteArray::number(m_bufferUint);
     m_bufferUint = 0;
