@@ -136,7 +136,7 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
         while(!ioDevice->atEnd())
         {
             ++m_lineIndex;
-            m_currentLine = ioDevice->readLine().trimmed();
+            m_currentLine = ioDevice->readLine();
             current = m_currentLine.begin();
             end = m_currentLine.end();
             while(current != end)
@@ -263,6 +263,7 @@ void FwMLParser::parseValue(StrIterator& current, StrIterator& end) throw(FwMLPa
     switch(charType(current))
     {
     case C_AZ: 
+    case C_Ee:
         pushState(&FwMLParser::parseName);
         return;
 
@@ -310,6 +311,7 @@ void FwMLParser::parseName(StrIterator& current, StrIterator& end) throw(FwMLPar
 void FwMLParser::parseString(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
 {
     ++current; //Skip first quote
+
     m_bufferType = BT_String;
     while(++current != end)
     {
@@ -319,6 +321,7 @@ void FwMLParser::parseString(StrIterator& current, StrIterator& end) throw(FwMLP
             ++current;
             popState();
             return;
+
         default:
             m_buffer += (*current);
             break;
@@ -358,10 +361,75 @@ void FwMLParser::parseUInt(StrIterator& current, StrIterator& end) throw(FwMLPar
             }
             break;
 
+        case C_Fra:
+        case C_Ee:
+            pushState(&FwMLParser::parseDouble);
+            return;
+
         default:
             return;
         }
         ++current;
+    }
+}
+
+void FwMLParser::parseDouble(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+{
+    popState();
+    m_bufferType = BT_Real;
+    m_buffer = QByteArray::number(m_bufferUint);
+    m_bufferUint = 0;
+
+    bool eAllow = true;
+    bool sigAllow = false;
+    bool fraAllow = true;
+    while(current != end)
+    {
+        switch(charType(current))
+        {
+        case C_Num:
+            m_buffer += (*current);
+            sigAllow = false;
+            ++current;
+            break;
+
+        case C_Fra:
+            if(!fraAllow)
+            {
+                throw FwMLParserException(*current, m_lineIndex, column(current));
+                return;
+            }
+            m_buffer += (*current);
+            fraAllow = false;
+            ++current;
+            break;
+
+        case C_Ee:
+            if(!eAllow)
+            {
+                throw FwMLParserException(*current, m_lineIndex, column(current));
+                return;
+            }
+            m_buffer += (*current);
+            eAllow = false;
+            sigAllow = true;
+            ++current;
+            break;
+
+        case C_Sig:
+            if(!sigAllow)
+            {
+                throw FwMLParserException(*current, m_lineIndex, column(current));
+                return;
+            }
+            m_buffer += (*current);
+            sigAllow = false;
+            ++current;
+            break;
+
+        default:
+            return;
+        }
     }
 }
 
@@ -399,12 +467,26 @@ FwMLNode* FwMLParser::createValue(StrIterator& current) throw(FwMLParserExceptio
             child = new FwMLUIntNumber(m_bufferUint);
             break;
 
+        case BT_Real:
+            {
+                bool bOk = false;
+                double value = m_buffer.toDouble(&bOk);
+                if(!bOk)
+                {
+                    throw FwMLParserException(QString("Invalid real number"), m_lineIndex, column(current));
+                    return 0;
+                }
+                child = new FwMLDoubleNumber(value);
+            }
+            break;
+
         default:
             Q_ASSERT(false);
             return 0;
     }
 
     m_buffer = QByteArray();
+    m_bufferUint = 0;
     m_bufferType = BT_Empty;
     return child;
 }
