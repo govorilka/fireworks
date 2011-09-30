@@ -18,6 +18,8 @@
 
 #include "fwutils/fwconfig.h"
 
+
+
 FwGraphicsView::FwGraphicsView(QObject *parent) :
     BaseClass("view"),
     QObject(parent),

@@ -61,6 +61,7 @@ enum Orientation
     O_Vertical,
     O_Diagonal
 };
+
 FIREWORKSSHARED_EXPORT Orientation nameToOrientation(const QByteArray& name, bool* bOk = 0);
 
 enum GuiEventType
