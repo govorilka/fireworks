@@ -20,13 +20,21 @@ DEFINES += FIREWORKS_LIBRARY
 
 INCLUDEPATH += .
 
-SOURCES += fireworks.cpp
+SOURCES += fireworks.cpp \
+    fwinterfaces.cpp \
+    fwdescriptions.cpp
 
-HEADERS += fireworks.h
+HEADERS += fireworks.h \
+    fwinterfaces.h \
+    fwdescriptions.h
 
 include (fwcore/fwcore.pri)
 include (fwtypography/fwtypography.pri)
 include (fwgui/fwgui.pri)
 include (fwdb/fwdb.pri)
 include (fwutils/fwutils.pri)
+
+
+
+
 
