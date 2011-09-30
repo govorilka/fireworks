@@ -1,5 +1,6 @@
 #include <QtCore/qdebug.h>
 #include <QtCore/qfile.h>
+
 #include "fwsqlite.h"
 
 FwSQLiteException::FwSQLiteException(const QString& err) throw() :
@@ -253,6 +254,7 @@ void FwSQLiteDatabase::open(const QString& fileName, const QString& initScript, 
         m_db = 0;
         throw FwSQLiteException(error);
     }
+
     if(!initScript.isEmpty())
     {
         execFile(initScript);
