@@ -1,0 +1,29 @@
+ 
+/*!
+ \headerfile "fwconfig.h"
+
+ \class FwConfig
+ \brief Класс предназначен для загрузки файла конфигурации
+ \ingroup fwutils
+
+ FwConfig предоставляет статические методы для работы с файлом конфигурации,
+ такие как: получение дирриктории, где хранится файл, загрузка и обработка файла.
+*/
+
+/*!
+ \fn static QString FwConfig::configPath();
+ Возвращает путь до места, где хранятся файлы конфигурации
+*/
+
+/*!
+ \fn static QString FwConfig::configFilePath(const QString& fileName);
+ \param fileName - имя файла конфигурации
+ Возвращает путь до файла конфигурации(включая имя файла)
+*/
+
+/*!
+ \fn static bool FwConfig::loadConfig(const QString& name, FwCPPObject* object);
+ \param name - имя файла конфигурации
+ \param object - указатель на объект, к которому будет применена конфигурация
+ Загрузка конфигурации и применение ее к object.
+*/
