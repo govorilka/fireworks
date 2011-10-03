@@ -2,93 +2,91 @@
 
 #include <pgsql/libpq-fe.h>
 
-namespace FwPg
-{
-    static char paramHost[] = "host";
-    static char paramPort[] = "port";
-    static char paramUser[] = "user";
-    static char paramPassword[] = "password";
-}
+//namespace FwPg
+//{
+//    static char paramHost[] = "host";
+//    static char paramPort[] = "port";
+//    static char paramUser[] = "user";
+//    static char paramPassword[] = "password";
+//}
 
 ///////////////////////////////////////////////////////////////////////////////
 
-FwPg::Exception::Exception(const QString& err) throw():
-    BaseClass(),
-    error(err)
+//FwPg::ConnectionParams::ConnectionParams(const QByteArray& name) :
+//    BaseClass(name),
+//    port(0)
+//{
+//}
+
+//bool FwPg::ConnectionParams::loadData(FwMLObject* object)
+//{
+//return false;
+//}
+
+//QByteArray FwPg::ConnectionParams::toByteArray() const
+//{
+//    QByteArray connectionString;
+//    addParamToString(connectionString, paramHost, host);
+//    addParamToString(connectionString, paramPort, port);
+//    addParamToString(connectionString, paramUser, user);
+//    addParamToString(connectionString, paramPassword, password);
+//    return connectionString;
+//}
+
+//void FwPg::ConnectionParams::addParamToString(QByteArray& result, const QByteArray& param, const QByteArray& value)
+//{
+//    if(!value.isEmpty())
+//    {
+//        if(!result.isEmpty())
+//        {
+//            result += " ";
+//        }
+//        result = result + param + "=" + value;
+//    }
+//}
+
+//void FwPg::ConnectionParams::addParamToString(QByteArray& result, const QByteArray& param, int value)
+//{
+//    if(value)
+//    {
+//        if(!result.isEmpty())
+//        {
+//            result += " ";
+//        }
+//        result = result + param + "=" + QByteArray::number(value);
+//    }
+//}
+
+///////////////////////////////////////////////////////////////////////////////
+
+FwPg::Exception::Exception(const Database* db) throw() :
+    BaseClass(db)
 {
+    if(db && db->m_connection)
+    {
+        m_error = PQerrorMessage(db->m_connection);
+    }
 }
 
 FwPg::Exception::~Exception() throw()
 {
 }
 
-const char* FwPg::Exception::what() const throw()
-{
-    return qPrintable(error);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-FwPg::ConnectionParams::ConnectionParams(const QByteArray& name) :
-    BaseClass(name),
-    port(0)
-{
-}
-
-bool FwPg::ConnectionParams::loadData(FwMLObject* object)
-{
-return false;
-}
-
-QByteArray FwPg::ConnectionParams::toByteArray() const
-{
-    QByteArray connectionString;
-    addParamToString(connectionString, paramHost, host);
-    addParamToString(connectionString, paramPort, port);
-    addParamToString(connectionString, paramUser, user);
-    addParamToString(connectionString, paramPassword, password);
-    return connectionString;
-}
-
-void FwPg::ConnectionParams::addParamToString(QByteArray& result, const QByteArray& param, const QByteArray& value)
-{
-    if(!value.isEmpty())
-    {
-        if(!result.isEmpty())
-        {
-            result += " ";
-        }
-        result = result + param + "=" + value;
-    }
-}
-
-void FwPg::ConnectionParams::addParamToString(QByteArray& result, const QByteArray& param, int value)
-{
-    if(value)
-    {
-        if(!result.isEmpty())
-        {
-            result += " ";
-        }
-        result = result + param + "=" + QByteArray::number(value);
-    }
-}
-
 ////////////////////////////////////////////////////////////////////////////////
+
+FwPg::QueryData::QueryData(Database* db, const QByteArray& query) :
+    BaseClass(db),
+    m_result(0),
+    m_query(query)
+{
+}
 
 FwPg::QueryData::~QueryData()
 {
-    clear();
-
-    if(m_parent)
-    {
-        m_parent->queries.removeOne(this);
-        m_parent = 0;
-        db = 0;
-    }
+    release();
 }
 
-void FwPg::QueryData::clear()
+void FwPg::QueryData::finalize()
 {
     if(m_result)
     {
@@ -97,18 +95,6 @@ void FwPg::QueryData::clear()
     }
 }
 
-FwPg::QueryData::QueryData(Database* parent, PGconn* pConnection) :
-    m_parent(0),
-    m_result(0)
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-FwPg::Query::~Query();
-
-FwPg::Query::Query(QueryData * data);
-};
 ///////////////////////////////////////////////////////////////////////////////
 
 FwPg::Database::Database(QObject* parent) :
@@ -122,31 +108,28 @@ FwPg::Database::~Database()
     close();
 }
 
-void FwPg::Database::open(const QByteArray& connectionString) throw (Exception&)
+bool FwPg::Database::init(const QString& param) throw(Fw::Exception&)
 {
-    close();
-
-    m_connection = PQconnectdb(connectionString);
-
-    if(!m_connection)
-        throw(Exception("Connection fail!"));
-
-    if (PQstatus(m_connection) != CONNECTION_OK)
+    m_connection = PQconnectdb(param.toUtf8());
+    if(m_connection && PQstatus(m_connection) == CONNECTION_OK)
     {
-        QString l_error("Connection fail : ");
-        l_error += PQerrorMessage(m_connection);
-
-        close();
-
-        throw(Exception(l_error));
+        return true;
     }
+    release();
+    throw(Exception(this));
+    return false;
 }
 
-void FwPg::Database::close()
+void FwPg::Database::release() throw()
 {
     if(m_connection)
     {
         PQfinish(m_connection);
         m_connection = 0;
     }
+}
+
+FwPg::QueryData* FwPg::Database::createQuery(const QString& query) const throw(Fw::Exception&)
+{
+    return new QueryData(this, query.toUtf8());
 }
