@@ -74,6 +74,41 @@ void FwPg::ConnectionParams::addParamToString(QByteArray& result, const QByteArr
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+FwPg::QueryData::~QueryData()
+{
+    clear();
+
+    if(m_parent)
+    {
+        m_parent->queries.removeOne(this);
+        m_parent = 0;
+        db = 0;
+    }
+}
+
+void FwPg::QueryData::clear()
+{
+    if(m_result)
+    {
+        PQclear(m_result);
+        m_result = 0;
+    }
+}
+
+FwPg::QueryData::QueryData(Database* parent, PGconn* pConnection) :
+    m_parent(0),
+    m_result(0)
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+FwPg::Query::~Query();
+
+FwPg::Query::Query(QueryData * data);
+};
 ///////////////////////////////////////////////////////////////////////////////
 
 FwPg::Database::Database(QObject* parent) :
