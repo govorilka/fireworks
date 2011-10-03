@@ -30,7 +30,8 @@ const char* FwPg::Exception::what() const throw()
 ///////////////////////////////////////////////////////////////////////////////
 
 FwPg::ConnectionParams::ConnectionParams(const QByteArray& name) :
-    BaseClass(name)
+    BaseClass(name),
+    port(0)
 {
 }
 
