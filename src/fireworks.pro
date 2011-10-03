@@ -14,6 +14,7 @@ else {
    TARGET = ../bin/fireworks3
 }
 
+
 TEMPLATE = lib
 
 DEFINES += FIREWORKS_LIBRARY
