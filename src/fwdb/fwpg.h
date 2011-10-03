@@ -1,140 +1,112 @@
 #ifndef FIREWORKS_PG_H
 #define FIREWORKS_PG_H
 
-#include <QtCore/qobject.h>
-
-#include <pgsql/libpq-fe.h>
-
-#include "fireworks.h"
-
-#include "fwcore/fwcppobject.h"
+#include "fwdb.h"
 
 namespace FwPg
 {
-   class Exception;
-   class ConnectionParams;
-   class QueryData;
-   class Query;
-   class Database;
+    class Exception;
+    //class ConnectionParams;
+    class QueryData;
+    class Database;
 }
 
-class FwPg::Exception: public std::exception
-{
-    typedef std::exception BaseClass;
+/////////////////////////////////////////////////////////////////////////////////
 
-public:
-    Exception(const QString& err) throw();
-    virtual ~Exception() throw();
+//class FwPg::ConnectionParams : public FwCPPObject
+//{
+//    typedef FwCPPObject BaseClass;
 
-    virtual const char* what() const throw();
+//public:
+//    QByteArray host;
+//    short int  port;
+//    QByteArray database;
+//    QByteArray user;
+//    QByteArray password;
 
-    const QString error;
-};
+//    ConnectionParams(const QByteArray& name = "connection");
+
+//    virtual bool loadData(FwMLObject* object);
+
+//    QByteArray toByteArray() const;
+
+//private:
+//    static void addParamToString(QByteArray& result, const QByteArray& param, const QByteArray& value);
+//    static void addParamToString(QByteArray& result, const QByteArray& param, int value);
+//};
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class FwPg::ConnectionParams : public FwCPPObject
+class FIREWORKSSHARED_EXPORT FwPg::Exception: public Fw::Exception
 {
-    typedef FwCPPObject BaseClass;
+    typedef Fw::Exception BaseClass;
 
 public:
-    QByteArray host;
-    short int  port;
-    QByteArray database;
-    QByteArray user;
-    QByteArray password;
-
-    ConnectionParams(const QByteArray& name = "connection");
-
-    virtual bool loadData(FwMLObject* object);
-
-    QByteArray toByteArray() const;
-
-private:
-    static void addParamToString(QByteArray& result, const QByteArray& param, const QByteArray& value);
-    static void addParamToString(QByteArray& result, const QByteArray& param, int value);
+    Exception(const Database* db) throw();
+    virtual ~Exception() throw();
 };
 
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
-class FIREWORKSSHARED_EXPORT QueryData
+class FIREWORKSSHARED_EXPORT FwPg::QueryData : public Fw::QueryData
 {
-public:
-    friend class Database;
+    typedef Fw::QueryData BaseClass;
+    friend class FwPg::Database;
 
+public:
     ~QueryData();
 
-    inline Database* parent() const;
+    void finalize();
+
     inline PGresult* result() const;
 
-    void clear();
-
 protected:
-    QueryData(Database* parent);
+    QueryData(Database* db, const QByteArray& query);
 
 private:
-    Database* m_parent;
     PGresult* m_result;
+    QByteArray m_query;
 };
 
-Database* QueryData::parent() const
-{
-    return m_parent;
-}
-
-PGresult* QueryData::result() const
+PGresult* FwPg::QueryData::result() const
 {
     return m_result;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
-class FIREWORKSSHARED_EXPORT Query : protected QSharedPointer<QueryData>
-{
-    typedef QSharedPointer<QueryData> BaseClass;
-
-public:
-    friend class Database;
-
-    ~Query();
-
-protected:
-    Query(QueryData * data);
-};
-
-///////////////////////////////////////////////////////////////////////////////
-
-class FIREWORKSSHARED_EXPORT FwPg::Database : public QObject
+class FIREWORKSSHARED_EXPORT FwPg::Database : public Fw::Database
 {
     Q_OBJECT
-    typedef QObject BaseClass;
+    typedef Fw::Database BaseClass;
+
+    friend class Exception;
 
 public:
     Database(QObject* parent = 0);
     virtual ~Database();
 
-    inline bool isOpen() const;
+protected:
+    virtual bool init(const QString& param) throw(Fw::Exception&);
+    virtual void release() throw();
 
-    inline void open(const ConnectionParams& params) throw (Exception&);
-    void open(const QByteArray& connectionString) throw (Exception&);
-
-    void close();
+    virtual QueryData* createQuery(const QString& query) const throw(Fw::Exception&);
 
 private:
     PGconn* m_connection;
 
 };
 
-///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
-void FwPg::Database::open(const ConnectionParams& params) throw (Exception&)
-{
-    open(params.toByteArray());
-}
+//void FwPg::Database::open(const ConnectionParams& params) throw (Exception&)
+//{
+//    open(params.toByteArray());
+//}
 
-bool FwPg::Database::isOpen() const
-{
-    return m_connection;
-}
+//bool FwPg::Database::isOpen() const
+//{
+//    return m_connection;
+//}
 
 #endif //FIREWORKS_PG_H
