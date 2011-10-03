@@ -19,12 +19,3 @@ Fw::IRender::~IRender()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-Fw::IPaintDevice::IPaintDevice()
-{
-}
-
-Fw::IPaintDevice::~IPaintDevice()
-{
-}
-
