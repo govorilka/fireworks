@@ -10,9 +10,11 @@
 #include "fwcore/fwcppobject.h"
 
 namespace FwPg
-{  
+{
    class Exception;
    class ConnectionParams;
+   class QueryData;
+   class Query;
    class Database;
 }
 
@@ -53,6 +55,53 @@ private:
     static void addParamToString(QByteArray& result, const QByteArray& param, int value);
 };
 
+////////////////////////////////////////////////////////////////////////////////
+
+class FIREWORKSSHARED_EXPORT QueryData
+{
+public:
+    friend class Database;
+
+    ~QueryData();
+
+    inline Database* parent() const;
+    inline PGresult* result() const;
+
+    void clear();
+
+protected:
+    QueryData(Database* parent);
+
+private:
+    Database* m_parent;
+    PGresult* m_result;
+};
+
+Database* QueryData::parent() const
+{
+    return m_parent;
+}
+
+PGresult* QueryData::result() const
+{
+    return m_result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+class FIREWORKSSHARED_EXPORT Query : protected QSharedPointer<QueryData>
+{
+    typedef QSharedPointer<QueryData> BaseClass;
+
+public:
+    friend class Database;
+
+    ~Query();
+
+protected:
+    Query(QueryData * data);
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 
 class FIREWORKSSHARED_EXPORT FwPg::Database : public QObject
@@ -60,7 +109,7 @@ class FIREWORKSSHARED_EXPORT FwPg::Database : public QObject
     Q_OBJECT
     typedef QObject BaseClass;
 
-public:    
+public:
     Database(QObject* parent = 0);
     virtual ~Database();
 
