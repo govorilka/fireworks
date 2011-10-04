@@ -76,3 +76,26 @@ void FwConsole::interactiveMode(const QByteArray& promt)
         }
     }
 }
+
+bool FwConsole::addCommand(const QString& mode, const QString& command, CommandFunc function)
+{
+    QHash<QString, CommandFunc> commandList;
+    if(m_modes.contains(mode))
+    {
+        commandList = m_modes.value(mode);
+        if(!commandList.contains(command))
+        {
+            commandList.insert(command, function);
+            return true;
+        } else
+        {
+            return false;
+        }
+    } else
+    {
+        commandList.insert(command, function);
+        m_modes.insert(mode, commandList);
+    }
+    return true;
+}
+
