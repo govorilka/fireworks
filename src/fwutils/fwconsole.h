@@ -25,12 +25,14 @@ public:
     inline QObject* receiver() const;
     inline void setReceiver(QObject* receiver);
 
-    inline bool addCommand(const QString& command, CommandFunc function);
+    bool addCommand(const QString& mode, const QString& command, CommandFunc function);
+    inline bool setMode(const QString& mode);
 
 protected:
     QString errorMessage;
     QObject* m_receiver;
     QHash<QString, CommandFunc> m_commands;
+    QHash<QString, QHash<QString, CommandFunc> > m_modes;
 };
 
 
@@ -50,11 +52,12 @@ void FwConsole::setReceiver(QObject *receiver)
    m_receiver = receiver;
 }
 
-bool FwConsole::addCommand(const QString& command, CommandFunc function)
+
+bool FwConsole::setMode(const QString& mode)
 {
-    if(!m_commands.contains(command))
+    if(m_modes.contains(mode))
     {
-        m_commands.insert(command, function);
+        m_commands = m_modes.value(mode);
         return true;
     }
     return false;
