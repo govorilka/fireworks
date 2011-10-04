@@ -113,7 +113,7 @@ protected:
     virtual void release() throw() = 0;
 
     virtual QueryData* createQuery(const QString& query) throw(Exception&) = 0;
-    \
+
 private:
     bool m_open;
     QList<QueryData*> m_queries;
