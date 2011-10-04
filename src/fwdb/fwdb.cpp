@@ -39,6 +39,34 @@ Fw::Query::~Query()
 {
 }
 
+Fw::Query::iterator Fw::Query::begin()
+{
+    //TODO
+}
+
+Fw::Query::iterator Fw::Query::end()
+{
+    //TODO
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+Fw::Query::iterator::iterator(QueryData *data) :
+    m_data(data)
+{
+
+}
+
+Fw::Query::iterator& Fw::Query::iterator::operator ++()
+{
+    //TODO
+}
+
+bool Fw::Query::iterator::operator !=(const iterator& rhs)
+{
+    //TODO
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 Fw::QueryData::QueryData(Fw::Database* db) :

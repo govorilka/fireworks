@@ -5,7 +5,9 @@
 #include <QtCore/qsharedpointer.h>
 #include <QtCore/qreadwritelock.h>
 
+#ifdef FW_SUPPORT_POSTGRESQL
 #include <pgsql/libpq-fe.h>
+#endif
 
 #include "fireworks.h"
 
@@ -55,11 +57,26 @@ class FIREWORKSSHARED_EXPORT Fw::Query : protected QSharedPointer<Fw::QueryData>
 public:
     friend class Database;
 
+    class iterator;
+
     Query();
     ~Query();
 
+    iterator begin();
+    iterator end();
+
 protected:
     Query(QueryData* data);
+};
+
+class Fw::Query::iterator
+{
+public:
+    iterator(QueryData* data);
+    iterator& operator ++();
+    bool operator !=(const iterator& rhs);
+private:
+    QueryData* m_data;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +129,7 @@ protected:
     virtual void release() throw() = 0;
 
     virtual QueryData* createQuery(const QString& query) throw(Exception&) = 0;
-    \
+
 private:
     bool m_open;
     QList<QueryData*> m_queries;
