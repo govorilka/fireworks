@@ -3,16 +3,6 @@
 
 #include "fwdb.h"
 
-//#include <QtCore/qobject.h>
-//#include <QtCore/qsharedpointer.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qdatetime.h>
-//#include <QtCore/qstringlist.h>
-
-//#include "fireworks.h"
-
-#include "fwcore/fwcolor.h"
-
 #include "fwdb/sqlite/sqlite3.h"
 
 namespace FwSqlite
@@ -48,6 +38,9 @@ public:
 
     bool isNull() const;
 
+    bool operator==(const QueryData& other) const;
+    bool operator!=(const QueryData& other) const;
+
     void reset();
     bool step() throw (Fw::Exception&);
 
@@ -64,7 +57,7 @@ public:
     void bindDateTime(int index, const QDateTime& datetime);
 
 protected:
-    QueryData(Database* db, const QByteArray& query);
+    QueryData(Database* db, const QByteArray& query) throw(Fw::Exception&);
 
 private:
     sqlite3_stmt* m_stmt;

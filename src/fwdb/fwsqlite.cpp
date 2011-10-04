@@ -28,7 +28,7 @@ FwSqlite::QueryData::~QueryData()
    release();
 }
 
-FwSqlite::QueryData::QueryData(FwSqlite::Database* db, const QByteArray& query) :
+FwSqlite::QueryData::QueryData(FwSqlite::Database* db, const QByteArray& query) throw(Fw::Exception&) :
     BaseClass(db),
     m_stmt(0)
 {
@@ -60,6 +60,16 @@ void FwSqlite::QueryData::finalize()
 bool FwSqlite::QueryData::isNull() const
 {
     return m_stmt == 0;
+}
+
+bool FwSqlite::QueryData::operator==(const QueryData& other) const
+{
+    return m_db == other.m_db && m_stmt == other.m_stmt;
+}
+
+bool FwSqlite::QueryData::operator!=(const QueryData& other) const
+{
+    return !operator==(other);
 }
 
 void FwSqlite::QueryData::reset()
