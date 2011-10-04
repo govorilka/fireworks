@@ -1,6 +1,6 @@
 #include "fwpg.h"
 
-#include <pgsql/libpq-fe.h>
+#include "fwcore/fwchartype.h"
 
 //namespace FwPg
 //{
@@ -59,6 +59,29 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool FwPg::parseQuery(const QByteArray& query, TokenVector& tokens)
+{
+    bool parserParamId = true;
+
+    for(QByteArray::const_iterator iter = query.begin(); iter != query.end(); ++iter)
+    {
+        switch(Fw::charType(iter))
+        {
+        case Fw::C_Que:
+            parserParamId = true;
+            break;
+
+        case Fw::C_Num:
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 FwPg::Exception::Exception(const Database* db) throw() :
     BaseClass(db)
 {
@@ -81,9 +104,9 @@ FwPg::Exception::~Exception() throw()
 
 FwPg::QueryData::QueryData(Database* db, const QByteArray& query) :
     BaseClass(db),
-    m_result(0),
-    m_query(query)
+    m_result(0)
 {
+    FwPg::parseQuery(query, m_tokens);
 }
 
 FwPg::QueryData::~QueryData()
@@ -98,7 +121,22 @@ void FwPg::QueryData::finalize()
         PQclear(m_result);
         m_result = 0;
     }
-    m_query.clear();
+    m_tokens.clear();
+}
+
+bool FwPg::QueryData::isNull() const
+{
+    return m_result == 0;
+}
+
+bool FwPg::QueryData::operator==(const QueryData& other) const
+{
+    return m_db == other.m_db && m_result == other.m_result;
+}
+
+bool FwPg::QueryData::operator!=(const QueryData& other) const
+{
+    return m_db != other.m_db && m_result != other.m_result;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
