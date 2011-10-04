@@ -48,6 +48,9 @@ public:
 
     bool isNull() const;
 
+    bool operator==(const QueryData& other) const;
+    bool operator!=(const QueryData& other) const;
+
     void reset();
     bool step() throw (Fw::Exception&);
 
