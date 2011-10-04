@@ -5,14 +5,13 @@
 
 //#include <QtCore/qobject.h>
 //#include <QtCore/qsharedpointer.h>
-//#include <QtCore/qurl.h>
-//#include <QtCore/qdatetime.h>
+#include <QtCore/qurl.h>
+#include <QtCore/qdatetime.h>
 //#include <QtCore/qstringlist.h>
-//#include <QtCore/qreadwritelock.h>
 
 //#include "fireworks.h"
 
-//#include "fwcore/fwcolor.h"
+#include "fwcore/fwcolor.h"
 
 #include "fwdb/sqlite/sqlite3.h"
 
@@ -31,6 +30,7 @@ class FIREWORKSSHARED_EXPORT FwSqlite::Exception : public Fw::Exception
 
 public:
     Exception(const Database* db) throw();
+    Exception(const QString& error) throw();
     virtual ~Exception() throw();
 };
 
@@ -46,18 +46,33 @@ public:
 
     void finalize();
 
-    inline sqlite3_stmt* stmt() const;
+    bool isNull() const;
+
+    void reset();
+    bool step() throw (Fw::Exception&);
+
+    bool columnBool(int column);
+    int columnInt(int column);
+    QString columnText(int column);
+    FwColor columnColor(int column);
+    QUrl columnUrl(int column);
+
+    void bindInt(int index, int value);
+    void bindText(int index, const QString& text);
+    void bindColor(int index, const FwColor& color);
+    inline void bindUrl(int index, const QUrl& url);
+    void bindDateTime(int index, const QDateTime& datetime);
 
 protected:
-    QueryData(Database* db, sqlite3_stmt* stmt);
+    QueryData(Database* db, const QByteArray& query);
 
 private:
     sqlite3_stmt* m_stmt;
 };
 
-sqlite3_stmt* FwSqlite::QueryData::stmt() const
+void FwSqlite::QueryData::bindUrl(int index, const QUrl& url)
 {
-    return m_stmt;
+    bindText(index, url.toString());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -139,7 +154,6 @@ sqlite3_stmt* FwSqlite::QueryData::stmt() const
 //    typedef QObject BaseClass;
 //public:
 //    friend class FwSQLiteQueryData;
-//    friend class FwSQLiteDBLock;
 
 //    FwSQLiteDatabase(QObject* parent = 0);
 //    virtual ~FwSQLiteDatabase();
@@ -171,7 +185,6 @@ sqlite3_stmt* FwSqlite::QueryData::stmt() const
 //    sqlite3 *m_db;
 //    bool m_beginTransaction;
 //    QList<FwSQLiteQueryData*> queries;
-//    QReadWriteLock m_dbLock;
 //};
 
 //bool FwSQLiteDatabase::isTransactionBegin() const
@@ -192,6 +205,7 @@ class FIREWORKSSHARED_EXPORT FwSqlite::Database : public Fw::Database
     typedef Fw::Database BaseClass;
 
     friend class Exception;
+    friend class QueryData;
 
 public:
     Database(QObject* parent = 0);
@@ -206,30 +220,5 @@ private:
     sqlite3* m_connection;
 
 };
-
-//////////////////////////////////////////////////////////////////////////
-
-//class FIREWORKSSHARED_EXPORT FwSQLiteDBLock
-//{
-//public:
-//    FwSQLiteDBLock(FwSQLiteDatabase* db);
-//    ~FwSQLiteDBLock();
-
-//    inline FwSQLiteDatabase* db() const;
-
-//    bool lock() const;
-//    bool tryLock() const;
-
-//    void unlock();
-
-//private:
-//    mutable bool m_lock;
-//    FwSQLiteDatabase* m_db;
-//};
-
-//FwSQLiteDatabase* FwSQLiteDBLock::db() const
-//{
-//    return m_db;
-//}
-
+\
 #endif // FIREWORKS_SQLITE_H

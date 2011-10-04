@@ -9,6 +9,12 @@ Fw::Exception::Exception(const Database* db) throw() :
     }
 }
 
+Fw::Exception::Exception(const QString& error) throw() :
+    BaseClass()
+{
+    m_error = error;
+}
+
 Fw::Exception::~Exception() throw()
 {
 }
@@ -93,4 +99,46 @@ void Fw::Database::close() throw()
     }
 
     release();
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+
+Fw::DatabaseLocker::DatabaseLocker(Database *db) :
+    m_db(db),
+    m_lock(false)
+{
+}
+
+Fw::DatabaseLocker::~DatabaseLocker()
+{
+    unlock();
+}
+
+bool Fw::DatabaseLocker::lock() const
+{
+    if(!m_lock && m_db)
+    {
+        m_db->m_dbLock.lockForWrite();
+        m_lock = true;
+    }
+    return m_lock;
+}
+
+bool Fw::DatabaseLocker::tryLock() const
+{
+    if(!m_lock && m_db && m_db->m_dbLock.tryLockForWrite())
+    {
+        m_lock = true;
+    }
+    return m_lock;
+}
+
+void Fw::DatabaseLocker::unlock()
+{
+    if(m_lock)
+    {
+        m_db->m_dbLock.unlock();
+        m_lock = false;
+    }
 }
