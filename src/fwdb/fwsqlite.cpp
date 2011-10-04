@@ -28,7 +28,7 @@ FwSqlite::QueryData::~QueryData()
    release();
 }
 
-FwSqlite::QueryData::QueryData(FwSqlite::Database* db, const QByteArray& query) :
+FwSqlite::QueryData::QueryData(FwSqlite::Database* db, const QByteArray& query) throw(Fw::Exception&) :
     BaseClass(db),
     m_stmt(0)
 {

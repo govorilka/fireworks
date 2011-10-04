@@ -4,10 +4,11 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qsharedpointer.h>
 #include <QtCore/qreadwritelock.h>
-
-#include <pgsql/libpq-fe.h>
+#include <QtCore/qurl.h>
+#include <QtCore/qdatetime.h>
 
 #include "fireworks.h"
+#include "fwcore/fwcolor.h"
 
 #include "fwcore/fwcppobject.h"
 
@@ -140,8 +141,8 @@ public:
     void unlock();
 
 private:
-    mutable bool m_lock;
     Database* m_db;
+    mutable bool m_lock;
 };
 
 Fw::Database* Fw::DatabaseLocker::db() const
