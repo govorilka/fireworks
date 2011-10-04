@@ -1,6 +1,10 @@
 #ifndef FIREWORKS_PG_H
 #define FIREWORKS_PG_H
 
+#include <QtCore/qvector.h>
+
+#include <pgsql/libpq-fe.h>
+
 #include "fwdb.h"
 
 namespace FwPg
@@ -9,7 +13,18 @@ namespace FwPg
     //class ConnectionParams;
     class QueryData;
     class Database;
+
+    struct QueryToken;
+    typedef QVector<QueryToken> TokenVector;
+
+    FIREWORKSSHARED_EXPORT bool parseQuery(const QByteArray& query, TokenVector& tokens);
 }
+
+struct FIREWORKSSHARED_EXPORT FwPg::QueryToken
+{
+    unsigned int param;
+    QByteArray value;
+};
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -59,20 +74,33 @@ public:
 
     void finalize();
 
-    inline PGresult* result() const;
+    bool isNull() const;
+
+    bool operator==(const QueryData& other) const;
+    bool operator!=(const QueryData& other) const;
+
+    void reset();
+    bool step() throw (Fw::Exception&);
+
+    bool columnBool(int column);
+    int columnInt(int column);
+    QString columnText(int column);
+    FwColor columnColor(int column);
+    QUrl columnUrl(int column);
+
+    void bindInt(int index, int value);
+    void bindText(int index, const QString& text);
+    void bindColor(int index, const FwColor& color);
+    inline void bindUrl(int index, const QUrl& url);
+    void bindDateTime(int index, const QDateTime& datetime);
 
 protected:
     QueryData(Database* db, const QByteArray& query);
 
 private:
     PGresult* m_result;
-    QByteArray m_query;
+    TokenVector m_tokens;
 };
-
-PGresult* FwPg::QueryData::result() const
-{
-    return m_result;
-}
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -95,7 +123,6 @@ protected:
 
 private:
     PGconn* m_connection;
-
 };
 
 /////////////////////////////////////////////////////////////////////////////////

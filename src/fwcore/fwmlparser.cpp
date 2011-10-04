@@ -4,53 +4,6 @@
 #include "fwml.h"
 #include "fwmlparser.h"
 
-//Types of ASCII chars
-const quint8 FwMLParser::chars_type[CHARS_COUNT] =
-{
-          /*0 */ /*1 */ /*2 */ /*3 */ /*4 */ /*5 */ /*6 */ /*7 */
-/*  0 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
-/*  8 */  C_Err, C_Sp,  C_Sp,  C_Err, C_Err, C_Sp,  C_Err, C_Err,
-/* 16 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
-/* 24 */  C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err, C_Err,
-
-/* 32 */  C_Sp,  C_Uni, C_Str, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 40 */  C_Uni, C_Uni, C_Uni, C_Sig, C_Sep, C_Sig, C_Fra, C_Uni,
-/* 48 */  C_Num, C_Num, C_Num, C_Num, C_Num, C_Num, C_Num, C_Num,
-/* 56 */  C_Num, C_Num, C_Col, C_Sep, C_Uni, C_Uni, C_Uni, C_Uni,
-
-/* 64 */  C_Uni, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_Ee,  C_AZ,  C_AZ,
-/* 72 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
-/* 80 */  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
-/* 88 */  C_AZ,  C_AZ,  C_AZ,  C_LSq, C_Esc, C_RSq, C_Uni, C_Uni,
-
-/* 96 */  C_Uni, C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_Ee,  C_AZ,  C_AZ,
-/* 104*/  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
-/* 112*/  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,  C_AZ,
-/* 120*/  C_AZ,  C_AZ,  C_AZ,  C_LCu, C_Uni, C_RCu, C_Uni, C_Err,
-
-/* 128*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 136*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 144*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 152*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-
-/* 160*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 168*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 176*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 184*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-
-/* 192*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 200*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 208*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 216*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-
-/* 224*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 232*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 240*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni,
-/* 248*/  C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni, C_Uni
-};
-
-///////////////////////////////////////////////////////////////////////////////
-
 FwMLParserException::FwMLParserException(const QString& err, int line, int column) :
     BaseClass()
 {
@@ -130,8 +83,8 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
 
         m_lineIndex = 0;
 
-        StrIterator current = 0;
-        StrIterator end = 0;
+        Fw::StrIterator current = 0;
+        Fw::StrIterator end = 0;
         while(!ioDevice->atEnd())
         {
             ++m_lineIndex;
@@ -140,7 +93,7 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
             end = m_currentLine.end();
             while(current != end)
             {
-                if(charType(current) == C_Sp)
+                if(Fw::charType(current) == Fw::C_Sp)
                 {
                     ++current;
                 }
@@ -165,19 +118,19 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
     return true;
 }
 
-void FwMLParser::parseObject(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseObject(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
 {
     Q_UNUSED(end);
-    switch(charType(current))
+    switch(Fw::charType(current))
     {
-    case C_AZ:
+    case Fw::C_AZ:
         pushState(&FwMLParser::parseAttrValue);
         pushState(&FwMLParser::parseName);
         return;
     }
 }
 
-void FwMLParser::parseAttr(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseAttr(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
 {
     Q_UNUSED(current);
     Q_UNUSED(end);
@@ -186,7 +139,7 @@ void FwMLParser::parseAttr(StrIterator& current, StrIterator& end) throw(FwMLPar
     pushState(&FwMLParser::parseValue);
 }
 
-void FwMLParser::parseAttrValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseAttrValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
 {
     Q_UNUSED(end);
 
@@ -207,9 +160,9 @@ void FwMLParser::parseAttrValue(StrIterator& current, StrIterator& end) throw(Fw
         break;
     }
 
-    switch(charType(current))
+    switch(Fw::charType(current))
     {
-    case C_Col:
+    case Fw::C_Col:
         ++current;
         pushState(&FwMLParser::parseValue);
         break;
@@ -220,7 +173,7 @@ void FwMLParser::parseAttrValue(StrIterator& current, StrIterator& end) throw(Fw
     }
 }
 
-void FwMLParser::parseAttrEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseAttrEnd(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
 {  
     FwMLNode* child = createValue(current);
     if(m_attrName.isEmpty())
@@ -234,9 +187,9 @@ void FwMLParser::parseAttrEnd(StrIterator& current, StrIterator& end) throw(FwML
 
     if(current != end)
     {
-        switch(charType(current))
+        switch(Fw::charType(current))
         {
-        case C_Sep:
+        case Fw::C_Sep:
             pushState(&FwMLParser::parseAttr);
             ++current;
             return;
@@ -251,31 +204,31 @@ void FwMLParser::parseAttrEnd(StrIterator& current, StrIterator& end) throw(FwML
 }
 
 
-void FwMLParser::parseValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
 {
     Q_UNUSED(end);
 
     clearBuffer();
-    switch(charType(current))
+    switch(Fw::charType(current))
     {
-    case C_AZ: 
-    case C_Ee:
+    case Fw::C_AZ:
+    case Fw::C_Ee:
         m_bufferType = BT_Name;
         pushState(&FwMLParser::parseName);
         return;
 
-    case C_Str:
+    case Fw::C_Str:
         ++current; //Skip first quote
         m_bufferType = BT_String;
         pushState(&FwMLParser::parseString);
         return;
 
-    case C_Num:
+    case Fw::C_Num:
         m_bufferType = BT_UInt;
         pushState(&FwMLParser::parseUInt);
         return;
 
-    case C_Fra:
+    case Fw::C_Fra:
         m_bufferType = BT_Real;
         pushState(&FwMLParser::parseDouble);
         return;
@@ -286,21 +239,21 @@ void FwMLParser::parseValue(StrIterator& current, StrIterator& end) throw(FwMLPa
     }    
 }
 
-void FwMLParser::parseName(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseName(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
 {
     while(current != end)
     {
-        switch(charType(current))
+        switch(Fw::charType(current))
         {
-        case C_AZ:
-        case C_Num:
-        case C_Ee:
+        case Fw::C_AZ:
+        case Fw::C_Num:
+        case Fw::C_Ee:
             m_buffer += (*current);
             ++current;
             break;
 
-        case C_Uni:
-        case C_Err:
+        case Fw::C_Uni:
+        case Fw::C_Err:
             throw FwMLParserException(*current, m_lineIndex, column(current));
             return;
 
@@ -310,13 +263,13 @@ void FwMLParser::parseName(StrIterator& current, StrIterator& end) throw(FwMLPar
     }
 }
 
-void FwMLParser::parseString(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseString(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
 {
     while(++current != end)
     {
-        switch(charType(current))
+        switch(Fw::charType(current))
         {
-        case C_Str:
+        case Fw::C_Str:
             ++current;
             return;
 
@@ -327,15 +280,15 @@ void FwMLParser::parseString(StrIterator& current, StrIterator& end) throw(FwMLP
     }
 }
 
-void FwMLParser::parseUInt(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseUInt(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
 {
     int digitCount = 0;
     int firstDigit = (*current) - '0';
     while(current != end)
     {
-        switch(charType(current))
+        switch(Fw::charType(current))
         {
-        case C_Num:
+        case Fw::C_Num:
             {
                 int digit = (*current) - '0';
                 if(m_bufferType)
@@ -358,8 +311,8 @@ void FwMLParser::parseUInt(StrIterator& current, StrIterator& end) throw(FwMLPar
             }
             break;
 
-        case C_Fra:
-        case C_Ee:
+        case Fw::C_Fra:
+        case Fw::C_Ee:
             pushState(&FwMLParser::parseDouble);
             return;
 
@@ -370,7 +323,7 @@ void FwMLParser::parseUInt(StrIterator& current, StrIterator& end) throw(FwMLPar
     }
 }
 
-void FwMLParser::parseDouble(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseDouble(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
 {
     m_bufferType = BT_Real;
     m_buffer = QByteArray::number(m_bufferUint);
@@ -381,15 +334,15 @@ void FwMLParser::parseDouble(StrIterator& current, StrIterator& end) throw(FwMLP
     bool fraAllow = true;
     while(current != end)
     {
-        switch(charType(current))
+        switch(Fw::charType(current))
         {
-        case C_Num:
+        case Fw::C_Num:
             m_buffer += (*current);
             sigAllow = false;
             ++current;
             break;
 
-        case C_Fra:
+        case Fw::C_Fra:
             if(!fraAllow)
             {
                 throw FwMLParserException(*current, m_lineIndex, column(current));
@@ -400,7 +353,7 @@ void FwMLParser::parseDouble(StrIterator& current, StrIterator& end) throw(FwMLP
             ++current;
             break;
 
-        case C_Ee:
+        case Fw::C_Ee:
             if(!eAllow)
             {
                 throw FwMLParserException(*current, m_lineIndex, column(current));
@@ -412,7 +365,7 @@ void FwMLParser::parseDouble(StrIterator& current, StrIterator& end) throw(FwMLP
             ++current;
             break;
 
-        case C_Sig:
+        case Fw::C_Sig:
             if(!sigAllow)
             {
                 throw FwMLParserException(*current, m_lineIndex, column(current));
@@ -429,7 +382,7 @@ void FwMLParser::parseDouble(StrIterator& current, StrIterator& end) throw(FwMLP
     }
 }
 
-FwMLNode* FwMLParser::createValue(StrIterator& current) throw(FwMLParserException&)
+FwMLNode* FwMLParser::createValue(Fw::StrIterator& current) throw(FwMLParserException&)
 {
     if(!m_currentNode || m_bufferType == BT_Empty)
     {

@@ -6,7 +6,8 @@ HEADERS += \
     fwcore/fwcppobject.h \
     fwcore/fwmlengine.h \
     fwcore/fwmldocument.h \
-    fwcore/fwmlparser.h
+    fwcore/fwmlparser.h \
+    fwcore/fwchartype.h
 
 SOURCES += \
     fwcore/fwml.cpp \
@@ -14,4 +15,7 @@ SOURCES += \
     fwcore/fwcppobject.cpp \
     fwcore/fwmlengine.cpp \
     fwcore/fwmldocument.cpp \
-    fwcore/fwmlparser.cpp
+    fwcore/fwmlparser.cpp \
+    fwcore/fwchartype.cpp
+
+

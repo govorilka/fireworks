@@ -4,11 +4,9 @@
 #include  <QtCore/qbytearray.h>
 #include  <QtCore/qstack.h>
 
-#include <limits>
-
 #include "fireworks.h"
 
-#define CHARS_COUNT UCHAR_MAX + 1
+#include "fwcore/fwchartype.h"
 
 class QIODevice;
 
@@ -35,37 +33,6 @@ class FIREWORKSSHARED_EXPORT FwMLParser
 {
 public:
 
-    enum CharType
-    {
-        C_AZ,      //Alpha (A..Z, a..z)
-        C_Ee,      //Char 'E' and 'e'
-        C_Uni,     //Unicode symbol
-
-        C_Num,     //Numbers (0..9)
-        C_Fra,     //Decimal point (.)
-        C_Sig,     //Char '+' and '-'
-
-        C_Sp,      //Space (' ')
-
-        C_Str,     //Quotation mark (")
-        C_Esc,     //Escape
-
-        //These are the six structural characters
-        C_Col,     //Name separator, colon (:)
-        C_LCu,     //Begin-object, left curly bracket ({)
-        C_RCu,     //End-object, right curly bracket (})
-        C_LSq,     //Left square bracket ([)
-        C_RSq,     //Right square bracket (])
-        C_Sep,     //Items separator: Comma (,) or (;)
-
-        //Error
-        C_Err,     //Unknow
-
-        C_MAX = C_Err + 1
-    };
-
-    static const quint8 chars_type[CHARS_COUNT];
-
     FwMLParser();
 
     bool parse(FwMLObject* object, const QByteArray& fwml);
@@ -80,29 +47,26 @@ protected:
     inline void pushNode(FwMLNode* node);
     inline bool popNode();
 
-    typedef QByteArray Str;
-    typedef Str::const_iterator StrIterator;
-    inline static quint8 charType(const StrIterator& current);
-    typedef void(FwMLParser::*StateFunc)(StrIterator& current, StrIterator& end);
+    typedef void(FwMLParser::*StateFunc)(Fw::StrIterator& current, Fw::StrIterator& end);
 
     inline void pushState(StateFunc function);
-    inline void popState(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
+    inline void popState(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
 
     //State functions
-    void parseObject(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
+    void parseObject(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
 
-    void parseValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
-    void parseName(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
-    void parseString(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
-    void parseUInt(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
-    void parseDouble(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
+    void parseValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
+    void parseName(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
+    void parseString(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
+    void parseUInt(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
+    void parseDouble(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
 
-    void parseAttr(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
-    void parseAttrValue(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
-    void parseAttrEnd(StrIterator& current, StrIterator& end) throw(FwMLParserException&);
+    void parseAttr(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
+    void parseAttrValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
+    void parseAttrEnd(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
 
     inline void clearBuffer();
-    FwMLNode* createValue(StrIterator& current) throw(FwMLParserException&);
+    FwMLNode* createValue(Fw::StrIterator& current) throw(FwMLParserException&);
 
 private:
 
@@ -152,7 +116,7 @@ void FwMLParser::pushState(StateFunc function)
     m_stateFunctionStack.push(function);
 }
 
-void FwMLParser::popState(StrIterator& current, StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::popState(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
 {
     StateFunc state = m_stateFunctionStack.pop();
     (this->*state)(current, end);
@@ -175,11 +139,6 @@ bool FwMLParser::popNode()
         return true;
     }
     return false;
-}
-
-quint8 FwMLParser::charType(const StrIterator& current)
-{
-    return chars_type[static_cast<unsigned char>(*current)];
 }
 
 void FwMLParser::clearBuffer()
