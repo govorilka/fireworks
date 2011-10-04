@@ -66,7 +66,7 @@ public:
     ~Query();
 
     void reset();
-    void exec() throw (Fw::Exception&);
+    bool exec() throw (Fw::Exception&);
     void finalize();
 
     void bindInt(int index, int value);
@@ -144,6 +144,9 @@ public:
     virtual ~Database();
 
     Query query(const QString& query) throw(Exception&);
+
+    void execFile(const QString& fileName) throw(Fw::Exception&);
+    void execFile(QIODevice* device) throw(Fw::Exception&);
 
     void open(const QString& param) throw(Exception&);
     void close() throw();
