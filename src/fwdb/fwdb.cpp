@@ -74,9 +74,10 @@ void Fw::Query::reset()
     //TODO
 }
 
-void Fw::Query::exec() throw (Fw::Exception&)
+bool Fw::Query::exec() throw (Fw::Exception&)
 {
     //TODO
+    return true;
 }
 
 void Fw::Query::finalize()
@@ -215,6 +216,16 @@ void Fw::Database::reindex(const QString& indexName) throw(Fw::Exception&)
     //TODO
 }
 
+
+void Fw::Database::execFile(const QString& fileName) throw(Fw::Exception&)
+{
+    //TODO
+}
+
+void Fw::Database::execFile(QIODevice* device) throw(Fw::Exception&)
+{
+    //TODO
+}
 
 ////////////////////////////////////////////////////////////////////////////
 
