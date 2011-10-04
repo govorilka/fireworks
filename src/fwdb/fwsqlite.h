@@ -39,7 +39,7 @@ public:
 class FIREWORKSSHARED_EXPORT FwSqlite::QueryData : public Fw::QueryData
 {
     typedef Fw::QueryData BaseClass;
-    friend class Fw::Database;
+    friend class FwSqlite::Database;
 
 public:
     ~QueryData();
@@ -216,9 +216,10 @@ protected:
     virtual bool init(const QString& param) throw(Fw::Exception&);
     virtual void release() throw();
 
+    virtual QueryData* createQuery(const QString& query) throw(Fw::Exception&);
+
 private:
     sqlite3* m_connection;
 
 };
-\
 #endif // FIREWORKS_SQLITE_H
