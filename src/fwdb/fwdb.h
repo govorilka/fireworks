@@ -65,12 +65,28 @@ public:
     Query();
     ~Query();
 
+    void reset();
+    void exec() throw (Fw::Exception&);
+    void finalize();
+
+    void bindInt(int index, int value);
+    void bindText(int index, const QString& text);
+    void bindColor(int index, const FwColor& color);
+    inline void bindUrl(int index, const QUrl& url);
+    void bindDateTime(int index, const QDateTime& datetime);
+
     iterator begin();
     iterator end();
 
 protected:
     Query(QueryData* data);
 };
+
+void Fw::Query::bindUrl(int index, const QUrl& url)
+{
+    //TODO
+}
+
 
 class Fw::Query::iterator
 {
@@ -133,6 +149,13 @@ public:
     void close() throw();
 
     inline bool isOpen() const;
+
+    void rollback();
+    void beginTransaction();
+    void commit();
+
+    int lastInsertKey();
+    void reindex(const QString& indexName) throw(Fw::Exception&);
 
 protected:
     virtual bool init(const QString& param) throw(Exception&) = 0;

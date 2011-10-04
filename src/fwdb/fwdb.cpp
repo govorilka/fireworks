@@ -49,6 +49,42 @@ Fw::Query::iterator Fw::Query::end()
     //TODO
 }
 
+void Fw::Query::bindInt(int index, int value)
+{
+    //TODO
+}
+
+void Fw::Query::bindText(int index, const QString& text)
+{
+    //TODO
+}
+
+void Fw::Query::bindColor(int index, const FwColor& color)
+{
+    //TODO
+}
+
+void Fw::Query::bindDateTime(int index, const QDateTime& datetime)
+{
+    //TODO
+}
+
+void Fw::Query::reset()
+{
+    //TODO
+}
+
+void Fw::Query::exec() throw (Fw::Exception&)
+{
+    //TODO
+}
+
+void Fw::Query::finalize()
+{
+    //TODO
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
 Fw::Query::iterator::iterator(QueryData *data) :
@@ -155,6 +191,26 @@ void Fw::Database::close() throw()
 }
 
 void Fw::Database::rollback()
+{
+    //TODO
+}
+
+void Fw::Database::beginTransaction()
+{
+    //TODO
+}
+
+void Fw::Database::commit()
+{
+    //TODO
+}
+
+int Fw::Database::lastInsertKey()
+{
+    //TODO
+}
+
+void Fw::Database::reindex(const QString& indexName) throw(Fw::Exception&)
 {
     //TODO
 }

@@ -205,27 +205,10 @@ void FwSqlite::Database::release() throw()
     }
 }
 
-//FwSQLiteQuery FwSQLiteDatabase::query(const QString& query) throw(FwSQLiteException&)
-//{
-//    if(m_db)
-//    {
-//        sqlite3_stmt* pStmt = 0;
-//        int result = sqlite3_prepare16_v2(m_db,
-//                                          query.constData(),
-//                                          (query.size() + 1) * sizeof(QChar),
-//                                          &pStmt,
-//                                          0);
-//        if(result == SQLITE_OK)
-//        {
-//            FwSQLiteQueryData* data = new FwSQLiteQueryData(this, m_db, pStmt);
-//            queries.append(data);
-//            return FwSQLiteQuery(data);
-//        }
-//    }
-
-//    throw FwSQLiteException(m_db);
-//    return FwSQLiteQuery();
-//}
+FwSqlite::QueryData* FwSqlite::Database::createQuery(const QString& query) throw(Fw::Exception&)
+{
+    return new FwSqlite::QueryData(this, query.toUtf8());
+}
 
 //void FwSQLiteDatabase::exec(const QString& query) throw(FwSQLiteException&)
 //{
