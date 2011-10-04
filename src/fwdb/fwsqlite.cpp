@@ -12,6 +12,15 @@ FwSqlite::Exception::Exception(const Database* db) throw() :
     }
 }
 
+FwSqlite::Exception::Exception(const QString& error) throw() :
+    BaseClass(error)
+{
+}
+
+FwSqlite::Exception::~Exception() throw()
+{
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FwSqlite::QueryData::~QueryData()
@@ -19,10 +28,24 @@ FwSqlite::QueryData::~QueryData()
    release();
 }
 
-FwSqlite::QueryData::QueryData(FwSqlite::Database* db, sqlite3_stmt* stmt) :
+FwSqlite::QueryData::QueryData(FwSqlite::Database* db, const QByteArray& query) :
     BaseClass(db),
-    m_stmt(stmt)
+    m_stmt(0)
 {
+    if(db && db->m_connection)
+    {
+        int result = sqlite3_prepare16_v2(db->m_connection,
+                                          query.constData(),
+                                          (query.size() + 1) * sizeof(QChar),
+                                          &m_stmt,
+                                          0);
+        if(result == SQLITE_OK)
+        {
+            return;
+        }
+    }
+
+    throw FwSqlite::Exception(db);
 }
 
 void FwSqlite::QueryData::finalize()
@@ -34,163 +57,117 @@ void FwSqlite::QueryData::finalize()
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
+bool FwSqlite::QueryData::isNull() const
+{
+    return m_stmt == 0;
+}
 
-///*!
-//\note Used for null query only
-//*/
-//FwSQLiteQuery::FwSQLiteQuery() :
-//    BaseClass()
-//{
-//}
+void FwSqlite::QueryData::reset()
+{
+    if(m_stmt)
+    {
+        sqlite3_reset(m_stmt);
+    }
+}
 
-//FwSQLiteQuery::FwSQLiteQuery(FwSQLiteQueryData * data) :
-//    BaseClass(data)
-//{
-//}
+bool FwSqlite::QueryData::step() throw (Fw::Exception&)
+{
+    if(m_stmt)
+    {
+        switch(sqlite3_step(m_stmt))
+        {
+            case SQLITE_ROW:
+            return true;
 
-//bool FwSQLiteQuery::isNull() const
-//{
-//    FwSQLiteQueryData* data = this->data();
-//    if(data)
-//    {
-//        return data->stmt == 0;
-//    }
-//    return true;
-//}
+            case SQLITE_DONE:
+            return false;
 
-//bool FwSQLiteQuery::operator==(const FwSQLiteQuery &other) const
-//{
-//    return data() == other.data();
-//}
+            case SQLITE_ERROR:
+            case SQLITE_IOERR:
+            throw Fw::Exception(m_db);
+            return false;
 
-//bool FwSQLiteQuery::operator!=(const FwSQLiteQuery &other) const
-//{
-//    return data() != other.data();
-//}
+            default:
+            Q_ASSERT(false);
+            return false;
+        }
+    }
 
-//bool FwSQLiteQuery::step() throw (FwSQLiteException&)
-//{
-//    FwSQLiteQueryData* data = this->data();
-//    if(data && data->stmt)
-//    {
-//        switch(sqlite3_step(data->stmt))
-//        {
-//        case SQLITE_ROW:
-//            return true;
+    throw Exception("Query is null");
+    return false;
+}
 
-//        case SQLITE_DONE:
-//            return false;
+bool FwSqlite::QueryData::columnBool(int column)
+{
+    return columnInt(column) != 0;
+}
 
-//        case SQLITE_ERROR:
-//        case SQLITE_IOERR:
-//            throw FwSQLiteException(data->db);
-//            return false;
+int FwSqlite::QueryData::columnInt(int column)
+{
+    if(m_stmt)
+    {
+        return sqlite3_column_int(m_stmt, column);
+    }
+    return 0;
+}
 
-//        default:
-//            Q_ASSERT(false);
-//            return false;
-//        }
-//    }
+QString FwSqlite::QueryData::columnText(int column)
+{
+    if(m_stmt)
+    {
+        return QString( reinterpret_cast<const QChar*>(sqlite3_column_text16(m_stmt, column)),
+                        sqlite3_column_bytes16(m_stmt, column) / sizeof(QChar)
+                      );
+    }
+    return QString();
+}
 
-//    throw FwSQLiteException("Query is null");
-//    return false;
-//}
+FwColor FwSqlite::QueryData::columnColor(int column)
+{
+    return FwColor(static_cast<quint32>(columnInt(column)));
+}
 
-//QString FwSQLiteQuery::columnText(int column)
-//{
-//    FwSQLiteQueryData* data = this->data();
-//    if(data && data->stmt)
-//    {
-//        return QString(reinterpret_cast<const QChar *>(sqlite3_column_text16(data->stmt, column)),
-//                       sqlite3_column_bytes16(data->stmt, column) / sizeof(QChar));
-//    }
-//    return QString();
-//}
+QUrl FwSqlite::QueryData::columnUrl(int column)
+{
+    QString stringUrl = columnText(column);
+    if(!stringUrl.isEmpty())
+    {
+        return QUrl(stringUrl);
+    }
+    return QUrl();
+}
 
-//int FwSQLiteQuery::columnInt(int column)
-//{
-//    FwSQLiteQueryData* data = this->data();
-//    if(data && data->stmt)
-//    {
-//        return sqlite3_column_int(data->stmt, column);
-//    }
-//    return 0;
-//}
+void FwSqlite::QueryData::bindInt(int index, int value)
+{
+    if(m_stmt)
+    {
+        sqlite3_bind_int(m_stmt, index, value);
+    }
+}
 
-//QUrl FwSQLiteQuery::columnUrl(int column)
-//{
-//    QString stringUrl = columnText(column);
-//    if(!stringUrl.isEmpty())
-//    {
-//        return QUrl(stringUrl);
-//    }
-//    return QUrl();
-//}
+void FwSqlite::QueryData::bindText(int index, const QString& text)
+{
+    if(m_stmt)
+       {
+           sqlite3_bind_text16(m_stmt, index, text.utf16(), (text.size()) * sizeof(QChar), SQLITE_TRANSIENT);
+       }
+}
 
-//bool FwSQLiteQuery::columnBool(int column)
-//{
-//    return columnInt(column) != 0;
-//}
+void FwSqlite::QueryData::bindColor(int index, const FwColor& color)
+{
+    if(m_stmt)
+    {
+        sqlite3_bind_int(m_stmt, index, static_cast<qint32>(color.argb()));
+    }
+}
 
-//FwColor FwSQLiteQuery::columnColor(int column)
-//{
-//    return FwColor(static_cast<quint32>(columnInt(column)));
-//}
-
-//void FwSQLiteQuery::finalize()
-//{
-//    FwSQLiteQueryData* data = this->data();
-//    if(data)
-//    {
-//        data->finalize();
-//    }
-//}
-
-//void FwSQLiteQuery::bindText(int index, const QString& text)
-//{
-//    FwSQLiteQueryData* data = this->data();
-//    if(data && data->stmt)
-//    {
-//        sqlite3_bind_text16(data->stmt, index, text.utf16(), (text.size()) * sizeof(QChar), SQLITE_TRANSIENT);
-//    }
-//}
-
-//void FwSQLiteQuery::bindInt(int index, int value)
-//{
-//    FwSQLiteQueryData* data = this->data();
-//    if(data && data->stmt)
-//    {
-//        sqlite3_bind_int(data->stmt, index, value);
-//    }
-//}
-
-//void FwSQLiteQuery::bindDateTime(int index, const QDateTime& datetime)
-//{
-//    FwSQLiteQueryData* data = this->data();
-//    if(data && data->stmt)
-//    {
-//        sqlite3_bind_int(data->stmt, index, (int)datetime.toUTC().toTime_t());
-//    }
-//}
-
-//void  FwSQLiteQuery::bindColor(int index, const  FwColor& color)
-//{
-//    FwSQLiteQueryData* data = this->data();
-//    if(data && data->stmt)
-//    {
-//        sqlite3_bind_int(data->stmt, index, static_cast<qint32>(color.argb()));
-//    }
-//}
-
-//void FwSQLiteQuery::reset()
-//{
-//    FwSQLiteQueryData* data = this->data();
-//    if(data && data->stmt)
-//    {
-//        sqlite3_reset(data->stmt);
-//    }
-//}
+void FwSqlite::QueryData::bindDateTime(int index, const QDateTime& datetime)
+{
+    if(m_stmt)
+    {
+        sqlite3_bind_int(m_stmt, index, (int)datetime.toUTC().toTime_t());
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -331,45 +308,4 @@ void FwSqlite::Database::release() throw()
 //    }
 //    FwSQLiteQuery reindexQuery = query(QString("REINDEX %1").arg(indexName));
 //    reindexQuery.step();
-//}
-
-////////////////////////////////////////////////////////////////////////////
-
-//FwSQLiteDBLock::FwSQLiteDBLock(FwSQLiteDatabase *db) :
-//    m_db(db),
-//    m_lock(false)
-//{
-//}
-
-//FwSQLiteDBLock::~FwSQLiteDBLock()
-//{
-//    unlock();
-//}
-
-//bool FwSQLiteDBLock::lock() const
-//{
-//    if(!m_lock && m_db)
-//    {
-//        m_db->m_dbLock.lockForWrite();
-//        m_lock = true;
-//    }
-//    return m_lock;
-//}
-
-//bool FwSQLiteDBLock::tryLock() const
-//{
-//    if(!m_lock && m_db && m_db->m_dbLock.tryLockForWrite())
-//    {
-//        m_lock = true;
-//    }
-//    return m_lock;
-//}
-
-//void FwSQLiteDBLock::unlock()
-//{
-//    if(m_lock)
-//    {
-//        m_db->m_dbLock.unlock();
-//        m_lock = false;
-//    }
 //}

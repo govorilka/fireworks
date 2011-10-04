@@ -68,6 +68,11 @@ FwPg::Exception::Exception(const Database* db) throw() :
     }
 }
 
+FwPg::Exception::Exception(const QString& error) throw() :
+    BaseClass(error)
+{
+}
+
 FwPg::Exception::~Exception() throw()
 {
 }
@@ -93,6 +98,7 @@ void FwPg::QueryData::finalize()
         PQclear(m_result);
         m_result = 0;
     }
+    m_query.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -129,7 +135,7 @@ void FwPg::Database::release() throw()
     }
 }
 
-FwPg::QueryData* FwPg::Database::createQuery(const QString& query) const throw(Fw::Exception&)
+FwPg::QueryData* FwPg::Database::createQuery(const QString& query) throw(Fw::Exception&)
 {
     return new QueryData(this, query.toUtf8());
 }

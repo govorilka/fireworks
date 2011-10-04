@@ -3,6 +3,7 @@
 
 #include <QtCore/qobject.h>
 #include <QtCore/qsharedpointer.h>
+#include <QtCore/qreadwritelock.h>
 
 #include <pgsql/libpq-fe.h>
 
@@ -16,6 +17,7 @@ namespace Fw
     class Query;
     class QueryData;
     class Database;
+    class DatabaseLocker;
 
     Database* dbFactory(QObject* parent, const QString& driver, const QString& params);
 }
@@ -28,6 +30,7 @@ class FIREWORKSSHARED_EXPORT Fw::Exception: public std::exception
 
 public:
     Exception(const Database* db) throw();
+    Exception(const QString& error) throw();
     virtual ~Exception() throw();
 
     virtual const char* what() const throw();
@@ -82,6 +85,7 @@ Fw::Database* Fw::QueryData::database() const
 {
     return m_db;
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 
 class FIREWORKSSHARED_EXPORT Fw::Database : public QObject
@@ -90,6 +94,7 @@ class FIREWORKSSHARED_EXPORT Fw::Database : public QObject
     typedef QObject BaseClass;
 
     friend class QueryData;
+    friend class DatabaseLocker;
 
 public:
     Database(QObject* parent);
@@ -106,16 +111,42 @@ protected:
     virtual bool init(const QString& param) throw(Exception&) = 0;
     virtual void release() throw() = 0;
 
-    virtual QueryData* createQuery(const QString& query) const throw(Exception&) = 0;
+    virtual QueryData* createQuery(const QString& query) throw(Exception&) = 0;
     \
 private:
     bool m_open;
     QList<QueryData*> m_queries;
+    QReadWriteLock m_dbLock;
 };
 
 bool Fw::Database::isOpen() const
 {
     return m_open;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+class FIREWORKSSHARED_EXPORT Fw::DatabaseLocker
+{
+public:
+    DatabaseLocker(Database* db);
+    ~DatabaseLocker();
+
+    inline Database* db() const;
+
+    bool lock() const;
+    bool tryLock() const;
+
+    void unlock();
+
+private:
+    mutable bool m_lock;
+    Database* m_db;
+};
+
+Fw::Database* Fw::DatabaseLocker::db() const
+{
+    return m_db;
 }
 
 #endif // FIREWORKS_DB_H

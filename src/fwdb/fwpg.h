@@ -43,6 +43,7 @@ class FIREWORKSSHARED_EXPORT FwPg::Exception: public Fw::Exception
 
 public:
     Exception(const Database* db) throw();
+    Exception(const QString& error) throw();
     virtual ~Exception() throw();
 };
 
@@ -90,7 +91,7 @@ protected:
     virtual bool init(const QString& param) throw(Fw::Exception&);
     virtual void release() throw();
 
-    virtual QueryData* createQuery(const QString& query) const throw(Fw::Exception&);
+    virtual QueryData* createQuery(const QString& query) throw(Fw::Exception&);
 
 private:
     PGconn* m_connection;
