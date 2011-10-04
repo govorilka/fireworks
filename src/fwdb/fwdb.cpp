@@ -67,6 +67,31 @@ bool Fw::Query::iterator::operator !=(const iterator& rhs)
     //TODO
 }
 
+bool Fw::Query::iterator::columnBool(int column)
+{
+    //TODO
+}
+
+int Fw::Query::iterator::columnInt(int column)
+{
+    //TODO
+}
+
+QString Fw::Query::iterator::columnText(int column)
+{
+    //TODO
+}
+
+FwColor Fw::Query::iterator::columnColor(int column)
+{
+    //TODO
+}
+
+QUrl Fw::Query::iterator::columnUrl(int column)
+{
+    //TODO
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 Fw::QueryData::QueryData(Fw::Database* db) :
@@ -127,6 +152,11 @@ void Fw::Database::close() throw()
     }
 
     release();
+}
+
+void Fw::Database::rollback()
+{
+    //TODO
 }
 
 
