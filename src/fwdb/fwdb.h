@@ -4,12 +4,15 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qsharedpointer.h>
 #include <QtCore/qreadwritelock.h>
+#include <QtCore/qurl.h>
 
 #ifdef FW_SUPPORT_POSTGRESQL
 #include <pgsql/libpq-fe.h>
 #endif
 
 #include "fireworks.h"
+
+#include "fwcore/fwcolor.h"
 
 #include "fwcore/fwcppobject.h"
 
@@ -75,6 +78,13 @@ public:
     iterator(QueryData* data);
     iterator& operator ++();
     bool operator !=(const iterator& rhs);
+
+    bool columnBool(int column);
+    int columnInt(int column);
+    QString columnText(int column);
+    FwColor columnColor(int column);
+    QUrl columnUrl(int column);
+
 private:
     QueryData* m_data;
 };
