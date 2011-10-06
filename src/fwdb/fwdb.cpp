@@ -97,21 +97,6 @@ void Fw::QueryData::reset()
     }
 }
 
-//Fw::QueryData::QueryData() :
-//m_db(0),
-//m_exec(0)
-//{
-//}
-
-//Fw::QueryData::QueryData(const QueryData& other)
-//{
-//}
-
-//Fw::QueryData& Fw::QueryData::operator=(const QueryData& other)
-//{
-//    return *this;
-//}
-
 Fw::QueryData::~QueryData()
 {
 }
