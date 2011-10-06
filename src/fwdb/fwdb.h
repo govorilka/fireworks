@@ -86,10 +86,6 @@ protected:
 
 private:
     bool m_exec;
-
-    QueryData();
-    QueryData(const QueryData& other);
-    QueryData& operator=(const QueryData& other);
 };
 
 Fw::Database* Fw::QueryData::database() const
@@ -111,6 +107,7 @@ class FIREWORKSSHARED_EXPORT Fw::Query : protected QSharedPointer<Fw::QueryData>
 public:
     friend class Database;
 
+    Query();
     ~Query();
 
     inline bool step() throw (Fw::Exception&);
@@ -136,11 +133,6 @@ protected:
 
     QueryData* getQueryData() const throw (Fw::Exception&);
     QueryData* getBindQueryData() const throw (Fw::Exception&);
-
-private:
-    Query();
-    Query(const Query& other);
-    Query& operator=(const Query& other);
 };
 
 bool Fw::Query::step() throw (Fw::Exception&)
@@ -167,10 +159,16 @@ void Fw::Query::bindColor(int index, const FwColor& color) throw(Exception&)
     getBindQueryData()->doBindInt(index, static_cast<qint32>(color.argb()));
 }
 
+void Fw::Query::bindUrl(int index, const QUrl& url)
+{
+    getBindQueryData()->doBindText(index, url.toString());
+}
+
 void Fw::Query::bindDateTime(int index, const QDateTime& datetime) throw(Exception&)
 {
     getBindQueryData()->doBindDateTime(index, datetime);
 }
+
 
 bool Fw::Query::columnBool(int column) const
 {
