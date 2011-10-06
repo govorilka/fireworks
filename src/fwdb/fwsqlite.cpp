@@ -25,7 +25,6 @@ FwSqlite::Exception::~Exception() throw()
 
 FwSqlite::QueryData::~QueryData()
 {
-   release();
 }
 
 FwSqlite::QueryData::QueryData(FwSqlite::Database* db, const QByteArray& query) throw(Fw::Exception&) :
@@ -48,15 +47,6 @@ FwSqlite::QueryData::QueryData(FwSqlite::Database* db, const QByteArray& query) 
     throw FwSqlite::Exception(db);
 }
 
-void FwSqlite::QueryData::finalize()
-{
-    if(m_stmt)
-    {
-        sqlite3_finalize(m_stmt);
-        m_stmt = 0;
-    }
-}
-
 bool FwSqlite::QueryData::isNull() const
 {
     return m_stmt == 0;
@@ -72,15 +62,12 @@ bool FwSqlite::QueryData::operator!=(const QueryData& other) const
     return !operator==(other);
 }
 
-void FwSqlite::QueryData::reset()
+void FwSqlite::QueryData::doExec() throw (Fw::Exception&)
 {
-    if(m_stmt)
-    {
-        sqlite3_reset(m_stmt);
-    }
+    //TODO
 }
 
-bool FwSqlite::QueryData::step() throw (Fw::Exception&)
+bool FwSqlite::QueryData::doNext() throw (Fw::Exception&)
 {
     if(m_stmt)
     {
@@ -107,12 +94,50 @@ bool FwSqlite::QueryData::step() throw (Fw::Exception&)
     return false;
 }
 
-bool FwSqlite::QueryData::columnBool(int column)
+void FwSqlite::QueryData::doReset()
 {
-    return columnInt(column) != 0;
+    if(m_stmt)
+    {
+        sqlite3_reset(m_stmt);
+    }
 }
 
-int FwSqlite::QueryData::columnInt(int column)
+void FwSqlite::QueryData::doFinalize()
+{
+    if(m_stmt)
+    {
+        sqlite3_finalize(m_stmt);
+        m_stmt = 0;
+    }
+}
+
+void FwSqlite::QueryData::doBindInt(int index, int value) throw(Fw::Exception&)
+{
+    if(m_stmt)
+    {
+        sqlite3_bind_int(m_stmt, index, value);
+    }
+}
+void FwSqlite::QueryData::doBindText(int index, const QString& text) throw(Fw::Exception&)
+{
+    if(m_stmt)
+       {
+           sqlite3_bind_text16(m_stmt, index, text.utf16(), (text.size()) * sizeof(QChar), SQLITE_TRANSIENT);
+       }
+}
+void FwSqlite::QueryData::doBindDateTime(int index, const QDateTime& dateTime) throw(Fw::Exception&)
+{
+    if(m_stmt)
+    {
+        sqlite3_bind_int(m_stmt, index, (int)dateTime.toUTC().toTime_t());
+    }
+}
+
+bool FwSqlite::QueryData::doColumnBool(int column) const
+{
+    return doColumnInt(column) != 0;
+}
+int FwSqlite::QueryData::doColumnInt(int column) const
 {
     if(m_stmt)
     {
@@ -121,7 +146,7 @@ int FwSqlite::QueryData::columnInt(int column)
     return 0;
 }
 
-QString FwSqlite::QueryData::columnText(int column)
+QString FwSqlite::QueryData::doColumnText(int column) const
 {
     if(m_stmt)
     {
@@ -132,51 +157,19 @@ QString FwSqlite::QueryData::columnText(int column)
     return QString();
 }
 
-FwColor FwSqlite::QueryData::columnColor(int column)
+FwColor FwSqlite::QueryData::doColumnColor(int column) const
 {
-    return FwColor(static_cast<quint32>(columnInt(column)));
+    return FwColor(static_cast<quint32>(doColumnInt(column)));
 }
 
-QUrl FwSqlite::QueryData::columnUrl(int column)
+QUrl FwSqlite::QueryData::doColumnUrl(int column) const
 {
-    QString stringUrl = columnText(column);
+    QString stringUrl = doColumnText(column);
     if(!stringUrl.isEmpty())
     {
         return QUrl(stringUrl);
     }
     return QUrl();
-}
-
-void FwSqlite::QueryData::bindInt(int index, int value)
-{
-    if(m_stmt)
-    {
-        sqlite3_bind_int(m_stmt, index, value);
-    }
-}
-
-void FwSqlite::QueryData::bindText(int index, const QString& text)
-{
-    if(m_stmt)
-       {
-           sqlite3_bind_text16(m_stmt, index, text.utf16(), (text.size()) * sizeof(QChar), SQLITE_TRANSIENT);
-       }
-}
-
-void FwSqlite::QueryData::bindColor(int index, const FwColor& color)
-{
-    if(m_stmt)
-    {
-        sqlite3_bind_int(m_stmt, index, static_cast<qint32>(color.argb()));
-    }
-}
-
-void FwSqlite::QueryData::bindDateTime(int index, const QDateTime& datetime)
-{
-    if(m_stmt)
-    {
-        sqlite3_bind_int(m_stmt, index, (int)datetime.toUTC().toTime_t());
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
