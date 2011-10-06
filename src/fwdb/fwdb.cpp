@@ -26,12 +26,8 @@ const char* Fw::Exception::what() const throw()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Fw::Query::Query()
-{
-}
-
 Fw::Query::Query(QueryData * data) :
-    BaseClass(data)
+    BaseClass(data, &doDeleteQueryData)
 {
 }
 
@@ -39,102 +35,82 @@ Fw::Query::~Query()
 {
 }
 
-Fw::Query::iterator Fw::Query::begin()
+Fw::QueryData* Fw::Query::getQueryData() const throw (Fw::Exception&)
 {
-    //TODO
+    QueryData* data = this->data();
+    if(!data || !data->m_db)
+    {
+        throw Fw::Exception("Query is null");
+    }
+    return data;
 }
 
-Fw::Query::iterator Fw::Query::end()
+Fw::QueryData* Fw::Query::getBindQueryData() const throw (Fw::Exception&)
 {
-    //TODO
+    QueryData* data = getQueryData();
+    if(data->m_exec)
+    {
+        throw Fw::Exception("Query is execite now");
+    }
+    return data;
 }
 
-void Fw::Query::bindInt(int index, int value)
+void Fw::Query::doDeleteQueryData(QueryData* data)
 {
-    //TODO
-}
-
-void Fw::Query::bindText(int index, const QString& text)
-{
-    //TODO
-}
-
-void Fw::Query::bindColor(int index, const FwColor& color)
-{
-    //TODO
-}
-
-void Fw::Query::bindDateTime(int index, const QDateTime& datetime)
-{
-    //TODO
-}
-
-void Fw::Query::reset()
-{
-    //TODO
-}
-
-bool Fw::Query::exec() throw (Fw::Exception&)
-{
-    //TODO
-    return true;
-}
-
-void Fw::Query::finalize()
-{
-    //TODO
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-
-Fw::Query::iterator::iterator(QueryData *data) :
-    m_data(data)
-{
-
-}
-
-Fw::Query::iterator& Fw::Query::iterator::operator ++()
-{
-    //TODO
-}
-
-bool Fw::Query::iterator::operator !=(const iterator& rhs)
-{
-    //TODO
-}
-
-bool Fw::Query::iterator::columnBool(int column)
-{
-    //TODO
-}
-
-int Fw::Query::iterator::columnInt(int column)
-{
-    //TODO
-}
-
-QString Fw::Query::iterator::columnText(int column)
-{
-    //TODO
-}
-
-FwColor Fw::Query::iterator::columnColor(int column)
-{
-    //TODO
-}
-
-QUrl Fw::Query::iterator::columnUrl(int column)
-{
-    //TODO
+    data->release();
+    delete data;
+    data = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 Fw::QueryData::QueryData(Fw::Database* db) :
-    m_db(db)
+    m_db(db),
+    m_exec(false)
 {
 }
+
+bool Fw::QueryData::step() throw (Fw::Exception&)
+{
+    if(m_exec)
+    {
+        doExec();
+        m_exec = true;
+        return true;
+    }
+
+    if(doNext())
+    {
+        return true;
+    }
+
+    reset();
+    return false;
+}
+
+void Fw::QueryData::reset()
+{
+    if(m_exec)
+    {
+        doReset();
+        m_exec = false;
+    }
+}
+
+//Fw::QueryData::QueryData() :
+//m_db(0),
+//m_exec(0)
+//{
+//}
+
+//Fw::QueryData::QueryData(const QueryData& other)
+//{
+//}
+
+//Fw::QueryData& Fw::QueryData::operator=(const QueryData& other)
+//{
+//    return *this;
+//}
 
 Fw::QueryData::~QueryData()
 {
@@ -142,9 +118,10 @@ Fw::QueryData::~QueryData()
 
 void Fw::QueryData::release()
 {
-    finalize();
     if(m_db)
     {
+        reset();
+        doFinalize();
         m_db->m_queries.removeOne(this);
         m_db = 0;
     }

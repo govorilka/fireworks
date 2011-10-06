@@ -34,39 +34,32 @@ class FIREWORKSSHARED_EXPORT FwSqlite::QueryData : public Fw::QueryData
 public:
     ~QueryData();
 
-    void finalize();
-
     bool isNull() const;
 
     bool operator==(const QueryData& other) const;
     bool operator!=(const QueryData& other) const;
 
-    void reset();
-    bool step() throw (Fw::Exception&);
-
-    bool columnBool(int column);
-    int columnInt(int column);
-    QString columnText(int column);
-    FwColor columnColor(int column);
-    QUrl columnUrl(int column);
-
-    void bindInt(int index, int value);
-    void bindText(int index, const QString& text);
-    void bindColor(int index, const FwColor& color);
-    inline void bindUrl(int index, const QUrl& url);
-    void bindDateTime(int index, const QDateTime& datetime);
-
 protected:
     QueryData(Database* db, const QByteArray& query) throw(Fw::Exception&);
+
+    virtual void doExec() throw (Fw::Exception&);
+    virtual bool doNext() throw (Fw::Exception&);
+    virtual void doReset();
+    virtual void doFinalize();
+
+    virtual void doBindInt(int index, int value) throw(Fw::Exception&);
+    virtual void doBindText(int index, const QString& text) throw(Fw::Exception&);
+    virtual void doBindDateTime(int index, const QDateTime& dateTime) throw(Fw::Exception&);
+
+    virtual bool doColumnBool(int column) const;
+    virtual int doColumnInt(int column) const;
+    virtual QString doColumnText(int column) const;
+    virtual FwColor doColumnColor(int column) const;
+    virtual QUrl doColumnUrl(int column) const;
 
 private:
     sqlite3_stmt* m_stmt;
 };
-
-void FwSqlite::QueryData::bindUrl(int index, const QUrl& url)
-{
-    bindText(index, url.toString());
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
