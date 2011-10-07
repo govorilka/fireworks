@@ -9,13 +9,13 @@ SOURCES += \
     fwdb/fwsqlite.cpp \
     fwdb/fwdb.cpp
 
-
-postgresql {
-    DEFINES += FW_SUPPORT_POSTGRESQL
-    LIBS += -L/usr/lib -lpq
+exists($(PGSQL_PATH)) {
+    include (postgresql.pri)
     HEADERS += fwdb/fwpg.h
     SOURCES += fwdb/fwpg.cpp
 }
-
+else {
+    warning("Postgresql directory is not exist")
+}
 
 
