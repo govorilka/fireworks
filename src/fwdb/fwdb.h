@@ -137,7 +137,7 @@ protected:
 
 bool Fw::Query::step() throw (Fw::Exception&)
 {
-    getQueryData()->step();
+    return getQueryData()->step();
 }
 
 void Fw::Query::reset()

@@ -14,7 +14,7 @@ DEFINES += FW_BACKEND_QPAINTER_LIBRARY
 
 INCLUDEPATH += .
 
-INCLUDEPATH += $(FIREWORKS_PATH)/src
+INCLUDEPATH += c:/_sourse/fireworks/src
 LIBS += -L$(FIREWORKS_PATH)/bin \
         -lfireworks1 \
 
