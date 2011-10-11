@@ -142,6 +142,7 @@ void Fw::Database::beginTransaction() throw(Exception&)
         try
         {
             Query lquery = query("BEGIN");
+            lquery.step();
         }
         catch(Exception& e)
         {
@@ -155,8 +156,9 @@ void Fw::Database::commit() throw(Exception&)
 {
     if(m_begin_transaction)
     {
-        m_begin_transaction = false;
         Query lquery = query("COMMIT");
+        lquery.step();
+        m_begin_transaction = false;
     }
 }
 
@@ -164,8 +166,9 @@ void Fw::Database::rollback() throw(Exception&)
 {
     if(m_begin_transaction)
     {
-        m_begin_transaction = false;
         Query lquery = query("ROLLBACK");
+        lquery.step();
+        m_begin_transaction = false;
     }
 }
 
