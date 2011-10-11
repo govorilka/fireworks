@@ -36,32 +36,26 @@ int main(int argc, char **argv)
     try
     {
         db.open(connection);
+        db.beginTransaction();
 
-        Fw::Query query1 = db.query("BEGIN");
+        Fw::Query query1 = db.query("DECLARE myportal CURSOR FOR select * from pg_database");
         query1.step();
 
-        Fw::Query query2 = db.query("DECLARE myportal CURSOR FOR select * from pg_database");
-        query2.step();
-
-        Fw::Query query3 = db.query("FETCH ALL in myportal");
-        while(query3.step())
+        Fw::Query query2 = db.query("FETCH ALL in myportal");
+        while(query2.step())
         {
-            printf("%-15s", query3.columnText(0).toUtf8().constData());
+            printf("%-15s", query2.columnText(0).toUtf8().constData());
         }
 
-        Fw::Query query4 = db.query("CLOSE myportal");
-        query4.step();
+        Fw::Query query3 = db.query("CLOSE myportal");
+        query3.step();
 
-        Fw::Query query5 = db.query("END");
-        query5.step();
-
+        db.commit();
         db.close();
     }
     catch(Fw::Exception& e)
     {
-        QString err = e.what();
-        qDebug() << "Exception occured:" << err.toUtf8().constData();
-        //printf("Exception occured: %s", e.what());
+        qDebug() << "Exception occured:" << e.what();
     }
 
     return 0;
