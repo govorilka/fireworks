@@ -198,12 +198,30 @@ void Fw::Database::reindex(const QString& indexName) throw(Fw::Exception&)
 
 void Fw::Database::execFile(const QString& fileName) throw(Fw::Exception&)
 {
-    //TODO
+    QFile sqlFile(fileName);
+    execFile(&sqlFile);
 }
 
 void Fw::Database::execFile(QIODevice* device) throw(Fw::Exception&)
 {
-    //TODO
+    if(!device->open(QIODevice::ReadOnly))
+    {
+        throw Fw::Exception(device->errorString());
+    }
+
+    beginTransaction();
+
+    QList<QByteArray> commands = device->readAll().simplified().split(';');
+    foreach(QByteArray command, commands)
+    {
+        if(!command.isEmpty())
+        {
+            Fw::Query q = this->query(QString(command));
+            while(q.step());
+        }
+    }
+
+    commit();
 }
 
 ////////////////////////////////////////////////////////////////////////////
