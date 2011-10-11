@@ -7,7 +7,8 @@ HEADERS += \
 SOURCES += \
     fwdb/sqlite/sqlite3.c \
     fwdb/fwsqlite.cpp \
-    fwdb/fwdb.cpp
+    fwdb/fwdb.cpp \
+    fwdb/dbfactory.cpp
 
 exists($(PGSQL_PATH)) {
     include (postgresql.pri)
