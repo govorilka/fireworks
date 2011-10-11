@@ -196,17 +196,11 @@ bool FwSqlite::Database::init(const QString& param) throw(Fw::Exception&)
 
     if(m_connection && result == SQLITE_OK)
     {
-        char *errmsg = 0;
-        result = sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0,&errmsg);
-        if(result == SQLITE_OK)
+        if(sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK
+           && sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0, 0) == SQLITE_OK)
         {
-            result = sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0,&errmsg);
-            if(result == SQLITE_OK)
-            {
                 return true;
-            }
         }
-        return false;
     }
     release();
     throw(Exception(this));

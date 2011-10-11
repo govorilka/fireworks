@@ -25,8 +25,8 @@ public:
     inline QObject* receiver() const;
     inline void setReceiver(QObject* receiver);
 
-    inline bool addCommand(const QString& command, CommandFunc function);
-    inline bool setCommands(const QHash<QString, CommandFunc>& mode);
+    bool addCommand(const QString& command, CommandFunc function);
+    bool setCommands(const QHash<QString, CommandFunc>& mode);
 
     void printCommandList() const;
 
@@ -51,28 +51,6 @@ QObject* FwConsole::receiver() const
 void FwConsole::setReceiver(QObject *receiver)
 {
    m_receiver = receiver;
-}
-
-
-bool FwConsole::setCommands(const QHash<QString, CommandFunc>& mode)
-{
-    if(!mode.isEmpty())
-    {
-        m_commands.clear();
-        m_commands.unite(mode);
-        return true;
-    }
-    return false;
-}
-
-bool FwConsole::addCommand(const QString& command, CommandFunc function)
-{
-    if(!m_commands.contains(command))
-    {
-            m_commands.insert(command, function);
-            return true;
-    }
-    return false;
 }
 
 #endif // FIREWORKS_CONSOLE_H
