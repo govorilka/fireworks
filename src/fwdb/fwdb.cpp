@@ -127,8 +127,6 @@ Fw::Database::~Database()
 
 Fw::Query Fw::Database::query(const QString& query) throw(Exception&)
 {
-    beginTransaction();
-
     QueryData* data = createQuery(query);
     m_queries.append(data);
     return Query(data);
@@ -138,17 +136,9 @@ void Fw::Database::beginTransaction() throw(Exception&)
 {
     if(!m_begin_transaction)
     {
+        Query lquery = query("BEGIN");
+        lquery.step();
         m_begin_transaction = true;
-        try
-        {
-            Query lquery = query("BEGIN");
-            lquery.step();
-        }
-        catch(Exception& e)
-        {
-            m_begin_transaction = false;
-            throw e;
-        }
     }
 }
 
