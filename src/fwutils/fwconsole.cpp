@@ -90,3 +90,25 @@ void FwConsole::printCommandList() const
         writeLine(command);
     }
 }
+
+bool FwConsole::addCommand(const QString& command, CommandFunc function)
+{
+    if(!m_commands.contains(command))
+    {
+            m_commands.insert(command, function);
+            return true;
+    }
+    return false;
+}
+
+bool FwConsole::setCommands(const QHash<QString, CommandFunc>& mode)
+{
+    if(!mode.isEmpty())
+    {
+        m_commands.clear();
+        m_commands.unite(mode);
+        return true;
+    }
+    return false;
+}
+
