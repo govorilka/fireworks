@@ -1,0 +1,68 @@
+
+"browser.png"
+{
+    source : "./images/browser.png",
+    blending : true
+},
+
+"corners/bottomleft.png"
+{
+    source : "./images/corners/bottomleft.png",
+    blending : true
+},
+
+"corners/bottomright.png"
+{
+    source : "./images/corners/bottomright.png",
+    blending : true
+},
+
+"corners/topleft.png"
+{
+    source : "./images/corners/topleft.png",
+    blending : true
+},
+
+"corners/topright.png"
+{
+    source : "./images/corners/topright.png",
+    blending : true
+},
+
+"checkon.png"
+{
+    source : "./images/checkon.png",
+    blending : true
+},
+"checkoff.png"
+{
+    source : "./images/checkoff.png",
+    blending : true
+},
+
+"bar/left.png"
+{
+    source : "./images/bar/left.png",
+    blending : true,
+},
+"bar/center.png"
+{
+    source : "./images/bar/center.png",
+    blending : false,
+},
+"bar/right.png"
+{
+    source : "./images/bar/right.png",
+    blending : true,
+},
+
+"arrows/left.png"
+{
+    source : "./images/arrows/left.png",
+    blending : true,
+},
+"arrows/right.png"
+{
+    source : "./images/arrows/right.png",
+    blending : true,
+}

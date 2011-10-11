@@ -1,0 +1,74 @@
+/*!
+ \headerfile "fwsheduler.h"
+ 
+  \class FwConsole
+  \brief Данный класс представляет собой интерфейс для работы с консолью.
+  \inherits QObject
+  \ingroup fwutils
+
+  FwConsole - класс реализует основные методы необходимые при работе с консолью.
+*/
+
+/*!
+ \typedef CommandFunct
+ \brief Данный typedef используется для указателя на функцию со следующей сигнатурой:
+ \code
+   bool CommandFunc(QObject* receiver, const QStringList& params, QString* errorString);
+ \endcode
+*/
+
+/*!
+  \variable  QString FwConsole::errorMessage;
+  Строка, содержащая в себе текст ошибки
+*/
+
+/*!
+  \variable  QObject* FwConsole::m_receiver;
+  Объект к которому привязана консоль
+*/
+
+/*!
+  \variable  QHash<QString, CommandFunc> FwConsole::m_commands;
+  Карта комманд, т.е. набор функций и привязанных к ним имен.
+*/
+
+/*!
+ \fn static void FwConsole::writeLine(const QString& line);
+ \param line - строка для вывода в консоль
+ Статический метод, предназначен для вывода строки line в консоль.
+*/
+
+/*!
+  \fn  void FwConsole::interactiveMode(const QByteArray& promt);
+  \param promt - строка с командой
+  Метод включает интерактивный режим для консоли, т.е. начинает обрабатывать комманды,
+  введенные пользователем (promt)
+*/
+
+/*!
+  \fn virtual bool FwConsole::execCommand(const QString& command, const QStringList& params);
+  \param command - комманда
+  \param params - список параметров для комманды.
+  Виртуальная функция, которая запускает на выполнение комманду \bold {command},
+  со списком параметров params
+*/
+
+/*!
+ \fn inline QString FwConsole::lastError() const;
+ Возвращает текст последней ошибки.
+*/
+
+/*!
+  \fn  inline QObject* FwConsole::receiver() const;
+  Возвращает объект с которым работает консоль.
+*/
+
+/*!
+  \fn inline void FwConsole::setReceiver(QObject* receiver);
+  Устанавливает в качестве объекта с которым работает консоль, объект - receiver
+*/
+
+/*!
+  \fn inline bool FwConsole::addCommand(const QString& command, CommandFunc function);
+  Добавляет комманду function в карту комманд, под именем command.
+*/
