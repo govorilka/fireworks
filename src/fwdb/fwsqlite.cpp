@@ -10,6 +10,10 @@ FwSqlite::Exception::Exception(const Database* db) throw() :
     {
         m_error = sqlite3_errmsg(db->m_connection);
     }
+    else
+    {
+        m_error = "No database connection";
+    }
 }
 
 FwSqlite::Exception::Exception(const QString& error) throw() :

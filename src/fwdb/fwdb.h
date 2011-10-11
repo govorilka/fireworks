@@ -41,7 +41,7 @@ public:
 protected:
     QString m_error;
 };
-\
+
 const QString Fw::Exception::error() const
 {
     return m_error;
@@ -144,6 +144,7 @@ void Fw::Query::reset()
 {
     getQueryData()->reset();
 }
+
 void Fw::Query::bindInt(int index, int value) throw(Exception&)
 {
     getBindQueryData()->doBindInt(index, value);
@@ -168,7 +169,6 @@ void Fw::Query::bindDateTime(int index, const QDateTime& datetime) throw(Excepti
 {
     getBindQueryData()->doBindDateTime(index, datetime);
 }
-
 
 bool Fw::Query::columnBool(int column) const
 {
@@ -209,15 +209,15 @@ public:
     Database(QObject* parent);
     virtual ~Database();
 
-    Query query(const QString& query) throw(Exception&);
-
     void open(const QString& param) throw(Exception&);
     void close() throw();
-
     inline bool isOpen() const;
 
-    void rollback();
+    Query query(const QString& query) throw(Exception&);
+
     void beginTransaction();
+    void rollback();
+
     void commit();
     int lastInsertKey();
     void reindex(const QString& indexName) throw(Exception&);

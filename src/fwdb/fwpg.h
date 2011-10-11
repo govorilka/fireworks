@@ -48,30 +48,6 @@ void FwPg::QueryToken::swapParam()
 
 /////////////////////////////////////////////////////////////////////////////////
 
-//class FwPg::ConnectionParams : public FwCPPObject
-//{
-//    typedef FwCPPObject BaseClass;
-
-//public:
-//    QByteArray host;
-//    short int  port;
-//    QByteArray database;
-//    QByteArray user;
-//    QByteArray password;
-
-//    ConnectionParams(const QByteArray& name = "connection");
-
-//    virtual bool loadData(FwMLObject* object);
-
-//    QByteArray toByteArray() const;
-
-//private:
-//    static void addParamToString(QByteArray& result, const QByteArray& param, const QByteArray& value);
-//    static void addParamToString(QByteArray& result, const QByteArray& param, int value);
-//};
-
-///////////////////////////////////////////////////////////////////////////////
-
 class FIREWORKSSHARED_EXPORT FwPg::Exception: public Fw::Exception
 {
     typedef Fw::Exception BaseClass;
@@ -126,8 +102,11 @@ protected:
 private:
     PGresult* m_result;
     TokenVector m_tokens;
+    int m_count_row;
+    int m_curr_row;
 
     void bind();
+    void closeQuery();
 };
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -138,6 +117,7 @@ class FIREWORKSSHARED_EXPORT FwPg::Database : public Fw::Database
     typedef Fw::Database BaseClass;
 
     friend class Exception;
+    friend class QueryData;
 
 public:
     Database(QObject* parent = 0);

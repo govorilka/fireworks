@@ -10,7 +10,7 @@ QT       -= gui
 CONFIG   += console
 CONFIG   -= app_bundle
 
-TARGET = ../../../bin/queryparser
+TARGET = ../../bin/examples/queryparser
 
 TEMPLATE = app
 

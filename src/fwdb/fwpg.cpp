@@ -4,61 +4,6 @@
 
 #include "fwcore/fwchartype.h"
 
-//namespace FwPg
-//{
-//    static char paramHost[] = "host";
-//    static char paramPort[] = "port";
-//    static char paramUser[] = "user";
-//    static char paramPassword[] = "password";
-//}
-
-///////////////////////////////////////////////////////////////////////////////
-
-//FwPg::ConnectionParams::ConnectionParams(const QByteArray& name) :
-//    BaseClass(name),
-//    port(0)
-//{
-//}
-
-//bool FwPg::ConnectionParams::loadData(FwMLObject* object)
-//{
-//return false;
-//}
-
-//QByteArray FwPg::ConnectionParams::toByteArray() const
-//{
-//    QByteArray connectionString;
-//    addParamToString(connectionString, paramHost, host);
-//    addParamToString(connectionString, paramPort, port);
-//    addParamToString(connectionString, paramUser, user);
-//    addParamToString(connectionString, paramPassword, password);
-//    return connectionString;
-//}
-
-//void FwPg::ConnectionParams::addParamToString(QByteArray& result, const QByteArray& param, const QByteArray& value)
-//{
-//    if(!value.isEmpty())
-//    {
-//        if(!result.isEmpty())
-//        {
-//            result += " ";
-//        }
-//        result = result + param + "=" + value;
-//    }
-//}
-
-//void FwPg::ConnectionParams::addParamToString(QByteArray& result, const QByteArray& param, int value)
-//{
-//    if(value)
-//    {
-//        if(!result.isEmpty())
-//        {
-//            result += " ";
-//        }
-//        result = result + param + "=" + QByteArray::number(value);
-//    }
-//}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 bool FwPg::parseQuery(const QByteArray& query, TokenVector& tokens)
@@ -133,6 +78,10 @@ FwPg::Exception::Exception(const Database* db) throw() :
     {
         m_error = PQerrorMessage(db->m_connection);
     }
+    else
+    {
+        m_error = "No database connection";
+    }
 }
 
 FwPg::Exception::Exception(const QString& error) throw() :
@@ -149,13 +98,15 @@ FwPg::Exception::~Exception() throw()
 FwPg::QueryData::QueryData(Database* db, const TokenVector& query) :
     BaseClass(db),
     m_result(0),
-    m_tokens(query)
+    m_tokens(query),
+    m_count_row(0),
+    m_curr_row(0)
 {
 }
 
 FwPg::QueryData::~QueryData()
 {
-    release();
+    closeQuery();
 }
 
 bool FwPg::QueryData::isNull() const
@@ -175,58 +126,68 @@ bool FwPg::QueryData::operator!=(const QueryData& other) const
 
 void FwPg::QueryData::doExec() throw (Fw::Exception&)
 {
-    //TODO
-    throw Exception("TODO");
+    closeQuery(); //close query if exist
+
+    Database* db = dynamic_cast<Database*>(m_db);
+    if(db == 0 || db->m_connection == 0)
+    {
+        throw Exception(db);
+    }
+
+    QByteArray query;
+    for(FwPg::TokenVector::Iterator iter = m_tokens.begin(); iter != m_tokens.end(); ++iter)
+    {
+        if(iter->value.isEmpty())
+        {
+            throw Exception("Ones bind parameter is not initialized");
+        }
+        query += iter->value;
+    }
+
+    PGconn* connection = db->m_connection;
+
+    //make query
+    m_result = PQexec(connection, query.constData());
+    ExecStatusType status = PQresultStatus(m_result);
+    if (status == PGRES_FATAL_ERROR || status == PGRES_FATAL_ERROR)
+    {
+        closeQuery();
+        throw Exception(db);
+    }
+
+    m_count_row = PQntuples(m_result);
+    m_curr_row = 0;
 }
 
 bool FwPg::QueryData::doNext() throw (Fw::Exception&)
 {
-    //TODO
-    throw Exception("TODO");
+    if(m_count_row == 0)
+    {
+        throw Exception("Row count is null");
+    }
+
+    ++m_curr_row;
+    if(m_curr_row < m_count_row)
+    {
+        return true;
+    }
+    else
+    {
+        doReset();
+        return false;
+    }
 }
+
 void FwPg::QueryData::doReset()
 {
-    //TODO
+    m_curr_row = 0;
 }
 
 void FwPg::QueryData::doFinalize()
 {
-    if(m_result)
-    {
-        PQclear(m_result);
-        m_result = 0;
-    }
+    closeQuery();
+
     m_tokens.clear();
-}
-
-bool FwPg::QueryData::columnBool(int column)
-{
-    //TODO
-    return false;
-}
-
-int FwPg::QueryData::columnInt(int column)
-{
-    //TODO
-    return 0;
-}
-
-QString FwPg::QueryData::columnText(int column)
-{
-    //TODO
-    return QString();
-}
-
-FwColor FwPg::QueryData::columnColor(int column)
-{
-    //TODO
-    return FwColor();
-}
-
-QUrl FwPg::QueryData::columnUrl(int column)
-{
-    //TODO
-    return QUrl();
 }
 
 void FwPg::QueryData::doBindInt(int index, int value) throw(Fw::Exception&)
@@ -268,47 +229,55 @@ void FwPg::QueryData::doBindDateTime(int index, const QDateTime& dateTime)
 
 bool FwPg::QueryData::doColumnBool(int column) const
 {
+    //TODO
+    if(sizeof(bool) == PQgetlength(m_result, m_curr_row, column))
+    {
+        const char* const result = PQgetvalue(m_result, m_curr_row, column);
+
+        return *reinterpret_cast<const bool*>(result);
+    }
+
     return false;
 }
 
 int FwPg::QueryData::doColumnInt(int column) const
 {
-   return 0;
+    //TODO
+    if(sizeof(int) == PQgetlength(m_result, m_curr_row, column))
+    {
+        const char* const result = PQgetvalue(m_result, m_curr_row, column);
+
+        return *reinterpret_cast<const bool*>(result);
+    }
+
+    return 0;
 }
 
 QString FwPg::QueryData::doColumnText(int column) const
 {
-    return QString();
+
+    const char* const result = PQgetvalue(m_result, m_curr_row, column);
+    return QString(result);
 }
 
 FwColor FwPg::QueryData::doColumnColor(int column) const
 {
-    return FwColor();
-}
-QUrl FwPg::QueryData::doColumnUrl(int column) const
-{
-    return QUrl();
+    return FwColor(doColumnInt(column));
 }
 
-void FwPg::QueryData::exec() throw (Fw::Exception&)
+QUrl FwPg::QueryData::doColumnUrl(int column) const
+{
+    return QUrl(doColumnText(column));
+}
+
+void FwPg::QueryData::closeQuery()
 {
     if(m_result)
     {
         PQclear(m_result);
         m_result = 0;
     }
-
-    QByteArray query;
-    for(FwPg::TokenVector::Iterator iter = m_tokens.begin(); iter != m_tokens.end(); ++iter)
-    {
-        if(!iter->value.isEmpty())
-        {
-            throw FwPg::Exception("Ones bind parameter is not initialized");
-        }
-        query += iter->value;
-    }
-
-    //TODO:
+    m_count_row = m_curr_row = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
