@@ -192,16 +192,16 @@ FwSqlite::Database::~Database()
 bool FwSqlite::Database::init(const QString& param) throw(Fw::Exception&)
 {
     const int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+    
     int result = sqlite3_open_v2(param.toUtf8().data(), &m_connection, flags, 0);
-
-    if(m_connection && result == SQLITE_OK)
+    if(m_connection && 
+       result == SQLITE_OK &&
+       sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK &&
+       sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0, 0) == SQLITE_OK)
     {
-        if(sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK
-           && sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0, 0) == SQLITE_OK)
-        {
-                return true;
-        }
+        return true;
     }
+
     release();
     throw(Exception(this));
     return false;
