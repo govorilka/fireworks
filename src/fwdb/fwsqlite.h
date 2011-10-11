@@ -202,7 +202,7 @@ protected:
     virtual bool init(const QString& param) throw(Fw::Exception&);
     virtual void release() throw();
 
-    virtual QueryData* createQuery(const QString& query) throw(Fw::Exception&);
+    virtual Fw::QueryData* createQuery(const QString& query) throw(Fw::Exception&);
 
 private:
     sqlite3* m_connection;

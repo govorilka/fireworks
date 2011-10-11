@@ -37,7 +37,7 @@ FwSqlite::QueryData::QueryData(FwSqlite::Database* db, const QByteArray& query) 
 {
     if(db && db->m_connection)
     {
-        int result = sqlite3_prepare16_v2(db->m_connection,
+        int result = sqlite3_prepare_v2(db->m_connection,
                                           query.constData(),
                                           (query.size() + 1) * sizeof(QChar),
                                           &m_stmt,
@@ -212,7 +212,7 @@ void FwSqlite::Database::release() throw()
     }
 }
 
-FwSqlite::QueryData* FwSqlite::Database::createQuery(const QString& query) throw(Fw::Exception&)
+Fw::QueryData* FwSqlite::Database::createQuery(const QString& query) throw(Fw::Exception&)
 {
     return new FwSqlite::QueryData(this, query.toUtf8());
 }
