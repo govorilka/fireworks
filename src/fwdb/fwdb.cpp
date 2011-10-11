@@ -116,7 +116,8 @@ void Fw::QueryData::release()
 
 Fw::Database::Database(QObject* parent) :
     BaseClass(parent),
-    m_open(false)
+    m_open(false),
+    m_begin_transaction(false)
 {
 }
 
@@ -126,9 +127,38 @@ Fw::Database::~Database()
 
 Fw::Query Fw::Database::query(const QString& query) throw(Exception&)
 {
+    beginTransaction();
+
     QueryData* data = createQuery(query);
     m_queries.append(data);
     return Query(data);
+}
+
+void Fw::Database::beginTransaction() throw(Exception&)
+{
+    if(!m_begin_transaction)
+    {
+        Query query = query("BEGIN");
+        m_begin_transaction = true;
+    }
+}
+
+void Fw::Database::commit() throw(Exception&)
+{
+    if(m_begin_transaction)
+    {
+        m_begin_transaction = false;
+        Query query = query("COMMIT");
+    }
+}
+
+void Fw::Database::rollback() throw(Exception&)
+{
+    if(m_begin_transaction)
+    {
+        m_begin_transaction = false;
+        Query query = query("ROLLBACK");
+    }
 }
 
 void Fw::Database::open(const QString& param) throw(Exception&)
@@ -141,6 +171,8 @@ void Fw::Database::close() throw()
 {
     if(m_open)
     {
+        rollback();
+
         foreach(QueryData* query, m_queries)
         {
             query->release();
@@ -177,7 +209,6 @@ void Fw::Database::reindex(const QString& indexName) throw(Fw::Exception&)
 {
     //TODO
 }
-
 
 void Fw::Database::execFile(const QString& fileName) throw(Fw::Exception&)
 {
