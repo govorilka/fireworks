@@ -215,10 +215,10 @@ public:
 
     Query query(const QString& query) throw(Exception&);
 
-    void beginTransaction();
-    void rollback();
+    void beginTransaction() throw(Exception&);
+    void commit() throw(Exception&);
+    void rollback() throw(Exception&);
 
-    void commit();
     int lastInsertKey();
     void reindex(const QString& indexName) throw(Exception&);
     void execFile(const QString& fileName) throw(Exception&);
@@ -232,6 +232,7 @@ protected:
 
 private:
     bool m_open;
+    bool m_begin_transaction;
     QList<QueryData*> m_queries;
     QReadWriteLock m_dbLock;
 };
