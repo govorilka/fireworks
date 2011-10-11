@@ -72,7 +72,7 @@ Fw::QueryData::QueryData(Fw::Database* db) :
 
 bool Fw::QueryData::step() throw (Fw::Exception&)
 {
-    if(m_exec)
+    if(!m_exec)
     {
         doExec();
         m_exec = true;
