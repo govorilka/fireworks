@@ -138,8 +138,16 @@ void Fw::Database::beginTransaction() throw(Exception&)
 {
     if(!m_begin_transaction)
     {
-        Query query = query("BEGIN");
         m_begin_transaction = true;
+        try
+        {
+            Query lquery = query("BEGIN");
+        }
+        catch(Exception& e)
+        {
+            m_begin_transaction = false;
+            throw e;
+        }
     }
 }
 
@@ -148,7 +156,7 @@ void Fw::Database::commit() throw(Exception&)
     if(m_begin_transaction)
     {
         m_begin_transaction = false;
-        Query query = query("COMMIT");
+        Query lquery = query("COMMIT");
     }
 }
 
@@ -157,7 +165,7 @@ void Fw::Database::rollback() throw(Exception&)
     if(m_begin_transaction)
     {
         m_begin_transaction = false;
-        Query query = query("ROLLBACK");
+        Query lquery = query("ROLLBACK");
     }
 }
 
@@ -183,21 +191,6 @@ void Fw::Database::close() throw()
     }
 
     release();
-}
-
-void Fw::Database::rollback()
-{
-    //TODO
-}
-
-void Fw::Database::beginTransaction()
-{
-    //TODO
-}
-
-void Fw::Database::commit()
-{
-    //TODO
 }
 
 int Fw::Database::lastInsertKey()
