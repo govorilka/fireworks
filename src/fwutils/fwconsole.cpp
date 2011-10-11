@@ -18,6 +18,12 @@ void FwConsole::writeLine(const QString& line)
 
 bool FwConsole::execCommand(const QString& command, const QStringList& params)
 {
+    if(command == "help")
+    {
+        printCommandList();
+        return true;
+    }
+
     QString tempCommand = command;
     QStringList tempParams = params;
 
@@ -77,25 +83,10 @@ void FwConsole::interactiveMode(const QByteArray& promt)
     }
 }
 
-bool FwConsole::addCommand(const QString& mode, const QString& command, CommandFunc function)
+void FwConsole::printCommandList() const
 {
-    QHash<QString, CommandFunc> commandList;
-    if(m_modes.contains(mode))
+    foreach(QString command, m_commands.keys())
     {
-        commandList = m_modes.value(mode);
-        if(!commandList.contains(command))
-        {
-            commandList.insert(command, function);
-            return true;
-        } else
-        {
-            return false;
-        }
-    } else
-    {
-        commandList.insert(command, function);
-        m_modes.insert(mode, commandList);
+        writeLine(command);
     }
-    return true;
 }
-
