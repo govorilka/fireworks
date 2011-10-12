@@ -227,7 +227,7 @@ public:
 
 protected:
     virtual bool init(const QString& param) throw(Exception&) = 0;
-    virtual void release() throw() = 0;
+    virtual void release()  throw() = 0;
 
     virtual QueryData* createQuery(const QString& query) throw(Exception&) = 0;
 
