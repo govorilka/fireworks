@@ -1,10 +1,37 @@
 #include <QtCore/qdebug.h>
 
+#include <stdlib.h>
+
 #include "fwpg.h"
 
 #include "fwcore/fwchartype.h"
 
 ///////////////////////////////////////////////////////////////////////////////
+namespace
+{
+
+//void swapBytes(char& a, char& b)
+//{
+//    a = a ^ b;
+//    b = b ^ a;
+//    a = a ^ b;
+//}
+
+//void reverceBytes(char* arr, int size)
+//{
+//    char* begin = arr;
+//    char* end = arr+size-1;
+
+//    while(begin < end)
+//    {
+//        swapBytes(*begin, *end);
+//        ++begin;
+//        --end;
+//    }
+//}
+
+}
+//namespace
 
 bool FwPg::parseQuery(const QByteArray& query, TokenVector& tokens)
 {
@@ -229,12 +256,12 @@ void FwPg::QueryData::doBindDateTime(int index, const QDateTime& dateTime)
 
 bool FwPg::QueryData::doColumnBool(int column) const
 {
-    //TODO
-    if(sizeof(bool) == PQgetlength(m_result, m_curr_row, column))
+    if(PQgetisnull(m_result, m_curr_row, column) == 0)
     {
-        const char* const result = PQgetvalue(m_result, m_curr_row, column);
-
-        return *reinterpret_cast<const bool*>(result);
+        if('t' == *PQgetvalue(m_result, m_curr_row, column))
+        {
+            return true;
+        }
     }
 
     return false;
@@ -242,12 +269,9 @@ bool FwPg::QueryData::doColumnBool(int column) const
 
 int FwPg::QueryData::doColumnInt(int column) const
 {
-    //TODO
-    if(sizeof(int) == PQgetlength(m_result, m_curr_row, column))
+    if(PQgetisnull(m_result, m_curr_row, column) == 0)
     {
-        const char* const result = PQgetvalue(m_result, m_curr_row, column);
-
-        return *reinterpret_cast<const bool*>(result);
+        return atoi(PQgetvalue(m_result, m_curr_row, column));
     }
 
     return 0;
