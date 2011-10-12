@@ -216,6 +216,15 @@ void FwSqlite::Database::release() throw()
     }
 }
 
+int FwSqlite::Database::lastInsertKey()
+{
+    if(m_connection)
+    {
+        return sqlite3_last_insert_rowid(m_connection);
+    }
+    return 0;
+}
+
 Fw::QueryData* FwSqlite::Database::createQuery(const QString& query) throw(Fw::Exception&)
 {
     return new FwSqlite::QueryData(this, query.toUtf8());

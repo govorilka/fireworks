@@ -105,6 +105,8 @@ private:
     int m_count_row;
     int m_curr_row;
 
+    int m_last_insert_row_id;
+
     void bind();
     void closeQuery();
 };
@@ -127,10 +129,14 @@ protected:
     virtual bool init(const QString& param) throw(Fw::Exception&);
     virtual void release() throw();
 
+    virtual int lastInsertKey();
+
     virtual QueryData* createQuery(const QString& query) throw(Fw::Exception&);
 
 private:
     PGconn* m_connection;
+
+    int m_last_insert_row_id;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

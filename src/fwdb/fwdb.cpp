@@ -193,7 +193,8 @@ int Fw::Database::lastInsertKey()
 
 void Fw::Database::reindex(const QString& indexName) throw(Fw::Exception&)
 {
-    //TODO
+    Query reindexQuery = query(QString("REINDEX %1").arg(indexName));
+    reindexQuery.step();
 }
 
 void Fw::Database::execFile(const QString& fileName) throw(Fw::Exception&)
