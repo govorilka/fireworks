@@ -219,7 +219,8 @@ public:
     void commit() throw(Exception&);
     void rollback() throw(Exception&);
 
-    int lastInsertKey();
+    virtual int lastInsertKey() = 0;
+
     void reindex(const QString& indexName) throw(Exception&);
     void execFile(const QString& fileName) throw(Exception&);
     void execFile(QIODevice* device) throw(Exception&);

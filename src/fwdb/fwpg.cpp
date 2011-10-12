@@ -184,6 +184,12 @@ void FwPg::QueryData::doExec() throw (Fw::Exception&)
 
     m_count_row = PQntuples(m_result);
     m_curr_row = 0;
+
+    const Oid last_row = PQoidValue(m_result);
+    if(last_row != InvalidOid)
+    {
+        db->m_last_insert_row_id = last_row;
+    }
 }
 
 bool FwPg::QueryData::doNext() throw (Fw::Exception&)
@@ -308,7 +314,8 @@ void FwPg::QueryData::closeQuery()
 
 FwPg::Database::Database(QObject* parent) :
     BaseClass(parent),
-    m_connection(0)
+    m_connection(0),
+    m_last_insert_row_id(0)
 {
 }
 
@@ -335,7 +342,13 @@ void FwPg::Database::release() throw()
     {
         PQfinish(m_connection);
         m_connection = 0;
+        m_last_insert_row_id = 0;
     }
+}
+
+int FwPg::Database::lastInsertKey()
+{
+    return m_last_insert_row_id;
 }
 
 FwPg::QueryData* FwPg::Database::createQuery(const QString& query) throw(Fw::Exception&)

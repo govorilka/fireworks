@@ -202,6 +202,8 @@ protected:
     virtual bool init(const QString& param) throw(Fw::Exception&);
     virtual void release() throw();
 
+    virtual int lastInsertKey();
+
     virtual Fw::QueryData* createQuery(const QString& query) throw(Fw::Exception&);
 
 private:
