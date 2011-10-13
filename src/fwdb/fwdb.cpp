@@ -186,11 +186,6 @@ void Fw::Database::close() throw()
     release();
 }
 
-int Fw::Database::lastInsertKey()
-{
-    //TODO
-}
-
 void Fw::Database::reindex(const QString& indexName) throw(Fw::Exception&)
 {
     Query reindexQuery = query(QString("REINDEX %1").arg(indexName));
