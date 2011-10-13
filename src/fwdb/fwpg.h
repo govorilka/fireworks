@@ -107,7 +107,7 @@ private:
     int m_count_row;
     int m_curr_row;
 
-    int m_last_insert_row_id;
+    int m_lastInsertRowId; //Name of variable without '_' sign, because it's ugly looks! Please!
 
     void bind();
     void closeQuery();
@@ -138,7 +138,7 @@ protected:
 private:
     PGconn* m_connection;
 
-    int m_last_insert_row_id;
+    int m_lastInsertRowId; //name of variable without '_' sign, because it's ugly looks! Please!
 };
 
 /////////////////////////////////////////////////////////////////////////////////
