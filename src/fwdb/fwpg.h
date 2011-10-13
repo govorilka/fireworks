@@ -3,11 +3,13 @@
 
 #include <QtCore/qvector.h>
 
+#ifdef FW_SUPPORT_POSTGRESQL
 #ifdef Q_OS_WIN32
 #include <libpq-fe.h>
 #else //Q_OS_WIN32
 #include "pgsql/libpq-fe.h"
 #endif //Q_OS_WIN32
+#endif //FW_SUPPORT_POSTGRESQL
 
 #include "fwdb.h"
 
