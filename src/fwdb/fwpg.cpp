@@ -127,7 +127,8 @@ FwPg::QueryData::QueryData(Database* db, const TokenVector& query) :
     m_result(0),
     m_tokens(query),
     m_count_row(0),
-    m_curr_row(0)
+    m_curr_row(0),
+    m_lastInsertRowId(0)
 {
 }
 
@@ -315,7 +316,7 @@ void FwPg::QueryData::closeQuery()
 FwPg::Database::Database(QObject* parent) :
     BaseClass(parent),
     m_connection(0),
-    m_last_insert_row_id(0)
+    m_lastInsertRowId(0)
 {
 }
 
@@ -342,13 +343,13 @@ void FwPg::Database::release() throw()
     {
         PQfinish(m_connection);
         m_connection = 0;
-        m_last_insert_row_id = 0;
+        m_lastInsertRowId = 0;
     }
 }
 
 int FwPg::Database::lastInsertKey()
 {
-    return m_last_insert_row_id;
+    return m_lastInsertRowId;
 }
 
 FwPg::QueryData* FwPg::Database::createQuery(const QString& query) throw(Fw::Exception&)
