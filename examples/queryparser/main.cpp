@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 
     try
     {
-        Fw::Database* db = dbFactory(0, "postgre", connection);
+        Fw::Database* db = Fw::dbFactory(0, "postgre", connection);
         db->beginTransaction();
 
 //        Fw::Query query1 = db.query("DECLARE myportal CURSOR FOR select * from pg_database");
