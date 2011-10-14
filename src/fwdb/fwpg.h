@@ -2,6 +2,7 @@
 #define FIREWORKS_PG_H
 
 #include <QtCore/qvector.h>
+#include "../fireworks.h"
 
 #ifdef FW_SUPPORT_POSTGRESQL
 #ifdef Q_OS_WIN32
@@ -138,7 +139,7 @@ protected:
 private:
     PGconn* m_connection;
 
-    int m_lastInsertRowId; //name of variable without '_' sign, because it's ugly looks! Please!
+    int m_lastInsertRowId;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

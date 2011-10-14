@@ -2,7 +2,8 @@
 HEADERS += \
     fwdb/sqlite/sqlite3.h \
     fwdb/fwsqlite.h \
-    fwdb/fwdb.h
+    fwdb/fwdb.h \
+    fwdb/dbfactory.h
 
 SOURCES += \
     fwdb/sqlite/sqlite3.c \
@@ -18,5 +19,6 @@ exists($(PGSQL_PATH)) {
 else {
     warning("Postgresql directory is not exist")
 }
+
 
 
