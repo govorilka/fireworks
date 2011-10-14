@@ -10,25 +10,21 @@ QT       -= gui
 CONFIG   += console
 CONFIG   -= app_bundle
 
-TARGET = ../../../bin/examples/queryparser
+win32 {
+   TARGET = ../../../bin/examples/queryparser
+}
+else {
+   TARGET = ../../bin/examples/queryparser
+}
 
 TEMPLATE = app
 
-#Fireworks library
 message("Fireworks library path: $(FIREWORKS_PATH)")
-INCLUDEPATH += $(FIREWORKS_PATH)/src/
-LIBS += -L$(FIREWORKS_PATH)/bin \
-        -lfireworks4
+INCLUDEPATH += \
+    . \
+    $(FIREWORKS_PATH)/src/
+LIBS += -L$(FIREWORKS_PATH)/bin -lfireworks4
 
-include ( $(FIREWORKS_PATH)/src/fwdb/postgresql.pri )
 
 SOURCES += \
     main.cpp
-
-
-variable {
-
-}
-else {
-
-}

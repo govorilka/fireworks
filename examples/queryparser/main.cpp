@@ -1,43 +1,23 @@
 #include <QtCore/qcoreapplication.h>
 #include <QtCore/qdebug.h>
 
-#include "fwdb/fwpg.h"
+#include "fwdb/dbfactory.h"
 
 extern void ConnectPG(const char*const query);
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv); 
 
-    qDebug() << "#Parse begin" << endl;
-    QString query("select * from  ?? where id = ?1 and name=?2");
-
-    FwPg::TokenVector tokens;
-    FwPg::parseQuery(query.toUtf8(), tokens);
-
-    qDebug() << query << endl;
-    foreach(FwPg::QueryToken token, tokens)
-    {
-        qDebug() << token.param << token.value;
-    }
-
-    qDebug() << endl << "#Parse end" << endl;
-
-    /////////////////////////////////////////////////////////////////////
     QString connection;
     if(argc > 1)
     {
         connection = argv[1];
     }
 
-    //ConnectPG(connection.toUtf8().constData());
-
-    FwPg::Database pgdb;
-    Fw::Database& db = pgdb;
-
     try
     {
-        db.open(connection);
-        db.beginTransaction();
+        Fw::Database* db = dbFactory(0, "postgre", connection);
+        db->beginTransaction();
 
 //        Fw::Query query1 = db.query("DECLARE myportal CURSOR FOR select * from pg_database");
 //        query1.step();
@@ -51,14 +31,14 @@ int main(int argc, char **argv)
 //        Fw::Query query3 = db.query("CLOSE myportal");
 //        query3.step();
 
-        Fw::Query query2 = db.query("SELECT contoencoding FROM pg_conversion");
+        Fw::Query query2 = db->query("SELECT contoencoding FROM pg_conversion");
         qDebug() << "contoencoding";
         while(query2.step())
         {
             qDebug() << query2.columnInt(0);
         }
 
-        Fw::Query query3 = db.query("SELECT datallowconn FROM pg_database");
+        Fw::Query query3 = db->query("SELECT datallowconn FROM pg_database");
         qDebug() << "\n////////////////////////////////////////////\n";
         qDebug() << "datallowcon";
         while(query3.step())
@@ -69,8 +49,11 @@ int main(int argc, char **argv)
                 qDebug() << "_false";
         }
 
-        db.commit();
-        db.close();
+        db->commit();
+        db->close();
+
+        delete db;
+        db = 0;
     }
     catch(Fw::Exception& e)
     {

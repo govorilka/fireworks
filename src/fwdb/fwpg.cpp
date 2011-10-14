@@ -186,10 +186,10 @@ void FwPg::QueryData::doExec() throw (Fw::Exception&)
     m_count_row = PQntuples(m_result);
     m_curr_row = 0;
 
-    const Oid last_row = PQoidValue(m_result);
-    if(last_row != InvalidOid)
+    const Oid lastRow = PQoidValue(m_result);
+    if(lastRow != InvalidOid)
     {
-        db->m_last_insert_row_id = last_row;
+        db->m_lastInsertRowId = lastRow;
     }
 }
 

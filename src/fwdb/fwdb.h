@@ -19,8 +19,6 @@ namespace Fw
     class QueryData;
     class Database;
     class DatabaseLocker;
-
-    Database* dbFactory(QObject* parent, const QString& driver, const QString& params);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -227,7 +225,7 @@ public:
 
 protected:
     virtual bool init(const QString& param) throw(Exception&) = 0;
-    virtual void release()  throw() = 0;
+    virtual void release() throw() = 0;
 
     virtual QueryData* createQuery(const QString& query) throw(Exception&) = 0;
 
