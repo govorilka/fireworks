@@ -1,5 +1,7 @@
 #include "fwdb/dbfactory.h"
+#ifdef FW_SUPPORT_POSTGRESQL
 #include "fwdb/fwpg.h"
+#endif // FW_SUPPORT_POSTGRESQL
 #include "fwdb/fwsqlite.h"
 
 Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, const QString& params) throw(Fw::Exception&)
@@ -11,11 +13,12 @@ Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, const QStrin
     {
         db = new FwSqlite::Database(parent);
     }
+    #ifdef FW_SUPPORT_POSTGRESQL
     else if(driverLower == "postgre")
     {
         db = new FwPg::Database(parent);
     }
-
+    #endif //FW_SUPPORT_POSTGRESQL
     if(db)
     {
         try
