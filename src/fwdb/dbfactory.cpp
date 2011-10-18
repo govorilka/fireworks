@@ -1,3 +1,4 @@
+#include "fwcore/fwml.h"
 #include "fwdb/dbfactory.h"
 #ifdef FW_SUPPORT_POSTGRESQL
 #include "fwdb/fwpg.h"
@@ -34,4 +35,50 @@ Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, const QStrin
     }
 
     return db;
+}
+
+Fw::Database* Fw::dbFactory(QObject *parent, const QString &configFile) throw(Fw::Exception&)
+{
+    DbConfig config;
+    if (config.loadFile(configFile))
+    {
+        try
+        {
+           return dbFactory(parent, config.driver(), config.connectionParameters());
+        }
+        catch(Exception& e)
+        {
+            throw e;
+        }
+    }
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+Fw::DbConfig::DbConfig() :
+    BaseClass("DataBase")
+{
+
+}
+
+bool Fw::DbConfig::loadData(FwMLObject *object)
+{
+    FwMLObject* databaseSection = object->attribute("database")->cast<FwMLObject>();
+    if(databaseSection)
+    {
+        FwMLString* configString = databaseSection->attribute("driver")->cast<FwMLString>();
+        if(configString)
+        {
+            m_driver = configString->value();
+        }
+
+        configString = databaseSection->attribute("parameters")->cast<FwMLString>();
+        if(configString)
+        {
+            m_connectionParameters = configString->value();
+        }
+        return true;
+    }
+
+    return false;
 }

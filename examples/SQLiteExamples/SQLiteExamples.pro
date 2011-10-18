@@ -15,6 +15,8 @@ else {
    TARGET = ../../bin/SQLiteExamples
 }
 
+#DEFINES = USE_SQLITE_API
+
 INCLUDEPATH += ../../src
 LIBS += -L../../bin \
         -lfireworks4
@@ -25,4 +27,8 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    dbwork.cpp
+
+HEADERS += \
+    dbwork.h
