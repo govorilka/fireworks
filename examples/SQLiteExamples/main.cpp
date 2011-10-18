@@ -3,18 +3,20 @@
 
 #include "fwdb/fwdb.h"
 
+#include "dbwork.h"
+
 int main(int argc, char *argv[])
 {
+    QCoreApplication a(argc, argv);
     try
     {
-        Fw::Database* m_db = Fw::dbFactory(0, "sql","./iptv001.db");
-        Fw::Query query = m_db->query("SELECT tvprogramcategoryid,caption FROM tvprogramcategory;");
-        while(query.step())
-        {
-            qDebug() << "=========================================";
-            qDebug() << query.columnInt(0) << query.columnText(1);
-            qDebug() << "=========================================";
-        }
+       DbWork db;
+#ifdef USE_SQLITE_API
+       db.loadDB(QString(a.applicationDirPath() + "/test"));
+#else
+       db.loadDB(QString(a.applicationDirPath() + "/configure.fwml"));
+#endif
+       db.selectQuery();
     }
     catch(Fw::Exception& e)
     {
