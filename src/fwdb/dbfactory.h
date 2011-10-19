@@ -1,3 +1,5 @@
+#ifndef DBFACTORY
+#define DBFACTORY
 #include "fwdb/fwdb.h"
 
 namespace Fw
@@ -16,6 +18,7 @@ public:
 
     inline QString driver() const;
     inline QString connectionParameters() const;
+
 private:
     QString m_driver;
     QString m_connectionParameters;
@@ -30,3 +33,5 @@ inline QString Fw::DbConfig::connectionParameters() const
 {
     return m_connectionParameters;
 }
+
+#endif // DBFACTORY
