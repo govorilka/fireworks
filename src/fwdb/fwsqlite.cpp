@@ -195,6 +195,7 @@ bool FwSqlite::Database::init(const QString& param) throw(Fw::Exception&)
     const int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
 
     QStringList parameters = param.split('|');
+    bool isCreated = QFile::exists(parameters.at(0));
 
     int result = sqlite3_open_v2(parameters.takeFirst().toUtf8().data(), &m_connection, flags, 0);
     if(m_connection && 
@@ -202,7 +203,7 @@ bool FwSqlite::Database::init(const QString& param) throw(Fw::Exception&)
        sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK &&
        sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0, 0) == SQLITE_OK)
     {
-        if(!parameters.isEmpty())
+        if(!parameters.isEmpty() && !isCreated)
         {
             execFile(parameters.takeFirst());
         }
