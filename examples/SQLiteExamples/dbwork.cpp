@@ -45,7 +45,6 @@ bool DbWork::createQuery(const QString& query)
 {
     if(m_stmt)
     {
-        delete m_stmt;
         m_stmt = 0;
     }
     if(m_connection)
@@ -163,5 +162,51 @@ bool DbWork::selectQuery(int index)
         qDebug() << "id: " << id << "Text: " << text;
     }
     #endif
+return true;
+}
 
+bool DbWork::selectByText(const QString& param)
+{
+QString request = QString("SELECT * FROM testtable WHERE rowText = ?1;");
+#ifdef USE_SQLITE_API
+    createQuery(request);
+    bindText(1, param);
+    while(step())
+    {
+        int id = columnInt(0);
+        QString text = columnText(1);
+        qDebug() << "id: " << id << "Text: " << text;
+    }
+#else
+Fw::Query query = m_db->query(request);
+query.bindText(1, param);
+while(query.step())
+{
+    int id = query.columnInt(0);
+    QString text = query.columnText(1);
+    qDebug() << "id: " << id << "Text: " << text;
+}
+#endif
+return true;
+}
+
+bool DbWork::insertQuery(const QString& text)
+{
+    QString request = QString("INSERT INTO testtable(rowText) VALUES(?1);");
+    #ifdef USE_SQLITE_API
+        createQuery(request);
+        bindText(1, text);
+        if(step())
+        {
+            qDebug() << "Success!";
+        }
+    #else
+    Fw::Query query = m_db->query(request);
+    query.bindText(1, text);
+    if(query.step())
+    {
+        qDebug() << "Success!";
+    }
+    #endif
+    return true;
 }

@@ -16,6 +16,9 @@ int main(int argc, char *argv[])
 #else
        db.loadDB(QString(a.applicationDirPath() + "/configure.fwml"));
 #endif
+       //db.selectQuery();
+       //db.selectByText("Test 11");
+       db.insertQuery("Test 51");
        db.selectQuery();
     }
     catch(Fw::Exception& e)

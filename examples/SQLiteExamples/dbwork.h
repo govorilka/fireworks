@@ -14,6 +14,8 @@ public:
     DbWork();
     bool loadDB(const QString& param);
     bool selectQuery(int index = 0);
+    bool selectByText(const QString& param);
+    bool insertQuery(const QString& text);
 
 
 private:
