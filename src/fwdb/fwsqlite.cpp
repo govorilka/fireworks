@@ -68,7 +68,7 @@ bool FwSqlite::QueryData::operator!=(const QueryData& other) const
 
 void FwSqlite::QueryData::doExec() throw (Fw::Exception&)
 {
-    //TODO
+    doNext();// STUB!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 bool FwSqlite::QueryData::doNext() throw (Fw::Exception&)
@@ -85,7 +85,8 @@ bool FwSqlite::QueryData::doNext() throw (Fw::Exception&)
 
             case SQLITE_ERROR:
             case SQLITE_IOERR:
-            throw Fw::Exception(m_db);
+            case SQLITE_CONSTRAINT:
+            throw FwSqlite::Exception(reinterpret_cast<FwSqlite::Database*>(m_db));
             return false;
 
             default:
@@ -192,13 +193,19 @@ FwSqlite::Database::~Database()
 bool FwSqlite::Database::init(const QString& param) throw(Fw::Exception&)
 {
     const int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
-    
-    int result = sqlite3_open_v2(param.toUtf8().data(), &m_connection, flags, 0);
+
+    QStringList parameters = param.split('|');
+
+    int result = sqlite3_open_v2(parameters.takeFirst().toUtf8().data(), &m_connection, flags, 0);
     if(m_connection && 
        result == SQLITE_OK &&
        sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK &&
        sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0, 0) == SQLITE_OK)
     {
+        if(!parameters.isEmpty())
+        {
+            execFile(parameters.takeFirst());
+        }
         return true;
     }
 
