@@ -1,5 +1,6 @@
-#ifndef DBFACTORY
-#define DBFACTORY
+#ifndef FIREWORKS_DBFACTORY_HPP
+#define FIREWORKS_DBFACTORY_HPP
+
 #include "fwdb/fwdb.h"
 
 namespace Fw
@@ -34,4 +35,4 @@ inline QString Fw::DbConfig::connectionParameters() const
     return m_connectionParameters;
 }
 
-#endif // DBFACTORY
+#endif //FIREWORKS_DBFACTORY_HPP
