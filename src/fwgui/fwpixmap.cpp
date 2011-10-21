@@ -72,17 +72,12 @@ bool FwPixmapDescription::apply(FwMLNode* node)
 
 FwPixmapData::FwPixmapData(const QString& fileName) :
     m_fileName(fileName),
-    blend(false)
+    m_blend(false)
 {
 }
 
 FwPixmapData::~FwPixmapData()
 {
-}
-
-void FwPixmapData::setBlendingEnable(bool enable)
-{
-    blend = enable;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -162,7 +157,7 @@ FwPixmap FwPixmap::resized(const QSize& size, ResizeMode mode) const
         if(newData)
         {
             FwPixmap pixmap(newData);
-            pixmap.setBlendEnabled(data->blend);
+            pixmap.setBlendEnabled(data->isBlendEnabled());
             return pixmap;
         }
     }
@@ -181,7 +176,7 @@ bool FwPixmap::isBlendEnabled() const
     FwPixmapData* data = this->data();
     if(data)
     {
-        return data->blend;
+        return data->isBlendEnabled();
     }
     return false;
 }
@@ -198,6 +193,6 @@ void FwPixmap::setBlendEnabled(bool enable)
     FwPixmapData* data = this->data();
     if(data)
     {
-        data->blend = enable;
+        data->setBlendingEnable(enable);
     }
 }
