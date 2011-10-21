@@ -1,6 +1,9 @@
 #ifndef FIREWORKS_SQLITE_H
 #define FIREWORKS_SQLITE_H
 
+#include <QtCore/qhash.h>
+#include <QtCore/qvariant.h>
+
 #include "fwdb.h"
 
 #include "fwdb/sqlite/sqlite3.h"
@@ -197,9 +200,11 @@ public:
     Database(QObject* parent = 0);
     virtual ~Database();
 
+    virtual bool loadData(FwMLObject* object);
+
 
 protected:
-    virtual bool init(const QString& param) throw(Fw::Exception&);
+    virtual bool init(FwMLObject* object) throw(Fw::Exception&);
     virtual void release() throw();
 
     virtual int lastInsertKey();
@@ -208,6 +213,7 @@ protected:
 
 private:
     sqlite3* m_connection;
+    QHash<QString, QVariant> m_parameters;
 
 };
 #endif // FIREWORKS_SQLITE_H

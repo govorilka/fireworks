@@ -74,8 +74,8 @@ bool Fw::QueryData::step() throw (Fw::Exception&)
 {
     if(!m_exec)
     {
-        doExec();
         m_exec = true;
+        doExec();
         return true;
     }
 
@@ -115,7 +115,8 @@ void Fw::QueryData::release()
 ///////////////////////////////////////////////////////////////////////////////
 
 Fw::Database::Database(QObject* parent) :
-    BaseClass(parent),
+    QObject(parent),
+    BaseClass("DataBase"),
     m_open(false),
     m_begin_transaction(false)
 {
@@ -162,10 +163,10 @@ void Fw::Database::rollback() throw(Exception&)
     }
 }
 
-void Fw::Database::open(const QString& param) throw(Exception&)
+void Fw::Database::open(FwMLObject* object) throw(Exception&)
 {
     close();
-    m_open = init(param);
+    m_open = init(object);
 }
 
 void Fw::Database::close() throw()

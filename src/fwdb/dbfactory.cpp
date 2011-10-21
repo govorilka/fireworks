@@ -5,7 +5,7 @@
 #endif // FW_SUPPORT_POSTGRESQL
 #include "fwdb/fwsqlite.h"
 
-Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, const QString& params) throw(Fw::Exception&)
+Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, FwMLObject* config) throw(Fw::Exception&)
 {
     QString driverLower = driver.toLower();
 
@@ -24,7 +24,7 @@ Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, const QStrin
     {
         try
         {
-        db->open(params);
+        db->open(config);
         }
         catch(Exception& e)
         {
@@ -39,12 +39,29 @@ Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, const QStrin
 
 Fw::Database* Fw::dbFactory(QObject *parent, const QString &configFile) throw(Fw::Exception&)
 {
-    DbConfig config;
-    if (config.loadFile(configFile))
+    QFile fwmlData(QDir::toNativeSeparators(configFile));
+    if(!fwmlData.exists())
+    {
+        qWarning(qPrintable(QString("File %1 not found").arg(configFile)));
+        return false;
+    }
+
+    QString error;
+    FwMLObject rootObject;
+    if(!rootObject.parse(&fwmlData, &error))
+    {
+        qWarning(qPrintable(QString("FwML error in %1 file: %2").arg(configFile).arg(error)));
+        return false;
+    }
+
+    FwMLObject* databaseSection = rootObject.attribute("database")->cast<FwMLObject>();
+    FwMLString* driver = databaseSection->attribute("driver")->cast<FwMLString>();
+
+    if(driver)
     {
         try
         {
-           return dbFactory(parent, config.driver(), config.connectionParameters());
+            return dbFactory(parent, driver->value(), databaseSection);
         }
         catch(Exception& e)
         {
@@ -52,33 +69,4 @@ Fw::Database* Fw::dbFactory(QObject *parent, const QString &configFile) throw(Fw
         }
     }
     return 0;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-Fw::DbConfig::DbConfig() :
-    BaseClass("DataBase")
-{
-
-}
-
-bool Fw::DbConfig::loadData(FwMLObject *object)
-{
-    FwMLObject* databaseSection = object->attribute("database")->cast<FwMLObject>();
-    if(databaseSection)
-    {
-        FwMLString* configString = databaseSection->attribute("driver")->cast<FwMLString>();
-        if(configString)
-        {
-            m_driver = configString->value();
-        }
-
-        configString = databaseSection->attribute("parameters")->cast<FwMLString>();
-        if(configString)
-        {
-            m_connectionParameters = configString->value();
-        }
-        return true;
-    }
-
-    return false;
 }

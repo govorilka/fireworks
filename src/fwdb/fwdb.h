@@ -195,10 +195,10 @@ QUrl Fw::Query::columnUrl(int column) const
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class FIREWORKSSHARED_EXPORT Fw::Database : public QObject
+class FIREWORKSSHARED_EXPORT Fw::Database : public QObject, public FwCPPObject
 {
     Q_OBJECT
-    typedef QObject BaseClass;
+    typedef FwCPPObject BaseClass;
 
     friend class QueryData;
     friend class DatabaseLocker;
@@ -207,7 +207,9 @@ public:
     Database(QObject* parent);
     virtual ~Database();
 
-    void open(const QString& param) throw(Exception&);
+    virtual bool loadData(FwMLObject* object) = 0;
+
+    void open(FwMLObject* object) throw(Exception&);
     void close() throw();
     inline bool isOpen() const;
 
@@ -224,7 +226,7 @@ public:
     void execFile(QIODevice* device) throw(Exception&);
 
 protected:
-    virtual bool init(const QString& param) throw(Exception&) = 0;
+    virtual bool init(FwMLObject* object) throw(Exception&) = 0;
     virtual void release() throw() = 0;
 
     virtual QueryData* createQuery(const QString& query) throw(Exception&) = 0;

@@ -1,6 +1,8 @@
 //#include <QtCore/qdebug.h>
 //#include <QtCore/qfile.h>
 
+#include "fwcore/fwml.h"
+
 #include "fwsqlite.h"
 
 FwSqlite::Exception::Exception(const Database* db) throw() :
@@ -190,22 +192,28 @@ FwSqlite::Database::~Database()
     close();
 }
 
-bool FwSqlite::Database::init(const QString& param) throw(Fw::Exception&)
+bool FwSqlite::Database::init(FwMLObject* object) throw(Fw::Exception&)
 {
     const int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+    if(!loadData(object))
+    {
+       return false;
+    }
 
-    QStringList parameters = param.split('|');
-    bool isCreated = QFile::exists(parameters.at(0));
+    QString dbName = m_parameters.value("path", QVariant()).value<QString>();
+    QString initScript = m_parameters.value("script", QVariant()).value<QString>();
 
-    int result = sqlite3_open_v2(parameters.takeFirst().toUtf8().data(), &m_connection, flags, 0);
+    bool isCreated = QFile::exists(dbName);
+
+    int result = sqlite3_open_v2(dbName.toUtf8().data(), &m_connection, flags, 0);
     if(m_connection && 
        result == SQLITE_OK &&
        sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK &&
        sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0, 0) == SQLITE_OK)
     {
-        if(!parameters.isEmpty() && !isCreated)
+        if(!initScript.isEmpty() && !isCreated)
         {
-            execFile(parameters.takeFirst());
+            execFile(initScript);
         }
         return true;
     }
@@ -213,6 +221,24 @@ bool FwSqlite::Database::init(const QString& param) throw(Fw::Exception&)
     release();
     throw(Exception(this));
     return false;
+}
+
+bool FwSqlite::Database::loadData(FwMLObject* object)
+{
+    FwMLString* settingString = object->attribute("path")->cast<FwMLString>();
+    if(settingString)
+    {
+        m_parameters.insert("path", QVariant(settingString->value()));
+    }
+
+    settingString = 0;
+    settingString = object->attribute("script")->cast<FwMLString>();
+    if(settingString)
+    {
+        m_parameters.insert("script", QVariant(settingString->value()));
+    }
+
+    return true;
 }
 
 void FwSqlite::Database::release() throw()
