@@ -128,8 +128,10 @@ public:
     Database(QObject* parent = 0);
     virtual ~Database();
 
+    virtual bool loadData(FwMLObject *object);
+
 protected:
-    virtual bool init(const QString& param) throw(Fw::Exception&);
+    virtual bool init(FwMLObject* object) throw(Fw::Exception&);
     virtual void release() throw();
 
     virtual int lastInsertKey();

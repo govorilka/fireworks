@@ -325,8 +325,19 @@ FwPg::Database::~Database()
     close();
 }
 
-bool FwPg::Database::init(const QString& param) throw(Fw::Exception&)
+bool loadData(FwMLObject *object)
 {
+    //TODO
+    Q_UNUSED(object);
+    return true;
+}
+
+bool FwPg::Database::init(FwMLObject *object) throw(Fw::Exception&)
+{
+
+    loadData(object);//FIX
+    QString param;//STUB Shit
+
     m_connection = PQconnectdb(param.toUtf8());
     if(m_connection && PQstatus(m_connection) == CONNECTION_OK)
     {
