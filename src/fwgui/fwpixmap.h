@@ -94,13 +94,13 @@ public:
     virtual FwPixmapData* scaled(const QSize& size) const = 0;
 
     inline bool isBlendEnabled() const;
-    void setBlendingEnable(bool enable);
+    inline void setBlendingEnable(bool enable);
 
     virtual FwRender* createRender() = 0;
 
 private:
-    bool blend;
     QString m_fileName;
+    bool m_blend;
 };
 
 QString FwPixmapData::fileName() const
@@ -110,7 +110,12 @@ QString FwPixmapData::fileName() const
 
 bool FwPixmapData::isBlendEnabled() const
 {
-    return blend;
+    return m_blend;
+}
+
+void FwPixmapData::setBlendingEnable(bool enable)
+{
+    m_blend = enable;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

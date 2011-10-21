@@ -217,11 +217,13 @@ void FwWidget::visibleChangedEvent()
     {
         if(isVisible())
         {
-            QCoreApplication::sendEvent(this, &FwShowEvent(isVisibleOnScreen()));
+            FwShowEvent event(isVisibleOnScreen());
+            QCoreApplication::sendEvent(this, &event);
         }
         else
-        {
-            QCoreApplication::sendEvent(this, &FwHideEvent());
+        { 
+            FwHideEvent event;
+            QCoreApplication::sendEvent(this, &event);
         }
     }
 }
