@@ -29,13 +29,13 @@ PlayerScene5::PlayerScene5(FwGraphicsView* view) :
 
 void PlayerScene5::keyPressEvent(FwKeyPressEvent *event)
 {
-    if(event->isDigitKey())
+    if(event->key().isNumder())
     {
         QCoreApplication::sendEvent(m_digitInput, event);
         return;
     }
 
-    switch(event->key())
+    switch(event->key().qtKey())
     {
     case Qt::Key_Enter:
     case Qt::Key_Return:

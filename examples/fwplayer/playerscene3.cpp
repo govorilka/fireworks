@@ -19,7 +19,7 @@ PlayerScene3::PlayerScene3(FwGraphicsView* view) :
 
 void PlayerScene3::keyPressEvent(FwKeyPressEvent *event)
 {
-    switch(event->key())
+    switch(event->key().qtKey())
     {
     case Qt::Key_Enter:
     case Qt::Key_Return:

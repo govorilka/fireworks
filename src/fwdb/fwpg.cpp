@@ -325,11 +325,11 @@ FwPg::Database::~Database()
     close();
 }
 
-bool loadData(FwMLObject *object)
+bool FwPg::Database::loadData(FwMLObject* object)
 {
     //TODO
     Q_UNUSED(object);
-    return true;
+    return false;
 }
 
 bool FwPg::Database::init(FwMLObject *object) throw(Fw::Exception&)

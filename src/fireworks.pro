@@ -29,12 +29,16 @@ INCLUDEPATH += .
 SOURCES += \
     fireworks.cpp \
     fwinterfaces.cpp \
-    fwdescriptions.cpp
+    fwdescriptions.cpp \
+    fwplatform.cpp
 
 HEADERS += \
     fireworks.h \
     fwinterfaces.h \
-    fwdescriptions.h
+    fwdescriptions.h \
+    fwplatform.hpp
+
+
 
 
 

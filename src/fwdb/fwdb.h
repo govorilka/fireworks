@@ -8,9 +8,8 @@
 #include <QtCore/qdatetime.h>
 
 #include "fireworks.h"
-#include "fwcore/fwcolor.h"
-
 #include "fwcore/fwcppobject.h"
+#include "fwcore/fwcolor.h"
 
 namespace Fw
 {
@@ -204,7 +203,7 @@ class FIREWORKSSHARED_EXPORT Fw::Database : public QObject, public FwCPPObject
     friend class DatabaseLocker;
 
 public:
-    Database(QObject* parent);
+    explicit Database(QObject* parent);
     virtual ~Database();
 
     virtual bool loadData(FwMLObject* object) = 0;

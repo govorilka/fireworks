@@ -17,11 +17,10 @@ TEMPLATE = app
 
 #Fireworks library
 message("Fireworks library path: $(FIREWORKS_PATH)")
-INCLUDEPATH += $(FIREWORKS_PATH)/src/ \
-               ../qpainter/
-LIBS += -L$(FIREWORKS_PATH)/bin \
-        -lfireworks1 \
-        -lqpainter1
+INCLUDEPATH += $(FIREWORKS_PATH)/src
+INCLUDEPATH += $(FIREWORKS_PATH)/examples/qpainter
+LIBS += -L$(FIREWORKS_PATH)/bin -lfireworks4
+LIBS += -L$(FIREWORKS_PATH)/bin/examples -lqpainter1
 
 SOURCES += main.cpp \
     playerscene.cpp \
