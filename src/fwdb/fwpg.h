@@ -128,7 +128,7 @@ public:
     Database(QObject* parent = 0);
     virtual ~Database();
 
-    virtual bool loadData(FwMLObject *object);
+    virtual bool loadData(FwMLObject* object);
 
 protected:
     virtual bool init(FwMLObject* object) throw(Fw::Exception&);

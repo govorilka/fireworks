@@ -19,12 +19,11 @@ else {
 
 TEMPLATE = app
 
-message("Fireworks library path: $(FIREWORKS_PATH)")
-INCLUDEPATH += \
-    . \
-    $(FIREWORKS_PATH)/src/
-LIBS += -L$(FIREWORKS_PATH)/bin -lfireworks4
+INCLUDEPATH += .
 
+message("Fireworks library path: $(FIREWORKS_PATH)")
+INCLUDEPATH += $(FIREWORKS_PATH)/src/
+LIBS += -L$(FIREWORKS_PATH)/bin -lfireworks4
 
 SOURCES += \
     main.cpp

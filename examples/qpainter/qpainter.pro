@@ -2,10 +2,10 @@
 QT += gui core
 
 win32 {
-   TARGET = ../../../bin/qpainter1
+   TARGET = ../../../bin/qpainter4
 }
 else {
-   TARGET = ../../bin/qpainter1
+   TARGET = ../../bin/qpainter4
 }
 
 TEMPLATE = lib
@@ -14,10 +14,11 @@ DEFINES += FW_BACKEND_QPAINTER_LIBRARY
 
 INCLUDEPATH += .
 
-INCLUDEPATH += c:/_sourse/fireworks/src
-LIBS += -L$(FIREWORKS_PATH)/bin \
-        -lfireworks1 \
+message( "External path: $(FIREWORKS_PATH)" )
 
+#Fireworks library
+INCLUDEPATH += $(FIREWORKS_PATH)/src
+LIBS += -L$(FIREWORKS_PATH)/bin -lfireworks4
 
 HEADERS += \
     qprender.h \
