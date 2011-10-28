@@ -1,4 +1,4 @@
-//#include <QtCore/qdebug.h>
+#include <QtCore/qdebug.h>
 //#include <QtCore/qfile.h>
 
 #include "fwcore/fwml.h"
@@ -70,7 +70,7 @@ bool FwSqlite::QueryData::operator!=(const QueryData& other) const
 
 void FwSqlite::QueryData::doExec() throw (Fw::Exception&)
 {
-    doNext();// STUB!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 }
 
 bool FwSqlite::QueryData::doNext() throw (Fw::Exception&)
@@ -192,7 +192,7 @@ FwSqlite::Database::~Database()
     close();
 }
 
-bool FwSqlite::Database::init(FwMLObject* object) throw(Fw::Exception&)
+bool FwSqlite::Database::init(FwMLObject* object, bool* createdDB) throw(Fw::Exception&)
 {
     const int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
     if(!loadData(object))
@@ -204,6 +204,10 @@ bool FwSqlite::Database::init(FwMLObject* object) throw(Fw::Exception&)
     QString initScript = m_parameters.value("script", QVariant()).value<QString>();
 
     bool isCreated = QFile::exists(dbName);
+    if(createdDB)
+    {
+        *createdDB = !isCreated;
+    }
 
     int result = sqlite3_open_v2(dbName.toUtf8().data(), &m_connection, flags, 0);
     if(m_connection && 
