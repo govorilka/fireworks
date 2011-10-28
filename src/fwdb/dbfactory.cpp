@@ -5,7 +5,7 @@
 #endif // FW_SUPPORT_POSTGRESQL
 #include "fwdb/fwsqlite.h"
 
-Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, FwMLObject* config) throw(Fw::Exception&)
+Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, FwMLObject* config, bool* createdDB) throw(Fw::Exception&)
 {
     QString driverLower = driver.toLower();
 
@@ -24,7 +24,7 @@ Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, FwMLObject* 
     {
         try
         {
-        db->open(config);
+        db->open(config, createdDB);
         }
         catch(Exception& e)
         {
@@ -37,13 +37,13 @@ Fw::Database* Fw::dbFactory(QObject* parent, const QString& driver, FwMLObject* 
     return db;
 }
 
-Fw::Database* Fw::dbFactory(QObject *parent, const QString &configFile) throw(Fw::Exception&)
+Fw::Database* Fw::dbFactory(QObject *parent, const QString &configFile, bool* createdDB) throw(Fw::Exception&)
 {
     QFile fwmlData(QDir::toNativeSeparators(configFile));
     if(!fwmlData.exists())
     {
         qWarning(qPrintable(QString("File %1 not found").arg(configFile)));
-        return false;
+        return 0;
     }
 
     QString error;
@@ -51,7 +51,7 @@ Fw::Database* Fw::dbFactory(QObject *parent, const QString &configFile) throw(Fw
     if(!rootObject.parse(&fwmlData, &error))
     {
         qWarning(qPrintable(QString("FwML error in %1 file: %2").arg(configFile).arg(error)));
-        return false;
+        return 0;
     }
 
     FwMLObject* databaseSection = rootObject.attribute("database")->cast<FwMLObject>();
@@ -61,7 +61,7 @@ Fw::Database* Fw::dbFactory(QObject *parent, const QString &configFile) throw(Fw
     {
         try
         {
-            return dbFactory(parent, driver->value(), databaseSection);
+            return dbFactory(parent, driver->value(), databaseSection, createdDB);
         }
         catch(Exception& e)
         {

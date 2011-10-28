@@ -1,3 +1,5 @@
+#include <QtCore/qdebug.h>
+
 #include "fwdb.h"
 
 Fw::Exception::Exception(const Database* db) throw() :
@@ -74,8 +76,8 @@ bool Fw::QueryData::step() throw (Fw::Exception&)
 {
     if(!m_exec)
     {
-        m_exec = true;
         doExec();
+        m_exec = true;
         return true;
     }
 
@@ -138,6 +140,7 @@ void Fw::Database::beginTransaction() throw(Exception&)
     if(!m_begin_transaction)
     {
         Query lquery = query("BEGIN");
+        qDebug() << "BEGIN";
         lquery.step();
         m_begin_transaction = true;
     }
@@ -148,6 +151,7 @@ void Fw::Database::commit() throw(Exception&)
     if(m_begin_transaction)
     {
         Query lquery = query("COMMIT");
+        qDebug() << "COMMIT";
         lquery.step();
         m_begin_transaction = false;
     }
@@ -158,15 +162,16 @@ void Fw::Database::rollback() throw(Exception&)
     if(m_begin_transaction)
     {
         Query lquery = query("ROLLBACK");
+        qDebug() << "ROLLBACK";
         lquery.step();
         m_begin_transaction = false;
     }
 }
 
-void Fw::Database::open(FwMLObject* object) throw(Exception&)
+void Fw::Database::open(FwMLObject* object, bool* createdDB) throw(Exception&)
 {
     close();
-    m_open = init(object);
+    m_open = init(object, createdDB);
 }
 
 void Fw::Database::close() throw()
@@ -213,7 +218,8 @@ void Fw::Database::execFile(QIODevice* device) throw(Fw::Exception&)
     {
         if(!command.isEmpty())
         {
-            Fw::Query q = this->query(QString(command));
+            qDebug() << command;
+            Fw::Query q = this->query(QString::fromUtf8(command));
             while(q.step());
         }
     }

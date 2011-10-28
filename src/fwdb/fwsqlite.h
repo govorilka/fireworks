@@ -204,7 +204,7 @@ public:
 
 
 protected:
-    virtual bool init(FwMLObject* object) throw(Fw::Exception&);
+    virtual bool init(FwMLObject* object, bool* createdDB = 0) throw(Fw::Exception&);
     virtual void release() throw();
 
     virtual int lastInsertKey();
