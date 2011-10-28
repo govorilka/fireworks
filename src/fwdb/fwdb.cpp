@@ -75,11 +75,9 @@ Fw::QueryData::QueryData(Fw::Database* db) :
 bool Fw::QueryData::step() throw (Fw::Exception&)
 {
     if(!m_exec)
-    {
-        doExec();
-        m_exec = true;
-        return true;
-    }
+       {
+           return(m_exec = doExec());
+       }
 
     if(doNext())
     {

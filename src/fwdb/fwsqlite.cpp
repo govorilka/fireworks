@@ -68,9 +68,9 @@ bool FwSqlite::QueryData::operator!=(const QueryData& other) const
     return !operator==(other);
 }
 
-void FwSqlite::QueryData::doExec() throw (Fw::Exception&)
+bool FwSqlite::QueryData::doExec() throw (Fw::Exception&)
 {
-
+    return doNext();
 }
 
 bool FwSqlite::QueryData::doNext() throw (Fw::Exception&)
