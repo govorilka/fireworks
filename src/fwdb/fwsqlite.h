@@ -45,7 +45,7 @@ public:
 protected:
     QueryData(Database* db, const QByteArray& query) throw(Fw::Exception&);
 
-    virtual void doExec() throw (Fw::Exception&);
+    virtual bool doExec() throw (Fw::Exception&);
     virtual bool doNext() throw (Fw::Exception&);
     virtual void doReset();
     virtual void doFinalize();

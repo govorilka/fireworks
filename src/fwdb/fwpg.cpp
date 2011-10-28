@@ -152,7 +152,7 @@ bool FwPg::QueryData::operator!=(const QueryData& other) const
     return m_db != other.m_db && m_result != other.m_result;
 }
 
-void FwPg::QueryData::doExec() throw (Fw::Exception&)
+bool FwPg::QueryData::doExec() throw (Fw::Exception&)
 {
     closeQuery(); //close query if exist
 
@@ -191,6 +191,8 @@ void FwPg::QueryData::doExec() throw (Fw::Exception&)
     {
         db->m_lastInsertRowId = lastRow;
     }
+
+    return true;
 }
 
 bool FwPg::QueryData::doNext() throw (Fw::Exception&)
@@ -332,7 +334,7 @@ bool FwPg::Database::loadData(FwMLObject* object)
     return false;
 }
 
-bool FwPg::Database::init(FwMLObject *object) throw(Fw::Exception&)
+bool FwPg::Database::init(FwMLObject *object, bool* createdDB) throw(Fw::Exception&)
 {
 
     loadData(object);//FIX

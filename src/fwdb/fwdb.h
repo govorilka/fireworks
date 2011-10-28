@@ -64,7 +64,7 @@ protected:
     bool step() throw (Fw::Exception&);
     void reset();
 
-    virtual void doExec() throw (Fw::Exception&) = 0;
+    virtual bool doExec() throw (Fw::Exception&) = 0;
     virtual bool doNext() throw (Fw::Exception&) = 0;
     virtual void doReset() = 0;
     virtual void doFinalize() = 0;

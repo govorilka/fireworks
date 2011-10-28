@@ -76,7 +76,7 @@ public:
     bool operator==(const QueryData& other) const;
     bool operator!=(const QueryData& other) const;
 
-    virtual void doExec() throw (Fw::Exception&);
+    virtual bool doExec() throw (Fw::Exception&);
     virtual bool doNext() throw (Fw::Exception&);
     virtual void doReset();
     virtual void doFinalize();
@@ -131,7 +131,7 @@ public:
     virtual bool loadData(FwMLObject* object);
 
 protected:
-    virtual bool init(FwMLObject* object) throw(Fw::Exception&);
+    virtual bool init(FwMLObject* object, bool* createdDB = 0) throw(Fw::Exception&);
     virtual void release() throw();
 
     virtual int lastInsertKey();
