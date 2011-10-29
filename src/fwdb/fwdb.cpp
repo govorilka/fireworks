@@ -90,11 +90,8 @@ bool Fw::QueryData::step() throw (Fw::Exception&)
 
 void Fw::QueryData::reset()
 {
-    if(m_exec)
-    {
-        doReset();
-        m_exec = false;
-    }
+    doReset();
+    m_exec = false;
 }
 
 Fw::QueryData::~QueryData()
