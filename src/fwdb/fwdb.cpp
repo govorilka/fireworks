@@ -74,24 +74,20 @@ Fw::QueryData::QueryData(Fw::Database* db) :
 
 bool Fw::QueryData::step() throw (Fw::Exception&)
 {
-    if(!m_exec)
-       {
-           return(m_exec = doExec());
-       }
-
-    if(doNext())
+    if(!(m_exec = (m_exec ? doNext() : doExec())))
     {
-        return true;
+        doReset();
     }
-
-    reset();
-    return false;
+    return m_exec;
 }
 
 void Fw::QueryData::reset()
 {
-    doReset();
-    m_exec = false;
+    if(m_exec)
+    {
+        doReset();
+        m_exec = false;
+    }
 }
 
 Fw::QueryData::~QueryData()
