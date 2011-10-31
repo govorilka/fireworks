@@ -200,8 +200,15 @@ public:
     Database(const QByteArray& name, QObject* parent = 0);
     virtual ~Database();
 
+    inline QString path() const;
+    inline void setPath(const QString& path) const;
+
+    inline QString initPath() const;
+    inline void setInitPath(const QString& path) const;
+
     virtual bool loadData(FwMLObject* object);
 
+    QString lastError() const;
 
 protected:
     virtual void init() throw(Fw::Exception&);
@@ -213,7 +220,28 @@ protected:
 
 private:
     sqlite3* m_connection;
-    QHash<QString, QVariant> m_parameters;
-
+    QString m_path;
+    QString m_initPath;
 };
+
+QString FwSqlite::Database::path() const
+{
+    return m_path;
+}
+
+void FwSqlite::Database::setPath(const QString& path) const
+{
+    m_path = path;
+}
+
+QString FwSqlite::Database::initPath() const
+{
+    return path;
+}
+
+void FwSqlite::Database::setInitPath(const QString& path) const
+{
+    m_initPath = path;
+}
+
 #endif // FIREWORKS_SQLITE_H
