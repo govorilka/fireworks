@@ -2,6 +2,8 @@
 #define FIREWORKS_PG_H
 
 #include <QtCore/qvector.h>
+#include <QBitArray>
+
 #include "../fireworks.h"
 
 #ifdef FW_SUPPORT_POSTGRESQL
@@ -40,7 +42,6 @@ struct FIREWORKSSHARED_EXPORT FwPg::QueryToken
 FwPg::QueryToken::QueryToken() :
     param(0)
 {
-
 }
 
 void FwPg::QueryToken::swapParam()
@@ -125,13 +126,13 @@ class FIREWORKSSHARED_EXPORT FwPg::Database : public Fw::Database
     friend class QueryData;
 
 public:
-    Database(QObject* parent = 0);
+    Database(const QByteArray& name, QObject* parent = 0);
     virtual ~Database();
 
     virtual bool loadData(FwMLObject* object);
 
 protected:
-    virtual bool init(FwMLObject* object, bool* createdDB = 0) throw(Fw::Exception&);
+    virtual void init() throw(Fw::Exception&);
     virtual void release() throw();
 
     virtual int lastInsertKey();
@@ -142,6 +143,12 @@ private:
     PGconn* m_connection;
 
     int m_lastInsertRowId;
+
+    QBitArray m_host;
+    int       m_post;
+    QBitArray m_dbname;
+    QBitArray m_login;
+    QBitArray m_password;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
