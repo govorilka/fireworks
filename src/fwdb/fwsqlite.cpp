@@ -194,54 +194,46 @@ FwSqlite::Database::~Database()
 
 void FwSqlite::Database::init() throw(Fw::Exception&)
 {
-//    const int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
-//    if(!loadData(object))
-//    {
-//       return false;
-//    }
+    const int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+    if(m_path.isEmpty())
+    {
+        throw Fw::Exception("Path to database is empty");
+    }
 
-//    QString dbName = m_parameters.value("path", QVariant()).value<QString>();
-//    QString initScript = m_parameters.value("script", QVariant()).value<QString>();
+    bool needCreate = !QFile::exists(m_path);
+    if(needCreate && !QFile::exists(m_initPath))
+    {
+        throw Fw::Exception("Init path is not set");
+    }
 
-//    bool isCreated = QFile::exists(dbName);
-//    if(createdDB)
-//    {
-//        *createdDB = !isCreated;
-//    }
+    int result = sqlite3_open_v2(dbName.toUtf8().data(), &m_connection, flags, 0);
+    if(m_connection &&
+       result == SQLITE_OK &&
+       sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK &&
+       sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0, 0) == SQLITE_OK)
+    {
+        if(needCreate)
+        {
+            execFile(m_initPath);
+        }
+        return;
+    }
 
-//    int result = sqlite3_open_v2(dbName.toUtf8().data(), &m_connection, flags, 0);
-//    if(m_connection &&
-//       result == SQLITE_OK &&
-//       sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK &&
-//       sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0, 0) == SQLITE_OK)
-//    {
-//        if(!initScript.isEmpty() && !isCreated)
-//        {
-//            execFile(initScript);
-//        }
-//        return true;
-//    }
-
-//    release();
-//    throw(Exception(this));
-//    return false;
+    throw Fw::Exception(QString("Cannot open database: %1").arg(lastError()));
 }
 
 bool FwSqlite::Database::loadData(FwMLObject* object)
 {
-    FwMLString* settingString = object->attribute("path")->cast<FwMLString>();
-    if(settingString)
+    FwMLString* pathNode = object->attribute("path")->cast<FwMLString>();
+    if(pathNode)
     {
-        m_parameters.insert("path", QVariant(settingString->value()));
+        setPath(pathNode->toQString());
     }
-
-    settingString = 0;
-    settingString = object->attribute("script")->cast<FwMLString>();
-    if(settingString)
+    FwMLString* initPathNode = object->attribute("initPath")->cast<FwMLString>();
+    if(initPathNode)
     {
-        m_parameters.insert("script", QVariant(settingString->value()));
+        setInitPath(initPathNode->toQString());
     }
-
     return true;
 }
 
@@ -266,6 +258,11 @@ int FwSqlite::Database::lastInsertKey()
 Fw::QueryData* FwSqlite::Database::createQuery(const QString& query) throw(Fw::Exception&)
 {
     return new FwSqlite::QueryData(this, query.toUtf8());
+}
+
+QString FwSqlite::Database::lastError() const
+{
+    return QString();
 }
 
 //void FwSQLiteDatabase::exec(const QString& query) throw(FwSQLiteException&)
