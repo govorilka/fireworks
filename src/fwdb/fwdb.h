@@ -203,12 +203,10 @@ class FIREWORKSSHARED_EXPORT Fw::Database : public QObject, public FwCPPObject
     friend class DatabaseLocker;
 
 public:
-    explicit Database(QObject* parent);
+    explicit Database(const QByteArray& name, QObject* parent = 0);
     virtual ~Database();
 
-    virtual bool loadData(FwMLObject* object) = 0;
-
-    void open(FwMLObject* object,bool* createdDB = 0) throw(Exception&);
+    void open() throw(Exception&);
     void close() throw();
     inline bool isOpen() const;
 
@@ -225,7 +223,7 @@ public:
     void execFile(QIODevice* device) throw(Exception&);
 
 protected:
-    virtual bool init(FwMLObject* object, bool* createdDB = 0) throw(Exception&) = 0;
+    virtual void init() throw(Exception&) = 0;
     virtual void release() throw() = 0;
 
     virtual QueryData* createQuery(const QString& query) throw(Exception&) = 0;

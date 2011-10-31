@@ -197,14 +197,14 @@ class FIREWORKSSHARED_EXPORT FwSqlite::Database : public Fw::Database
     friend class QueryData;
 
 public:
-    Database(QObject* parent = 0);
+    Database(const QByteArray& name, QObject* parent = 0);
     virtual ~Database();
 
     virtual bool loadData(FwMLObject* object);
 
 
 protected:
-    virtual bool init(FwMLObject* object, bool* createdDB = 0) throw(Fw::Exception&);
+    virtual void init() throw(Fw::Exception&);
     virtual void release() throw();
 
     virtual int lastInsertKey();

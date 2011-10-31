@@ -4,6 +4,7 @@
 
 #include "fwpg.h"
 
+#include "fwcore/fwml.h"
 #include "fwcore/fwchartype.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -315,10 +316,11 @@ void FwPg::QueryData::closeQuery()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-FwPg::Database::Database(QObject* parent) :
-    BaseClass(parent),
+FwPg::Database::Database(const QByteArray& name, QObject* parent) :
+    BaseClass(name, parent),
     m_connection(0),
-    m_lastInsertRowId(0)
+    m_lastInsertRowId(0),
+    m_post(0)
 {
 }
 
@@ -329,16 +331,55 @@ FwPg::Database::~Database()
 
 bool FwPg::Database::loadData(FwMLObject* object)
 {
-    //TODO
-    Q_UNUSED(object);
-    return false;
+    FwMLString* hostNode = object->attribute("host")->cast<FwMLString>();
+    if(hostNode && !hostNode->isEmpty())
+    {
+        setHost(hostNode->value());
+    }
+
+    bool bOk = false;
+    int port = 0;
+    FwMLNode* portNode = object->attribute("port");
+    if(portNode && (port = portNode->toInt(&bOk)) && bOk)
+    {
+        setPort(port);
+    }
+
+    FwMLString* dbnameNode   = object->attribute("dbname")->cast<FwMLString>();
+    if(dbnameNode && !dbnameNode->isEmpty())
+    {
+        setDbName(dbnameNode->value());
+    }
+
+    FwMLString* loginNode    = object->attribute("login")->cast<FwMLString>();
+    if(loginNode && !loginNode->isEmpty())
+    {
+        setLogin(loginNode->value());
+    }
+
+    FwMLString* passwordNode = object->attribute("password")->cast<FwMLString>();
+    if(passwordNode && !passwordNode->isEmpty())
+    {
+        setPassword(passwordNode->value());
+    }
+
+    return true;
 }
 
-bool FwPg::Database::init(FwMLObject *object, bool* createdDB) throw(Fw::Exception&)
+void FwPg::Database::resetData()
 {
+    m_host.clear();
+    m_post = 0;
+    m_dbname.clear();
+    m_login.clear();
+    m_password.clear();
+}
 
-    loadData(object);//FIX
-    QString param;//STUB Shit
+void FwPg::Database::init() throw(Fw::Exception&)
+{
+    QByteArray connection("hostaddr=%1 port=%2 dbname=%3 user=%4 password=%5");
+
+    "hostaddr=127.0.0.1 port=5432 dbname=iptv user=iptv password=letmein"
 
     m_connection = PQconnectdb(param.toUtf8());
     if(m_connection && PQstatus(m_connection) == CONNECTION_OK)
@@ -347,7 +388,6 @@ bool FwPg::Database::init(FwMLObject *object, bool* createdDB) throw(Fw::Excepti
     }
     release();
     throw(Exception(this));
-    return false;
 }
 
 void FwPg::Database::release() throw()

@@ -181,8 +181,8 @@ QUrl FwSqlite::QueryData::doColumnUrl(int column) const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-FwSqlite::Database::Database(QObject* parent) :
-    BaseClass(parent),
+FwSqlite::Database::Database(const QByteArray& name, QObject* parent) :
+    BaseClass(name, parent),
     m_connection(0)
 {
 }
@@ -192,39 +192,39 @@ FwSqlite::Database::~Database()
     close();
 }
 
-bool FwSqlite::Database::init(FwMLObject* object, bool* createdDB) throw(Fw::Exception&)
+void FwSqlite::Database::init() throw(Fw::Exception&)
 {
-    const int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
-    if(!loadData(object))
-    {
-       return false;
-    }
+//    const int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+//    if(!loadData(object))
+//    {
+//       return false;
+//    }
 
-    QString dbName = m_parameters.value("path", QVariant()).value<QString>();
-    QString initScript = m_parameters.value("script", QVariant()).value<QString>();
+//    QString dbName = m_parameters.value("path", QVariant()).value<QString>();
+//    QString initScript = m_parameters.value("script", QVariant()).value<QString>();
 
-    bool isCreated = QFile::exists(dbName);
-    if(createdDB)
-    {
-        *createdDB = !isCreated;
-    }
+//    bool isCreated = QFile::exists(dbName);
+//    if(createdDB)
+//    {
+//        *createdDB = !isCreated;
+//    }
 
-    int result = sqlite3_open_v2(dbName.toUtf8().data(), &m_connection, flags, 0);
-    if(m_connection && 
-       result == SQLITE_OK &&
-       sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK &&
-       sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0, 0) == SQLITE_OK)
-    {
-        if(!initScript.isEmpty() && !isCreated)
-        {
-            execFile(initScript);
-        }
-        return true;
-    }
+//    int result = sqlite3_open_v2(dbName.toUtf8().data(), &m_connection, flags, 0);
+//    if(m_connection &&
+//       result == SQLITE_OK &&
+//       sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK &&
+//       sqlite3_exec(m_connection, "PRAGMA ENCODING=\"UTF-8\";", 0, 0, 0) == SQLITE_OK)
+//    {
+//        if(!initScript.isEmpty() && !isCreated)
+//        {
+//            execFile(initScript);
+//        }
+//        return true;
+//    }
 
-    release();
-    throw(Exception(this));
-    return false;
+//    release();
+//    throw(Exception(this));
+//    return false;
 }
 
 bool FwSqlite::Database::loadData(FwMLObject* object)

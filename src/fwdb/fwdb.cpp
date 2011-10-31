@@ -111,9 +111,9 @@ void Fw::QueryData::release()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Fw::Database::Database(QObject* parent) :
+Fw::Database::Database(const QByteArray& name, QObject* parent) :
     QObject(parent),
-    BaseClass("DataBase"),
+    BaseClass(name),
     m_open(false),
     m_begin_transaction(false)
 {
@@ -146,7 +146,6 @@ void Fw::Database::commit() throw(Exception&)
     if(m_begin_transaction)
     {
         Query lquery = query("COMMIT");
-        qDebug() << "COMMIT";
         lquery.step();
         m_begin_transaction = false;
     }
@@ -157,16 +156,16 @@ void Fw::Database::rollback() throw(Exception&)
     if(m_begin_transaction)
     {
         Query lquery = query("ROLLBACK");
-        qDebug() << "ROLLBACK";
         lquery.step();
         m_begin_transaction = false;
     }
 }
 
-void Fw::Database::open(FwMLObject* object, bool* createdDB) throw(Exception&)
+void Fw::Database::open() throw(Exception&)
 {
     close();
-    m_open = init(object, createdDB);
+    init();
+    m_open = true;
 }
 
 void Fw::Database::close() throw()
@@ -181,10 +180,10 @@ void Fw::Database::close() throw()
         }
         m_queries.clear();
 
+        release();
+
         m_open = false;
     }
-
-    release();
 }
 
 void Fw::Database::reindex(const QString& indexName) throw(Fw::Exception&)
