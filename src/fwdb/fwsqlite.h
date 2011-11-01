@@ -40,8 +40,8 @@ protected:
     virtual void doBindInt(int index, int value) throw(Fw::Exception&);
     virtual void doBindText(int index, const QString& text) throw(Fw::Exception&);
     virtual void doBindDateTime(int index, const QDateTime& dateTime) throw(Fw::Exception&);
-    virtual void doBindDate(int index, const QDate& date);
-    virtual void doBindTime(int index, const QTime& time);
+    virtual void doBindDate(int index, const QDate& date) throw(Fw::Exception&);
+    virtual void doBindTime(int index, const QTime& time) throw(Fw::Exception&);
 
     virtual bool doColumnBool(int column) const;
     virtual int doColumnInt(int column) const;

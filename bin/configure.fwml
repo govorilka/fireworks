@@ -1,5 +1,3 @@
-database
-{
-    driver : "SQL",
-    parameters : "/home/sensei/source2/fireworks/bin/test"
-} 
+driver : "sqlite",
+path : "/home/sensei/source2/fireworks/bin/test.db",
+initPath : "/home/sensei/source2/fireworks/examples/database/sqlite3/initscript.sql"
