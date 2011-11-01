@@ -97,30 +97,6 @@ bool FwPg::parseQuery(const QByteArray& query, TokenVector& tokens)
     return tokens.size();
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
-FwPg::Exception::Exception(const Database* db) throw() :
-    BaseClass(db)
-{
-    if(db && db->m_connection)
-    {
-        m_error = PQerrorMessage(db->m_connection);
-    }
-    else
-    {
-        m_error = "No database connection";
-    }
-}
-
-FwPg::Exception::Exception(const QString& error) throw() :
-    BaseClass(error)
-{
-}
-
-FwPg::Exception::~Exception() throw()
-{
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 FwPg::QueryData::QueryData(Database* db, const TokenVector& query) :
@@ -160,7 +136,7 @@ bool FwPg::QueryData::doExec() throw (Fw::Exception&)
     Database* db = static_cast<Database*>(m_db);
     if(db == 0 || db->m_connection == 0)
     {
-        throw Exception(db);
+        throw Fw::Exception(static_cast<FwPg::Database*>(db)->lastError());
     }
 
     QByteArray query;
@@ -168,7 +144,7 @@ bool FwPg::QueryData::doExec() throw (Fw::Exception&)
     {
         if(iter->value.isEmpty())
         {
-            throw Exception("Ones bind parameter is not initialized");
+            throw Fw::Exception("Ones bind parameter is not initialized");
         }
         query += iter->value;
     }
@@ -181,7 +157,7 @@ bool FwPg::QueryData::doExec() throw (Fw::Exception&)
     if (status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
     {
         closeQuery();
-        throw Exception(db);
+        throw Fw::Exception(static_cast<FwPg::Database*>(db)->lastError());
     }
 
     m_curr_row = 0;
@@ -201,7 +177,7 @@ bool FwPg::QueryData::doNext() throw (Fw::Exception&)
 {
     if(m_count_row == 0)
     {
-        throw Exception("Row count is null");
+        throw Fw::Exception("Row count is null");
     }
 
     ++m_curr_row;
@@ -337,8 +313,7 @@ void FwPg::QueryData::closeQuery()
 FwPg::Database::Database(const QByteArray& name, QObject* parent) :
     BaseClass(name, parent),
     m_connection(0),
-    m_lastInsertRowId(0),
-    m_port(0)
+    m_lastInsertRowId(0)
 {
 }
 
@@ -386,53 +361,74 @@ bool FwPg::Database::loadData(FwMLObject* object)
 
 void FwPg::Database::resetData()
 {
-    m_host.clear();
-    m_port = 0;
-    m_dbname.clear();
-    m_user.clear();
-    m_password.clear();
+    m_conParams.clear();
 }
 
 void FwPg::Database::setHost(const QByteArray& host)
 {
-    m_host = host;
+    m_conParams.host = host;
 }
 
 void FwPg::Database::setPort(int port)
 {
-    m_port = port;
+    m_conParams.port = port;
 }
 
 void FwPg::Database::setDbName(const QByteArray& dbname)
 {
-    m_dbname = dbname;
+    m_conParams.dbname = dbname;
 }
 
 void FwPg::Database::setUser(const QByteArray& user)
 {
-    m_user = user;
+    m_conParams.user = user;
 }
 
 void FwPg::Database::setPassword(const QByteArray& password)
 {
-    m_password = password;
+    m_conParams.password = password;
+}
+
+const QByteArray& FwPg::Database::getHost() const
+{
+    return m_conParams.host;
+}
+
+int FwPg::Database::getPort() const
+{
+    return m_conParams.port;
+}
+
+const QByteArray& FwPg::Database::getDbName() const
+{
+    return m_conParams.dbname;
+}
+
+const QByteArray& FwPg::Database::getUser() const
+{
+    return m_conParams.user;
+}
+
+const QByteArray& FwPg::Database::getPassword() const
+{
+    return m_conParams.password;
 }
 
 void FwPg::Database::init() throw(Fw::Exception&)
 {
     //"hostaddr=0.0.0.0 port=0 dbname=str user=str password=str"
     QByteArray connection;
-    connection +="hostaddr=" + m_host;
-    connection +=" port=" + m_port;
-    connection +=" dbname=" + m_dbname;
-    connection +=" user=" + m_user;
-    connection +=" password=" + m_password;
+    connection +="hostaddr=" + m_conParams.host;
+    connection +=" port=" + m_conParams.port;
+    connection +=" dbname=" + m_conParams.dbname;
+    connection +=" user=" + m_conParams.user;
+    connection +=" password=" + m_conParams.password;
 
     m_connection = PQconnectdb(connection);
     if(!m_connection || PQstatus(m_connection) != CONNECTION_OK)
     {
         release();
-        throw(Exception(this));
+        throw(Fw::Exception(lastError()));
     }
 }
 
@@ -459,4 +455,14 @@ FwPg::QueryData* FwPg::Database::createQuery(const QString& query) throw(Fw::Exc
         return new QueryData(this, vector);
     }
     return 0;
+}
+
+QString FwPg::Database::lastError() const
+{
+    if(this && m_connection)
+    {
+        return PQerrorMessage(m_connection);
+    }
+
+    return "No database connection";
 }

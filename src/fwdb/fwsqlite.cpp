@@ -1,8 +1,6 @@
 #include <QtCore/qdebug.h>
-//#include <QtCore/qfile.h>
 
 #include "fwcore/fwml.h"
-
 #include "fwsqlite.h"
 
 FwSqlite::QueryData::~QueryData()
@@ -64,7 +62,7 @@ bool FwSqlite::QueryData::doNext() throw (Fw::Exception&)
             case SQLITE_ERROR:
             case SQLITE_IOERR:
             case SQLITE_CONSTRAINT:
-            throw Fw::Exception(m_db->lastError());
+            throw Fw::Exception(static_cast<FwSqlite::Database*>(m_db)->lastError());
             return false;
 
             default:
@@ -249,92 +247,11 @@ Fw::QueryData* FwSqlite::Database::createQuery(const QString& query) throw(Fw::E
 
 QString FwSqlite::Database::lastError() const
 {
-    if(m_connection)
+    if(this && m_connection)
     {
         return QString(sqlite3_errmsg(m_connection));
     }
-    return QString();
+
+    return "No database connection";
+
 }
-
-//void FwSQLiteDatabase::exec(const QString& query) throw(FwSQLiteException&)
-//{
-//    if(!m_db)
-//    {
-//        throw FwSQLiteException(m_db);
-//    }
-//    FwSQLiteQuery q = this->query(query);
-//    while(q.step());
-//}
-
-//void FwSQLiteDatabase::execFile(const QString& fileName) throw(FwSQLiteException&)
-//{
-//    QFile sqlFile(fileName);
-//    execFile(&sqlFile);
-//}
-
-//void FwSQLiteDatabase::execFile(QIODevice *device) throw(FwSQLiteException&)
-//{
-//    if(!device->open(QIODevice::ReadOnly))
-//    {
-//        throw FwSQLiteException(device->errorString());
-//    }
-
-//    beginTransaction();
-
-//    QList<QByteArray> commands = device->readAll().simplified().split(';');
-//    foreach(QByteArray command, commands)
-//    {
-//        if(!command.isEmpty())
-//        {
-//            exec(QString::fromUtf8(command));
-//        }
-//    }
-
-//    commit();
-//}
-
-//void FwSQLiteDatabase::beginTransaction() throw(FwSQLiteException&)
-//{
-//    if(!m_beginTransaction)
-//    {
-//        exec("BEGIN;");
-//        m_beginTransaction = true;
-//    }
-//}
-
-//void FwSQLiteDatabase::commit() throw(FwSQLiteException&)
-//{
-//    if(m_beginTransaction)
-//    {
-//        m_beginTransaction = false;
-//        exec("COMMIT;");
-//    }
-//}
-
-//void FwSQLiteDatabase::rollback() throw(FwSQLiteException&)
-//{
-//    if(m_beginTransaction)
-//    {
-//        m_beginTransaction = false;
-//        exec("ROLLBACK;");
-//    }
-//}
-
-//int FwSQLiteDatabase::lastInsertKey() const
-//{
-//    if(m_db)
-//    {
-//        return sqlite3_last_insert_rowid(m_db);
-//    }
-//    return 0;
-//}
-
-//void FwSQLiteDatabase::reindex(const QString& indexName) throw(FwSQLiteException&)
-//{
-//    if(!m_db)
-//    {
-//        throw FwSQLiteException(m_db);
-//    }
-//    FwSQLiteQuery reindexQuery = query(QString("REINDEX %1").arg(indexName));
-//    reindexQuery.step();
-//}
