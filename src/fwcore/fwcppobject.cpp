@@ -31,3 +31,6 @@ bool FwCPPObject::loadFile(const QString& fileName)
     return true;
 }
 
+void FwCPPObject::resetData()
+{
+}

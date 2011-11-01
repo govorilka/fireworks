@@ -14,7 +14,9 @@ public:
     inline void setname(QByteArray& name);
 
     bool loadFile(const QString& fileName);
+
     virtual bool loadData(FwMLObject* object) = 0;
+    virtual void resetData();
 
 private:
     QByteArray m_name;
