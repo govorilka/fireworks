@@ -1,4 +1,5 @@
 #include <QtCore/qcoreapplication.h>
+#include <QtCore/qtextstream.h>
 
 #ifndef FW_SQLITE
 #include <stdio.h>
@@ -55,10 +56,35 @@ int main(int argc, char **argv)
     {
         return 1;
     }
-    Fw::Query insertQuery = db->query("insert into users (userid, login, passwd, birthdate, lastLogin) values (1, 'user_1', '12345', 123456, ?1);");
-    insertQuery.bindDateTime(1, QDateTime(QDate(2008, 10, 5), QTime(12, 24, 30)));
+
+    Fw::Query insertQuery = db->query("insert or IGNORE into users (userid, login, passwd, birthdate, lastLogin) values (?1, ?2, ?3, 123456, ?4);");
+    insertQuery.bindInt(1,1);
+    insertQuery.bindText(2,"user_1");
+    insertQuery.bindText(3,"12345");
+    insertQuery.bindDateTime(4, QDateTime(QDate(2008, 10, 5), QTime(12, 24, 30)));
     insertQuery.step();
-//insert into users ('userid', 'login', 'passwd', ' birthdate', 'lastLogin') values (2, 'user_2', 'abvg', 2356, 12567567);
+
+    insertQuery.bindInt(1,2);
+    insertQuery.bindText(2,"user_2");
+    insertQuery.bindText(3,"78906557");
+    insertQuery.bindDateTime(4, QDateTime(QDate(2010, 11, 2), QTime(18, 05, 22)));
+    insertQuery.step();
+
+    Fw::Query selectQuery = db->query("SELECT * FROM users");
+    QTextStream qout(stdout, QIODevice::WriteOnly);
+
+    while(selectQuery.step())
+    {
+        int id = selectQuery.columnInt(0);
+        QString user_login = selectQuery.columnText(1);
+        QString passwd = selectQuery.columnText(2);
+        int birthday = selectQuery.columnInt(3);
+        int last_login = selectQuery.columnInt(4);
+        qout << "user_id: " << id << " login: " << user_login << " passwd: " << passwd <<
+                " birthday: " << birthday << " last login: "<< last_login <<endl;
+        qout.flush();
+    }
+
 
     return 0;
 }

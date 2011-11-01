@@ -85,8 +85,8 @@ public:
     virtual void doBindInt(int index, int value) throw(Fw::Exception&);
     virtual void doBindText(int index, const QString& text) throw(Fw::Exception&);
     virtual void doBindDateTime(int index, const QDateTime& dateTime);
-    virtual void doBindDate(int index, const QDate& date) = 0;
-    virtual void doBindTime(int index, const QTime& time) = 0;
+    virtual void doBindDate(int index, const QDate& date);
+    virtual void doBindTime(int index, const QTime& time);
 
     virtual bool doColumnBool(int column) const;
     virtual int doColumnInt(int column) const;
