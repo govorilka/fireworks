@@ -10,22 +10,9 @@
 
 namespace FwSqlite
 {
-class Exception;
 class QueryData;
 class Database;
 }
-
-///////////////////////////////////////////////////////////////////////////////
-
-class FIREWORKSSHARED_EXPORT FwSqlite::Exception : public Fw::Exception
-{
-    typedef Fw::Exception BaseClass;
-
-public:
-    Exception(const Database* db) throw();
-    Exception(const QString& error) throw();
-    virtual ~Exception() throw();
-};
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -193,22 +180,23 @@ class FIREWORKSSHARED_EXPORT FwSqlite::Database : public Fw::Database
     Q_OBJECT
     typedef Fw::Database BaseClass;
 
-    friend class Exception;
+    friend class Fw::Exception;
     friend class QueryData;
 
 public:
     Database(const QByteArray& name, QObject* parent = 0);
     virtual ~Database();
 
-    inline QString path() const;
-    inline void setPath(const QString& path) const;
-
-    inline QString initPath() const;
-    inline void setInitPath(const QString& path) const;
-
     virtual bool loadData(FwMLObject* object);
 
-    QString lastError() const;
+    inline void setPath(const QString& path);
+    inline QString path() const;
+
+    inline void setInitPath(const QString& path);
+    inline QString initPath() const;
+
+    virtual QString lastError() const;
+
 
 protected:
     virtual void init() throw(Fw::Exception&);
@@ -222,26 +210,27 @@ private:
     sqlite3* m_connection;
     QString m_path;
     QString m_initPath;
+
 };
+
+void FwSqlite::Database::setPath(const QString& path)
+{
+    m_path = path;
+}
 
 QString FwSqlite::Database::path() const
 {
     return m_path;
 }
 
-void FwSqlite::Database::setPath(const QString& path) const
+void FwSqlite::Database::setInitPath(const QString& path)
 {
-    m_path = path;
+    m_initPath = path;
 }
 
 QString FwSqlite::Database::initPath() const
 {
-    return path;
-}
-
-void FwSqlite::Database::setInitPath(const QString& path) const
-{
-    m_initPath = path;
+    return m_initPath;
 }
 
 #endif // FIREWORKS_SQLITE_H
