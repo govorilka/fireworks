@@ -130,6 +130,13 @@ public:
     virtual ~Database();
 
     virtual bool loadData(FwMLObject* object);
+    virtual void resetData();
+
+    void setHost(const QByteArray& host);
+    void setPort(int port);
+    void setDbName(const QByteArray& dbname);
+    void setUser(const QByteArray& user);
+    void setPassword(const QByteArray& password);
 
 protected:
     virtual void init() throw(Fw::Exception&);
@@ -144,11 +151,11 @@ private:
 
     int m_lastInsertRowId;
 
-    QBitArray m_host;
-    int       m_post;
-    QBitArray m_dbname;
-    QBitArray m_login;
-    QBitArray m_password;
+    QByteArray m_host;
+    int        m_port;
+    QByteArray m_dbname;
+    QByteArray m_user;
+    QByteArray m_password;
 };
 
 /////////////////////////////////////////////////////////////////////////////////

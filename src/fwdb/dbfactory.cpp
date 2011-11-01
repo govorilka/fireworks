@@ -27,7 +27,7 @@ Fw::Database* Fw::dbFactory(FwMLObject* config, QObject* parent) throw(Fw::Excep
     #ifdef FW_SUPPORT_POSTGRESQL
     else if(driver == "postgresql")
     {
-        db = new FwPg::Database(parent);
+        db = new FwPg::Database("database", parent);
     }
     #endif //FW_SUPPORT_POSTGRESQL
     else

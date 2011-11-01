@@ -8,10 +8,10 @@ QT       += core
 QT       -= gui
 
 win32 {
-    TARGET = ../../../../bin/postgre
+    TARGET = ../../../../bin/examples/postgre
 }
 else {
-    TARGET = ../../../bin/postgre
+    TARGET = ../../../bin/examples/postgre
 }
 
 CONFIG   += console
