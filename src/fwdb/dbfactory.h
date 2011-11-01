@@ -1,7 +1,7 @@
 #ifndef FIREWORKS_DBFACTORY_HPP
 #define FIREWORKS_DBFACTORY_HPP
 
-#include "fwdb/fwdb.h"
+#include "fwdb/fwdb.hpp"
 
 namespace Fw
 {

@@ -310,16 +310,16 @@ QUrl FwPg::QueryData::doColumnUrl(int column) const
 
 QDateTime FwPg::QueryData::doColumnDateTime(int column) const
 {
-    return QDateTime(doColumnText(column));
+    return QDateTime::fromString(doColumnText(column), Qt::ISODate);
 }
 
 QDate FwPg::QueryData::doColumnDate(int column) const
 {
-    return QDate(doColumnText(column));
+    return QDate::fromString(doColumnText(column), Qt::ISODate);
 }
 QTime FwPg::QueryData::doColumnTime(int column) const
 {
-    return QTime(doColumnText(column));
+    return QTime::fromString(doColumnText(column), Qt::ISODate);
 }
 
 void FwPg::QueryData::closeQuery()
