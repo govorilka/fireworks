@@ -18,8 +18,6 @@
 
 namespace FwPg
 {
-    class Exception;
-    //class ConnectionParams;
     class QueryData;
     class Database;
 
@@ -49,18 +47,6 @@ void FwPg::QueryToken::swapParam()
     param = value.toInt();
     value.clear();
 }
-
-/////////////////////////////////////////////////////////////////////////////////
-
-class FIREWORKSSHARED_EXPORT FwPg::Exception: public Fw::Exception
-{
-    typedef Fw::Exception BaseClass;
-
-public:
-    Exception(const Database* db) throw();
-    Exception(const QString& error) throw();
-    virtual ~Exception() throw();
-};
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -130,6 +116,25 @@ class FIREWORKSSHARED_EXPORT FwPg::Database : public Fw::Database
     friend class Exception;
     friend class QueryData;
 
+    struct ConnectionParams
+    {
+        QByteArray host;
+        int        port;
+        QByteArray dbname;
+        QByteArray user;
+        QByteArray password;
+
+        ConnectionParams() : port(0){};
+        void clear()
+        {
+            host.clear();
+            port = 0;
+            dbname.clear();
+            user.clear();
+            password.clear();
+        }
+    };
+
 public:
     Database(const QByteArray& name, QObject* parent = 0);
     virtual ~Database();
@@ -143,6 +148,12 @@ public:
     void setUser(const QByteArray& user);
     void setPassword(const QByteArray& password);
 
+    const QByteArray& getHost() const;
+    int getPort() const;
+    const QByteArray& getDbName() const;
+    const QByteArray& getUser() const;
+    const QByteArray& getPassword() const;
+
 protected:
     virtual void init() throw(Fw::Exception&);
     virtual void release() throw();
@@ -151,28 +162,14 @@ protected:
 
     virtual QueryData* createQuery(const QString& query) throw(Fw::Exception&);
 
+    QString lastError() const;
+
 private:
     PGconn* m_connection;
 
     int m_lastInsertRowId;
 
-    QByteArray m_host;
-    int        m_port;
-    QByteArray m_dbname;
-    QByteArray m_user;
-    QByteArray m_password;
+    ConnectionParams m_conParams;
 };
-
-/////////////////////////////////////////////////////////////////////////////////
-
-//void FwPg::Database::open(const ConnectionParams& params) throw (Exception&)
-//{
-//    open(params.toByteArray());
-//}
-
-//bool FwPg::Database::isOpen() const
-//{
-//    return m_connection;
-//}
 
 #endif //FIREWORKS_PG_H
