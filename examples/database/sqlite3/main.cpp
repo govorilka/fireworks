@@ -1,3 +1,6 @@
+#include <QtCore/qcoreapplication.h>
+
+#ifndef FW_SQLITE
 #include <stdio.h>
 #include <sqlite3.h>
 
@@ -40,3 +43,24 @@ int main(int argc, char **argv)
     sqlite3_close(db);
     return 0;
 }
+#else
+#include "fwdb/dbfactory.h"
+#include "fwdb/fwsqlite.h"
+
+int main(int argc, char **argv)
+{
+    QCoreApplication a(argc, argv);
+    Fw::Database* db = Fw::dbFactory(a.applicationDirPath() +"/configure.fwml");
+    if(!db)
+    {
+        return 1;
+    }
+    Fw::Query insertQuery = db->query("insert into users (userid, login, passwd, birthdate, lastLogin) values (1, 'user_1', '12345', 123456, ?1);");
+    insertQuery.bindDateTime(1, QDateTime(QDate(2008, 10, 5), QTime(12, 24, 30)));
+    insertQuery.step();
+//insert into users ('userid', 'login', 'passwd', ' birthdate', 'lastLogin') values (2, 'user_2', 'abvg', 2356, 12567567);
+
+    return 0;
+}
+
+#endif

@@ -11,7 +11,14 @@ else {
 CONFIG   += console
 CONFIG   -= app_bundle
 
+DEFINES += FW_SQLITE
+
 TEMPLATE = app
+
+#Fireworks library
+INCLUDEPATH += $(FIREWORKS_PATH)/src
+LIBS += -L$(FIREWORKS_PATH)/bin \
+        -lfireworks4
 
 INCLUDEPATH += ../../../src/fwdb/sqlite/
 
