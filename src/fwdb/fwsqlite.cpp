@@ -113,16 +113,12 @@ void FwSqlite::QueryData::doBindDateTime(int index, const QDateTime& dateTime) t
 
 void FwSqlite::QueryData::doBindDate(int index, const QDate& date) throw(Fw::Exception&)
 {
-
-    /*if(m_stmt)
-    {
-        sqlite3_bind_int(m_stmt, index, static_cast<int>(dateTime.toUTC().toTime_t()));
-    }*/
+    doBindDateTime(index, QDateTime(date));
 }
 
 void FwSqlite::QueryData::doBindTime(int index, const QTime& time) throw(Fw::Exception&)
 {
-
+    //TODO
 }
 
 bool FwSqlite::QueryData::doColumnBool(int column) const
@@ -162,6 +158,21 @@ QUrl FwSqlite::QueryData::doColumnUrl(int column) const
         return QUrl(stringUrl);
     }
     return QUrl();
+}
+
+QDateTime FwSqlite::QueryData::doColumnDateTime(int column) const
+{
+    return QDateTime::fromTime_t(doColumnInt(column));
+}
+
+QDate FwSqlite::QueryData::doColumnDate(int column) const
+{
+    return QDateTime::fromTime_t(doColumnInt(column)).date();
+}
+
+QTime FwSqlite::QueryData::doColumnTime(int column) const
+{
+    //TODO
 }
 
 ////////////////////////////////////////////////////////////////////////////////
