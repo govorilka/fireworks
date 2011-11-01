@@ -118,7 +118,7 @@ void FwSqlite::QueryData::doBindDate(int index, const QDate& date) throw(Fw::Exc
 
 void FwSqlite::QueryData::doBindTime(int index, const QTime& time) throw(Fw::Exception&)
 {
-    //TODO
+    doBindInt(index, time.second() + time.minute() * 60 + time.hour() * 3600);
 }
 
 bool FwSqlite::QueryData::doColumnBool(int column) const
@@ -172,7 +172,12 @@ QDate FwSqlite::QueryData::doColumnDate(int column) const
 
 QTime FwSqlite::QueryData::doColumnTime(int column) const
 {
-    //TODO
+    int time = doColumnInt(column);
+    int h = time / 3600;
+    time -= h * 3600;
+    int m = time / 60;
+    int s = time - m * 60;
+    return QTime(h, m, s);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
