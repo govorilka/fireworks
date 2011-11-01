@@ -7,7 +7,7 @@
 
 Fw::Database* Fw::dbFactory(FwMLObject* config, QObject* parent) throw(Fw::Exception&)
 {
-    FwMLString* driverNode = config->attribute("driver")->cast<FwMLString>();
+    FwMLString* driverNode = databaseNode->attribute("driver")->cast<FwMLString>();
     if(!driverNode || driverNode->isEmpty())
     {
         throw Fw::Exception("Driver name is not defined");

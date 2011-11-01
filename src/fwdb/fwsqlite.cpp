@@ -5,30 +5,6 @@
 
 #include "fwsqlite.h"
 
-FwSqlite::Exception::Exception(const Database* db) throw() :
-    BaseClass(db)
-{
-    if(db && db->m_connection)
-    {
-        m_error = sqlite3_errmsg(db->m_connection);
-    }
-    else
-    {
-        m_error = "No database connection";
-    }
-}
-
-FwSqlite::Exception::Exception(const QString& error) throw() :
-    BaseClass(error)
-{
-}
-
-FwSqlite::Exception::~Exception() throw()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
 FwSqlite::QueryData::~QueryData()
 {
 }
@@ -50,7 +26,7 @@ FwSqlite::QueryData::QueryData(FwSqlite::Database* db, const QByteArray& query) 
         }
     }
 
-    throw FwSqlite::Exception(db);
+    throw Fw::Exception(db);
 }
 
 bool FwSqlite::QueryData::isNull() const
@@ -88,7 +64,7 @@ bool FwSqlite::QueryData::doNext() throw (Fw::Exception&)
             case SQLITE_ERROR:
             case SQLITE_IOERR:
             case SQLITE_CONSTRAINT:
-            throw FwSqlite::Exception(reinterpret_cast<FwSqlite::Database*>(m_db));
+            throw Fw::Exception(m_db->lastError());
             return false;
 
             default:
@@ -97,7 +73,7 @@ bool FwSqlite::QueryData::doNext() throw (Fw::Exception&)
         }
     }
 
-    throw Exception("Query is null");
+    throw Fw::Exception("Query is null");
     return false;
 }
 
@@ -206,7 +182,7 @@ void FwSqlite::Database::init() throw(Fw::Exception&)
         throw Fw::Exception("Init path is not set");
     }
 
-    int result = sqlite3_open_v2(dbName.toUtf8().data(), &m_connection, flags, 0);
+    int result = sqlite3_open_v2(m_path.toUtf8().data(), &m_connection, flags, 0);
     if(m_connection &&
        result == SQLITE_OK &&
        sqlite3_exec(m_connection, "PRAGMA FOREIGN_KEYS = ON;", 0, 0, 0) == SQLITE_OK &&
@@ -262,6 +238,10 @@ Fw::QueryData* FwSqlite::Database::createQuery(const QString& query) throw(Fw::E
 
 QString FwSqlite::Database::lastError() const
 {
+    if(m_connection)
+    {
+        return QString(sqlite3_errmsg(m_connection));
+    }
     return QString();
 }
 

@@ -222,6 +222,8 @@ public:
     void execFile(const QString& fileName) throw(Exception&);
     void execFile(QIODevice* device) throw(Exception&);
 
+    virtual QString lastError() const = 0;
+
 protected:
     virtual void init() throw(Exception&) = 0;
     virtual void release() throw() = 0;
