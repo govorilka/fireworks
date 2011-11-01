@@ -36,9 +36,9 @@ int main(int argc, char *argv[])
         delete db;
         db = 0;
     }
-    catch(std::exception& e)
+    catch(Fw::Exception& e)
     {
-        qDebug() << "exseption:" << e.what();
+        qDebug() << "exception:" << e.error();
     }
 
     return a.exec();
