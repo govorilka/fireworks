@@ -23,7 +23,12 @@ Fw::Exception::~Exception() throw()
 
 const char* Fw::Exception::what() const throw()
 {
-    return qPrintable(m_error);
+    //static QByteArray str;
+    //str = qPrintable(m_error);
+    //return str.constData();
+
+    static char s_str[] = "str";
+    return s_str;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
