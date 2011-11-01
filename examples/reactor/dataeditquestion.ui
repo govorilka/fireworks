@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DataEditQuestion</class>
+ <widget class="QWidget" name="DataEditQuestion">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>455</width>
+    <height>333</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="tabProperty">
+      <attribute name="title">
+       <string>Properties</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabText">
+      <attribute name="title">
+       <string>Text</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="margin">
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QToolBar" name="textEditTools">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="floatable">
+          <bool>false</bool>
+         </property>
+         <addaction name="actionCopy"/>
+         <addaction name="actionCut"/>
+         <addaction name="actionPaste"/>
+         <addaction name="separator"/>
+         <addaction name="actionBold"/>
+         <addaction name="actionItalic"/>
+         <addaction name="actionUnderline"/>
+         <addaction name="actionStrikeThrough"/>
+         <addaction name="separator"/>
+         <addaction name="actionSubscript"/>
+         <addaction name="actionSuperscript"/>
+         <addaction name="separator"/>
+         <addaction name="actionAlignLeft"/>
+         <addaction name="actionAlignCenter"/>
+         <addaction name="actionAlignRight"/>
+         <addaction name="actionAlignJustity"/>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextEdit" name="textEdit">
+         <property name="lineWidth">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+  <action name="actionBold">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_bold.png</normaloff>:/reactor/images/textedit/text_bold.png</iconset>
+   </property>
+   <property name="text">
+    <string>Bold</string>
+   </property>
+   <property name="toolTip">
+    <string>Bold</string>
+   </property>
+  </action>
+  <action name="actionItalic">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_italic.png</normaloff>:/reactor/images/textedit/text_italic.png</iconset>
+   </property>
+   <property name="text">
+    <string>Italic</string>
+   </property>
+  </action>
+  <action name="actionUnderline">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_underline.png</normaloff>:/reactor/images/textedit/text_underline.png</iconset>
+   </property>
+   <property name="text">
+    <string>Underline</string>
+   </property>
+  </action>
+  <action name="actionAlignLeft">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_align_left.png</normaloff>:/reactor/images/textedit/text_align_left.png</iconset>
+   </property>
+   <property name="text">
+    <string>Align left</string>
+   </property>
+  </action>
+  <action name="actionAlignRight">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_align_right.png</normaloff>:/reactor/images/textedit/text_align_right.png</iconset>
+   </property>
+   <property name="text">
+    <string>Align right</string>
+   </property>
+   <property name="toolTip">
+    <string>Align right</string>
+   </property>
+  </action>
+  <action name="actionAlignCenter">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_align_center.png</normaloff>:/reactor/images/textedit/text_align_center.png</iconset>
+   </property>
+   <property name="text">
+    <string>Align center</string>
+   </property>
+   <property name="toolTip">
+    <string>Align center</string>
+   </property>
+  </action>
+  <action name="actionAlignJustity">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_align_justity.png</normaloff>:/reactor/images/textedit/text_align_justity.png</iconset>
+   </property>
+   <property name="text">
+    <string>Align justity</string>
+   </property>
+  </action>
+  <action name="actionStrikeThrough">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_strikethroungh.png</normaloff>:/reactor/images/textedit/text_strikethroungh.png</iconset>
+   </property>
+   <property name="text">
+    <string>Strike through</string>
+   </property>
+   <property name="toolTip">
+    <string>Strike through</string>
+   </property>
+  </action>
+  <action name="actionSubscript">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_subscript.png</normaloff>:/reactor/images/textedit/text_subscript.png</iconset>
+   </property>
+   <property name="text">
+    <string>Subscript</string>
+   </property>
+   <property name="toolTip">
+    <string>Subscript</string>
+   </property>
+  </action>
+  <action name="actionSuperscript">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_superscript.png</normaloff>:/reactor/images/textedit/text_superscript.png</iconset>
+   </property>
+   <property name="text">
+    <string>Superscript</string>
+   </property>
+   <property name="toolTip">
+    <string>Superscript</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_copy.png</normaloff>:/reactor/images/textedit/text_copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_cut.png</normaloff>:/reactor/images/textedit/text_cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cut</string>
+   </property>
+   <property name="toolTip">
+    <string>Cut</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="reactor.qrc">
+     <normaloff>:/reactor/images/textedit/text_paste.png</normaloff>:/reactor/images/textedit/text_paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paster</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="reactor.qrc"/>
+ </resources>
+ <connections/>
+</ui>

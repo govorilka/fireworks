@@ -1,0 +1,163 @@
+bgcolor : "black",
+
+itemView
+{
+    base : "fireworks.widgets.ItemView",
+
+    width : 150,
+    height : 300,
+
+    layout
+    {
+        base : "fireworks.layouts.Pages",
+        animation
+        {
+            base : "fireworks.layouts.Animation",
+            curve : "InOutQuart",
+            duration : 300
+        },
+        margin : 16
+    },
+
+    item
+    {
+        zindex : 2,
+        width : 120, height : 32,
+        caption
+        {
+            x : 10,
+            base : "fireworks.primitives.String",
+            font
+            {
+                family : "Arial",
+                pixelSize : 24
+            },
+            color : "white",
+            geometry
+            {
+                hPosition : "afterright",
+                vPosition : "middle",
+                link : "checkbox"
+            }
+        },
+        checkbox
+        {
+            x : 10,
+            geometry
+            {
+               vPosition : "middle",
+            },
+        },
+    },
+
+    geometry
+    {
+        hPosition : "center",
+        vPosition : "middle"
+    },
+
+    pixmapCheckOn : "checkon.png",
+    pixmapCheckOff : "checkoff.png",
+ 
+    exclusive : false,
+
+    highlight
+    {
+        zindex : 1,
+        base : "fwgui.primitives.pixmapbar",
+        leftPixmap : "bar/left.png",
+        centerPixmap : "bar/center.png",
+        rightPixmap : "bar/right.png",
+    }
+},
+
+messageBoxAllow : true,
+
+messagebox
+{
+  width : 320, height : 240,
+  bgcolor : red,
+  geometry
+  {
+    link : "scene",
+    hPosition : "center",
+    vPosition : "middle"
+  },
+
+  buttonBox
+  {
+    y : 100,
+    width : 320, height : 80,
+    bgcolor : yellow,
+    geometry
+    {
+      hPosition : center,
+      vPosition : afterbottom,
+      link : "parent.text"
+    },
+
+    button
+    {
+        caption
+        {
+            zindex : 6,
+            font
+            {
+                family : "Arial",
+                pixelSize : 24
+            },
+            color : "white",
+        },
+        width : 100, height : 70,
+        bgcolor : green
+    },
+
+    orientation : center,
+    margin : 10,
+  },
+
+  text
+  {
+    height : 40,
+    zindex : 6,
+    font
+    {
+        family : "Arial",
+        pixelSize : 24
+    },
+    geometry
+    {
+        hPosition : "centerdock"
+    },
+    color : white
+  },
+  
+},
+
+digitInput
+{
+    width : 100, height : 30,
+    y : -10,
+    bgcolor : red,
+    geometry
+    {
+        hPosition : "center",
+        vPosition : "beforetop",
+        link : "itemView"
+    },
+    text
+    {
+        base : "fireworks.primitives.String",
+        font
+        {
+            family : "Arial",
+            pixelSize : 24
+        },
+        color : "white",
+        geometry
+        {
+            hPosition : "center",
+            vPosition : "middle"
+	    }
+    },
+}

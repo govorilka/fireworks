@@ -1,0 +1,5 @@
+database
+{
+    driver : "SQL",
+    parameters : "/home/sensei/source2/fireworks/bin/test"
+} 
