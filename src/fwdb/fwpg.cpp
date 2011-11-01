@@ -258,6 +258,16 @@ void FwPg::QueryData::doBindDateTime(int index, const QDateTime& dateTime)
     doBindText(index, dateTime.toString(Qt::ISODate));
 }
 
+void FwPg::QueryData::doBindDate(int index, const QDate& date)
+{
+    doBindText(index, date.toString(Qt::ISODate));
+}
+
+void FwPg::QueryData::doBindTime(int index, const QTime& time)
+{
+    doBindText(index, time.toString(Qt::ISODate));
+}
+
 bool FwPg::QueryData::doColumnBool(int column) const
 {
     if(PQgetisnull(m_result, m_curr_row, column) == 0)
@@ -296,6 +306,20 @@ FwColor FwPg::QueryData::doColumnColor(int column) const
 QUrl FwPg::QueryData::doColumnUrl(int column) const
 {
     return QUrl(doColumnText(column));
+}
+
+QDateTime FwPg::QueryData::doColumnDateTime(int column) const
+{
+    return QDateTime(doColumnText(column));
+}
+
+QDate FwPg::QueryData::doColumnDate(int column) const
+{
+    return QDate(doColumnText(column));
+}
+QTime FwPg::QueryData::doColumnTime(int column) const
+{
+    return QTime(doColumnText(column));
 }
 
 void FwPg::QueryData::closeQuery()

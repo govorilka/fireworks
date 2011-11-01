@@ -1,8 +1,9 @@
 HEADERS += \
     fwdb/sqlite/sqlite3.h \
     fwdb/fwsqlite.h \
-    fwdb/fwdb.h \
-    fwdb/dbfactory.h
+    fwdb/fwdb.hpp \
+    fwdb/dbfactory.h \
+    fwdb/fwdb_inl.hpp
 
 SOURCES += \
     fwdb/sqlite/sqlite3.c \
@@ -20,5 +21,6 @@ else {
 
 SOURCES += \
    fwdb/dbfactory.cpp
+
 
 

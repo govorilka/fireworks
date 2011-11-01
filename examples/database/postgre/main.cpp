@@ -27,7 +27,8 @@ int main(int argc, char *argv[])
 
                 while(q.step())
                 {
-                    qDebug() << q.columnText(0) << q.columnText(1) << q.columnText(2) << q.columnText(3) << q.columnInt(4);
+                    qDebug() << q.columnInt(0) << q.columnText(1) << q.columnText(2) << q.columnInt(3)\
+                             << q.columnInt(4) << q.columnText(5) << q.columnText(6);
                 }
             }
         }

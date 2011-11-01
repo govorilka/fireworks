@@ -1,6 +1,6 @@
 #include <QtCore/qdebug.h>
 
-#include "fwdb.h"
+#include "fwdb.hpp"
 
 Fw::Exception::Exception(const Database* db) throw() :
     BaseClass()

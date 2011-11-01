@@ -4,7 +4,7 @@
 #include <QtCore/qhash.h>
 #include <QtCore/qvariant.h>
 
-#include "fwdb.h"
+#include "fwdb.hpp"
 
 #include "fwdb/sqlite/sqlite3.h"
 
