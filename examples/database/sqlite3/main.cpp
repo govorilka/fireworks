@@ -57,12 +57,13 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    Fw::Query insertQuery = db->query("insert or IGNORE into users (userid, login, passwd, birthdate, lastLogin) values (?1, ?2, ?3, ?4, ?5);");
+    Fw::Query insertQuery = db->query("insert or IGNORE into users (userid, login, passwd, birthdate, lastLogin, time) values (?1, ?2, ?3, ?4, ?5, ?6);");
     insertQuery.bindInt(1,1);
     insertQuery.bindText(2,"user_1");
     insertQuery.bindText(3,"12345");
     insertQuery.bindDate(4, QDate(1990, 5, 10));
     insertQuery.bindDateTime(5, QDateTime(QDate(2008, 10, 5), QTime(12, 24, 30)));
+    insertQuery.bindTime(6, QTime(12, 23, 40));
     insertQuery.step();
 
     insertQuery.bindInt(1,2);
@@ -70,6 +71,7 @@ int main(int argc, char **argv)
     insertQuery.bindText(3,"78906557");
     insertQuery.bindDate(4, QDate(1975, 6, 6));
     insertQuery.bindDateTime(5, QDateTime(QDate(2010, 11, 2), QTime(18, 05, 22)));
+    insertQuery.bindTime(6, QTime(18, 00, 55));
     insertQuery.step();
 
     Fw::Query selectQuery = db->query("SELECT * FROM users");
@@ -82,8 +84,10 @@ int main(int argc, char **argv)
         QString passwd = selectQuery.columnText(2);
         QDate birthday = selectQuery.columnDate(3);
         QDateTime last_login = selectQuery.columnDateTime(4);
+        QTime time = selectQuery.columnTime(5);
         qout << "user_id: " << id << " login: " << user_login << " passwd: " << passwd <<
-                " birthday: " << birthday.toString() << " last login: "<< last_login.toString() <<endl;
+                " birthday: " << birthday.toString() << " last login: "<< last_login.toString() <<
+              " time: "<< time.toString() << endl;
         qout.flush();
     }
 
