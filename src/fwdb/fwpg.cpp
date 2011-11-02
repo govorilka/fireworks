@@ -418,11 +418,11 @@ void FwPg::Database::init() throw(Fw::Exception&)
 {
     //"hostaddr=0.0.0.0 port=0 dbname=str user=str password=str"
     QByteArray connection;
-    connection +="hostaddr=" + m_conParams.host;
-    connection +=" port=" + m_conParams.port;
-    connection +=" dbname=" + m_conParams.dbname;
-    connection +=" user=" + m_conParams.user;
-    connection +=" password=" + m_conParams.password;
+    connection += "hostaddr=" + m_conParams.host;
+    connection += " port=" + QByteArray::number(m_conParams.port);
+    connection += " dbname=" + m_conParams.dbname;
+    connection += " user=" + m_conParams.user;
+    connection += " password=" + m_conParams.password;
 
     m_connection = PQconnectdb(connection);
     if(!m_connection || PQstatus(m_connection) != CONNECTION_OK)

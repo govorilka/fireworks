@@ -29,17 +29,18 @@ class FIREWORKSSHARED_EXPORT Fw::Exception: public std::exception
 public:
     Exception(const Database* db) throw();
     Exception(const QString& error) throw();
+
     virtual ~Exception() throw();
 
     virtual const char* what() const throw();
 
-    inline const QString error() const;
+    inline QByteArray error() const;
 
 protected:
-    QString m_error;
+    QByteArray m_error;
 };
 
-const QString Fw::Exception::error() const
+QByteArray Fw::Exception::error() const
 {
     return m_error;
 }

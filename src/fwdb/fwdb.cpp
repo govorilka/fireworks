@@ -14,7 +14,7 @@ Fw::Exception::Exception(const Database* db) throw() :
 Fw::Exception::Exception(const QString& error) throw() :
     BaseClass()
 {
-    m_error = error;
+    m_error = error.toUtf8();
 }
 
 Fw::Exception::~Exception() throw()
@@ -23,12 +23,7 @@ Fw::Exception::~Exception() throw()
 
 const char* Fw::Exception::what() const throw()
 {
-    //static QByteArray str;
-    //str = qPrintable(m_error);
-    //return str.constData();
-
-    static char s_str[] = "str";
-    return s_str;
+    return m_error.constData();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
