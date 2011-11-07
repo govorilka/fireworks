@@ -252,6 +252,7 @@ public:
 
     bool parse(const QByteArray& utf8String, QString* error = 0);
     bool parse(QIODevice* ioDevice, QString* error = 0);
+    bool parseFile(const QString& fileName, QString* error = 0);
 
     int toInt(bool* bOk) const;
     bool toBool(bool* bOk) const;

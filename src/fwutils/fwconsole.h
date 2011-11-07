@@ -48,7 +48,7 @@ QObject* FwConsole::receiver() const
     return m_receiver;
 }
 
-void FwConsole::setReceiver(QObject *receiver)
+void FwConsole::setReceiver(QObject* receiver)
 {
    m_receiver = receiver;
 }

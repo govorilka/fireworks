@@ -21,6 +21,8 @@ include (fwtypography/fwtypography.pri)
 include (fwgui/fwgui.pri)
 include (fwdb/fwdb.pri)
 include (fwutils/fwutils.pri)
+include (fw/console/console.pri)
+include (fw/parse/parse.pri)
 
 DEFINES += FIREWORKS_LIBRARY
 
@@ -37,6 +39,14 @@ HEADERS += \
     fwinterfaces.h \
     fwdescriptions.h \
     fwplatform.hpp
+
+OTHER_FILES += \
+    fw/parse/parse.pri
+
+
+
+
+
 
 
 
