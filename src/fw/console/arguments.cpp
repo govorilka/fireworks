@@ -43,6 +43,7 @@ QStringList Fw::Console::Arguments::commandParams() const
 
 QString Fw::Console::Arguments::value(const QString& key, const QString& defaultValue) const
 {
+    //TODO: Compare key!!!
     if(m_argList.size() > 2)
     {
         QStringList::ConstIterator last = m_argList.end() - 1;

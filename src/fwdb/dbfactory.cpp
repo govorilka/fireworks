@@ -7,13 +7,7 @@
 
 Fw::Database* Fw::dbFactory(FwMLObject* config, QObject* parent) throw(Fw::Exception&)
 {
-    FwMLString* driverNode = config->attribute("driver")->cast<FwMLString>();
-    if(!driverNode || driverNode->isEmpty())
-    {
-        throw Fw::Exception("Driver name is not defined");
-    }
-
-    QByteArray driver = driverNode->value().simplified().toLower();
+    QByteArray driver = config->baseName();
     if(driver.isEmpty())
     {
         throw Fw::Exception("Driver name is not defined");
@@ -56,18 +50,7 @@ Fw::Database* Fw::dbFactory(FwMLObject* config, QObject* parent) throw(Fw::Excep
 
 Fw::Database* Fw::dbFactory(const QString& configFile, QObject* parent) throw(Fw::Exception&)
 {
-    QFile fwmlData(QDir::toNativeSeparators(configFile));
-    if(!fwmlData.exists())
-    {
-        throw Fw::Exception(QString("File %1 not found").arg(configFile).toUtf8());
-    }
-
-    QString error;
     FwMLObject rootObject;
-    if(!rootObject.parse(&fwmlData, &error))
-    {
-        throw Fw::Exception(QString("FwML error in %1 file: %2").arg(configFile).arg(error));
-    }
-
+    rootObject.parseFile(configFile);
     return Fw::dbFactory(&rootObject, parent);
 }

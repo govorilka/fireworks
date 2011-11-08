@@ -28,19 +28,12 @@ QString FwConfig::configFilePath(const QString &fileName)
     return QString();
 }
 
-bool FwConfig::loadConfig(const QString& name, FwCPPObject* object)
+void FwConfig::loadConfig(const QString& name, FwCPPObject* object) throw(Fw::Exception&)
 {
     QString path = configFilePath(name + ".fwml");
-    if(!path.isEmpty())
+    if(path.isEmpty())
     {
-        QFile fwmlConfig(path);
-
-        FwMLObject rootObject;
-        if(rootObject.parse(&fwmlConfig))
-        {
-            return object->loadData(&rootObject);
-        }
+        throw Fw::Exception("Config path is empty");
     }
-
-    return false;
+    object->loadFile(path);
 }

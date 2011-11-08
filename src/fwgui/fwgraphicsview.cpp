@@ -320,11 +320,15 @@ bool FwGraphicsView::loadData(FwMLObject* object)
     FwMLString* imagesPath = object->attribute("imagesPath")->cast<FwMLString>();
     if(imagesPath && !imagesPath->isEmpty())
     {
-        if(!m_imageLibrary->loadFile(imagesPath->toQString()))
+        try
         {
-            qWarning("Cannot load image library");
+            m_imageLibrary->loadFile(imagesPath->toQString());
+        }
+        catch(Fw::Exception& e)
+        {
+            qWarning(e.error());
+            return  false;
         }
     }
-
     return true;
 }

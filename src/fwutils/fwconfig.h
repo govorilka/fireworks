@@ -5,6 +5,8 @@
 
 #include "fireworks.h"
 
+#include "fw/exception.hpp"
+
 class FwCPPObject;
 
 class FIREWORKSSHARED_EXPORT FwConfig
@@ -15,7 +17,7 @@ public:
     static QString configPath();
     static QString configFilePath(const QString& fileName);
 
-    static bool loadConfig(const QString& name, FwCPPObject* object);
+    static void loadConfig(const QString& name, FwCPPObject* object) throw (Fw::Exception&);
 };
 
 #endif // FWCONFIG_H
