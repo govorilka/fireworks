@@ -4,7 +4,7 @@
 #include <QtCore/qvector.h>
 #include <QBitArray>
 
-#include "../fireworks.h"
+#include "fireworks.h"
 
 #ifdef FW_SUPPORT_POSTGRESQL
 #ifdef Q_OS_WIN32
@@ -14,7 +14,7 @@
 #endif //Q_OS_WIN32
 #endif //FW_SUPPORT_POSTGRESQL
 
-#include "fwdb.hpp"
+#include "fwdb/fwdb.hpp"
 
 namespace FwPg
 {

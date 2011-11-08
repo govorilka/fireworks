@@ -10,8 +10,8 @@
 
 namespace FwSqlite
 {
-class QueryData;
-class Database;
+    class QueryData;
+    class Database;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

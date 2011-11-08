@@ -19,3 +19,4 @@ void FwCPPObject::loadFile(const QString& fileName) throw(Fw::Exception&)
     rootObject.parseFile(fileName);
     loadData(&rootObject);
 }
+

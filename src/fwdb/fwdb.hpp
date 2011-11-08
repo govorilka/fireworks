@@ -14,7 +14,6 @@
 
 namespace Fw
 {
-    class Exception;
     class Query;
     class QueryData;
     class Database;
