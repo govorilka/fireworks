@@ -4,6 +4,7 @@
 #include <QtCore/qglobal.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qdir.h>
+#include <QtCore/qbytearray.h>
 
 #if defined(FIREWORKS_LIBRARY)
 #  define FIREWORKSSHARED_EXPORT Q_DECL_EXPORT
@@ -15,6 +16,8 @@
 #define FW_END_NAMESPACE(x) }
 
 FW_BEGIN_NAMESPACE(Fw)
+
+class Exception;
 
 enum HorizontalPosition
 {

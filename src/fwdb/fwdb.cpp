@@ -2,32 +2,6 @@
 
 #include "fwdb.hpp"
 
-Fw::Exception::Exception(const Database* db) throw() :
-    BaseClass()
-{
-    if(!db)
-    {
-        m_error = "Can`t connect data base";
-    }
-}
-
-Fw::Exception::Exception(const QString& error) throw() :
-    BaseClass()
-{
-    m_error = error.toUtf8();
-}
-
-Fw::Exception::~Exception() throw()
-{
-}
-
-const char* Fw::Exception::what() const throw()
-{
-    return m_error.constData();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
 Fw::Query::Query(QueryData * data) :
     BaseClass(data, &doDeleteQueryData)
 {
@@ -198,7 +172,7 @@ void Fw::Database::execFile(QIODevice* device) throw(Fw::Exception&)
 {
     if(!device->open(QIODevice::ReadOnly))
     {
-        throw Fw::Exception(device->errorString());
+        throw Fw::Exception(device->errorString().toUtf8());
     }
 
     beginTransaction();

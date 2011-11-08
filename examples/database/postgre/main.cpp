@@ -1,7 +1,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/qdebug.h>
 
-#include <fwdb/dbfactory.h>
+#include "fwdb/dbfactory.h"
 
 int main(int argc, char *argv[])
 {

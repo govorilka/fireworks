@@ -24,7 +24,7 @@ FwSqlite::QueryData::QueryData(FwSqlite::Database* db, const QByteArray& query) 
         }
     }
 
-    throw Fw::Exception(db);
+    throw Fw::Exception(db->lastError().toUtf8());
 }
 
 bool FwSqlite::QueryData::isNull() const
@@ -62,7 +62,7 @@ bool FwSqlite::QueryData::doNext() throw (Fw::Exception&)
             case SQLITE_ERROR:
             case SQLITE_IOERR:
             case SQLITE_CONSTRAINT:
-            throw Fw::Exception(static_cast<FwSqlite::Database*>(m_db)->lastError());
+            throw Fw::Exception(static_cast<FwSqlite::Database*>(m_db)->lastError().toUtf8());
             return false;
 
             default:
@@ -125,6 +125,7 @@ bool FwSqlite::QueryData::doColumnBool(int column) const
 {
     return doColumnInt(column) != 0;
 }
+
 int FwSqlite::QueryData::doColumnInt(int column) const
 {
     if(m_stmt)
@@ -220,7 +221,7 @@ void FwSqlite::Database::init() throw(Fw::Exception&)
         return;
     }
 
-    throw Fw::Exception(QString("Cannot open database: %1").arg(lastError()));
+    throw Fw::Exception(QString("Cannot open database: %1").arg(lastError()).toUtf8());
 }
 
 bool FwSqlite::Database::loadData(FwMLObject* object)
