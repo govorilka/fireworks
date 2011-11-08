@@ -32,10 +32,4 @@ QByteArray Fw::Exception::error() const
     return m_error;
 }
 
-class Exception
-{
-public:
-    Exception();
-};
-
 #endif // FIREWORKS_EXCEPTION_H
