@@ -21,8 +21,8 @@
 
 
 FwGraphicsView::FwGraphicsView(QObject *parent) :
-    BaseClass("view"),
     QObject(parent),
+    BaseClass("view"),
     m_activeScene(0),
     m_prevActiveScene(0),
     m_needPostUpdateEvent(true),
