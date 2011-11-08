@@ -32,16 +32,20 @@ SOURCES += \
     fireworks.cpp \
     fwinterfaces.cpp \
     fwdescriptions.cpp \
-    fwplatform.cpp
+    fwplatform.cpp \
+    fw/exception.cpp
 
 HEADERS += \
     fireworks.h \
     fwinterfaces.h \
     fwdescriptions.h \
-    fwplatform.hpp
+    fwplatform.hpp \
+    fw/exception.hpp
 
 OTHER_FILES += \
     fw/parse/parse.pri
+
+
 
 
 

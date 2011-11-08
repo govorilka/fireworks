@@ -59,7 +59,7 @@ Fw::Database* Fw::dbFactory(const QString& configFile, QObject* parent) throw(Fw
     QFile fwmlData(QDir::toNativeSeparators(configFile));
     if(!fwmlData.exists())
     {
-        throw Fw::Exception(QString("File %1 not found").arg(configFile));
+        throw Fw::Exception(QString("File %1 not found").arg(configFile).toUtf8());
     }
 
     QString error;

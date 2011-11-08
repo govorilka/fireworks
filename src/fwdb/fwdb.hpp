@@ -7,9 +7,10 @@
 #include <QtCore/qurl.h>
 #include <QtCore/qdatetime.h>
 
-#include "fireworks.h"
 #include "fwcore/fwcppobject.h"
 #include "fwcore/fwcolor.h"
+
+#include "fw/exception.hpp"
 
 namespace Fw
 {
@@ -18,31 +19,6 @@ namespace Fw
     class QueryData;
     class Database;
     class DatabaseLocker;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-class FIREWORKSSHARED_EXPORT Fw::Exception: public std::exception
-{
-    typedef std::exception BaseClass;
-
-public:
-    Exception(const Database* db) throw();
-    Exception(const QString& error) throw();
-
-    virtual ~Exception() throw();
-
-    virtual const char* what() const throw();
-
-    inline QByteArray error() const;
-
-protected:
-    QByteArray m_error;
-};
-
-QByteArray Fw::Exception::error() const
-{
-    return m_error;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
