@@ -126,7 +126,7 @@ QByteArray FwMLObject::className() const
 
 QByteArray FwMLObject::baseName() const
 {
-    return stringValue("base");
+    return stringValue("base").simplified().toLower();
 }
 
 QByteArray FwMLObject::stringValue(const QByteArray& attrName) const

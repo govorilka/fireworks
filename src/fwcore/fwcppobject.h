@@ -3,6 +3,8 @@
 
 #include "fireworks.h"
 
+#include "fw/exception.hpp"
+
 class FwMLObject;
 
 class FIREWORKSSHARED_EXPORT FwCPPObject
@@ -11,9 +13,9 @@ public:
     explicit FwCPPObject(const QByteArray& name);
 
     inline const QByteArray& name() const;
-    inline void setname(QByteArray& name);
+    inline void setName(QByteArray& name);
 
-    bool loadFile(const QString& fileName);
+    void loadFile(const QString& fileName) throw(Fw::Exception&);
 
     virtual bool loadData(FwMLObject* object) = 0;
     virtual void resetData();
@@ -28,7 +30,7 @@ const QByteArray& FwCPPObject::name() const
     return m_name;
 }
 
-void FwCPPObject::setname(QByteArray& name)
+void FwCPPObject::setName(QByteArray& name)
 {
     m_name = name;
 }

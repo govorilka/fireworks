@@ -12,18 +12,12 @@ FwMLDocument::FwMLDocument(FwMLEngine* engine) :
 {
 }
 
-bool FwMLDocument::load(QIODevice* device)
+void FwMLDocument::load(QIODevice* device) throw(Fw::Exception&)
 {
     m_errorString = QString();
     m_rootObject->removeAttributes();
-
-    if(!m_rootObject->parse(device, &m_errorString))
-    {
-        return false;
-    }
-
+    m_rootObject->parse(device);
     bindingClassTravel(m_rootObject);
-    return true;
 }
 
 void FwMLDocument::bindingClassTravel(FwMLObject* object)

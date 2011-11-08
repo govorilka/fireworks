@@ -6,6 +6,8 @@
 
 #include "fwcore/fwml.h"
 
+#include "fw/exception.hpp"
+
 class QIODevice;
 
 class FwMLEngine;
@@ -24,7 +26,7 @@ public:
 
     inline QString errorString() const;
 
-    bool load(QIODevice* device);
+    void load(QIODevice* device) throw(Fw::Exception&);
 
     FwMLObject* findObject(const QByteArray& objectName);
 

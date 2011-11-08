@@ -188,9 +188,9 @@ void FwScheduler::release()
     }
 }
 
-bool FwScheduler::loadConfig()
+bool FwScheduler::loadConfig() throw(Fw::Exception&)
 {
-    return FwConfig::loadConfig("scheduler", this);
+    FwConfig::loadConfig("scheduler", this);
 }
 
 bool FwScheduler::loadData(FwMLObject *object)

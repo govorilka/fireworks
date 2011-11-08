@@ -1017,24 +1017,24 @@ QByteArray FwMLObject::toUtf8() const
     return "{" + attributes + "}";
 }
 
-bool FwMLObject::parse(const QByteArray& utf8String, QString* error)
+void FwMLObject::parse(const QByteArray& utf8String) throw (Fw::Exception)
 {
-    if(!utf8String.isEmpty())
+    if(utf8String.isEmpty())
     {
-        QByteArray tmpStr = utf8String;
-        QBuffer buffer(&tmpStr);
-        return parse(&buffer, error);
+        throw Fw::Exception("Input string is empty");
     }
-    return false;
+    QByteArray tmpStr = utf8String;
+    QBuffer buffer(&tmpStr);
+    parse(&buffer);
 }
 
-bool FwMLObject::parse(QIODevice* ioDevice, QString* error)
+void FwMLObject::parse(QIODevice* ioDevice) throw (Fw::Exception)
 {
     try
     {
         if(!ioDevice->isOpen() && !ioDevice->open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            throw FwMLParserException(ioDevice->errorString(), -1, -1);
+            throw Fw::Exception(ioDevice->errorString());
         }
 
         ParseData data;
@@ -1069,19 +1069,23 @@ bool FwMLObject::parse(QIODevice* ioDevice, QString* error)
         {
             data.setupValue();
         }
-    }
-    catch(FwMLParserException& e)
-    {
-        qDebug() << e.what();
-        if(error)
-        {
-            (*error) = e.message;
-        }
-        removeAttributes();
-        return false;
-    }
 
-    return true;
+    }
+    catch(Fw::Exception& e)
+    {
+        removeAttributes();
+        throw e;
+    }
+}
+
+void FwMLObject::parseFile(const QString& fileName) throw(Fw::Exception)
+{
+    QFile file(QDir::toNativeSeparators(fileName));
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        throw Fw::Exception(file);
+    }
+    parse(&file);
 }
 
 void FwMLObject::removeAttributes()

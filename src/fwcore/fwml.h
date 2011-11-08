@@ -1,12 +1,13 @@
 #ifndef FIREWORKS_ML_H
 #define FIREWORKS_ML_H
 
-#include "fireworks.h"
-
-#include <QtCore/qbytearray.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qvector.h>
 #include <QtCore/qurl.h>
+
+#include "fireworks.h"
+
+#include "fw/exception.hpp"
 
 #include "fwcore/fwcolor.h"
 
@@ -250,9 +251,9 @@ public:
 
     QByteArray toUtf8() const;
 
-    bool parse(const QByteArray& utf8String, QString* error = 0);
-    bool parse(QIODevice* ioDevice, QString* error = 0);
-    bool parseFile(const QString& fileName, QString* error = 0);
+    void parse(const QByteArray& utf8String) throw(Fw::Exception);
+    void parse(QIODevice* ioDevice) throw(Fw::Exception);
+    void parseFile(const QString& fileName) throw(Fw::Exception);
 
     int toInt(bool* bOk) const;
     bool toBool(bool* bOk) const;

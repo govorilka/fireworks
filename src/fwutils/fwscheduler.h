@@ -52,7 +52,7 @@ public:
 
     void release();
 
-    bool loadConfig();
+    bool loadConfig() throw(Fw::Exception&);
     bool loadData(FwMLObject *object);
 
 protected:
