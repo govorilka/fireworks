@@ -15,6 +15,14 @@ public:
               int line = -1,
               int  column = -1) throw();
 
+    Exception(const QByteArray& error,
+              int line,
+              int  column) throw();
+
+    Exception(char c,
+              int line,
+              int  column) throw();
+
     Exception(const QFile& file);
 
     virtual ~Exception() throw();

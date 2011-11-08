@@ -4,43 +4,6 @@
 #include "fwml.h"
 #include "fwmlparser.h"
 
-FwMLParserException::FwMLParserException(const QString& err, int line, int column) :
-    BaseClass()
-{
-    if(line != -1 && column != -1)
-    {
-        message = QString("%1, line %2, column %3")
-                  .arg(err)
-                  .arg(line)
-                  .arg(column);
-    }
-    else
-    {
-        message = err;
-    }
-
-}
-
-FwMLParserException::FwMLParserException(char c, int line, int column) :
-    BaseClass()
-{
-    message = QString("Unexcepted char '%1', line %2, column %3")
-              .arg(c)
-              .arg(line)
-              .arg(column);
-}
-
-const char* FwMLParserException::what() const throw()
-{
-    return qPrintable(message);
-}
-
-FwMLParserException::~FwMLParserException() throw()
-{
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 FwMLParser::FwMLParser() :
     m_bufferType(BT_Empty),
     m_lineIndex(0),
@@ -70,7 +33,7 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
     {
         if(!ioDevice->open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            throw FwMLParserException(ioDevice->errorString());
+            throw Fw::Exception(ioDevice->errorString());
         }
 
         object->removeAttributes();
@@ -108,17 +71,17 @@ bool FwMLParser::parse(FwMLObject *object, QIODevice* ioDevice)
             popState(current, end);
         }
     }
-    catch(FwMLParserException& e)
+    catch(Fw::Exception& e)
     {
         qDebug() << e.what();
-        m_errorString = e.message;
+        m_errorString = e.error();
         return false;
     }
 
     return true;
 }
 
-void FwMLParser::parseObject(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseObject(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&)
 {
     Q_UNUSED(end);
     switch(Fw::charType(current))
@@ -130,7 +93,7 @@ void FwMLParser::parseObject(Fw::StrIterator& current, Fw::StrIterator& end) thr
     }
 }
 
-void FwMLParser::parseAttr(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseAttr(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&)
 {
     Q_UNUSED(current);
     Q_UNUSED(end);
@@ -139,7 +102,7 @@ void FwMLParser::parseAttr(Fw::StrIterator& current, Fw::StrIterator& end) throw
     pushState(&FwMLParser::parseValue);
 }
 
-void FwMLParser::parseAttrValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseAttrValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&)
 {
     Q_UNUSED(end);
 
@@ -150,13 +113,13 @@ void FwMLParser::parseAttrValue(Fw::StrIterator& current, Fw::StrIterator& end) 
         m_attrName = m_buffer;
         if(m_attrName.isEmpty())
         {
-            throw FwMLParserException(QString("Attribute name is empty"), m_lineIndex, column(current));
+            throw Fw::Exception("Attribute name is empty", m_lineIndex, column(current));
         }
         clearBuffer();
         break;
 
     default:
-        throw FwMLParserException(QString("Invalid attribute name"), m_lineIndex, column(current));
+        throw Fw::Exception("Invalid attribute name", m_lineIndex, column(current));
         break;
     }
 
@@ -168,18 +131,17 @@ void FwMLParser::parseAttrValue(Fw::StrIterator& current, Fw::StrIterator& end) 
         break;
 
     default:
-        throw FwMLParserException(*current, m_lineIndex, column(current));
+        throw Fw::Exception(*current, m_lineIndex, column(current));
         break;
     }
 }
 
-void FwMLParser::parseAttrEnd(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseAttrEnd(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&)
 {  
     FwMLNode* child = createValue(current);
     if(m_attrName.isEmpty())
     {
-        throw FwMLParserException(QString("Attribute name is empty"), m_lineIndex, column(current));
-        return;
+        throw Fw::Exception("Attribute name is empty", m_lineIndex, column(current));
     }
 
     static_cast<FwMLObject*>(m_currentNode)->addAttribute(m_attrName, child);
@@ -199,12 +161,12 @@ void FwMLParser::parseAttrEnd(Fw::StrIterator& current, Fw::StrIterator& end) th
         }
 
         qDebug() << "FwMLParser::parseAttrValueEnd" << m_attrName << m_buffer;
-        throw FwMLParserException(*current, m_lineIndex, column(current));
+        throw Fw::Exception(*current, m_lineIndex, column(current));
     }
 }
 
 
-void FwMLParser::parseValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&)
 {
     Q_UNUSED(end);
 
@@ -234,12 +196,12 @@ void FwMLParser::parseValue(Fw::StrIterator& current, Fw::StrIterator& end) thro
         return;
 
     default:
-        throw FwMLParserException(*current, m_lineIndex, column(current));
+        throw Fw::Exception(*current, m_lineIndex, column(current));
         break;
     }    
 }
 
-void FwMLParser::parseName(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseName(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&)
 {
     while(current != end)
     {
@@ -254,7 +216,7 @@ void FwMLParser::parseName(Fw::StrIterator& current, Fw::StrIterator& end) throw
 
         case Fw::C_Uni:
         case Fw::C_Err:
-            throw FwMLParserException(*current, m_lineIndex, column(current));
+            throw Fw::Exception(*current, m_lineIndex, column(current));
             return;
 
         default:
@@ -263,7 +225,7 @@ void FwMLParser::parseName(Fw::StrIterator& current, Fw::StrIterator& end) throw
     }
 }
 
-void FwMLParser::parseString(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseString(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&)
 {
     while(++current != end)
     {
@@ -280,7 +242,7 @@ void FwMLParser::parseString(Fw::StrIterator& current, Fw::StrIterator& end) thr
     }
 }
 
-void FwMLParser::parseUInt(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseUInt(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&)
 {
     int digitCount = 0;
     int firstDigit = (*current) - '0';
@@ -302,8 +264,9 @@ void FwMLParser::parseUInt(Fw::StrIterator& current, Fw::StrIterator& end) throw
                         ++digitCount;
                         if((digitCount == 9 && firstDigit > 4) || (digitCount == 10))
                         {
-                            throw FwMLParserException(QString("Number is big"), m_lineIndex, column(current));
-                            return;
+                            throw Fw::Exception("Number is big",
+                                                m_lineIndex,
+                                                column(current));
                         }
                     }
                 }
@@ -323,7 +286,7 @@ void FwMLParser::parseUInt(Fw::StrIterator& current, Fw::StrIterator& end) throw
     }
 }
 
-void FwMLParser::parseDouble(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::parseDouble(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&)
 {
     m_bufferType = BT_Real;
     m_buffer = QByteArray::number(m_bufferUint);
@@ -345,7 +308,7 @@ void FwMLParser::parseDouble(Fw::StrIterator& current, Fw::StrIterator& end) thr
         case Fw::C_Fra:
             if(!fraAllow)
             {
-                throw FwMLParserException(*current, m_lineIndex, column(current));
+                throw Fw::Exception(*current, m_lineIndex, column(current));
                 return;
             }
             m_buffer += (*current);
@@ -356,7 +319,7 @@ void FwMLParser::parseDouble(Fw::StrIterator& current, Fw::StrIterator& end) thr
         case Fw::C_Ee:
             if(!eAllow)
             {
-                throw FwMLParserException(*current, m_lineIndex, column(current));
+                throw Fw::Exception(*current, m_lineIndex, column(current));
                 return;
             }
             m_buffer += (*current);
@@ -368,7 +331,7 @@ void FwMLParser::parseDouble(Fw::StrIterator& current, Fw::StrIterator& end) thr
         case Fw::C_Sig:
             if(!sigAllow)
             {
-                throw FwMLParserException(*current, m_lineIndex, column(current));
+                throw Fw::Exception(*current, m_lineIndex, column(current));
                 return;
             }
             m_buffer += (*current);
@@ -382,12 +345,13 @@ void FwMLParser::parseDouble(Fw::StrIterator& current, Fw::StrIterator& end) thr
     }
 }
 
-FwMLNode* FwMLParser::createValue(Fw::StrIterator& current) throw(FwMLParserException&)
+FwMLNode* FwMLParser::createValue(Fw::StrIterator& current) throw(Fw::Exception&)
 {
     if(!m_currentNode || m_bufferType == BT_Empty)
     {
-        throw FwMLParserException(QString("Syntax error"), m_lineIndex, column(current));
-        return 0;
+        throw Fw::Exception("Syntax error",
+                            m_lineIndex,
+                            column(current));
     }
 
     FwMLNode* child = 0;
@@ -422,8 +386,9 @@ FwMLNode* FwMLParser::createValue(Fw::StrIterator& current) throw(FwMLParserExce
                 double value = m_buffer.toDouble(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid real number"), m_lineIndex, column(current));
-                    return 0;
+                    throw Fw::Exception("Invalid real number",
+                                        m_lineIndex,
+                                        column(current));
                 }
                 child = new FwMLDoubleNumber(value);
             }

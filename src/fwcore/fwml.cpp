@@ -67,27 +67,27 @@ namespace
 
     typedef void(*CommandFunc)(char c, ParseData* data);
 
-    void x_doc(char c, ParseData* data) throw(FwMLParserException&);
-    void x_var(char c, ParseData* data) throw(FwMLParserException&);
-    void x_bst(char c, ParseData* data) throw(FwMLParserException&);
-    void x_est(char c, ParseData* data) throw(FwMLParserException&);
-    void x_atr(char c, ParseData* data) throw(FwMLParserException&);
-    void x_int(char c, ParseData* data) throw(FwMLParserException&);
-    void x_re1(char c, ParseData* data) throw(FwMLParserException&);
-    void x_re2(char c, ParseData* data) throw(FwMLParserException&);
-    void x_enu(char c, ParseData* data) throw(FwMLParserException&);
-    void x_sg1(char c, ParseData* data) throw(FwMLParserException&);
-    void x_rn3(char c, ParseData* data) throw(FwMLParserException&);
-    void x_rs3(char c, ParseData* data) throw(FwMLParserException&);
-    void x_err(char c, ParseData* data) throw(FwMLParserException&);
-    void x_ob1(char c, ParseData* data) throw(FwMLParserException&);
-    void x_ob2(char c, ParseData* data) throw(FwMLParserException&);
-    void x_eob(char c, ParseData* data) throw(FwMLParserException&);
-    void x_val(char c, ParseData* data) throw(FwMLParserException&);
-    void x_ign(char c, ParseData* data) throw(FwMLParserException&);
-    void x_ar1(char c, ParseData* data) throw(FwMLParserException&);
-    void x_ar2(char c, ParseData* data) throw(FwMLParserException&);
-    void x_ear(char c, ParseData* data) throw(FwMLParserException&);
+    void x_doc(char c, ParseData* data) throw(Fw::Exception&);
+    void x_var(char c, ParseData* data) throw(Fw::Exception&);
+    void x_bst(char c, ParseData* data) throw(Fw::Exception&);
+    void x_est(char c, ParseData* data) throw(Fw::Exception&);
+    void x_atr(char c, ParseData* data) throw(Fw::Exception&);
+    void x_int(char c, ParseData* data) throw(Fw::Exception&);
+    void x_re1(char c, ParseData* data) throw(Fw::Exception&);
+    void x_re2(char c, ParseData* data) throw(Fw::Exception&);
+    void x_enu(char c, ParseData* data) throw(Fw::Exception&);
+    void x_sg1(char c, ParseData* data) throw(Fw::Exception&);
+    void x_rn3(char c, ParseData* data) throw(Fw::Exception&);
+    void x_rs3(char c, ParseData* data) throw(Fw::Exception&);
+    void x_err(char c, ParseData* data) throw(Fw::Exception&);
+    void x_ob1(char c, ParseData* data) throw(Fw::Exception&);
+    void x_ob2(char c, ParseData* data) throw(Fw::Exception&);
+    void x_eob(char c, ParseData* data) throw(Fw::Exception&);
+    void x_val(char c, ParseData* data) throw(Fw::Exception&);
+    void x_ign(char c, ParseData* data) throw(Fw::Exception&);
+    void x_ar1(char c, ParseData* data) throw(Fw::Exception&);
+    void x_ar2(char c, ParseData* data) throw(Fw::Exception&);
+    void x_ear(char c, ParseData* data) throw(Fw::Exception&);
     /*void x_val(ParseData* data);
 
     void x_est(ParseData* data);
@@ -245,7 +245,7 @@ namespace
                 quint32 value = buffer.toUInt(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), line, column);
+                    throw Fw::Exception("Invalid number value", "", line, column);
                 }
                 new FwMLUIntNumber(value, attribute, static_cast<FwMLObject*>(parent));
                 buffer = QByteArray();
@@ -258,7 +258,7 @@ namespace
                 int value = buffer.toInt(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), line, column);
+                    throw Fw::Exception("Invalid number value", line, column);
                 }
                 new FwMLIntNumber(value, attribute, static_cast<FwMLObject*>(parent));
                 buffer = QByteArray();
@@ -271,7 +271,7 @@ namespace
                 double value = buffer.toDouble(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), line, column);
+                    throw Fw::Exception("Invalid number value", line, column);
                 }
                 new FwMLDoubleNumber(value, attribute, static_cast<FwMLObject*>(parent));
                 buffer = QByteArray();
@@ -331,7 +331,7 @@ namespace
                 quint32 value = buffer.toUInt(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), line, column);
+                    throw Fw::Exception("Invalid number value", line, column);
                 }
                 new FwMLUIntNumber(value, static_cast<FwMLArray*>(parent));
                 buffer = QByteArray();
@@ -344,7 +344,7 @@ namespace
                 int value = buffer.toInt(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), line, column);
+                    throw Fw::Exception("Invalid number value", line, column);
                 }
                 new FwMLIntNumber(value, static_cast<FwMLArray*>(parent));
                 buffer = QByteArray();
@@ -357,7 +357,7 @@ namespace
                 double value = buffer.toDouble(&bOk);
                 if(!bOk)
                 {
-                    throw FwMLParserException(QString("Invalid number value"), line, column);
+                    throw Fw::Exception("Invalid number value", line, column);
                 }
                 new FwMLDoubleNumber(value, static_cast<FwMLArray*>(parent));
                 buffer = QByteArray();
@@ -382,14 +382,14 @@ namespace
         type = FwMLNode::T_Null;
     }
 
-    void x_doc(char c, ParseData* data) throw(FwMLParserException&)
+    void x_doc(char c, ParseData* data) throw(Fw::Exception&)
     {
         Q_UNUSED(c);
         data->xcmd = X_ATR;
         data->declareRoot = true;
     }
 
-    void x_var(char c, ParseData* data) throw(FwMLParserException&)
+    void x_var(char c, ParseData* data) throw(Fw::Exception&)
     {
         if(data->parent)
         {
@@ -399,10 +399,10 @@ namespace
             data->buffer += c;
             return;
         }
-        throw FwMLParserException(c, data->line, data->column);
+        throw Fw::Exception(c, data->line, data->column);
     }
 
-    void x_bst(char c, ParseData* data) throw(FwMLParserException&)
+    void x_bst(char c, ParseData* data) throw(Fw::Exception&)
     {
         Q_UNUSED(c);
         if(data->parent)
@@ -412,10 +412,10 @@ namespace
             data->isVariable = false;
             return;
         }
-        throw FwMLParserException(c, data->line, data->column);
+        throw Fw::Exception(c, data->line, data->column);
     }
 
-    void x_est(char c, ParseData* data) throw(FwMLParserException&)
+    void x_est(char c, ParseData* data) throw(Fw::Exception&)
     {
         Q_UNUSED(c);
         switch(data->parent->type())
@@ -434,38 +434,38 @@ namespace
         }
     }
 
-    void x_atr(char c, ParseData* data) throw(FwMLParserException&)
+    void x_atr(char c, ParseData* data) throw(Fw::Exception&)
     {
         if(data->parent->type() != FwMLNode::T_Object)
         {
-            throw FwMLParserException(c, data->line, data->column);
+            throw Fw::Exception(c, data->line, data->column);
         }
         data->setupAttributeName();
         data->xcmd = X_VAL;
     }
 
-    void x_int(char c, ParseData* data) throw(FwMLParserException&)
+    void x_int(char c, ParseData* data) throw(Fw::Exception&)
     {
         data->xcmd = X_INT;
         data->type = FwMLNode::T_UIntNumber;
         data->buffer += c;
     }
 
-    void x_re1(char c, ParseData* data) throw(FwMLParserException&)
+    void x_re1(char c, ParseData* data) throw(Fw::Exception&)
     {
         data->xcmd = X_RE1;
         data->type = FwMLNode::T_DoubleNumber;
         data->buffer += c;
     }
 
-    void x_re2(char c, ParseData* data) throw(FwMLParserException&)
+    void x_re2(char c, ParseData* data) throw(Fw::Exception&)
     {
         data->xcmd = X_RE2;
         data->type = FwMLNode::T_DoubleNumber;
         data->buffer += c;
     }
 
-    void x_enu(char c, ParseData* data) throw(FwMLParserException&)
+    void x_enu(char c, ParseData* data) throw(Fw::Exception&)
     {
         Q_UNUSED(c);
         switch(data->parent->type())
@@ -484,7 +484,7 @@ namespace
         }
     }
 
-    void x_sg1(char c, ParseData* data) throw(FwMLParserException&)
+    void x_sg1(char c, ParseData* data) throw(Fw::Exception&)
     {
         if(c == '+')
         {
@@ -499,13 +499,13 @@ namespace
         }
     }
 
-    void x_rn3(char c, ParseData* data) throw(FwMLParserException&)
+    void x_rn3(char c, ParseData* data) throw(Fw::Exception&)
     {
         data->xcmd = X_RE3;
         data->buffer += c;
     }
 
-    void x_ob1(char c, ParseData* data) throw(FwMLParserException&)
+    void x_ob1(char c, ParseData* data) throw(Fw::Exception&)
     {
         Q_UNUSED(c);
         data->type = FwMLNode::T_Object;
@@ -513,51 +513,51 @@ namespace
         data->xcmd = X_ATR;
     }
 
-    void x_ob2(char c, ParseData* data) throw(FwMLParserException&)
+    void x_ob2(char c, ParseData* data) throw(Fw::Exception&)
     {
         data->setupAttributeName();
         x_ob1(c,data);
     }
 
-    void x_eob(char c, ParseData* data) throw(FwMLParserException&)
+    void x_eob(char c, ParseData* data) throw(Fw::Exception&)
     {
         if(data->parent->type() == FwMLNode::T_Object)
         {
             data->structureUp();
             return;
         }
-        throw FwMLParserException(c, data->line, data->column);
+        throw Fw::Exception(c, data->line, data->column);
     }
 
-    void x_ar1(char c, ParseData* data) throw(FwMLParserException&)
+    void x_ar1(char c, ParseData* data) throw(Fw::Exception&)
     {
         data->type = FwMLNode::T_Array;
         data->setupValue();
         data->xcmd = X_VAL;
     }
 
-    void x_ar2(char c, ParseData* data) throw(FwMLParserException&)
+    void x_ar2(char c, ParseData* data) throw(Fw::Exception&)
     {
         data->setupAttributeName();
         x_ar1(c, data);
     }
 
-    void x_ear(char c, ParseData* data) throw(FwMLParserException&)
+    void x_ear(char c, ParseData* data) throw(Fw::Exception&)
     {
         if(data->parent->type() == FwMLNode::T_Array)
         {
             data->structureUp();
             return;
         }
-        throw FwMLParserException(c, data->line, data->column);
+        throw Fw::Exception(c, data->line, data->column);
     }
 
-    void x_err(char c, ParseData* data) throw(FwMLParserException&)
+    void x_err(char c, ParseData* data) throw(Fw::Exception&)
     {
-        throw FwMLParserException(c, data->line, data->column);
+        throw Fw::Exception(c, data->line, data->column);
     }
 
-    void x_val(char c, ParseData* data) throw(FwMLParserException&)
+    void x_val(char c, ParseData* data) throw(Fw::Exception&)
     {
         if(data->parent)
         {
@@ -578,10 +578,10 @@ namespace
             }
             return;
         }
-        throw FwMLParserException(c, data->line, data->column);
+        throw Fw::Exception(c, data->line, data->column);
     }
 
-    void x_ign(char c, ParseData* data) throw(FwMLParserException&)
+    void x_ign(char c, ParseData* data) throw(Fw::Exception&)
     {
         Q_UNUSED(c);
         Q_UNUSED(data);

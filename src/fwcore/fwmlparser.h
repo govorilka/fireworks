@@ -13,22 +13,6 @@ class QIODevice;
 class FwMLNode;
 class FwMLObject;
 
-class FIREWORKSSHARED_EXPORT FwMLParserException : public std::exception
-{
-    typedef std::exception BaseClass;
-
-public:
-    FwMLParserException(const QString& err, int line = -1, int column = -1);
-    FwMLParserException(char c, int line, int column);
-    ~FwMLParserException() throw();
-
-    const char* what() const throw();
-
-    QString message;
-};
-
-////////////////////////////////////////////////////////////////////////////////
-
 class FIREWORKSSHARED_EXPORT FwMLParser
 {
 public:
@@ -50,23 +34,23 @@ protected:
     typedef void(FwMLParser::*StateFunc)(Fw::StrIterator& current, Fw::StrIterator& end);
 
     inline void pushState(StateFunc function);
-    inline void popState(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
+    inline void popState(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&);
 
     //State functions
-    void parseObject(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
+    void parseObject(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&);
 
-    void parseValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
-    void parseName(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
-    void parseString(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
-    void parseUInt(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
-    void parseDouble(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
+    void parseValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&);
+    void parseName(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&);
+    void parseString(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&);
+    void parseUInt(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&);
+    void parseDouble(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&);
 
-    void parseAttr(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
-    void parseAttrValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
-    void parseAttrEnd(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&);
+    void parseAttr(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&);
+    void parseAttrValue(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&);
+    void parseAttrEnd(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&);
 
     inline void clearBuffer();
-    FwMLNode* createValue(Fw::StrIterator& current) throw(FwMLParserException&);
+    FwMLNode* createValue(Fw::StrIterator& current) throw(Fw::Exception&);
 
 private:
 
@@ -116,7 +100,7 @@ void FwMLParser::pushState(StateFunc function)
     m_stateFunctionStack.push(function);
 }
 
-void FwMLParser::popState(Fw::StrIterator& current, Fw::StrIterator& end) throw(FwMLParserException&)
+void FwMLParser::popState(Fw::StrIterator& current, Fw::StrIterator& end) throw(Fw::Exception&)
 {
     StateFunc state = m_stateFunctionStack.pop();
     (this->*state)(current, end);
