@@ -1,6 +1,8 @@
 #ifndef FIREWORKS_EXCEPTION_H
 #define FIREWORKS_EXCEPTION_H
 
+#include <exception>
+
 #include <QtCore/qfile.h>
 
 #include "fireworks.h"
@@ -39,5 +41,6 @@ QByteArray Fw::Exception::error() const
 {
     return m_error;
 }
+
 
 #endif // FIREWORKS_EXCEPTION_H

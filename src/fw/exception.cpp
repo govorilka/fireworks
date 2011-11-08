@@ -75,3 +75,4 @@ const char* Fw::Exception::what() const throw()
 {
     return m_error.constData();
 }
+

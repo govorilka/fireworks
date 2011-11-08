@@ -13,10 +13,10 @@ template<class T> class Fw::Console::Shell : public FwCPPObject
 public:
     Shell(T& receiver, const QByteArray& name = "Arguments");
 
-    typedef bool (T::*Method)(const QStringList& params);
+    typedef void (T::*Method)(const QStringList& params);
 
     void addCommand(const QString& command, Method callback);
-    bool execute(const QString& command, const QStringList& arguments);
+    void execute(const QString& command, const QStringList& arguments) throw(Fw::Exception&);
 
     virtual bool loadData(FwMLObject* object);
 
@@ -40,15 +40,13 @@ void Fw::Console::Shell<T>::addCommand(const QString& command, Method callback)
 }
 
 template <class T>
-bool Fw::Console::Shell<T>::execute(const QString& command, const QStringList& arguments)
+void Fw::Console::Shell<T>::execute(const QString& command, const QStringList& arguments) throw(Fw::Exception&)
 {
     Method method = m_commands.value(command, 0);
     if(method)
     {
-        return (m_receiver.*method)(arguments);
+        (m_receiver.*method)(arguments);
     }
-
-    return false;
 }
 
 template <class T>

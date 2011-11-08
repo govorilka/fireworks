@@ -3,7 +3,7 @@
 
 #include "fireworks.h"
 
-#include "fw/exception.hpp"
+//#include "fw/exception.hpp"
 
 class FwMLObject;
 
@@ -34,5 +34,6 @@ void FwCPPObject::setName(QByteArray& name)
 {
     m_name = name;
 }
+
 
 #endif // FIREWORKSCPPOBJECT_H
