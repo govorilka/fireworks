@@ -1,21 +1,14 @@
 #ifndef FIREWORKS_H
 #define FIREWORKS_H
 
-#include <QtCore/qglobal.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qdir.h>
 #include <QtCore/qbytearray.h>
 
-#if defined(FIREWORKS_LIBRARY)
-#  define FIREWORKSSHARED_EXPORT Q_DECL_EXPORT
-#else
-#  define FIREWORKSSHARED_EXPORT Q_DECL_IMPORT
-#endif
+#include "fw/exception.hpp"
 
 namespace Fw
 {
-    class Exception;
-
     enum HorizontalPosition
     {
         HP_Unchanged,
