@@ -14,5 +14,6 @@ Fw::Platform::~Platform()
 bool Fw::Platform::loadData(FwMLObject* object)
 {
     //TODO
+    Q_UNUSED(object);
     return false;
 }

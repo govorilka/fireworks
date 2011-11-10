@@ -531,6 +531,7 @@ namespace
 
     void x_ar1(char c, ParseData* data) throw(Fw::Exception&)
     {
+        Q_UNUSED(c);
         data->type = FwMLNode::T_Array;
         data->setupValue();
         data->xcmd = X_VAL;

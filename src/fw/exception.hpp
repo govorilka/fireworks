@@ -5,7 +5,7 @@
 
 #include <QtCore/qfile.h>
 
-#include "fireworks.h"
+#include "fw/defs.hpp"
 
 class FIREWORKSSHARED_EXPORT Fw::Exception : public std::exception
 {

@@ -16,14 +16,6 @@ else {
 
 TEMPLATE = lib
 
-include (fwcore/fwcore.pri)
-include (fwtypography/fwtypography.pri)
-include (fwgui/fwgui.pri)
-include (fwdb/fwdb.pri)
-include (fwutils/fwutils.pri)
-include (fw/console/console.pri)
-include (fw/parse/parse.pri)
-
 DEFINES += FIREWORKS_LIBRARY
 
 INCLUDEPATH += .
@@ -40,10 +32,23 @@ HEADERS += \
     fwinterfaces.h \
     fwdescriptions.h \
     fwplatform.hpp \
-    fw/exception.hpp
+    fw/exception.hpp \
+    fw/defs.hpp
 
-OTHER_FILES += \
-    fw/parse/parse.pri
+include (fwcore/fwcore.pri)
+include (fwtypography/fwtypography.pri)
+include (fwgui/fwgui.pri)
+include (fwutils/fwutils.pri)
+include (fw/console/console.pri)
+include (fw/parse/parse.pri)
+include (fw/database/database.pri)
+include (fw/parse/parse.pri)
+
+
+
+
+
+
 
 
 

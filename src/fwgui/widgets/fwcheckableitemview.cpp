@@ -12,9 +12,9 @@
 FwCheckableItem::FwCheckableItem(FwCheckableItemView* parent) :
     BaseClass("", parent),
     m_parent(parent),
-    m_check(false),
     m_caption(new FwStringPrimitive("caption", this)),
-    m_checkBox(new FwPixmapPrimitive("checkbox", this))
+    m_checkBox(new FwPixmapPrimitive("checkbox", this)),
+    m_check(false)
 {
     updatePixmaps();
 }
