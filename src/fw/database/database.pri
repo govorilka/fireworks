@@ -23,6 +23,10 @@ SOURCES += \
     fw/database/sqlite/sqlite_querydata.cpp
 
 
+include(postgresql/postgresql.pri)
+
+
+
 
 
 
