@@ -1,5 +1,5 @@
-#ifndef FW_DATABASE_DEFS_HPP
-#define DEFS_HPP
+#ifndef FIREWORKS_DATABASE_POSTGREQL_DEFS_HPP
+#define FIREWORKS_DATABASE_POSTGREQL_DEFS_HPP
 
 #include "fw/database/defs.hpp"
 
@@ -15,4 +15,4 @@ namespace Fw
     }
 }
 
-#endif // DEFS_HPP
+#endif // FIREWORKS_DATABASE_POSTGREQL_DEFS_HPP

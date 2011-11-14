@@ -8,9 +8,9 @@ HEADERS += \
     fw/database/factory.hpp \
     fw/database/sqlite/defs.hpp \
     fw/database/sqlite/driver.hpp \
+    fw/database/sqlite/querydata.hpp \
     thirdparty/sqlite/sqlite3ext.h \
     thirdparty/sqlite/sqlite3.h \
-    fw/database/sqlite/querydata.hpp
 
 SOURCES += \
     fw/database/constructor.cpp \
@@ -20,10 +20,12 @@ SOURCES += \
     fw/database/factory.cpp \
     thirdparty/sqlite/sqlite3.c \
     fw/database/sqlite/sqlite_driver.cpp \
-    fw/database/sqlite/sqlite_querydata.cpp
+    fw/database/sqlite/sqlite_querydata.cpp \
 
 
 include(postgresql/postgresql.pri)
+
+
 
 
 
