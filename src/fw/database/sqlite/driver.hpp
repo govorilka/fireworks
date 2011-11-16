@@ -28,7 +28,7 @@ public:
 
     virtual QueryPtr createQuery(const DriverPtr& driver, const QString& query) throw(const Fw::Exception&);
 
-    QString lastError() const;
+    virtual QString lastError() const = 0;
     virtual bool isOpen() const;
     virtual int lastInsertKey();
 

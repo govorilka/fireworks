@@ -1,7 +1,8 @@
 #include <QtCore/qcoreapplication.h>
 #include <QtCore/qdebug.h>
 
-#include "fwdb/dbfactory.h"
+#include "fw/database/controller.hpp"
+#include "fwcore/fwml.h"
 
 extern void ConnectPG(const char*const query);
 int main(int argc, char **argv)
@@ -16,45 +17,36 @@ int main(int argc, char **argv)
 
     try
     {
-        bool b;
-        Fw::Database* db = Fw::dbFactory(0, "postgre", &b);
+        FwMLObject script;
+        script.parseFile(connection);
+
+        Fw::Database::Controller db;
+        db.loadData(&script);
+        db->open();
+
         db->beginTransaction();
 
-//        Fw::Query query1 = db.query("DECLARE myportal CURSOR FOR select * from pg_database");
-//        query1.step();
-
-//        Fw::Query query2 = db.query("FETCH ALL in myportal");
-//        while(query2.step())
+        Fw::Database::QueryPtr query1 = db.createQuery("insert into channels (\"id_xmltv\", \"ch_index\", \"id_category\", \"protocol\", \"host\", \"port\", \"audiopid\", \"caption\") values ('1001', '1', '1',   'udp', '239.211.211.14',  '1', '1234', 'Первый канал2')");
+        query1->step();
+//        qDebug() << "contoencoding";
+//        while(query1->step())
 //        {
-//            printf("%-15s", query2.columnText(0).toUtf8().constData());
+//            qDebug() << query1->columnInt(0);
 //        }
 
-//        Fw::Query query3 = db.query("CLOSE myportal");
-//        query3.step();
-
-        Fw::Query query2 = db->query("SELECT contoencoding FROM pg_conversion");
-        qDebug() << "contoencoding";
-        while(query2.step())
-        {
-            qDebug() << query2.columnInt(0);
-        }
-
-        Fw::Query query3 = db->query("SELECT datallowconn FROM pg_database");
-        qDebug() << "\n////////////////////////////////////////////\n";
-        qDebug() << "datallowcon";
-        while(query3.step())
-        {
-            if(query3.columnBool(0))
-                qDebug() << "_true";
-            else
-                qDebug() << "_false";
-        }
+//        Fw::Database::QueryPtr query1 = db.createQuery("SELECT datallowconn FROM pg_database");
+//        qDebug() << "\n////////////////////////////////////////////\n";
+//        qDebug() << "datallowcon";
+//        while(query3->step())
+//        {
+//            if(query3->columnBool(0))
+//                qDebug() << "_true";
+//            else
+//                qDebug() << "_false";
+//        }
 
         db->commit();
         db->close();
-
-        delete db;
-        db = 0;
     }
     catch(Fw::Exception& e)
     {

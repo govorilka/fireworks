@@ -5,6 +5,7 @@
 
 #include "fw/database/defs.hpp"
 #include "fw/database/driver.hpp"
+#include "fw/database/query.hpp"
 
 class FIREWORKSSHARED_EXPORT Fw::Database::Controller : public FwCPPObject
 {
@@ -12,18 +13,18 @@ class FIREWORKSSHARED_EXPORT Fw::Database::Controller : public FwCPPObject
 
     DriverPtr m_driver;
 
-    static DriverPtr factory(const FwMLObject& object) throw(const Fw::Exception&);
+    static DriverPtr factory(FwMLObject* config) throw(const Fw::Exception&);
 
 public:
-    explicit Controller(const QByteArray& name);
+    explicit Controller(const QByteArray& name = "Fw::Database::Controller");
     virtual ~Controller();
 
     virtual bool loadData(FwMLObject* script) throw(const Exception&);
 
     inline QueryPtr createQuery(const QString& query) throw(const Exception&);
 
-    inline const Driver* operator->() const;
-    inline Driver* operator->();
+    inline const Driver* operator->() const throw(const Exception&);
+    inline Driver* operator->() throw(const Exception&);
 };
 
 Fw::Database::QueryPtr Fw::Database::Controller::createQuery(const QString& query) throw(const Exception&)
@@ -31,14 +32,24 @@ Fw::Database::QueryPtr Fw::Database::Controller::createQuery(const QString& quer
     return m_driver->createQuery(m_driver, query);
 }
 
-const Fw::Database::Driver* Fw::Database::Controller::operator->() const
+const Fw::Database::Driver* Fw::Database::Controller::operator->() const throw(const Exception&)
 {
-    return m_driver.data();
+    Driver* drv = m_driver.data();
+    if(drv == 0)
+    {
+        throw Fw::Exception(drv->lastError());
+    }
+    return drv;
 }
 
-Fw::Database::Driver* Fw::Database::Controller::operator->()
+Fw::Database::Driver* Fw::Database::Controller::operator->() throw(const Exception&)
 {
-    return m_driver.data();
+    Driver* drv = m_driver.data();
+    if(drv == 0)
+    {
+        throw Fw::Exception(drv->lastError());
+    }
+    return drv;
 }
 //===================================================================================================
 

@@ -99,8 +99,7 @@ QString Fw::Database::PostgreSQL::Driver::lastError() const
     {
         return PQerrorMessage(m_connection);
     }
-
-    return "No database connection";
+    return BaseClass::lastError();
 }
 
 Fw::Database::PostgreSQL::Driver::Driver(const QByteArray& name) :
