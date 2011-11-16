@@ -1,7 +1,10 @@
 #ifndef FIREWORKS_DATABASE_DEFS_HPP
 #define FIREWORKS_DATABASE_DEFS_HPP
 
+#include <QtCore/qsharedpointer.h>
+
 #include "fireworks.h"
+
 
 class QObject;
 class FwMLObject;
@@ -10,13 +13,13 @@ namespace Fw
 {
     namespace Database
     {
-        class Controller;
-        class Driver;
+    class Controller;
 
-        class Query;
-        class QueryData;
+    class Driver;
+    class Query;
 
-        class Constructor; //???
+    typedef QSharedPointer<Driver> DriverPtr;
+    typedef QSharedPointer<Query> QueryPtr;
     }
 }
 

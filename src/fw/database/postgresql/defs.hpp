@@ -10,7 +10,7 @@ namespace Fw
         namespace PostgreSQL
         {
             class Driver;
-            class QueryData;
+            class Query;
         }
     }
 }

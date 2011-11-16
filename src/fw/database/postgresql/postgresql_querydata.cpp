@@ -1,109 +1,13 @@
-#include "fwcore/fwchartype.h"
-
 #include "fw/database/postgresql/querydata.hpp"
 #include "fw/database/postgresql/driver.hpp"
 
-bool Fw::Database::PostgreSQL::parseQuery(const QByteArray& query, TokenVector& tokens)
-{
-    tokens.clear();
-    if(query.isEmpty())
-    {
-        return false;
-    }
 
-    tokens.append(QueryToken());
-
-    bool parserParamId = false;
-    bool waitParam = false;
-    for(QByteArray::const_iterator iter = query.begin(); iter != query.end(); ++iter)
-    {
-        switch(Fw::charType(iter))
-        {
-        case Fw::C_Que:
-            if(waitParam)
-            {
-                tokens.last().value += *iter;
-            }
-            waitParam = !waitParam;
-            break;
-
-        case Fw::C_Num:
-            if(waitParam)
-            {
-                tokens.append(QueryToken());
-                parserParamId = true;
-                waitParam = false;
-            }
-            tokens.last().value += (*iter);
-            break;
-
-        default:
-            if(parserParamId)
-            {
-                parserParamId = false;
-                tokens.last().swapParam();
-                tokens.append(QueryToken());
-            }
-            else if(waitParam)
-            {
-                tokens.last().value += '?';
-                waitParam = false;
-            }
-            tokens.last().value += *iter;
-            break;
-        }
-    }
-
-    if(parserParamId)
-    {
-        tokens.last().swapParam();
-    }
-    else if(waitParam)
-    {
-        tokens.last().value += '?';
-    }
-
-    return tokens.size();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-Fw::Database::PostgreSQL::QueryData::QueryData(Fw::Database::PostgreSQL::Driver* db, const Fw::Database::PostgreSQL::TokenVector& query) :
-    BaseClass(db),
-    m_result(0),
-    m_tokens(query),
-    m_countRow(0),
-    m_currRow(0),
-    m_lastInsertRowId(0)
-{
-}
-
-Fw::Database::PostgreSQL::QueryData::~QueryData()
-{
-    closeQuery();
-}
-
-bool Fw::Database::PostgreSQL::QueryData::isNull() const
-{
-    return m_result == 0;
-}
-
-bool Fw::Database::PostgreSQL::QueryData::operator==(const QueryData& other) const
-{
-    return driver() == other.driver() && m_result == other.m_result;
-}
-
-bool Fw::Database::PostgreSQL::QueryData::operator!=(const QueryData& other) const
-{
-    return driver() != other.driver() && m_result != other.m_result;
-}
-
-bool Fw::Database::PostgreSQL::QueryData::doExec() throw (Fw::Exception&)
+bool Fw::Database::PostgreSQL::Query::doExec() throw (const Fw::Exception&)
 {
     closeQuery(); //close query if exist
 
     Driver* drv = static_cast<Driver*>(driver());
-    if(drv == 0 || drv->m_connection == 0)
+    if(drv == 0 || drv->connection() == 0)
     {
         throw Fw::Exception(drv->lastError());
     }
@@ -118,7 +22,7 @@ bool Fw::Database::PostgreSQL::QueryData::doExec() throw (Fw::Exception&)
         query += iter->value;
     }
 
-    PGconn* connection = drv->m_connection;
+    PGconn* connection = drv->connection();
 
     //make query
     m_result = PQexec(connection, query.constData());
@@ -130,19 +34,19 @@ bool Fw::Database::PostgreSQL::QueryData::doExec() throw (Fw::Exception&)
     }
 
     m_currRow = 0;
-    drv->m_lastInsertRowId = 0;
+    drv->setLastInsertKey(0);
 
     const Oid lastRow = PQoidValue(m_result);
     if(lastRow != InvalidOid)
     {
-        drv->m_lastInsertRowId = lastRow;
+        drv->setLastInsertKey(lastRow);
     }
 
     m_countRow = PQntuples(m_result);
     return m_countRow;
 }
 
-bool Fw::Database::PostgreSQL::QueryData::doNext() throw (Fw::Exception&)
+bool Fw::Database::PostgreSQL::Query::doNext() throw (const Fw::Exception&)
 {
     if(m_countRow == 0)
     {
@@ -161,19 +65,49 @@ bool Fw::Database::PostgreSQL::QueryData::doNext() throw (Fw::Exception&)
     }
 }
 
-void Fw::Database::PostgreSQL::QueryData::doReset()
+void Fw::Database::PostgreSQL::Query::doReset()
 {
     m_currRow = 0;
 }
 
-void Fw::Database::PostgreSQL::QueryData::doFinalize()
+void Fw::Database::PostgreSQL::Query::closeQuery()
 {
-    closeQuery();
+    if(m_result)
+    {
+        PQclear(m_result);
+        m_result = 0;
+    }
+    m_countRow = m_currRow = 0;
 
     m_tokens.clear();
 }
 
-void Fw::Database::PostgreSQL::QueryData::doBindInt(int index, int value) throw(Fw::Exception&)
+Fw::Database::PostgreSQL::Query::Query(const Fw::Database::DriverPtr& driver, const Fw::Database::PostgreSQL::TokenVector& query) :
+    BaseClass(driver),
+    m_result(0),
+    m_tokens(query),
+    m_countRow(0),
+    m_currRow(0),
+    m_lastInsertRowId(0)
+{
+}
+
+Fw::Database::PostgreSQL::Query::~Query()
+{
+    closeQuery();
+}
+
+bool Fw::Database::PostgreSQL::Query::operator==(const Query& other) const
+{
+    return driver() == other.driver() && m_result == other.m_result;
+}
+
+bool Fw::Database::PostgreSQL::Query::operator!=(const Query& other) const
+{
+    return driver() != other.driver() && m_result != other.m_result;
+}
+
+void Fw::Database::PostgreSQL::Query::bindInt(int index, int value) throw(const Fw::Exception&)
 {
     for(Fw::Database::PostgreSQL::TokenVector::Iterator iter = m_tokens.begin(); iter != m_tokens.end(); ++iter)
     {
@@ -185,7 +119,7 @@ void Fw::Database::PostgreSQL::QueryData::doBindInt(int index, int value) throw(
     }
 }
 
-void Fw::Database::PostgreSQL::QueryData::doBindText(int index, const QString& text) throw(Fw::Exception&)
+void Fw::Database::PostgreSQL::Query::bindText(int index, const QString& text) throw(const Fw::Exception&)
 {
     QByteArray value = "'" + text.toUtf8() + "'";
     for(Fw::Database::PostgreSQL::TokenVector::Iterator iter = m_tokens.begin(); iter != m_tokens.end(); ++iter)
@@ -198,22 +132,22 @@ void Fw::Database::PostgreSQL::QueryData::doBindText(int index, const QString& t
     }
 }
 
-void Fw::Database::PostgreSQL::QueryData::doBindDateTime(int index, const QDateTime& dateTime)
+void Fw::Database::PostgreSQL::Query::bindDateTime(int index, const QDateTime& dateTime) throw(const Fw::Exception&)
 {
-    doBindText(index, dateTime.toString(Qt::ISODate));
+    bindText(index, dateTime.toString(Qt::ISODate));
 }
 
-void Fw::Database::PostgreSQL::QueryData::doBindDate(int index, const QDate& date)
+void Fw::Database::PostgreSQL::Query::bindDate(int index, const QDate& date) throw(const Fw::Exception&)
 {
-    doBindText(index, date.toString(Qt::ISODate));
+    bindText(index, date.toString(Qt::ISODate));
 }
 
-void Fw::Database::PostgreSQL::QueryData::doBindTime(int index, const QTime& time)
+void Fw::Database::PostgreSQL::Query::bindTime(int index, const QTime& time) throw(const Fw::Exception&)
 {
-    doBindText(index, time.toString(Qt::ISODate));
+    bindText(index, time.toString(Qt::ISODate));
 }
 
-bool Fw::Database::PostgreSQL::QueryData::doColumnBool(int column) const
+bool Fw::Database::PostgreSQL::Query::columnBool(int column) const throw(const Fw::Exception&)
 {
     if(PQgetisnull(m_result, m_currRow, column) == 0)
     {
@@ -226,7 +160,7 @@ bool Fw::Database::PostgreSQL::QueryData::doColumnBool(int column) const
     return false;
 }
 
-int Fw::Database::PostgreSQL::QueryData::doColumnInt(int column) const
+int Fw::Database::PostgreSQL::Query::columnInt(int column) const throw(const Fw::Exception&)
 {
     if(PQgetisnull(m_result, m_currRow, column) == 0)
     {
@@ -236,43 +170,34 @@ int Fw::Database::PostgreSQL::QueryData::doColumnInt(int column) const
     return 0;
 }
 
-QString Fw::Database::PostgreSQL::QueryData::doColumnText(int column) const
+QString Fw::Database::PostgreSQL::Query::columnText(int column) const throw(const Fw::Exception&)
 {
 
     const char* const result = PQgetvalue(m_result, m_currRow, column);
     return QString(result);
 }
 
-FwColor Fw::Database::PostgreSQL::QueryData::doColumnColor(int column) const
+FwColor Fw::Database::PostgreSQL::Query::columnColor(int column) const throw(const Fw::Exception&)
 {
-    return FwColor(doColumnInt(column));
+    return FwColor(columnInt(column));
 }
 
-QUrl Fw::Database::PostgreSQL::QueryData::doColumnUrl(int column) const
+QUrl Fw::Database::PostgreSQL::Query::columnUrl(int column) const throw(const Fw::Exception&)
 {
-    return QUrl(doColumnText(column));
+    return QUrl(columnText(column));
 }
 
-QDateTime Fw::Database::PostgreSQL::QueryData::doColumnDateTime(int column) const
+QDateTime Fw::Database::PostgreSQL::Query::columnDateTime(int column) const throw(const Fw::Exception&)
 {
-    return QDateTime::fromString(doColumnText(column), Qt::ISODate);
+    return QDateTime::fromString(columnText(column), Qt::ISODate);
 }
 
-QDate Fw::Database::PostgreSQL::QueryData::doColumnDate(int column) const
+QDate Fw::Database::PostgreSQL::Query::columnDate(int column) const throw(const Fw::Exception&)
 {
-    return QDate::fromString(doColumnText(column), Qt::ISODate);
-}
-QTime Fw::Database::PostgreSQL::QueryData::doColumnTime(int column) const
-{
-    return QTime::fromString(doColumnText(column), Qt::ISODate);
+    return QDate::fromString(columnText(column), Qt::ISODate);
 }
 
-void Fw::Database::PostgreSQL::QueryData::closeQuery()
+QTime Fw::Database::PostgreSQL::Query::columnTime(int column) const throw(const Fw::Exception&)
 {
-    if(m_result)
-    {
-        PQclear(m_result);
-        m_result = 0;
-    }
-    m_countRow = m_currRow = 0;
+    return QTime::fromString(columnText(column), Qt::ISODate);
 }
