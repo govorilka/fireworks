@@ -10,7 +10,7 @@ namespace Fw
         namespace SQLite
         {
             class Driver;
-            class QueryData;
+            class Query;
         }
     }
 }
