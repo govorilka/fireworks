@@ -17,9 +17,6 @@ private:
     QString m_path;
     QString m_initPath;
 
-protected:
-    QString lastError() const;
-
 public:
     explicit Driver(const QByteArray& name);
     virtual ~Driver();
@@ -31,6 +28,7 @@ public:
 
     virtual QueryPtr createQuery(const DriverPtr& driver, const QString& query) throw(const Fw::Exception&);
 
+    QString lastError() const;
     virtual bool isOpen() const;
     virtual int lastInsertKey();
 
