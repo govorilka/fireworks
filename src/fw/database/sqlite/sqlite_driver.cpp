@@ -94,7 +94,7 @@ QString Fw::Database::SQLite::Driver::lastError() const
         return QString(sqlite3_errmsg(m_connection));
     }
 
-    return "No database connection";
+    return BaseClass::lastError();
 
 }
 

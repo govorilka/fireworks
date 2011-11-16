@@ -70,3 +70,8 @@ void Fw::Database::Driver::execFile(QIODevice* device) throw(const Fw::Exception
 
     commit();
 }
+
+QString Fw::Database::Driver::lastError() const
+{
+    return "Cannot connect to database";
+}

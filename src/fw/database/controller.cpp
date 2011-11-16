@@ -15,35 +15,40 @@ Fw::Database::Controller::~Controller()
 {
 }
 
-Fw::Database::DriverPtr Fw::Database::Controller::factory(const FwMLObject& config) throw(const Fw::Exception&)
+Fw::Database::DriverPtr Fw::Database::Controller::factory(FwMLObject* config) throw(const Fw::Exception&)
 {
-    QByteArray driver = config.baseName();
+    QByteArray driver = config->baseName().toLower();
     if(driver.isEmpty())
     {
         throw Fw::Exception("Driver name is not defined");
     }
 
-    /*if(driver == "sqlite")
+    if(driver == "sqlite")
     {
-        return DriverPtr(new Fw::Database::SQLite::Driver("database"), Fw::Database::SQLite::Driver::deleter);
+        //return DriverPtr(new Fw::Database::SQLite::Driver("database"), Fw::Database::SQLite::Driver::deleter);
     }
     #ifdef FW_SUPPORT_POSTGRESQL
-    else*/ if(driver == "postgresql")
+    else if(driver == "postgresql")
     {
         return DriverPtr(new Fw::Database::PostgreSQL::Driver("database"), Fw::Database::PostgreSQL::Driver::deleter);
     }
+    #endif //FW_SUPPORT_POSTGRESQL
 
     throw  Fw::Exception("Unknow driver name");
+    return Fw::Database::DriverPtr();
 }
 
 bool Fw::Database::Controller::loadData(FwMLObject* script) throw(const Fw::Exception&)
 {
     m_driver.clear();
+
     FwMLObject* driverNode = script->attribute("driver")->cast<FwMLObject>();
     if(driverNode)
     {
-        m_driver = factory(*script);
+        m_driver = factory(driverNode);
+        m_driver->loadData(driverNode);
     }
+
     return true;
 }
 
