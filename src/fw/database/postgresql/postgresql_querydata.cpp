@@ -77,9 +77,7 @@ void Fw::Database::PostgreSQL::Query::closeQuery()
         PQclear(m_result);
         m_result = 0;
     }
-    m_countRow = m_currRow = 0;
-
-    m_tokens.clear();
+    m_countRow = (m_currRow = 0);
 }
 
 Fw::Database::PostgreSQL::Query::Query(const Fw::Database::DriverPtr& driver, const Fw::Database::PostgreSQL::TokenVector& query) :

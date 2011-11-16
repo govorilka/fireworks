@@ -19,6 +19,7 @@ public:
     virtual ~Driver();
 
     inline static void deleter(Driver* driver);
+    inline static void emptyDeleter(Driver* driver);
 
     virtual void open() throw(const Fw::Exception&) = 0;
     virtual void close() throw() = 0;
@@ -43,6 +44,10 @@ void Fw::Database::Driver::deleter(Driver* driver)
 {
     driver->close();
     delete driver;
+    driver = 0;
+}
+void Fw::Database::Driver::emptyDeleter(Driver* driver)
+{
     driver = 0;
 }
 
