@@ -20,6 +20,8 @@ private:
     struct ConnectionParams;
     ConnectionParams* m_conParams;
 
+    bool parseQuery(const QByteArray& query, Fw::Database::PostgreSQL::TokenVector& tokens);
+
 public:
     explicit Driver(const QByteArray& name);
     virtual ~Driver();

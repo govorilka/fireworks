@@ -4,9 +4,8 @@
 #include "fw/database/postgresql/driver.hpp"
 #include "fw/database/postgresql/querydata.hpp"
 
-namespace
-{
-bool parseQuery(const QByteArray& query, Fw::Database::PostgreSQL::TokenVector& tokens)
+
+bool Fw::Database::PostgreSQL::Driver::parseQuery(const QByteArray& query, Fw::Database::PostgreSQL::TokenVector& tokens)
 {
     typedef Fw::Database::PostgreSQL::QueryToken QueryToken;
 
@@ -69,7 +68,6 @@ bool parseQuery(const QByteArray& query, Fw::Database::PostgreSQL::TokenVector& 
     }
 
     return tokens.size();
-}
 }
 
 struct Fw::Database::PostgreSQL::Driver::ConnectionParams
