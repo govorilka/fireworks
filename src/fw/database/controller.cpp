@@ -43,11 +43,13 @@ bool Fw::Database::Controller::loadData(FwMLObject* script) throw(const Fw::Exce
     m_driver.clear();
 
     FwMLObject* driverNode = script->attribute("driver")->cast<FwMLObject>();
-    if(driverNode)
+    if(!driverNode)
     {
-        m_driver = factory(driverNode);
-        m_driver->loadData(driverNode);
+        throw Fw::Exception("No driver node in fwml object");
     }
+
+    m_driver = factory(driverNode);
+    m_driver->loadData(driverNode);
 
     return true;
 }

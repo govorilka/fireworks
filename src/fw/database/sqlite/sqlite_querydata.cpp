@@ -152,3 +152,12 @@ QTime Fw::Database::SQLite::Query::columnTime(int column) const throw(const Fw::
     int s = time - m * 60;
     return QTime(h, m, s);
 }
+
+QByteArray Fw::Database::SQLite::Query::toUtf8() const throw(const Fw::Exception&)
+{
+    if(!m_stmt)
+    {
+        throw Fw::Exception("Fw::Database::SQLite::Query::toString: statement is null");
+    }
+    return QByteArray(sqlite3_sql(m_stmt));
+}
