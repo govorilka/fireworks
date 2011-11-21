@@ -3,7 +3,7 @@
 
 #include "fireworks.h"
 
-//#include "fw/exception.hpp"
+#include "fw/exception.hpp"
 
 class FwMLObject;
 

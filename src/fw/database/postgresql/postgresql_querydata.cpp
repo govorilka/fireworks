@@ -12,20 +12,10 @@ bool Fw::Database::PostgreSQL::Query::doExec() throw (const Fw::Exception&)
         throw Fw::Exception(drv->lastError());
     }
 
-    QByteArray query;
-    for(Fw::Database::PostgreSQL::TokenVector::Iterator iter = m_tokens.begin(); iter != m_tokens.end(); ++iter)
-    {
-        if(iter->value.isEmpty())
-        {
-            throw Fw::Exception("Ones bind parameter is not initialized");
-        }
-        query += iter->value;
-    }
-
     PGconn* connection = drv->connection();
 
     //make query
-    m_result = PQexec(connection, query.constData());
+    m_result = PQexec(connection, toUtf8());
     ExecStatusType status = PQresultStatus(m_result);
     if (status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
     {
@@ -105,29 +95,19 @@ bool Fw::Database::PostgreSQL::Query::operator!=(const Query& other) const
     return driver() != other.driver() && m_result != other.m_result;
 }
 
+void Fw::Database::PostgreSQL::Query::bindBool(int index, bool value) throw(const Fw::Exception&)
+{
+    bindByteArray(index, value ? "true" : "false");
+}
+
 void Fw::Database::PostgreSQL::Query::bindInt(int index, int value) throw(const Fw::Exception&)
 {
-    for(Fw::Database::PostgreSQL::TokenVector::Iterator iter = m_tokens.begin(); iter != m_tokens.end(); ++iter)
-    {
-        QueryToken& token = *iter;
-        if(token.param == index)
-        {
-            token.value.setNum(value);
-        }
-    }
+    bindByteArray(index, QByteArray::number(value));
 }
 
 void Fw::Database::PostgreSQL::Query::bindText(int index, const QString& text) throw(const Fw::Exception&)
 {
-    QByteArray value = "'" + text.toUtf8() + "'";
-    for(Fw::Database::PostgreSQL::TokenVector::Iterator iter = m_tokens.begin(); iter != m_tokens.end(); ++iter)
-    {
-        QueryToken& token = *iter;
-        if(token.param == index)
-        {
-            token.value = value;
-        }
-    }
+    bindByteArray(index, "'" + text.toUtf8() + "'");
 }
 
 void Fw::Database::PostgreSQL::Query::bindDateTime(int index, const QDateTime& dateTime) throw(const Fw::Exception&)
@@ -143,6 +123,18 @@ void Fw::Database::PostgreSQL::Query::bindDate(int index, const QDate& date) thr
 void Fw::Database::PostgreSQL::Query::bindTime(int index, const QTime& time) throw(const Fw::Exception&)
 {
     bindText(index, time.toString(Qt::ISODate));
+}
+
+void Fw::Database::PostgreSQL::Query::bindByteArray(int index, const QByteArray& text)
+{
+    for(Fw::Database::PostgreSQL::TokenVector::Iterator iter = m_tokens.begin(); iter != m_tokens.end(); ++iter)
+    {
+        QueryToken& token = *iter;
+        if(token.param == index)
+        {
+            token.value = text;
+        }
+    }
 }
 
 bool Fw::Database::PostgreSQL::Query::columnBool(int column) const throw(const Fw::Exception&)
@@ -170,9 +162,8 @@ int Fw::Database::PostgreSQL::Query::columnInt(int column) const throw(const Fw:
 
 QString Fw::Database::PostgreSQL::Query::columnText(int column) const throw(const Fw::Exception&)
 {
-
     const char* const result = PQgetvalue(m_result, m_currRow, column);
-    return QString(result);
+    return QString::fromUtf8(result);
 }
 
 FwColor Fw::Database::PostgreSQL::Query::columnColor(int column) const throw(const Fw::Exception&)
@@ -198,4 +189,19 @@ QDate Fw::Database::PostgreSQL::Query::columnDate(int column) const throw(const 
 QTime Fw::Database::PostgreSQL::Query::columnTime(int column) const throw(const Fw::Exception&)
 {
     return QTime::fromString(columnText(column), Qt::ISODate);
+}
+
+QByteArray Fw::Database::PostgreSQL::Query::toUtf8() const throw(const Fw::Exception&)
+{
+    QByteArray query;
+    for(Fw::Database::PostgreSQL::TokenVector::ConstIterator iter = m_tokens.begin(); iter != m_tokens.end(); ++iter)
+    {
+        if(iter->value.isEmpty())
+        {
+            throw Fw::Exception("Ones bind parameter is not initialized");
+        }
+        query += iter->value;
+    }
+
+    return query;
 }

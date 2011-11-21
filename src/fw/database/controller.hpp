@@ -25,6 +25,9 @@ public:
 
     inline const Driver* operator->() const throw(const Exception&);
     inline Driver* operator->() throw(const Exception&);
+
+    inline const Driver* driver() const;
+    inline Driver* driver();
 };
 
 Fw::Database::QueryPtr Fw::Database::Controller::createQuery(const QString& query) throw(const Exception&)
@@ -50,6 +53,16 @@ Fw::Database::Driver* Fw::Database::Controller::operator->() throw(const Excepti
         throw Fw::Exception(drv->lastError());
     }
     return drv;
+}
+
+const Fw::Database::Driver* Fw::Database::Controller::driver() const
+{
+    return m_driver.data();
+}
+
+Fw::Database::Driver* Fw::Database::Controller::driver()
+{
+    return m_driver.data();
 }
 //===================================================================================================
 

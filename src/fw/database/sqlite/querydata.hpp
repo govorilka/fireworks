@@ -39,6 +39,8 @@ public:
     virtual QDateTime columnDateTime(int column) const throw(const Fw::Exception&);
     virtual QDate columnDate(int column) const throw(const Fw::Exception&);
     virtual QTime columnTime(int column) const throw(const Fw::Exception&);
+
+    virtual QByteArray toUtf8() const throw(const Fw::Exception&);
 };
 
 #endif //FIREWORKS_DATABASE_SQLITE_QUERYDATA_HPP
