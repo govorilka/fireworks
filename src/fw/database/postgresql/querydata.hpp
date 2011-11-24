@@ -76,6 +76,7 @@ public:
      bool operator==(const Query& other) const;
      bool operator!=(const Query& other) const;
 
+     virtual void bindNull(int index) throw(const Fw::Exception&);
      virtual void bindBool(int index, bool value) throw(const Fw::Exception&);
      virtual void bindInt(int index, int value) throw(const Fw::Exception&);
      virtual void bindText(int index, const QString& text) throw(const Fw::Exception&);

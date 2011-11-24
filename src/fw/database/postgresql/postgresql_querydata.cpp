@@ -95,6 +95,11 @@ bool Fw::Database::PostgreSQL::Query::operator!=(const Query& other) const
     return driver() != other.driver() && m_result != other.m_result;
 }
 
+void Fw::Database::PostgreSQL::Query::bindNull(int index) throw(const Fw::Exception&)
+{
+    bindByteArray(index, "NULL");
+}
+
 void Fw::Database::PostgreSQL::Query::bindBool(int index, bool value) throw(const Fw::Exception&)
 {
     bindByteArray(index, value ? "true" : "false");
@@ -107,7 +112,14 @@ void Fw::Database::PostgreSQL::Query::bindInt(int index, int value) throw(const 
 
 void Fw::Database::PostgreSQL::Query::bindText(int index, const QString& text) throw(const Fw::Exception&)
 {
-    bindByteArray(index, "'" + text.toUtf8() + "'");
+    if(text.isEmpty())
+    {
+        return bindNull(index);
+    }
+
+    QString textLocal(text);
+    textLocal.replace('\'', "\'\'");
+    bindByteArray(index, "'" + textLocal.toUtf8() + "'");
 }
 
 void Fw::Database::PostgreSQL::Query::bindDateTime(int index, const QDateTime& dateTime) throw(const Fw::Exception&)

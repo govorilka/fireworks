@@ -62,6 +62,15 @@ void Fw::Database::SQLite::Query::doReset()
     }
 }
 
+void Fw::Database::SQLite::Query::bindNull(int index) throw(const Fw::Exception&)
+{
+    if(m_stmt)
+       {
+           QString text("NULL");
+           sqlite3_bind_text16(m_stmt, index, text.utf16(), (text.size()) * sizeof(QChar), SQLITE_TRANSIENT);
+       }
+}
+
 void Fw::Database::SQLite::Query::bindInt(int index, int value) throw(const Fw::Exception&)
 {
     if(m_stmt)
