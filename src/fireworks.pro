@@ -43,6 +43,7 @@ include (fw/console/console.pri)
 include (fw/parse/parse.pri)
 include (fw/database/database.pri)
 include (fw/parse/parse.pri)
+include (fw/ml/ml.pri)
 
 
 
