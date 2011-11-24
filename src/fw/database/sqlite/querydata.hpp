@@ -25,6 +25,7 @@ public:
     explicit Query(const DriverPtr& driver, sqlite3_stmt* stmt);
     virtual ~Query();
 
+    virtual void bindNull(int index) throw(const Fw::Exception&);
     virtual void bindInt(int index, int value) throw(const Fw::Exception&);
     virtual void bindText(int index, const QString& text) throw(const Fw::Exception&);
     virtual void bindDateTime(int index, const QDateTime& dateTime) throw(const Fw::Exception&);
