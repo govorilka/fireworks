@@ -111,6 +111,7 @@ public:
 class FIREWORKSSHARED_EXPORT FwMLString : public FwMLBase<FwMLNode::T_String>
 {
     typedef FwMLBase<FwMLNode::T_String> BaseClass;
+
 public:
     explicit FwMLString();
     explicit FwMLString(const QByteArray& value);
