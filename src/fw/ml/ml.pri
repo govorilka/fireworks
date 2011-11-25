@@ -6,7 +6,8 @@ HEADERS += \
     fw/ml/array.hpp \
     fw/ml/uintnumber.hpp \
     fw/ml/intnumber.hpp \
-    fw/ml/doublenumber.hpp
+    fw/ml/doublenumber.hpp \
+    fw/ml/boolean.hpp
 
 SOURCES += \
     fw/ml/node.cpp \
@@ -15,7 +16,10 @@ SOURCES += \
     fw/ml/object.cpp \
     fw/ml/uintnumber.cpp \
     fw/ml/intnumber.cpp \
-    fw/ml/doublenumber.cpp
+    fw/ml/doublenumber.cpp \
+    fw/ml/boolean.cpp
+
+
 
 
 
