@@ -27,4 +27,14 @@ public:
     Node* clone() const;
 };
 
+quint32 Fw::ML::UIntNumber::value() const
+{
+    return m_value;
+}
+
+void Fw::ML::UIntNumber::setValue(quint32 value)
+{
+    m_value = value;
+}
+
 #endif //FIREWORKS_ML_UINTNUMBER_H
