@@ -14,8 +14,6 @@ public:
     friend class Fw::ML::Array;
 
     Node();
-    Node(const QByteArray& attrName, Fw::ML::Object* parent);
-    Node(Fw::ML::Array* parent);
     virtual ~Node();
 
     virtual int type() const = 0;
@@ -59,16 +57,6 @@ public:
 
     BaseTempl() :
         BaseClass()
-    {
-    }
-
-    BaseTempl(const QByteArray& attrName, Fw::ML::Object* parent) :
-        BaseClass(attrName, parent)
-    {
-    }
-
-    BaseTempl(Fw::ML::Array* parent) :
-        BaseClass(parent)
     {
     }
 

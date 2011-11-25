@@ -7,18 +7,6 @@ Fw::ML::Node::Node() :
 {
 }
 
-Fw::ML::Node::Node(const QByteArray& attrName, Fw::ML::Object* parent) :
-    m_parent(parent)
-{
-   parent->addAttribute(attrName, this);
-}
-
-Fw::ML::Node::Node(Fw::ML::Array* parent) :
-    m_parent(parent)
-{
-    parent->addNode(this);
-}
-
 Fw::ML::Node::~Node()
 {
     takeFromParent();

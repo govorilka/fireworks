@@ -10,11 +10,7 @@ class FIREWORKSSHARED_EXPORT Fw::ML::String : public Fw::ML::BaseTempl<Fw::ML::T
     QByteArray m_value;
 
 public:
-    explicit String();
-    explicit String(const QByteArray& value);
-    String(const QByteArray &value, const QByteArray& attr, Object* parent);
-    String(const QByteArray &value, Array* parent);
-
+    explicit String(const QByteArray& value = QByteArray());
 
     inline QByteArray value() const;
     inline void setValue(const QByteArray& value);

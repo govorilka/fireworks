@@ -5,16 +5,6 @@ Fw::ML::Array::Array() :
 {
 }
 
-Fw::ML::Array::Array(const QByteArray& attrName, Object* parent) :
-   BaseClass(attrName, parent)
-{
-}
-
-Fw::ML::Array::Array(Fw::ML::Array* parent) :
-    BaseClass(parent)
-{
-}
-
 Fw::ML::Array::~Array()
 {
     foreach(Node* node, m_data)

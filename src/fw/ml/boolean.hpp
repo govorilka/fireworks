@@ -10,10 +10,7 @@ class FIREWORKSSHARED_EXPORT Fw::ML::Boolean : public Fw::ML::BaseTempl<Fw::ML::
     bool m_value;
 
 public:
-    Boolean();
-    Boolean(bool value);
-    Boolean(bool value, const QByteArray& attrName, Object* parent);
-    Boolean(bool value, Array* parent);
+    explicit Boolean(bool value = false);
 
     inline bool value() const;
     inline void setValue(bool value);

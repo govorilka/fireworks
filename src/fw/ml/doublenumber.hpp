@@ -10,10 +10,7 @@ class FIREWORKSSHARED_EXPORT Fw::ML::DoubleNumber : public Fw::ML::BaseTempl<Fw:
     double m_value;
 
 public:
-    DoubleNumber();
-    DoubleNumber(double value);
-    DoubleNumber(double value, const QByteArray& attrName, Object* parent);
-    DoubleNumber(double value, Array* parent);
+    explicit DoubleNumber(double value = 0.);
 
     inline double value() const;
     inline void setValue(double value);

@@ -1,26 +1,8 @@
 #include "string.hpp"
 
-Fw::ML::String::String() :
-    BaseClass(),
-    m_value(QByteArray())
-{
-}
-
 Fw::ML::String::String(const QByteArray& value) :
    BaseClass(),
    m_value(value)
-{
-}
-
-Fw::ML::String::String(const QByteArray &value, const QByteArray& attr, Object* parent) :
-    BaseClass(attr, parent),
-    m_value(value)
-{
-}
-
-Fw::ML::String::String(const QByteArray &value, Array* parent) :
-    BaseClass(parent),
-    m_value(value)
 {
 }
 

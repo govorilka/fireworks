@@ -10,10 +10,7 @@ class FIREWORKSSHARED_EXPORT Fw::ML::UIntNumber : public Fw::ML::BaseTempl<Fw::M
     quint32 m_value;
 
 public:
-    UIntNumber();
-    UIntNumber(quint32 value);
-    UIntNumber(quint32 value, const QByteArray& attrName, Object* parent);
-    UIntNumber(quint32 value, Array* parent);
+    explicit UIntNumber(quint32 value = 0);
 
     inline quint32 value() const;
     inline void setValue(quint32 value);

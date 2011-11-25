@@ -15,6 +15,7 @@
 \class FwWidget
 Класс реализует различные элементы пользовательского интерфейса.
 */
+
 FwWidget::FwWidget(const QByteArray& name, FwPrimitiveGroup* parent) :
     QObject(),
     BaseClass(name, parent),
