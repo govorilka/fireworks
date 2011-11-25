@@ -1,19 +1,7 @@
 #include "intnumber.hpp"
 
-Fw::ML::IntNumber::IntNumber() :
+Fw::ML::IntNumber::IntNumber(int value) :
     BaseClass(),
-    m_value(0)
-{
-}
-
-Fw::ML::IntNumber::IntNumber(int value, const QByteArray& attrName, Object* parent) :
-    BaseClass(attrName, parent),
-    m_value(value)
-{
-}
-
-Fw::ML::IntNumber::IntNumber(int value, Array* parent) :
-    BaseClass(parent),
     m_value(value)
 {
 }

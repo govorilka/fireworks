@@ -1,25 +1,7 @@
 #include "boolean.hpp"
 
-Fw::ML::Boolean::Boolean() :
-    BaseClass(),
-    m_value(false)
-{
-}
-
 Fw::ML::Boolean::Boolean(bool value) :
     BaseClass(),
-    m_value(value)
-{
-}
-
-Fw::ML::Boolean::Boolean(bool value, const QByteArray &attrName, Object *parent) :
-    BaseClass(attrName, parent),
-    m_value(value)
-{
-}
-
-Fw::ML::Boolean::Boolean(bool value, Array* parent) :
-    BaseClass(parent),
     m_value(value)
 {
 }

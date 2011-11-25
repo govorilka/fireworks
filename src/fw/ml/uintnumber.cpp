@@ -1,32 +1,14 @@
 #include "uintnumber.hpp"
 
-Fw::ML::UIntNumber::UIntNumber() :
-    BaseClass(),
-    m_value(0)
-{
-}
-
 Fw::ML::UIntNumber::UIntNumber(quint32 value) :
     BaseClass(),
     m_value(value)
 {
 }
 
-Fw::ML::UIntNumber::UIntNumber(quint32 value, const QByteArray& attrName, Object* parent) :
-   BaseClass(attrName, parent),
-   m_value(value)
-{
-}
-
-Fw::ML::UIntNumber::UIntNumber(quint32 value, Array* parent) :
-    BaseClass(parent),
-    m_value(value)
-{
-}
-
 QByteArray Fw::ML::UIntNumber::toUtf8() const
 {
-    return QByteArray::number(m_value);
+    return QByteArray::number(value());
 }
 
 int Fw::ML::UIntNumber::toInt(bool* bOk) const
@@ -54,7 +36,5 @@ FwColor Fw::ML::UIntNumber::toColor(bool* bOk) const
 
 Fw::ML::Node* Fw::ML::UIntNumber::clone() const
 {
-    Fw::ML::UIntNumber* number = new Fw::ML::UIntNumber();
-    number->m_value = m_value;
-    return number;
+    return new Fw::ML::UIntNumber(value());
 }

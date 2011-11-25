@@ -8,18 +8,6 @@ Fw::ML::Object::Object() :
 {
 }
 
-Fw::ML::Object::Object(const QByteArray& attrName, Fw::ML::Object* parent) :
-    BaseClass(attrName, parent),
-    m_classObject(0)
-{
-}
-
-Fw::ML::Object::Object(Array* parent) :
-   BaseClass(parent),
-   m_classObject(0)
-{
-}
-
 Fw::ML::Object::~Object()
 {
     removeAttributes();
@@ -48,7 +36,8 @@ void Fw::ML::Object::addAttribute(const QByteArray& name, Node* value, bool repl
             if(!addArray)
             {
                 currentAttr->takeFromParent();
-                addArray = new Array(name, this);
+                addArray = new Array();
+                addAttribute(name, addArray);
                 addArray->addNode(currentAttr);
             }
             addArray->addNode(value);

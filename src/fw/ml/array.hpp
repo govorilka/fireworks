@@ -16,8 +16,6 @@ public:
     friend class Node;
 
     Array();
-    Array(const QByteArray& attrName, Fw::ML::Object* parent);
-    Array(Fw::ML::Array* parent);
     ~Array();
 
     void addNode(Node* node);

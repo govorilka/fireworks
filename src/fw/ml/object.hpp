@@ -28,8 +28,6 @@ public:
     friend class Node;
 
     Object();
-    Object(const QByteArray& attrName, Object* parent);
-    Object(Array* parent);
     ~Object();
 
     inline QByteArray className() const;

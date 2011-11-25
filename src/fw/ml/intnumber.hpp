@@ -8,9 +8,7 @@ class FIREWORKSSHARED_EXPORT Fw::ML::IntNumber : public Fw::ML::BaseTempl<Fw::ML
     typedef Fw::ML::BaseTempl<Fw::ML::T_IntNumber> BaseClass;
 
 public:
-    IntNumber();
-    IntNumber(int value, const QByteArray& attrName, Object* parent);
-    IntNumber(int value, Array* parent);
+    explicit IntNumber(int value = 0);
 
     QByteArray toUtf8() const;
 
