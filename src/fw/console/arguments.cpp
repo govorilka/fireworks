@@ -1,9 +1,37 @@
 #include "arguments.hpp"
 
 Fw::Console::Arguments::Arguments(const QStringList& argList) :
-    m_argList(argList)
+    m_arguments()
 {
+    QStringList::const_iterator iter = argList.begin() + 1;
+    QStringList::const_iterator end = argList.end();
 
+    Argument argument;
+    for(; iter != end; ++iter)
+    {
+        const QString& candidate = *iter;
+        if(isKey(candidate))
+        {
+            if(!argument.name.isEmpty())
+            {
+                m_arguments.push_back(argument);
+                argument.value.clear();
+            }
+            argument.name = Arguments::getClearArgument(candidate);
+        }
+        else if(isValue(candidate))
+        {
+        argument.value = Arguments::getClearArgument(candidate);
+        m_arguments.push_back(argument);
+        argument.name.clear();
+        argument.value.clear();
+        }
+    }
+
+    if(!argument.isEmpty() && (m_arguments.isEmpty() || m_arguments.back() != argument))
+    {
+        m_arguments.push_back(argument);
+    }
 }
 
 Fw::Console::Arguments::~Arguments()
@@ -11,58 +39,16 @@ Fw::Console::Arguments::~Arguments()
 
 }
 
-QString Fw::Console::Arguments::command() const
-{
-    if(m_argList.size() > 2 && isValue(m_argList.at(1)))
-    {
-        return m_argList.at(1);
-    }
-
-    return QString();
-}
-
-QStringList Fw::Console::Arguments::commandParams() const
-{
-    QStringList result;
-    if(m_argList.size() >= 3)
-    {
-        QStringList::const_iterator iter = m_argList.begin() + 2;
-        QStringList::const_iterator end = m_argList.end();
-        for(; iter != end; ++iter)
-        {
-            const QString& candidate = *iter;
-            if(isKey(candidate))
-            {
-                return result;
-            }
-            result.append(candidate);
-        }
-    }
-    return result;
-}
-
 QString Fw::Console::Arguments::value(const QString& key, const QString& defaultValue) const
 {
-    //TODO: Compare key!!!
-    if(m_argList.size() > 2)
+    foreach(Argument argument, m_arguments)
     {
-        QStringList::ConstIterator last = m_argList.end() - 1;
-        for(QStringList::ConstIterator iter = m_argList.begin() + 1; iter != m_argList.end(); ++iter)
+        if(argument.name == key)
         {
-            const QString& candidatKey = *iter;
-            if(isKey(candidatKey))
-            {
-                if(iter != last)
-                {
-                    const QString& candidatValue = *(iter + 1);
-                    if(!isKey(candidatValue))
-                    {
-                        return candidatValue;
-                    }
-                }
-            }
+            return argument.value;
         }
     }
+
     return defaultValue;
 }
 
@@ -70,15 +56,15 @@ QString Fw::Console::Arguments::getClearArgument(const QString& arg)
 {
     if(arg.startsWith('"') && arg.endsWith('"'))
     {
-
+        return arg.mid(1, arg.size()-1);
     }
     else if(arg.startsWith('/'))
     {
-
+        return arg.mid(1);
     }
     else if(arg.startsWith("--"))
     {
-
+        return arg.mid(2);
     }
 
     return arg;
