@@ -52,6 +52,20 @@ QString Fw::Console::Arguments::value(const QString& key, const QString& default
     return defaultValue;
 }
 
+bool Fw::Console::Arguments::isExist(const QString& key, QString& value) const
+{
+    foreach(Argument argument, m_arguments)
+    {
+        if(argument.name == key)
+        {
+            value = argument.value;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 QString Fw::Console::Arguments::getClearArgument(const QString& arg)
 {
     if(arg.startsWith('"') && arg.endsWith('"'))
