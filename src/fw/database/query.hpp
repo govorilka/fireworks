@@ -32,6 +32,7 @@ public:
     virtual void bindDateTime(int index, const QDateTime& dateTime) throw(const Fw::Exception&) = 0;
     virtual void bindDate(int index, const QDate& date) throw(const Fw::Exception&) = 0;
     virtual void bindTime(int index, const QTime& time) throw(const Fw::Exception&) = 0;
+    virtual void bindDouble(int index, double value) throw(const Fw::Exception&) = 0;
 
     virtual bool columnBool(int column) const throw(const Fw::Exception&) = 0;
     virtual int columnInt(int column) const throw(const Fw::Exception&) = 0;
@@ -41,6 +42,7 @@ public:
     virtual QDateTime columnDateTime(int column) const throw(const Fw::Exception&) = 0;
     virtual QDate columnDate(int column) const throw(const Fw::Exception&) = 0;
     virtual QTime columnTime(int column) const throw(const Fw::Exception&) = 0;
+    virtual double columnDouble(int column) const throw(const Fw::Exception&) = 0;
 
     virtual QByteArray toUtf8() const throw(const Fw::Exception&) = 0;
     inline virtual QString toString() const throw(const Fw::Exception&);
