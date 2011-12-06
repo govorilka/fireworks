@@ -124,7 +124,7 @@ void Fw::Database::PostgreSQL::Query::bindText(int index, const QString& text) t
 
 void Fw::Database::PostgreSQL::Query::bindDateTime(int index, const QDateTime& dateTime) throw(const Fw::Exception&)
 {
-    bindText(index, dateTime.toString(Qt::ISODate));
+    bindDouble(index, dateTime.toTime_t());
 }
 
 void Fw::Database::PostgreSQL::Query::bindDate(int index, const QDate& date) throw(const Fw::Exception&)
@@ -135,6 +135,11 @@ void Fw::Database::PostgreSQL::Query::bindDate(int index, const QDate& date) thr
 void Fw::Database::PostgreSQL::Query::bindTime(int index, const QTime& time) throw(const Fw::Exception&)
 {
     bindText(index, time.toString(Qt::ISODate));
+}
+
+void Fw::Database::PostgreSQL::Query::bindDouble(int index, double value) throw(const Fw::Exception&)
+{
+    bindByteArray(index, QByteArray::number(value));
 }
 
 void Fw::Database::PostgreSQL::Query::bindByteArray(int index, const QByteArray& text)
@@ -190,7 +195,7 @@ QUrl Fw::Database::PostgreSQL::Query::columnUrl(int column) const throw(const Fw
 
 QDateTime Fw::Database::PostgreSQL::Query::columnDateTime(int column) const throw(const Fw::Exception&)
 {
-    return QDateTime::fromString(columnText(column), Qt::ISODate);
+    return QDateTime::fromTime_t(columnDouble(column));
 }
 
 QDate Fw::Database::PostgreSQL::Query::columnDate(int column) const throw(const Fw::Exception&)
@@ -201,6 +206,11 @@ QDate Fw::Database::PostgreSQL::Query::columnDate(int column) const throw(const 
 QTime Fw::Database::PostgreSQL::Query::columnTime(int column) const throw(const Fw::Exception&)
 {
     return QTime::fromString(columnText(column), Qt::ISODate);
+}
+
+double Fw::Database::PostgreSQL::Query::columnDouble(int column) const throw(const Fw::Exception&)
+{
+    return columnText(column).toDouble();
 }
 
 QByteArray Fw::Database::PostgreSQL::Query::toUtf8() const throw(const Fw::Exception&)

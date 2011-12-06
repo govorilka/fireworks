@@ -82,9 +82,9 @@ void Fw::Database::SQLite::Query::bindInt(int index, int value) throw(const Fw::
 void Fw::Database::SQLite::Query::bindText(int index, const QString& text) throw(const Fw::Exception&)
 {
     if(m_stmt)
-       {
-           sqlite3_bind_text16(m_stmt, index, text.utf16(), (text.size()) * sizeof(QChar), SQLITE_TRANSIENT);
-       }
+    {
+         sqlite3_bind_text16(m_stmt, index, text.utf16(), (text.size()) * sizeof(QChar), SQLITE_TRANSIENT);
+    }
 }
 
 void Fw::Database::SQLite::Query::bindDateTime(int index, const QDateTime& dateTime) throw(const Fw::Exception&)
@@ -100,6 +100,14 @@ void Fw::Database::SQLite::Query::bindDate(int index, const QDate& date) throw(c
 void Fw::Database::SQLite::Query::bindTime(int index, const QTime& time) throw(const Fw::Exception&)
 {
     bindInt(index, time.second() + time.minute() * 60 + time.hour() * 3600);
+}
+
+void Fw::Database::SQLite::Query::bindDouble(int index, double value) throw(const Fw::Exception&)
+{
+    if(m_stmt)
+    {
+         sqlite3_bind_double(m_stmt, index, value);
+    }
 }
 
 bool Fw::Database::SQLite::Query::columnBool(int column) const throw(const Fw::Exception&)
@@ -160,6 +168,15 @@ QTime Fw::Database::SQLite::Query::columnTime(int column) const throw(const Fw::
     int m = time / 60;
     int s = time - m * 60;
     return QTime(h, m, s);
+}
+
+double Fw::Database::SQLite::Query::columnDouble(int column) const throw(const Fw::Exception&)
+{
+    if(m_stmt)
+    {
+        return sqlite3_column_double(m_stmt, column);
+    }
+    return 0.0;
 }
 
 QByteArray Fw::Database::SQLite::Query::toUtf8() const throw(const Fw::Exception&)
