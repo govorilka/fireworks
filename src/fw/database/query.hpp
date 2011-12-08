@@ -28,11 +28,12 @@ public:
     virtual void bindNull(int index) throw(const Fw::Exception&) = 0;
     virtual void bindBool(int index, bool value) throw(const Fw::Exception&);
     virtual void bindInt(int index, int value) throw(const Fw::Exception&) = 0;
+    virtual void bindUInt(int index, uint value) throw(const Fw::Exception&) = 0;
+    virtual void bindDouble(int index, double value) throw(const Fw::Exception&) = 0;
     virtual void bindText(int index, const QString& text) throw(const Fw::Exception&) = 0;
     virtual void bindDateTime(int index, const QDateTime& dateTime) throw(const Fw::Exception&) = 0;
     virtual void bindDate(int index, const QDate& date) throw(const Fw::Exception&) = 0;
     virtual void bindTime(int index, const QTime& time) throw(const Fw::Exception&) = 0;
-    virtual void bindDouble(int index, double value) throw(const Fw::Exception&) = 0;
 
     virtual bool columnBool(int column) const throw(const Fw::Exception&) = 0;
     virtual int columnInt(int column) const throw(const Fw::Exception&) = 0;

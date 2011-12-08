@@ -79,6 +79,18 @@ void Fw::Database::SQLite::Query::bindInt(int index, int value) throw(const Fw::
     }
 }
 
+void Fw::Database::SQLite::Query::bindUInt(int index, uint value) throw(const Fw::Exception&)
+{
+    bindInt(index, value);
+}
+void Fw::Database::SQLite::Query::bindDouble(int index, double value) throw(const Fw::Exception&)
+{
+    if(m_stmt)
+    {
+        sqlite3_bind_double(m_stmt, index, value);
+    }
+}
+
 void Fw::Database::SQLite::Query::bindText(int index, const QString& text) throw(const Fw::Exception&)
 {
     if(m_stmt)
@@ -102,14 +114,6 @@ void Fw::Database::SQLite::Query::bindTime(int index, const QTime& time) throw(c
     bindInt(index, time.second() + time.minute() * 60 + time.hour() * 3600);
 }
 
-void Fw::Database::SQLite::Query::bindDouble(int index, double value) throw(const Fw::Exception&)
-{
-    if(m_stmt)
-    {
-         sqlite3_bind_double(m_stmt, index, value);
-    }
-}
-
 bool Fw::Database::SQLite::Query::columnBool(int column) const throw(const Fw::Exception&)
 {
     return columnInt(column) != 0;
@@ -124,6 +128,19 @@ int Fw::Database::SQLite::Query::columnInt(int column) const throw(const Fw::Exc
     return 0;
 }
 
+uint Fw::Database::SQLite::Query::columnUInt(int column) const throw(const Fw::Exception&)
+{
+    return columnInt(column);
+}
+
+double Fw::Database::SQLite::Query::columnDouble(int column) const throw(const Fw::Exception&)
+{
+    if(m_stmt)
+    {
+        return sqlite3_column_double(m_stmt, column);
+    }
+    return 0.0;
+}
 QString Fw::Database::SQLite::Query::columnText(int column) const throw(const Fw::Exception&)
 {
     if(m_stmt)
@@ -168,15 +185,6 @@ QTime Fw::Database::SQLite::Query::columnTime(int column) const throw(const Fw::
     int m = time / 60;
     int s = time - m * 60;
     return QTime(h, m, s);
-}
-
-double Fw::Database::SQLite::Query::columnDouble(int column) const throw(const Fw::Exception&)
-{
-    if(m_stmt)
-    {
-        return sqlite3_column_double(m_stmt, column);
-    }
-    return 0.0;
 }
 
 QByteArray Fw::Database::SQLite::Query::toUtf8() const throw(const Fw::Exception&)

@@ -79,23 +79,25 @@ public:
      virtual void bindNull(int index) throw(const Fw::Exception&);
      virtual void bindBool(int index, bool value) throw(const Fw::Exception&);
      virtual void bindInt(int index, int value) throw(const Fw::Exception&);
+     virtual void bindUInt(int index, uint value) throw(const Fw::Exception&);
+     virtual void bindDouble(int index, double value) throw(const Fw::Exception&);
      virtual void bindText(int index, const QString& text) throw(const Fw::Exception&);
      virtual void bindDateTime(int index, const QDateTime& dateTime) throw (const Fw::Exception&);
      virtual void bindDate(int index, const QDate& date) throw (const Fw::Exception&);
      virtual void bindTime(int index, const QTime& time) throw (const Fw::Exception&);
-     virtual void bindDouble(int index, double value) throw(const Fw::Exception&);
      void bindByteArray(int index, const QByteArray& text);
 
 
      virtual bool columnBool(int column) const throw (const Fw::Exception&);
      virtual int columnInt(int column) const throw (const Fw::Exception&);
+     virtual uint columnUInt(int column) const throw(const Fw::Exception&);
+     virtual double columnDouble(int column) const throw(const Fw::Exception&);
      virtual QString columnText(int column) const throw (const Fw::Exception&);
      virtual FwColor columnColor(int column) const throw (const Fw::Exception&);
      virtual QUrl columnUrl(int column) const throw (const Fw::Exception&);
      virtual QDateTime columnDateTime(int column) const throw (const Fw::Exception&);
      virtual QDate columnDate(int column) const throw (const Fw::Exception&);
      virtual QTime columnTime(int column) const throw (const Fw::Exception&);
-     virtual double columnDouble(int column) const throw(const Fw::Exception&);
 
      virtual QByteArray toUtf8() const throw(const Fw::Exception&);
 };
