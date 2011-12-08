@@ -110,6 +110,16 @@ void Fw::Database::PostgreSQL::Query::bindInt(int index, int value) throw(const 
     bindByteArray(index, QByteArray::number(value));
 }
 
+void Fw::Database::PostgreSQL::Query::bindUInt(int index, uint value) throw(const Fw::Exception&)
+{
+    bindByteArray(index, QByteArray::number(value));
+}
+
+void Fw::Database::PostgreSQL::Query::bindDouble(int index, double value) throw(const Fw::Exception&)
+{
+    bindByteArray(index, QByteArray::number(value, 'f', 12));
+}
+
 void Fw::Database::PostgreSQL::Query::bindText(int index, const QString& text) throw(const Fw::Exception&)
 {
     if(text.isEmpty())
@@ -135,11 +145,6 @@ void Fw::Database::PostgreSQL::Query::bindDate(int index, const QDate& date) thr
 void Fw::Database::PostgreSQL::Query::bindTime(int index, const QTime& time) throw(const Fw::Exception&)
 {
     bindText(index, time.toString(Qt::ISODate));
-}
-
-void Fw::Database::PostgreSQL::Query::bindDouble(int index, double value) throw(const Fw::Exception&)
-{
-    bindByteArray(index, QByteArray::number(value));
 }
 
 void Fw::Database::PostgreSQL::Query::bindByteArray(int index, const QByteArray& text)
@@ -177,6 +182,16 @@ int Fw::Database::PostgreSQL::Query::columnInt(int column) const throw(const Fw:
     return 0;
 }
 
+uint Fw::Database::PostgreSQL::Query::columnUInt(int column) const throw(const Fw::Exception&)
+{
+    return columnText(column).toUInt();
+}
+
+double Fw::Database::PostgreSQL::Query::columnDouble(int column) const throw(const Fw::Exception&)
+{
+    return columnText(column).toDouble();
+}
+
 QString Fw::Database::PostgreSQL::Query::columnText(int column) const throw(const Fw::Exception&)
 {
     const char* const result = PQgetvalue(m_result, m_currRow, column);
@@ -206,11 +221,6 @@ QDate Fw::Database::PostgreSQL::Query::columnDate(int column) const throw(const 
 QTime Fw::Database::PostgreSQL::Query::columnTime(int column) const throw(const Fw::Exception&)
 {
     return QTime::fromString(columnText(column), Qt::ISODate);
-}
-
-double Fw::Database::PostgreSQL::Query::columnDouble(int column) const throw(const Fw::Exception&)
-{
-    return columnText(column).toDouble();
 }
 
 QByteArray Fw::Database::PostgreSQL::Query::toUtf8() const throw(const Fw::Exception&)
