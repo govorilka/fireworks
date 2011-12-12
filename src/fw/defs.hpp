@@ -12,6 +12,7 @@
 namespace Fw
 {
     class Exception;
+    class Scheduler;
 }
 
 #endif // FIREWORKS_DEFS_HPP

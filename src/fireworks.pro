@@ -24,26 +24,29 @@ SOURCES += \
     fireworks.cpp \
     fwinterfaces.cpp \
     fwdescriptions.cpp \
-    fwplatform.cpp \
-    fw/exception.cpp
+    fwplatform.cpp
 
 HEADERS += \
     fireworks.h \
     fwinterfaces.h \
     fwdescriptions.h \
-    fwplatform.hpp \
-    fw/exception.hpp \
-    fw/defs.hpp
+    fwplatform.hpp
 
-include (fwcore/fwcore.pri)
-include (fwtypography/fwtypography.pri)
-include (fwgui/fwgui.pri)
-include (fwutils/fwutils.pri)
 include (fw/console/console.pri)
 include (fw/parse/parse.pri)
 include (fw/database/database.pri)
 include (fw/parse/parse.pri)
 include (fw/ml/ml.pri)
+
+include (fw/fw.pri)
+include (fwcore/fwcore.pri)
+include (fwtypography/fwtypography.pri)
+include (fwgui/fwgui.pri)
+include (fwutils/fwutils.pri)
+
+
+
+
 
 
 
