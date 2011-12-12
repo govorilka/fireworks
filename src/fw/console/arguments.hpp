@@ -33,7 +33,7 @@ public:
     ~Arguments();
 
     QString value(const QString& key, const QString& defaultValue = QString()) const;
-    bool isExist(const QString& key, QString& value) const;
+    bool isExist(const QString& key, QString* value = 0) const;
     inline const ArgumentList arguments() const;
 
 private:
