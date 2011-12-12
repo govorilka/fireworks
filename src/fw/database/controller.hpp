@@ -21,7 +21,10 @@ public:
 
     virtual bool loadData(FwMLObject* script) throw(const Exception&);
 
+    static QString loadQueryString(const QString& filename, const QStringList& arguments = QStringList()) throw(const Fw::Exception&);
+    inline QueryPtr loadQuery(const QString& filename, const QStringList& arguments = QStringList()) throw(const Exception&);
     inline QueryPtr createQuery(const QString& query) throw(const Exception&);
+    QueryPtr createQuery(const QString& query, const QStringList& arguments) throw(const Exception&);
 
     inline const Driver* operator->() const throw(const Exception&);
     inline Driver* operator->() throw(const Exception&);
@@ -29,6 +32,11 @@ public:
     inline const Driver* driver() const;
     inline Driver* driver();
 };
+
+Fw::Database::QueryPtr Fw::Database::Controller::loadQuery(const QString& filename, const QStringList& arguments) throw(const Exception&)
+{
+    return createQuery(loadQueryString(filename, arguments));
+}
 
 Fw::Database::QueryPtr Fw::Database::Controller::createQuery(const QString& query) throw(const Exception&)
 {

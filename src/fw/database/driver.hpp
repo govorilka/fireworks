@@ -6,7 +6,7 @@
 #include "fwcore/fwcppobject.h"
 #include "fw/database/defs.hpp"
 
-class Fw::Database::Driver : public FwCPPObject
+class FIREWORKSSHARED_EXPORT Fw::Database::Driver : public FwCPPObject
 {
     typedef FwCPPObject BaseClass;
 

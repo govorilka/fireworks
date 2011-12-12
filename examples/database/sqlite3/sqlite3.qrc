@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/sqlite3">
+        <file>local.fwml</file>
+        <file>local_create_db.sql</file>
+    </qresource>
+</RCC>
