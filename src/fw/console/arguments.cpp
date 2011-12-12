@@ -52,13 +52,16 @@ QString Fw::Console::Arguments::value(const QString& key, const QString& default
     return defaultValue;
 }
 
-bool Fw::Console::Arguments::isExist(const QString& key, QString& value) const
+bool Fw::Console::Arguments::isExist(const QString& key, QString* value) const
 {
     foreach(Argument argument, m_arguments)
     {
         if(argument.name == key)
         {
-            value = argument.value;
+            if(value)
+            {
+                (*value) = argument.value;
+            }
             return true;
         }
     }
