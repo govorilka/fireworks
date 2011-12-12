@@ -22,11 +22,10 @@ LIBS += -L$(FIREWORKS_PATH)/bin \
 
 INCLUDEPATH += ../../../src/fwdb/sqlite/
 
-SOURCES += main.cpp \
-    ../../../src/fwdb/sqlite/sqlite3.c
+SOURCES += main.cpp
 
-HEADERS += \
-    ../../../src/fwdb/sqlite/sqlite3.h \
-    ../../../src/fwdb/sqlite/sqlite3ext.h
+RESOURCES += \
+    sqlite3.qrc
+
 
 

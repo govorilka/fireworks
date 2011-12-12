@@ -25,7 +25,7 @@ Fw::Database::DriverPtr Fw::Database::Controller::factory(FwMLObject* config) th
 
     if(driver == "sqlite")
     {
-        //return DriverPtr(new Fw::Database::SQLite::Driver("database"), Fw::Database::SQLite::Driver::deleter);
+        return DriverPtr(new Fw::Database::SQLite::Driver("database"), Fw::Database::SQLite::Driver::deleter);
     }
     #ifdef FW_SUPPORT_POSTGRESQL
     else if(driver == "postgresql")
@@ -52,6 +52,34 @@ bool Fw::Database::Controller::loadData(FwMLObject* script) throw(const Fw::Exce
     m_driver->loadData(driverNode);
 
     return true;
+}
+
+QString Fw::Database::Controller::loadQueryString(const QString& filename, const QStringList& arguments) throw (const Fw::Exception&)
+{
+    QFile sqlFile(filename);
+    if(!sqlFile.open(QIODevice::ReadOnly))
+    {
+        throw Fw::Exception(sqlFile);
+    }
+
+    QString query = QString::fromUtf8(sqlFile.readAll()).simplified();
+    foreach(const QString& arg, arguments)
+    {
+        query = query.arg(arg);
+    }
+
+    return query;
+}
+
+Fw::Database::QueryPtr Fw::Database::Controller::createQuery(const QString& query, const QStringList& arguments) throw(const Fw::Exception&)
+{
+    QString resultQuery = query;
+    foreach(const QString& arg, arguments)
+    {
+        resultQuery = resultQuery.arg(arg);
+    }
+
+    return createQuery(resultQuery);
 }
 
 //=============================================================================

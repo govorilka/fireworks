@@ -26,7 +26,7 @@ struct Fw::Console::Argument
     inline bool operator!=(const Argument& other) const;
 };
 
-class Fw::Console::Arguments
+class FIREWORKSSHARED_EXPORT Fw::Console::Arguments
 {
 public:
     explicit Arguments(const QStringList& argList);

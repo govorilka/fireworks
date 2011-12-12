@@ -102,7 +102,8 @@ bool Fw::Database::SQLite::Driver::isOpen() const
 {
     return m_connection;
 }
-int Fw::Database::SQLite::Driver::lastInsertKey()
+
+int Fw::Database::SQLite::Driver::lastInsertKey() const
 {
     if(m_connection)
     {
