@@ -169,6 +169,33 @@ void Fw::Scheduler::run()
     release();
 }
 
+void Fw::Scheduler::addShellTasks(FwMLObject* object)
+{
+    FwMLArray* taskArray = object->attribute("ShellCommands")->cast<FwMLArray>();
+    if(taskArray)
+    {
+        QVector<FwMLNode*> taskNodes = taskArray->toQVector();
+
+        foreach(FwMLNode* taskNode, taskNodes)
+        {
+            FwMLObject* taskObject = taskNode->cast<FwMLObject>();
+            if(taskObject)
+            {
+                SystemTask* task = new SystemTask();
+                if(task->loadData(taskObject))
+                {
+                    addTask(task);
+                }
+                else
+                {
+                    delete task;
+                    task = 0;
+                }
+            }
+        }
+    }
+}
+
 void Fw::Scheduler::release()
 {
     foreach(Fw::Scheduler::Task* task, m_tasks.values())
@@ -195,6 +222,8 @@ bool Fw::Scheduler::loadConfig() throw(Fw::Exception&)
 
 bool Fw::Scheduler::loadData(FwMLObject *object)
 {
+    addShellTasks(object);
+
     foreach(Fw::Scheduler::Task* task, m_tasks)
     {
         if(!task->name().isEmpty())
@@ -399,6 +428,21 @@ bool Fw::Scheduler::Task::loadData(FwMLObject *object)
 Fw::Scheduler::SystemTask::SystemTask(QObject* parent, const QByteArray& name) :
     BaseClass(parent, name)
 {
+}
+
+bool Fw::Scheduler::SystemTask::loadData(FwMLObject *object)
+{
+    if(BaseClass::loadData(object))
+    {
+        FwMLString* commandNode = object->attribute("command")->cast<FwMLString>();
+        if(commandNode)
+        {
+            setCommand(commandNode->value());
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void Fw::Scheduler::SystemTask::setCommand(const QString& command)

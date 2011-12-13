@@ -64,10 +64,12 @@ public:
     void release();
 
     bool loadConfig() throw(Fw::Exception&);
-    bool loadData(FwMLObject *object);
+    bool loadData(FwMLObject* object);
 
 protected:
     void run();
+
+    void addShellTasks(FwMLObject* object);
 
 private:
     QPointer<NetworkManager> networkManager;
@@ -117,7 +119,7 @@ public:
     inline bool isRunningOnStart() const;
     void setRunOnStart(bool enable);
 
-    bool loadData(FwMLObject *object);
+    virtual bool loadData(FwMLObject *object);
 
 protected:
     void stop();
@@ -149,7 +151,9 @@ class FIREWORKSSHARED_EXPORT Fw::Scheduler::SystemTask : public Fw::Scheduler::T
     typedef Scheduler::Task BaseClass;
 
 public:
-    SystemTask(QObject *parent = 0, const QByteArray& name = QByteArray());
+    SystemTask(QObject* parent = 0, const QByteArray& name = QByteArray());
+
+    virtual bool loadData(FwMLObject *object);
 
     inline QString command() const;
     void setCommand(const QString& command);

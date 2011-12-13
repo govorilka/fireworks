@@ -9,10 +9,10 @@ QT       += core
 QT       -= gui
 
 win32 {
-   TARGET = ../../../../bin/scheduler
+   TARGET = ../../../bin/scheduler
 }
 else {
-   TARGET = ../../../bin/scheduler
+   TARGET = ../../bin/scheduler
 }
 CONFIG   += console
 CONFIG   -= app_bundle
