@@ -1,0 +1,40 @@
+bgcolor : "black",
+
+itemView
+{
+  base : "fireworks.widgets.ItemView",
+
+  width : 150, height : 300,
+
+  bgcolor : "red",
+
+  layout
+  {
+      base : "fireworks.layouts.Pages",
+      animation
+      {
+          base : "fireworks.layouts.Animation",
+          curve : "InOutQuart",
+          duration : 300
+      },
+      margin : 16
+  },
+
+  item
+  {
+     base : "fireworks.primitives.Text",
+     font
+     {
+        family : "Arial",
+        pixelSize : 24
+     },
+     color : "white",
+     width : 150
+  },
+  
+  geometry
+  {
+     hPosition : "center",
+     vPosition : "middle"
+  }
+}
