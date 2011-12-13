@@ -14,6 +14,14 @@ public:
     explicit OwnTask(QObject* parent = 0, const QByteArray& name = QByteArray());
 };
 
+class OwnNetworkTask : public Fw::Scheduler::NetworkTask
+{
+    typedef Fw::Scheduler::NetworkTask BaseClass;
+
+public:
+    virtual bool replyMasterProcessed(QNetworkReply* reply);
+};
+
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
@@ -22,7 +30,12 @@ int main(int argc, char *argv[])
 
     OwnTask* task = new OwnTask(0, "OwnTask");
     task->setInterval(15*1000);
-    scheduler.addTask(task);
+    //scheduler.addTask(task);
+
+    OwnNetworkTask* networkTask = new OwnNetworkTask();
+    networkTask->setInterval(3*1000);
+    networkTask->setUrl(QUrl("http://www.google.ru/"));
+    scheduler.addTask(networkTask);
 
     FwMLObject config;
     config.parseFile("scheduler.fwml");
@@ -45,4 +58,11 @@ OwnTask::OwnTask(QObject* parent, const QByteArray& name)
     :
     BaseClass(parent, name)
 {
+}
+
+bool OwnNetworkTask::replyMasterProcessed(QNetworkReply* reply)
+{
+    qDebug() << reply->readAll();
+
+    return true;
 }

@@ -11,8 +11,9 @@
 Fw::Scheduler::Scheduler(QObject* parent, const QByteArray& name) :
     BaseClass(name),
     QThread(parent),
-    networkManager(new Scheduler::NetworkManager())
+    networkManager(0)
 {
+    networkManager = new Scheduler::NetworkManager();
     networkManager->setParent(0);
     networkManager->moveToThread(this);
 }
@@ -75,7 +76,6 @@ void Fw::Scheduler::startAllTasks()
 {
     foreach(Fw::Scheduler::Task* task, m_tasks.values())
     {
-        qDebug() << "Fw::Scheduler::startAllTasks:" << task;
         startTask(task);
     }
 }
@@ -432,17 +432,18 @@ Fw::Scheduler::SystemTask::SystemTask(QObject* parent, const QByteArray& name) :
 
 bool Fw::Scheduler::SystemTask::loadData(FwMLObject *object)
 {
-    if(BaseClass::loadData(object))
+    if(!BaseClass::loadData(object))
     {
-        FwMLString* commandNode = object->attribute("command")->cast<FwMLString>();
-        if(commandNode)
-        {
-            setCommand(commandNode->value());
-            return true;
-        }
+        return false;
     }
 
-    return false;
+    FwMLString* commandNode = object->attribute("command")->cast<FwMLString>();
+    if(commandNode)
+    {
+        setCommand(commandNode->value());
+    }
+
+    return true;
 }
 
 void Fw::Scheduler::SystemTask::setCommand(const QString& command)
@@ -567,6 +568,11 @@ void Fw::Scheduler::NetworkTask::clearReply()
 
 bool Fw::Scheduler::NetworkTask::loadData(FwMLObject *object)
 {
+    if(!BaseClass::loadData(object))
+    {
+        return false;
+    }
+
     FwMLString* urlNode = object->attribute("url")->cast<FwMLString>();
     if(urlNode)
     {
@@ -575,7 +581,8 @@ bool Fw::Scheduler::NetworkTask::loadData(FwMLObject *object)
             setUrl(QString::fromUtf8(urlNode->value()));
         }
     }
-    return BaseClass::loadData(object);
+
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
