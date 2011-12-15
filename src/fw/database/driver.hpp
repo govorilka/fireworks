@@ -3,18 +3,20 @@
 
 #include <QtCore/qreadwritelock.h>
 
-#include "fwcore/fwcppobject.h"
 #include "fw/database/defs.hpp"
+#include "fw/helpers/lock.hpp"
+#include "fwcore/fwcppobject.h"
 
-class FIREWORKSSHARED_EXPORT Fw::Database::Driver : public FwCPPObject
+
+class FIREWORKSSHARED_EXPORT Fw::Database::Driver : public FwCPPObject, public Fw::Helpers::Lockable
 {
     typedef FwCPPObject BaseClass;
 
     bool m_beginTransaction;
 
-    QReadWriteLock m_dbLock;
-
 public:
+    QReadWriteLock lock;
+
     explicit Driver(const QByteArray& name);
     virtual ~Driver();
 
@@ -46,27 +48,10 @@ void Fw::Database::Driver::deleter(Driver* driver)
     delete driver;
     driver = 0;
 }
+
 void Fw::Database::Driver::emptyDeleter(Driver* driver)
 {
     driver = 0;
 }
-
-///////////////////////////////////////////////////////////////////////////////
-
-//=============================================================================
-
-//class Fw::Database::Driver : public FwCPPObject
-//{
-//    typedef FwCPPObject BaseClass;
-
-//public:
-//    Driver(const QByteArray& name);
-//    virtual ~Driver();
-
-//    virtual void open() throw(Exception&) = 0;
-//    virtual void close() throw() = 0;
-
-//    virtual QueryData* query(const QString& q) const throw(Fw::Exception&) = 0;
-//};
 
 #endif //FIREWORKS_DATABASE_DRIVER_HPP

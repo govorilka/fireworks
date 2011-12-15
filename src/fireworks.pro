@@ -37,12 +37,14 @@ include (fw/parse/parse.pri)
 include (fw/database/database.pri)
 include (fw/parse/parse.pri)
 include (fw/ml/ml.pri)
+include (fw/helpers/helpers.pri)
 
 include (fw/fw.pri)
 include (fwcore/fwcore.pri)
 include (fwtypography/fwtypography.pri)
 include (fwgui/fwgui.pri)
 include (fwutils/fwutils.pri)
+
 
 
 
