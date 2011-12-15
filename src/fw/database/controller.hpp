@@ -19,31 +19,31 @@ public:
     explicit Controller(const QByteArray& name = "Fw::Database::Controller");
     virtual ~Controller();
 
-    virtual bool loadData(FwMLObject* script) throw(const Exception&);
+    virtual bool loadData(FwMLObject* script) throw(const Fw::Exception&);
 
     static QString loadQueryString(const QString& filename, const QStringList& arguments = QStringList()) throw(const Fw::Exception&);
-    inline QueryPtr loadQuery(const QString& filename, const QStringList& arguments = QStringList()) throw(const Exception&);
-    inline QueryPtr createQuery(const QString& query) throw(const Exception&);
-    QueryPtr createQuery(const QString& query, const QStringList& arguments) throw(const Exception&);
+    inline QueryPtr loadQuery(const QString& filename, const QStringList& arguments = QStringList()) throw(const Fw::Exception&);
+    inline QueryPtr createQuery(const QString& query) throw(const Fw::Exception&);
+    QueryPtr createQuery(const QString& query, const QStringList& arguments) throw(const Fw::Exception&);
 
-    inline const Driver* operator->() const throw(const Exception&);
-    inline Driver* operator->() throw(const Exception&);
+    inline const Driver* operator->() const throw(const Fw::Exception&);
+    inline Driver* operator->() throw(const Fw::Exception&);
 
     inline const Driver* driver() const;
     inline Driver* driver();
 };
 
-Fw::Database::QueryPtr Fw::Database::Controller::loadQuery(const QString& filename, const QStringList& arguments) throw(const Exception&)
+Fw::Database::QueryPtr Fw::Database::Controller::loadQuery(const QString& filename, const QStringList& arguments) throw(const Fw::Exception&)
 {
     return createQuery(loadQueryString(filename, arguments));
 }
 
-Fw::Database::QueryPtr Fw::Database::Controller::createQuery(const QString& query) throw(const Exception&)
+Fw::Database::QueryPtr Fw::Database::Controller::createQuery(const QString& query) throw(const Fw::Exception&)
 {
     return m_driver->createQuery(m_driver, query);
 }
 
-const Fw::Database::Driver* Fw::Database::Controller::operator->() const throw(const Exception&)
+const Fw::Database::Driver* Fw::Database::Controller::operator->() const throw(const Fw::Exception&)
 {
     Driver* drv = m_driver.data();
     if(drv == 0)
@@ -53,7 +53,7 @@ const Fw::Database::Driver* Fw::Database::Controller::operator->() const throw(c
     return drv;
 }
 
-Fw::Database::Driver* Fw::Database::Controller::operator->() throw(const Exception&)
+Fw::Database::Driver* Fw::Database::Controller::operator->() throw(const Fw::Exception&)
 {
     Driver* drv = m_driver.data();
     if(drv == 0)
