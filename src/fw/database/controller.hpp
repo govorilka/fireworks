@@ -26,6 +26,9 @@ public:
     inline QueryPtr createQuery(const QString& query) throw(const Fw::Exception&);
     QueryPtr createQuery(const QString& query, const QStringList& arguments) throw(const Fw::Exception&);
 
+    inline const Driver& operator*() const throw(const Fw::Exception&);
+    inline Driver& operator*() throw(const Fw::Exception&);
+
     inline const Driver* operator->() const throw(const Fw::Exception&);
     inline Driver* operator->() throw(const Fw::Exception&);
 
@@ -41,6 +44,26 @@ Fw::Database::QueryPtr Fw::Database::Controller::loadQuery(const QString& filena
 Fw::Database::QueryPtr Fw::Database::Controller::createQuery(const QString& query) throw(const Fw::Exception&)
 {
     return m_driver->createQuery(m_driver, query);
+}
+
+const Fw::Database::Driver& Fw::Database::Controller::operator*() const throw(const Fw::Exception&)
+{
+    const Driver* drv = m_driver.data();
+    if(drv == 0)
+    {
+        throw Fw::Exception(drv->lastError());
+    }
+    return *drv;
+}
+
+Fw::Database::Driver& Fw::Database::Controller::operator*() throw(const Fw::Exception&)
+{
+    Driver* drv = m_driver.data();
+    if(drv == 0)
+    {
+        throw Fw::Exception(drv->lastError());
+    }
+    return *drv;
 }
 
 const Fw::Database::Driver* Fw::Database::Controller::operator->() const throw(const Fw::Exception&)
