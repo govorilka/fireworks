@@ -5,12 +5,6 @@
 
 #include <QtCore/qvector.h>
 
-#ifdef Q_OS_WIN32
-#include <libpq-fe.h>
-#else //Q_OS_WIN32
-#include "pgsql/libpq-fe.h"
-#endif //Q_OS_WIN32
-
 #include "fw/database/query.hpp"
 #include "fw/database/postgresql/defs.hpp"
 

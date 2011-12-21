@@ -1,5 +1,5 @@
-#include "fw/database/sqlite/querydata.hpp"
-#include "fw/database/sqlite/driver.hpp"
+#include "fw/database/sqlite/query_sqlite.hpp"
+#include "fw/database/sqlite/driver_sqlite.hpp"
 
 void Fw::Database::SQLite::Query::closeQuery()
 {
@@ -83,6 +83,7 @@ void Fw::Database::SQLite::Query::bindUInt(int index, uint value) throw(const Fw
 {
     bindInt(index, value);
 }
+
 void Fw::Database::SQLite::Query::bindDouble(int index, double value) throw(const Fw::Exception&)
 {
     if(m_stmt)
@@ -141,6 +142,7 @@ double Fw::Database::SQLite::Query::columnDouble(int column) const throw(const F
     }
     return 0.0;
 }
+
 QString Fw::Database::SQLite::Query::columnText(int column) const throw(const Fw::Exception&)
 {
     if(m_stmt)

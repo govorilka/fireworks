@@ -1,7 +1,7 @@
 #include "fwcore/fwml.h"
 
-#include "fw/database/sqlite/driver.hpp"
-#include "fw/database/sqlite/querydata.hpp"
+#include "fw/database/sqlite/driver_sqlite.hpp"
+#include "fw/database/sqlite/query_sqlite.hpp"
 
 Fw::Database::SQLite::Driver::Driver(const QByteArray& name) :
     BaseClass(name),
@@ -65,6 +65,53 @@ void Fw::Database::SQLite::Driver::close() throw()
     {
         sqlite3_close(m_connection);
         m_connection = 0;
+    }
+}
+
+void Fw::Database::SQLite::Driver::execSimpleQuery(const QString& query) throw(const Fw::Exception&)
+{
+    if(!m_connection)
+    {
+        throw Fw::Exception(lastError().toUtf8());
+    }
+
+    sqlite3_stmt* stmt = 0;
+    const int result = sqlite3_prepare16_v2(m_connection,
+                                    query.constData(),
+                                    (query.size() + 1) * sizeof(QChar),
+                                    &stmt,
+                                    0);
+    if(!stmt)
+    {
+        throw Fw::Exception("Fw::Database::SQLite::Driver::execSimpleQuery: statement is 0");
+    }
+
+    if(result != SQLITE_OK)
+    {
+        sqlite3_finalize(stmt);
+        stmt = 0;
+        throw Fw::Exception("Fw::Database::SQLite::Driver::execSimpleQuery: result is not OK");
+    }
+
+    const int qResult = sqlite3_step(stmt);
+    sqlite3_finalize(stmt);
+    stmt = 0;
+
+    switch(qResult)
+    {
+    case SQLITE_ROW:
+    case SQLITE_DONE:
+        break;
+
+    case SQLITE_ERROR:
+    case SQLITE_IOERR:
+    case SQLITE_CONSTRAINT:
+        throw Fw::Exception(lastError().toUtf8());
+        break;
+
+    default:
+        throw Fw::Exception("Fw::Database::SQLite::Driver::execSimpleQuery: unknown exceptin");
+        break;
     }
 }
 

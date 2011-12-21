@@ -34,6 +34,7 @@ public:
     virtual void bindDateTime(int index, const QDateTime& dateTime) throw(const Fw::Exception&) = 0;
     virtual void bindDate(int index, const QDate& date) throw(const Fw::Exception&) = 0;
     virtual void bindTime(int index, const QTime& time) throw(const Fw::Exception&) = 0;
+    virtual void bindUrl(int index, const QUrl& time) throw(const Fw::Exception&);
 
     virtual bool columnBool(int column) const throw(const Fw::Exception&) = 0;
     virtual int columnInt(int column) const throw(const Fw::Exception&) = 0;

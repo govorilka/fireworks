@@ -26,6 +26,7 @@ public:
     virtual void open() throw(const Exception&);
     virtual void close() throw();
 
+    virtual void execSimpleQuery(const QString& query) throw(const Fw::Exception&);
     virtual QueryPtr createQuery(const DriverPtr& driver, const QString& query) throw(const Fw::Exception&);
 
     virtual QString lastError() const;

@@ -1,6 +1,5 @@
-#include "fw/database/postgresql/querydata.hpp"
-#include "fw/database/postgresql/driver.hpp"
-
+#include "fw/database/postgresql/query_postgresql.hpp"
+#include "fw/database/postgresql/driver_postgresql.hpp"
 
 bool Fw::Database::PostgreSQL::Query::doExec() throw (const Fw::Exception&)
 {

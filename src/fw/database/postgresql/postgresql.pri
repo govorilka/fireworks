@@ -14,9 +14,9 @@ win32 {
 
 HEADERS += \
     fw/database/postgresql/defs.hpp \
-    fw/database/postgresql/driver.hpp \
-    fw/database/postgresql/querydata.hpp \
+    fw/database/postgresql/driver_postgresql.hpp \
+    fw/database/postgresql/query_postgresql.hpp \
 
 SOURCES += \
-    fw/database/postgresql/postgresql_driver.cpp\
-    fw/database/postgresql/postgresql_querydata.cpp
+    fw/database/postgresql/driver_postgresql.cpp\
+    fw/database/postgresql/query_postgresql.cpp

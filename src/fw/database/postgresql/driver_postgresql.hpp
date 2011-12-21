@@ -6,7 +6,7 @@
 #include "fw/database/driver.hpp"
 
 #include "fw/database/postgresql/defs.hpp"
-#include "fw/database/postgresql/querydata.hpp"
+#include "fw/database/postgresql/query_postgresql.hpp"
 
 class FIREWORKSSHARED_EXPORT Fw::Database::PostgreSQL::Driver : public Fw::Database::Driver
 {
@@ -32,6 +32,7 @@ public:
     virtual void open() throw(const Exception&);
     virtual void close() throw();
 
+    virtual void execSimpleQuery(const QString& query) throw(const Fw::Exception&);
     virtual QueryPtr createQuery(const DriverPtr& driver, const QString& query) throw(const Fw::Exception&);
 
     QString lastError() const;
