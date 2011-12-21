@@ -3,8 +3,8 @@
 #include "controller.hpp"
 #include "driver.hpp"
 
-#include "fw/database/postgresql/driver.hpp"
-#include "fw/database/sqlite/driver.hpp"
+#include "fw/database/postgresql/driver_postgresql.hpp"
+#include "fw/database/sqlite/driver_sqlite.hpp"
 
 Fw::Database::Controller::Controller(const QByteArray& name) :
     BaseClass(name)

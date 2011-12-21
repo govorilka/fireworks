@@ -1,8 +1,9 @@
 #include "fwcore/fwchartype.h"
 #include "fwcore/fwml.h"
 
-#include "fw/database/postgresql/driver.hpp"
-#include "fw/database/postgresql/querydata.hpp"
+#include "fw/database/postgresql/defs.hpp"
+#include "fw/database/postgresql/driver_postgresql.hpp"
+#include "fw/database/postgresql/query_postgresql.hpp"
 
 
 bool Fw::Database::PostgreSQL::Driver::parseQuery(const QByteArray& query, Fw::Database::PostgreSQL::TokenVector& tokens)
@@ -196,10 +197,30 @@ Fw::Database::QueryPtr Fw::Database::PostgreSQL::Driver::createQuery(const Drive
     return QueryPtr(new Query(driver, vector));
 }
 
+void Fw::Database::PostgreSQL::Driver::execSimpleQuery(const QString& query) throw(const Fw::Exception&)
+{
+    if(!m_connection)
+    {
+        throw Fw::Exception(lastError());
+    }
+
+    //make query
+    PGresult* result = PQexec(m_connection, query.toUtf8());
+    ExecStatusType status = PQresultStatus(result);
+    PQclear(result);
+    result = 0;
+    setLastInsertKey(0);
+    if(status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
+    {
+        throw Fw::Exception(lastError());
+    }
+}
+
 bool Fw::Database::PostgreSQL::Driver::isOpen() const
 {
     return m_connection;
 }
+
 int Fw::Database::PostgreSQL::Driver::lastInsertKey() const
 {
     return m_lastInsertRowId;

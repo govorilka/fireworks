@@ -32,3 +32,8 @@ void Fw::Database::Query::bindBool(int index, bool value) throw(const Fw::Except
 {
     bindInt(index, value);
 }
+
+void Fw::Database::Query::bindUrl(int index, const QUrl& url) throw(const Fw::Exception&)
+{
+    bindText(index, url.toString());
+}

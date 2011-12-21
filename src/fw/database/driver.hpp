@@ -32,11 +32,12 @@ public:
     virtual bool isOpen() const = 0;
     virtual int lastInsertKey()const  = 0;
 
-    void beginTransaction() throw(const Fw::Exception&);
-    void commit() throw(const Fw::Exception&);
-    void rollback() throw(const Fw::Exception&);
+    virtual void execSimpleQuery(const QString& query) throw(const Fw::Exception&) = 0;
 
-    void reindex(const QString& indexName) throw(const Fw::Exception&);
+    virtual void transactionBegin() throw(const Fw::Exception&);
+    virtual void transactionCommit() throw(const Fw::Exception&);
+    virtual void transactionRollback() throw(const Fw::Exception&);
+    virtual void reindex(const QString& indexName) throw(const Fw::Exception&);
 
     void execFile(const QString& fileName) throw(const Fw::Exception&);
     void execFile(QIODevice* device) throw(const Fw::Exception&);

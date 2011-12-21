@@ -11,37 +11,36 @@ Fw::Database::Driver::~Driver()
 {
 }
 
-void Fw::Database::Driver::beginTransaction() throw(const Fw::Exception&)
+void Fw::Database::Driver::transactionBegin() throw(const Fw::Exception&)
 {
     if(!m_beginTransaction)
     {
-        QueryPtr query = createQuery(DriverPtr(this, emptyDeleter), "BEGIN");
-        query->step();
+        execSimpleQuery("BEGIN");
         m_beginTransaction = true;
     }
 }
 
-void Fw::Database::Driver::commit() throw(const Fw::Exception&)
+void Fw::Database::Driver::transactionCommit() throw(const Fw::Exception&)
 {
     if(m_beginTransaction)
     {
-        createQuery(DriverPtr(this, emptyDeleter), "COMMIT")->step();
+        execSimpleQuery("COMMIT");
         m_beginTransaction = false;
     }
 }
 
-void Fw::Database::Driver::rollback() throw(const Fw::Exception&)
+void Fw::Database::Driver::transactionRollback() throw(const Fw::Exception&)
 {
     if(m_beginTransaction)
     {
-        createQuery(DriverPtr(this, emptyDeleter), "ROLLBACK")->step();
+        execSimpleQuery("ROLLBACK");
         m_beginTransaction = false;
     }
 }
 
 void Fw::Database::Driver::reindex(const QString& indexName) throw(const Fw::Exception&)
 {
-    createQuery(DriverPtr(this, emptyDeleter), QString("REINDEX %1").arg(indexName))->step();
+    execSimpleQuery(QString("REINDEX %1").arg(indexName));
 }
 
 void Fw::Database::Driver::execFile(const QString& fileName) throw(const Fw::Exception&)
@@ -57,7 +56,7 @@ void Fw::Database::Driver::execFile(QIODevice* device) throw(const Fw::Exception
         throw Fw::Exception(device->errorString().toUtf8());
     }
 
-    beginTransaction();
+    transactionBegin();
 
     QList<QByteArray> commands = device->readAll().simplified().split(';');
     foreach(QByteArray command, commands)
@@ -68,7 +67,7 @@ void Fw::Database::Driver::execFile(QIODevice* device) throw(const Fw::Exception
         }
     }
 
-    commit();
+    transactionCommit();
 }
 
 QString Fw::Database::Driver::lastError() const

@@ -3,7 +3,6 @@
 #include <QtCore/qdebug.h>
 
 #include "fw/scheduler.hpp"
-#include "fireworks.h"
 
 #include "fwcore/fwml.h"
 #include "fwutils/fwconfig.h"
@@ -218,6 +217,7 @@ void Fw::Scheduler::release()
 bool Fw::Scheduler::loadConfig() throw(Fw::Exception&)
 {
     FwConfig::loadConfig("scheduler", this);
+    return true;
 }
 
 bool Fw::Scheduler::loadData(FwMLObject *object)

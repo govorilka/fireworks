@@ -1,7 +1,7 @@
 #ifndef FIREWORKS_HELPERS_LOCK_HPP
 #define FIREWORKS_HELPERS_LOCK_HPP
 
-#include <Qt/qreadwritelock.h>
+#include <QtCore/qreadwritelock.h>
 
 #include "fw/defs.hpp"
 #include "fw/helpers/defs.hpp"
