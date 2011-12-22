@@ -64,7 +64,7 @@ private:
     bool m_begin;
 };
 
-#define TRANSACTION(db) for(Fw::Database::Transaction t(db); t.begin(); t.commit())
+#define FW_TRANSACTION(db) for(Fw::Database::Transaction t(db); t.begin(); t.commit())
 
 bool Fw::Database::Transaction::begin() throw(const Fw::Exception&)
 {
