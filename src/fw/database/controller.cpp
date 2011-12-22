@@ -82,6 +82,44 @@ Fw::Database::QueryPtr Fw::Database::Controller::createQuery(const QString& quer
     return createQuery(resultQuery);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+Fw::Database::Transaction::Transaction(Fw::Database::Controller& db) throw(const Fw::Exception&) :
+    m_db(db),
+    m_begin(true)
+{
+    m_db->transactionBegin();
+}
+
+Fw::Database::Transaction::~Transaction() throw()
+{
+    if(m_begin)
+    {
+        try
+        {
+            m_db->transactionRollback();
+        }
+        catch(...)
+        {
+            //qDebug() << "Rollback exception";
+        }
+    }
+}
+
+void Fw::Database::Transaction::commit() throw(const Fw::Exception&)
+{
+    if(m_begin)
+    {
+        m_begin = false;
+        m_db->transactionCommit();
+    }
+}
+
+bool Fw::Database::Transaction::begin() throw(const Fw::Exception&)
+{
+    return m_begin;
+}
+
 //=============================================================================
 
 //Fw::Database::Controller::Controller(const QByteArray& name, QObject* parent) :

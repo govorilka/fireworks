@@ -7,6 +7,18 @@
 #include "fw/database/driver.hpp"
 #include "fw/database/query.hpp"
 
+//class Database
+//{
+//    class Driver;
+//    class Query;
+//    class Transaction;
+//};
+
+//Fw::Database;
+//Fw::Database::Driver;
+//Fw::Database::Query;
+//Fw::Database::Transaction;
+
 class FIREWORKSSHARED_EXPORT Fw::Database::Controller : public FwCPPObject
 {
     typedef FwCPPObject BaseClass;
@@ -35,6 +47,26 @@ public:
     inline const Driver* driver() const;
     inline Driver* driver();
 };
+
+////////////////////////////////////////////////////////////////////////////////
+
+class FIREWORKSSHARED_EXPORT Fw::Database::Transaction
+{
+public:
+    explicit Transaction(Controller& db) throw(const Fw::Exception&);
+    ~Transaction() throw();
+
+    void commit() throw(const Fw::Exception&);
+    inline bool begin() throw(const Fw::Exception&);
+
+private:
+    Controller& m_db;
+    bool m_begin;
+};
+
+#define TRANSACTION(db) for(Transaction t(db); t.begin(); t.commit())
+
+////////////////////////////////////////////////////////////////////////////////
 
 Fw::Database::QueryPtr Fw::Database::Controller::loadQuery(const QString& filename, const QStringList& arguments) throw(const Fw::Exception&)
 {
@@ -95,6 +127,9 @@ Fw::Database::Driver* Fw::Database::Controller::driver()
 {
     return m_driver.data();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
 //===================================================================================================
 
 //class FIREWORKSSHARED_EXPORT Fw::Database::Controller : public QObject, public FwCPPObject
