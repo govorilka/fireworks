@@ -23,7 +23,6 @@ namespace Fw
 {
     class Scheduler;
     //class Scheduler::Task;
-
 }
 
 class FIREWORKSSHARED_EXPORT Fw::Scheduler : public QThread, public FwCPPObject
@@ -32,7 +31,6 @@ class FIREWORKSSHARED_EXPORT Fw::Scheduler : public QThread, public FwCPPObject
     typedef FwCPPObject BaseClass;
 
 public:
-
     class Task;
     class SystemTask;
     class NetworkTask;
@@ -40,6 +38,15 @@ public:
     class TaskEvent;
 
     friend class Task;
+
+    enum TaskStatus
+    {
+        TS_Unknow,
+        TS_Start,
+        TS_Stop,
+        TS_Pause,
+        TS_UserRequest
+    };
 
     explicit Scheduler(QObject* parent = 0, const QByteArray& name = QByteArray());
     virtual ~Scheduler();
@@ -187,21 +194,32 @@ public:
     bool loadData(FwMLObject *object);
 
 protected:
+    enum MasterStatus
+    {
+        MS_Continue,
+        MS_ContinueWhenReady,
+        MS_ContinueManual
+    };
+
     void run();
 
     QPointer<Scheduler::NetworkManager> networkManager;
 
-    virtual bool replyMasterProcessed(QNetworkReply* reply) = 0;
-    virtual void replySlaveProcessed(QNetworkReply* reply);
+    virtual MasterStatus replyMasterProcessed(QNetworkReply* reply) throw(const Fw::Exception&) = 0;
+    virtual void replySlaveProcessed(QNetworkReply* reply) throw(const Fw::Exception&);
 
     QPointer<QNetworkReply> get(const QUrl& url);
 
-private:
-    void replyFinished(QNetworkReply*);
+    void setMasterStatus(MasterStatus status);
+    inline MasterStatus masterStatus() const;
 
+private:
+    MasterStatus m_masterStatus;
     QUrl m_url;
     QPointer<QNetworkReply> m_masterReply;
     QList< QPointer<QNetworkReply> > m_slaves;
+
+    void replyFinished(QNetworkReply*);
 };
 
 ////////////////////////////////////////////////////////////////////

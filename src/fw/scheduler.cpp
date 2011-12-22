@@ -52,7 +52,7 @@ bool Fw::Scheduler::startTask(Fw::Scheduler::Task* task)
     if(task)
     {
         Fw::Scheduler::TaskEvent* event = new Fw::Scheduler::TaskEvent();
-        event->setStatus(Fw::TS_Start);
+        event->setStatus(TS_Start);
         QCoreApplication::postEvent(task, event);
         return true;
     }
@@ -64,7 +64,7 @@ bool Fw::Scheduler::stopTask(Fw::Scheduler::Task* task)
     if(task)
     {
         Fw::Scheduler::TaskEvent* event = new Fw::Scheduler::TaskEvent();
-        event->setStatus(Fw::TS_Stop);
+        event->setStatus(TS_Stop);
         QCoreApplication::postEvent(task, event);
         return true;
     }
@@ -290,7 +290,7 @@ Fw::Scheduler::Task::Task(QObject* parent, const QByteArray& name) :
     BaseClass(name),
     scheduler(0),
     m_timerId(0),
-    m_status(Fw::TS_Stop),
+    m_status(TS_Stop),
     m_interval(0),
     m_runOnStart(true)
 {
@@ -304,18 +304,18 @@ Fw::Scheduler::Task::~Task()
 
 void Fw::Scheduler::Task::stop()
 {
-    if(m_status != Fw::TS_Stop)
+    if(m_status != TS_Stop)
     {
-        m_status = Fw::TS_Stop;
+        m_status = TS_Stop;
         killTaskTimer();
     }
 }
 
 void Fw::Scheduler::Task::start()
 {
-    if(m_status == Fw::TS_Stop)
+    if(m_status == TS_Stop)
     {
-        m_status = Fw::TS_Start;
+        m_status = TS_Start;
         if(m_runOnStart)
         {
             run();
@@ -326,18 +326,18 @@ void Fw::Scheduler::Task::start()
 
 void Fw::Scheduler::Task::play()
 {
-    if(m_status == Fw::TS_Pause)
+    if(m_status == TS_Pause)
     {
-        m_status = Fw::TS_Start;
+        m_status = TS_Start;
         startTaskTimer();
     }
 }
 
 void Fw::Scheduler::Task::pause()
 {
-    if(m_status == Fw::TS_Start)
+    if(m_status == TS_Start)
     {
-        m_status = Fw::TS_Pause;
+        m_status = TS_Pause;
         killTaskTimer();
     }
 }
@@ -349,12 +349,12 @@ bool Fw::Scheduler::Task::event(QEvent * e)
         Fw::Scheduler::TaskEvent* taskEvent = static_cast<Fw::Scheduler::TaskEvent*>(e);
         switch(taskEvent->status())
         {
-        case Fw::TS_Start:
+        case TS_Start:
             start();
             taskEvent->accept();
             return true;
 
-        case Fw::TS_Stop:
+        case TS_Stop:
             stop();
             taskEvent->accept();
             return true;
@@ -378,7 +378,7 @@ void Fw::Scheduler::Task::setInterval(int msecs)
 
 void Fw::Scheduler::Task::timerEvent(QTimerEvent* event)
 {
-    if(event->timerId() == m_timerId && m_status == Fw::TS_Start)
+    if(event->timerId() == m_timerId && m_status == TS_Start)
     {
         run();
     }
@@ -468,7 +468,8 @@ void Fw::Scheduler::SystemTask::run()
 Fw::Scheduler::NetworkTask::NetworkTask(QObject* parent, const QByteArray& name) :
     BaseClass(parent, name),
     networkManager(0),
-    m_masterReply(0)
+    m_masterReply(0),
+    m_masterStatus(MS_Continue)
 {
 }
 
@@ -496,35 +497,55 @@ void Fw::Scheduler::NetworkTask::setUrl(const QUrl& url)
 
 void Fw::Scheduler::NetworkTask::replyFinished(QNetworkReply* reply)
 {
-    bool masterReplay = (m_masterReply == reply);
-    bool slaveReply = (masterReplay ? false : m_slaves.contains(reply));
-    if(masterReplay || slaveReply)
+    if(reply == m_masterReply)
     {
-        bool canPlay = true;
-
         if(reply->error() == QNetworkReply::NoError)
         {
-            if(masterReplay)
+            try
             {
-                canPlay = replyMasterProcessed(reply);
+                setMasterStatus(replyMasterProcessed(reply));
             }
-            else if(slaveReply)
+            catch(const Fw::Exception& e)
             {
-                replySlaveProcessed(reply);
-                m_slaves.removeAll(reply);
+                qDebug() << e.error();
+                setMasterStatus(MS_Continue);
             }
-            reply->close();
         }
         else
         {
-            qDebug() << "ERROR: FwScheduler::NetworkTask: " << reply->errorString();
-            clearReply();
+            qDebug() << reply->errorString();
         }
 
-        if(canPlay && m_slaves.isEmpty())
+        m_masterReply->close();
+        m_masterReply = 0;
+        return;
+    }
+
+    if(m_slaves.contains(reply))
+    {
+        if(reply->error() == QNetworkReply::NoError)
         {
-            play();
+            try
+            {
+                replySlaveProcessed(reply);
+            }
+            catch(const Fw::Exception& e)
+            {
+                qDebug() << e.error();
+            }
         }
+        else
+        {
+            qDebug() << reply->errorString();
+        }
+
+        reply->close();
+        m_slaves.removeOne(reply);
+        if(masterStatus() == MS_ContinueWhenReady && m_slaves.isEmpty())
+        {
+            setMasterStatus(NetworkTask::MS_Continue);
+        }
+        return;
     }
 }
 
@@ -540,7 +561,12 @@ QPointer<QNetworkReply> Fw::Scheduler::NetworkTask::get(const QUrl& url)
     return QPointer<QNetworkReply>();
 }
 
-void Fw::Scheduler::NetworkTask::replySlaveProcessed(QNetworkReply* reply)
+void Fw::Scheduler::NetworkTask::setMasterStatus(Fw::Scheduler::NetworkTask::MasterStatus status)
+{
+    m_masterStatus;
+}
+
+void Fw::Scheduler::NetworkTask::replySlaveProcessed(QNetworkReply* reply) throw(const Fw::Exception&)
 {
     Q_UNUSED(reply);
 }
@@ -589,7 +615,7 @@ bool Fw::Scheduler::NetworkTask::loadData(FwMLObject *object)
 
 Fw::Scheduler::TaskEvent::TaskEvent() :
     BaseClass(static_cast<QEvent::Type>(typeID())),
-    m_status(Fw::TS_Unknow)
+    m_status(TS_Unknow)
 {
 }
 

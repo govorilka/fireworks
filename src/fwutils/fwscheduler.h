@@ -1,211 +1,232 @@
-#ifndef FIREWORKS_SCHEDULER_H
-#define FIREWORKS_SCHEDULER_H
+//#ifndef FIREWORKS_SCHEDULER_H
+//#define FIREWORKS_SCHEDULER_H
 
-#include <QtCore/qthread.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qpointer.h>
-#include <QtCore/qurl.h>
-#include <QtCore/qmap.h>
-#include <QtCore/qcoreevent.h>
+//#include <QtCore/qthread.h>
+//#include <QtCore/qhash.h>
+//#include <QtCore/qpointer.h>
+//#include <QtCore/qurl.h>
+//#include <QtCore/qmap.h>
+//#include <QtCore/qcoreevent.h>
 
-#include <QtNetwork/qnetworkaccessmanager.h>
-#include <QtNetwork/qnetworkreply.h>
+//#include <QtNetwork/qnetworkaccessmanager.h>
+//#include <QtNetwork/qnetworkreply.h>
 
-#include "fireworks.h"
+//#include "fireworks.h"
 
-#include "fwcore/fwcppobject.h"
+//#include "fwcore/fwcppobject.h"
 
-class QNetworkReply;
-class QNetworkAccessManager;
+//class QNetworkReply;
+//class QNetworkAccessManager;
 
-class FwSchedulerTask;
-class FwNetworkSchedulerTask;
-class FwSchedulerNetworkManager;
+//class FwSchedulerTask;
+//class FwNetworkSchedulerTask;
+//class FwSchedulerNetworkManager;
 
-class FIREWORKSSHARED_EXPORT FwScheduler : public QThread, public FwCPPObject
-{
-    Q_OBJECT
-    typedef FwCPPObject BaseClass;
+//class FIREWORKSSHARED_EXPORT FwScheduler : public QThread, public FwCPPObject
+//{
+//    Q_OBJECT
+//    typedef FwCPPObject BaseClass;
 
-public:
-    friend class FwSchedulerTask;
+//public:
 
-    explicit FwScheduler(const QByteArray& name,QObject *parent = 0);
-    virtual ~FwScheduler();
+//    enum TaskStatus
+//    {
+//        TS_Unknow,
+//        TS_Start,
+//        TS_Stop,
+//        TS_Pause,
+//        TS_UserRequest
+//    };
 
-    int addTask(FwSchedulerTask* task);
+//    friend class FwSchedulerTask;
 
-    inline bool startTask(int taskId);
-    bool startTask(FwSchedulerTask* task);
+//    explicit FwScheduler(const QByteArray& name,QObject *parent = 0);
+//    virtual ~FwScheduler();
 
-    inline bool stopTask(int taskId);
-    bool stopTask(FwSchedulerTask* task);
+//    int addTask(FwSchedulerTask* task);
 
-    void startAllTasks();
-    void stopAllTasks();
+//    inline bool startTask(int taskId);
+//    bool startTask(FwSchedulerTask* task);
 
-    bool postEvent(int taskId, QEvent* event);
+//    inline bool stopTask(int taskId);
+//    bool stopTask(FwSchedulerTask* task);
 
-    static QList<FwSchedulerTask*> loadTasks(const QString& filename, QString* error);
+//    void startAllTasks();
+//    void stopAllTasks();
 
-    inline QString lastError() const;
+//    bool postEvent(int taskId, QEvent* event);
 
-    void release();
+//    static QList<FwSchedulerTask*> loadTasks(const QString& filename, QString* error);
 
-    bool loadConfig() throw(Fw::Exception&);
-    bool loadData(FwMLObject *object);
+//    inline QString lastError() const;
 
-protected:
-    void run();
+//    void release();
 
-private:
-    QPointer<FwSchedulerNetworkManager> networkManager;
+//    bool loadConfig() throw(Fw::Exception&);
+//    bool loadData(FwMLObject *object);
 
-    QHash<int, FwSchedulerTask*> m_tasks;
-    QString errorString;
-};
+//protected:
+//    void run();
 
-////////////////////////////////////////////////////////////////////
+//private:
+//    QPointer<FwSchedulerNetworkManager> networkManager;
 
-class FIREWORKSSHARED_EXPORT FwSchedulerNetworkManager : public QNetworkAccessManager
-{
-    Q_OBJECT
-    typedef QNetworkAccessManager BaseClass;
+//    QHash<int, FwSchedulerTask*> m_tasks;
+//    QString errorString;
+//};
 
-public:
-    FwSchedulerNetworkManager(QObject* parent = 0);
+//////////////////////////////////////////////////////////////////////
 
-    QNetworkReply* get(FwNetworkSchedulerTask* task, const QUrl& url);
+//class FIREWORKSSHARED_EXPORT FwSchedulerNetworkManager : public QNetworkAccessManager
+//{
+//    Q_OBJECT
+//    typedef QNetworkAccessManager BaseClass;
 
-private:
-    QHash<int, QPointer<FwNetworkSchedulerTask> >  replyCache;
+//public:
+//    FwSchedulerNetworkManager(QObject* parent = 0);
 
-private slots:
-    void replyFinished(QNetworkReply* reply);
-    void replyDestroy(QObject* object);
-};
+//    QNetworkReply* get(FwNetworkSchedulerTask* task, const QUrl& url);
 
-////////////////////////////////////////////////////////////////////
+//private:
+//    QHash<int, QPointer<FwNetworkSchedulerTask> >  replyCache;
 
-class FIREWORKSSHARED_EXPORT FwSchedulerTask : public QObject, public FwCPPObject
-{
-    Q_OBJECT
-    typedef FwCPPObject BaseClass;
+//private slots:
+//    void replyFinished(QNetworkReply* reply);
+//    void replyDestroy(QObject* object);
+//};
 
-public:
-    friend class FwScheduler;
+//////////////////////////////////////////////////////////////////////
 
-    explicit FwSchedulerTask(const QByteArray& name, QObject *parent = 0);
-    virtual ~FwSchedulerTask();
+//class FIREWORKSSHARED_EXPORT FwSchedulerTask : public QObject, public FwCPPObject
+//{
+//    Q_OBJECT
+//    typedef FwCPPObject BaseClass;
 
-    bool event(QEvent * e);
+//public:
+//    friend class FwScheduler;
 
-    inline int interval() const;
-    void setInterval(int interval);
+//    explicit FwSchedulerTask(const QByteArray& name, QObject *parent = 0);
+//    virtual ~FwSchedulerTask();
 
-    inline bool isRunningOnStart() const;
-    void setRunOnStart(bool enable);
+//    bool event(QEvent * e);
 
-    bool loadData(FwMLObject *object);
+//    inline int interval() const;
+//    void setInterval(int interval);
 
-protected:
-    void stop();
-    void start();
+//    inline bool isRunningOnStart() const;
+//    void setRunOnStart(bool enable);
 
-    void play();
-    void pause();
+//    bool loadData(FwMLObject *object);
 
-    void startTaskTimer();
-    void killTaskTimer();
+//protected:
+//    void stop();
+//    void start();
 
-    void timerEvent(QTimerEvent* event);
+//    void play();
+//    void pause();
 
-    virtual void run() = 0;
+//    void startTaskTimer();
+//    void killTaskTimer();
 
-private:
-    int m_timerId;
-    int m_interval;
-    int m_status;
-    bool m_runOnStart;
-    QPointer<FwScheduler> scheduler;
-};
+//    void timerEvent(QTimerEvent* event);
 
-////////////////////////////////////////////////////////////////////
+//    virtual void run() = 0;
 
-class FIREWORKSSHARED_EXPORT FwSystemSchedulerTask : public FwSchedulerTask
-{
-    Q_OBJECT
-    typedef FwSchedulerTask BaseClass;
+//private:
+//    int m_timerId;
+//    int m_interval;
+//    int m_status;
+//    bool m_runOnStart;
+//    QPointer<FwScheduler> scheduler;
+//};
 
-public:
-    FwSystemSchedulerTask(const QByteArray& name, QObject *parent = 0);
+//////////////////////////////////////////////////////////////////////
 
-    inline QString command() const;
-    void setCommand(const QString& command);
+//class FIREWORKSSHARED_EXPORT FwSystemSchedulerTask : public FwSchedulerTask
+//{
+//    Q_OBJECT
+//    typedef FwSchedulerTask BaseClass;
 
-protected:
-    virtual void run();
+//public:
+//    FwSystemSchedulerTask(const QByteArray& name, QObject *parent = 0);
 
-private:
-    QString m_command;
-};
+//    inline QString command() const;
+//    void setCommand(const QString& command);
 
-////////////////////////////////////////////////////////////////////
+//protected:
+//    virtual void run();
 
-class FIREWORKSSHARED_EXPORT FwNetworkSchedulerTask : public FwSchedulerTask
-{
-    Q_OBJECT
-    typedef FwSchedulerTask BaseClass;
+//private:
+//    QString m_command;
+//};
 
-public:
-    friend class FwScheduler;
-    friend class FwSchedulerNetworkManager;
+//////////////////////////////////////////////////////////////////////
 
-    FwNetworkSchedulerTask(const QByteArray& name, QObject* parent = 0);
-    virtual ~FwNetworkSchedulerTask();
+//class FIREWORKSSHARED_EXPORT FwNetworkSchedulerTask : public FwSchedulerTask
+//{
+//    Q_OBJECT
+//    typedef FwSchedulerTask BaseClass;
 
-    inline QUrl url() const;
-    void setUrl(const QUrl& url);
+//public:
+//    friend class FwScheduler;
+//    friend class FwSchedulerNetworkManager;
 
-    void clearReply();
+//    FwNetworkSchedulerTask(const QByteArray& name, QObject* parent = 0);
+//    virtual ~FwNetworkSchedulerTask();
 
-    bool loadData(FwMLObject *object);
+//    inline QUrl url() const;
+//    void setUrl(const QUrl& url);
 
-protected:
-    void run();
+//    void clearReply();
 
-    QPointer<FwSchedulerNetworkManager> networkManager;
+//    bool loadData(FwMLObject *object);
 
-    virtual bool replyMasterProcessed(QNetworkReply* reply) = 0;
-    virtual void replySlaveProcessed(QNetworkReply* reply);
+//protected:
+//    void run();
 
-    QPointer<QNetworkReply> get(const QUrl& url);
+//    QPointer<FwSchedulerNetworkManager> networkManager;
 
-private:
-    void replyFinished(QNetworkReply*);
+//    enum MasterStatus
+//    {
+//        Continue,
+//        ContinueWhenReady,
+//        ContinueManual
+//    };
 
-    QUrl m_url;
-    QPointer<QNetworkReply> m_masterReply;
-    QList< QPointer<QNetworkReply> > m_slaves;
-};
+//    virtual MasterStatus replyMasterProcessed(QNetworkReply* reply) throw (const Fw::Exception&) = 0;
+//    virtual void replySlaveProcessed(QNetworkReply* reply) throw (const Fw::Exception&);
 
-////////////////////////////////////////////////////////////////////
+//    QPointer<QNetworkReply> get(const QUrl& url);
 
-class FIREWORKSSHARED_EXPORT FwSchedulerTaskEvent: public QEvent
-{
-    typedef QEvent BaseClass;
-public:
-    FwSchedulerTaskEvent();
+//    void setMasterStatus(MasterStatus status);
+//    inline MasterStatus masterStatus() const;
 
-    static int typeID();
+//private:
+//    MasterStatus m_masterStatus;
+//    QUrl m_url;
+//    QPointer<QNetworkReply> m_masterReply;
+//    QList< QPointer<QNetworkReply> > m_slaves;
 
-    inline int status() const;
-    void setStatus(int status);
+//    void replyFinished(QNetworkReply*);
+//};
 
-private:
-    int m_status;
-};
+//////////////////////////////////////////////////////////////////////
 
-#include "fwscheduler_inl.h"
+//class FIREWORKSSHARED_EXPORT FwSchedulerTaskEvent: public QEvent
+//{
+//    typedef QEvent BaseClass;
+//public:
+//    FwSchedulerTaskEvent();
 
-#endif // FIREWORKS_SCHEDULER_H
+//    static int typeID();
+
+//    inline int status() const;
+//    void setStatus(int status);
+
+//private:
+//    int m_status;
+//};
+
+//#include "fwscheduler_inl.h"
+
+//#endif // FIREWORKS_SCHEDULER_H

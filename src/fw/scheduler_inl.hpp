@@ -44,6 +44,11 @@ QUrl Fw::Scheduler::NetworkTask::url() const
     return m_url;
 }
 
+inline Fw::Scheduler::NetworkTask::MasterStatus Fw::Scheduler::NetworkTask::masterStatus() const
+{
+    return m_masterStatus;
+}
+
 ////////////////////////////////////////////////////////////////////
 
 int Fw::Scheduler::TaskEvent::status() const
