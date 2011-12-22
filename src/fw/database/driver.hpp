@@ -11,6 +11,7 @@
 class FIREWORKSSHARED_EXPORT Fw::Database::Driver : public FwCPPObject, public Fw::Helpers::Lockable
 {
     typedef FwCPPObject BaseClass;
+    friend class Transaction;
 
     bool m_beginTransaction;
 
@@ -33,15 +34,18 @@ public:
     virtual int lastInsertKey()const  = 0;
 
     virtual void execSimpleQuery(const QString& query) throw(const Fw::Exception&) = 0;
-
-    virtual void transactionBegin() throw(const Fw::Exception&);
-    virtual void transactionCommit() throw(const Fw::Exception&);
-    virtual void transactionRollback() throw(const Fw::Exception&);
     virtual void reindex(const QString& indexName) throw(const Fw::Exception&);
 
     void execFile(const QString& fileName) throw(const Fw::Exception&);
     void execFile(QIODevice* device) throw(const Fw::Exception&);
+
+protected:
+    virtual void transactionBegin() throw(const Fw::Exception&);
+    virtual void transactionCommit() throw(const Fw::Exception&);
+    virtual void transactionRollback() throw(const Fw::Exception&);
 };
+
+////////////////////////////////////////////////////////////////////////////////
 
 void Fw::Database::Driver::deleter(Driver* driver)
 {

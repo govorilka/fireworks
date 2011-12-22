@@ -17,6 +17,7 @@ namespace Fw
 
     class Driver;
     class Query;
+    class Transaction;
 
     typedef QSharedPointer<Driver> DriverPtr;
     typedef QSharedPointer<Query> QueryPtr;
