@@ -56,15 +56,20 @@ public:
     explicit Transaction(Controller& db) throw(const Fw::Exception&);
     ~Transaction() throw();
 
-    void commit() throw(const Fw::Exception&);
     inline bool begin() throw(const Fw::Exception&);
+    void commit() throw(const Fw::Exception&);
 
 private:
     Controller& m_db;
     bool m_begin;
 };
 
-#define TRANSACTION(db) for(Transaction t(db); t.begin(); t.commit())
+#define TRANSACTION(db) for(Fw::Database::Transaction t(db); t.begin(); t.commit())
+
+bool Fw::Database::Transaction::begin() throw(const Fw::Exception&)
+{
+    return m_begin;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -115,11 +115,6 @@ void Fw::Database::Transaction::commit() throw(const Fw::Exception&)
     }
 }
 
-bool Fw::Database::Transaction::begin() throw(const Fw::Exception&)
-{
-    return m_begin;
-}
-
 //=============================================================================
 
 //Fw::Database::Controller::Controller(const QByteArray& name, QObject* parent) :
