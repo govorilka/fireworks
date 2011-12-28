@@ -16,8 +16,6 @@ class FIREWORKSSHARED_EXPORT Fw::Database::Driver : public FwCPPObject, public F
     bool m_beginTransaction;
 
 public:
-    QReadWriteLock lock;
-
     explicit Driver(const QByteArray& name);
     virtual ~Driver();
 

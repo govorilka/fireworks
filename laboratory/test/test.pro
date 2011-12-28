@@ -14,5 +14,8 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-
 SOURCES += main.cpp
+
+#Fireworks library
+INCLUDEPATH += $(FIREWORKS_PATH)/src
+LIBS += -L$(FIREWORKS_PATH)/bin -lfireworks4
