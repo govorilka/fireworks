@@ -6,6 +6,7 @@
 #include "fw/database/defs.hpp"
 #include "fw/database/driver.hpp"
 #include "fw/database/query.hpp"
+#include "fw/helpers/lock.hpp"
 
 //class Database
 //{
@@ -19,7 +20,7 @@
 //Fw::Database::Query;
 //Fw::Database::Transaction;
 
-class FIREWORKSSHARED_EXPORT Fw::Database::Controller : public FwCPPObject
+class FIREWORKSSHARED_EXPORT Fw::Database::Controller : public FwCPPObject, public Fw::Helpers::Lockable
 {
     typedef FwCPPObject BaseClass;
 
