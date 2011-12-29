@@ -16,7 +16,7 @@ namespace Fw
     }
 }
 
-struct Fw::Console::Argument
+struct FIREWORKSSHARED_EXPORT Fw::Console::Argument
 {
     QString name;
     QString value;
