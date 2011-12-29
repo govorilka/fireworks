@@ -16,20 +16,19 @@ int main(int argc, char *argv[])
     {
         Lockable obj;
 
-        FW_LOCK(obj, Fw::Helpers::Locker::M_ReadLock)
+        FW_READ_LOCK(obj)
         {
             qDebug() << "Action";
         }
-        FW_LOCK(obj, Fw::Helpers::Locker::M_WriteLock)
+        FW_WRITE_LOCK(obj)
         {
             qDebug() << "Action";
         }
-        FW_LOCK(obj, Fw::Helpers::Locker::M_TryReadLock)
+        FW_TRY_READ_LOCK(obj)
         {
-            throw 10;
             qDebug() << "Action";
         }
-        FW_LOCK(obj, Fw::Helpers::Locker::M_TryWriteLock)
+        FW_TRY_WRITE_LOCK(obj)
         {
             qDebug() << "Action";
         }
