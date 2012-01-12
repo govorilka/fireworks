@@ -1,0 +1,7 @@
+
+driver
+{
+  base : "sqlite",
+  path : "local.db",
+  initPath : ":/sqlite3/local_create_db.sql"
+}
