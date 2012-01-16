@@ -1,3 +1,5 @@
+#include <QtCore/qpluginloader.h>
+
 #include "fwcore/fwml.h"
 
 #include "controller.hpp"

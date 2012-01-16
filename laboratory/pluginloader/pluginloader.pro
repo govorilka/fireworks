@@ -8,10 +8,10 @@ QT       += core
 QT       -= gui
 
 win32 {
-    TARGET = ../../../../bin/pluginloader
+    TARGET = ../../../bin/pluginloader
 }
 else {
-    TARGET = ../../../bin/pluginloader
+    TARGET = ../../bin/pluginloader
 }
 
 CONFIG   += console
@@ -23,8 +23,5 @@ TEMPLATE = app
 INCLUDEPATH += $(FIREWORKS_PATH)/src
 LIBS += -L$(FIREWORKS_PATH)/bin \
         -lfireworks4
-
-
-
 
 SOURCES += main.cpp

@@ -3,7 +3,8 @@
 
 #include "plugin_global.hpp"
 
-class PLUGINSHARED_EXPORT Plugin {
+class PLUGINSHARED_EXPORT Plugin
+{
 public:
     Plugin();
 };

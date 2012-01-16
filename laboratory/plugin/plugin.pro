@@ -12,21 +12,24 @@ TEMPLATE = lib
 DEFINES += PLUGIN_LIBRARY
 
 win32 {
-    TARGET = ../../../../bin/plugins/pluginloader
+    TARGET = ../../../bin/plugins/sqlite3
 }
 else {
-    TARGET = ../../../bin/plugins/pluginloader
+    TARGET = ../../bin/plugins/sqlite3
 }
+
 
 #Fireworks library
 INCLUDEPATH += $(FIREWORKS_PATH)/src
 LIBS += -L$(FIREWORKS_PATH)/bin \
         -lfireworks4
 
-SOURCES += plugin.cpp
+SOURCES += plugin.cpp \
+           sqlite3plugin.cpp
 
 HEADERS += plugin.hpp\
-        plugin_global.hpp
+        plugin_global.hpp \
+        sqlite3plugin.hpp
 
 symbian {
     MMP_RULES += EXPORTUNFROZEN
