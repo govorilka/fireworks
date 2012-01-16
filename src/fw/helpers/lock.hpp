@@ -4,7 +4,6 @@
 #include <QtCore/qreadwritelock.h>
 #include <QtCore/qdebug.h>
 
-#include "fw/defs.hpp"
 #include "fw/helpers/defs.hpp"
 
 class FIREWORKSSHARED_EXPORT Fw::Helpers::Lockable
