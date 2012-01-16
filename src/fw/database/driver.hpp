@@ -1,12 +1,21 @@
 #ifndef FIREWORKS_DATABASE_DRIVER_HPP
 #define FIREWORKS_DATABASE_DRIVER_HPP
 
+#include <QtCore/qobject.h>
 #include <QtCore/qreadwritelock.h>
 
 #include "fw/database/defs.hpp"
 #include "fw/helpers/lock.hpp"
 #include "fwcore/fwcppobject.h"
 
+namespace Fw
+{
+    namespace Database
+    {
+        class Plugin;
+        class DriverFactory;
+    }
+}
 
 class FIREWORKSSHARED_EXPORT Fw::Database::Driver : public FwCPPObject, public Fw::Helpers::Lockable
 {
@@ -43,8 +52,6 @@ protected:
     virtual void transactionRollback() throw(const Fw::Exception&);
 };
 
-////////////////////////////////////////////////////////////////////////////////
-
 void Fw::Database::Driver::deleter(Driver* driver)
 {
     driver->close();
@@ -56,5 +63,18 @@ void Fw::Database::Driver::emptyDeleter(Driver* driver)
 {
     driver = 0;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+class FIREWORKSSHARED_EXPORT Fw::Database::Plugin : public QObject
+{
+    Q_OBJECT
+    typedef QObject BaseClass;
+
+public:
+    Plugin(QObject* parent = 0);
+
+    virtual QString hi() const = 0;
+};
 
 #endif //FIREWORKS_DATABASE_DRIVER_HPP

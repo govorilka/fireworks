@@ -74,3 +74,10 @@ QString Fw::Database::Driver::lastError() const
 {
     return "Cannot connect to database";
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+Fw::Database::Plugin::Plugin(QObject* parent) :
+    BaseClass(parent)
+{
+}

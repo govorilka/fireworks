@@ -5,8 +5,7 @@ HEADERS += \
     fw/helpers/filesystem.hpp
 
 SOURCES += \
-    fw/helpers/lock.cpp \
-    fw/helpers/filesystem.cpp
+    fw/helpers/lock.cpp
 
 
 
