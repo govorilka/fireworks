@@ -1,3 +1,5 @@
+#include "QtCore/qdebug.h"
+
 #include "arguments.hpp"
 
 Fw::Console::Arguments::Arguments(const QStringList& argList) :
@@ -21,10 +23,10 @@ Fw::Console::Arguments::Arguments(const QStringList& argList) :
         }
         else if(isValue(candidate))
         {
-        argument.value = Arguments::getClearArgument(candidate);
-        m_arguments.push_back(argument);
-        argument.name.clear();
-        argument.value.clear();
+            argument.value = Arguments::getClearArgument(candidate);
+            m_arguments.push_back(argument);
+            argument.name.clear();
+            argument.value.clear();
         }
     }
 
@@ -37,19 +39,6 @@ Fw::Console::Arguments::Arguments(const QStringList& argList) :
 Fw::Console::Arguments::~Arguments()
 {
 
-}
-
-QString Fw::Console::Arguments::value(const QString& key, const QString& defaultValue) const
-{
-    foreach(Argument argument, m_arguments)
-    {
-        if(argument.name == key)
-        {
-            return argument.value;
-        }
-    }
-
-    return defaultValue;
 }
 
 bool Fw::Console::Arguments::isExist(const QString& key, QString* value) const
@@ -69,15 +58,22 @@ bool Fw::Console::Arguments::isExist(const QString& key, QString* value) const
     return false;
 }
 
+const QString Fw::Console::Arguments::value(const QString& key, const QString& defaultValue) const
+{
+    QString value;
+    if(isExist(key, &value))
+    {
+        return value;
+    }
+
+    return defaultValue;
+}
+
 QString Fw::Console::Arguments::getClearArgument(const QString& arg)
 {
     if(arg.startsWith('"') && arg.endsWith('"'))
     {
         return arg.mid(1, arg.size()-1);
-    }
-    else if(arg.startsWith('/'))
-    {
-        return arg.mid(1);
     }
     else if(arg.startsWith("--"))
     {

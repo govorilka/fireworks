@@ -1,6 +1,7 @@
 #include "plugin.hpp"
 
 
-Plugin::Plugin()
+Plugin::Plugin(QObject* parent) :
+BaseClass(parent)
 {
 }

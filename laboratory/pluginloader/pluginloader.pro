@@ -24,4 +24,9 @@ INCLUDEPATH += $(FIREWORKS_PATH)/src
 LIBS += -L$(FIREWORKS_PATH)/bin \
         -lfireworks4
 
+#Plugin library
+INCLUDEPATH += $(FIREWORKS_PATH)/laboratory/plugin
+LIBS += -L$(FIREWORKS_PATH)/bin/plugins \
+        -lplugin
+
 SOURCES += main.cpp
