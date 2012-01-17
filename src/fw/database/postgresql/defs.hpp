@@ -5,7 +5,7 @@
 
 #ifdef FW_SUPPORT_POSTGRESQL
 
-#define UBUNTU_11_10 //Please defines in Ubuntu 11.10 only
+//#define UBUNTU_11_10 //Please defines in Ubuntu 11.10 only
 
 #if defined Q_OS_WIN32
     #include <libpq-fe.h>

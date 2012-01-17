@@ -10,6 +10,8 @@
 
 #include "fw/helpers/filesystem.hpp"
 
+#include "plugin.hpp"
+
 int main(int argc, char **argv)
 {
     QCoreApplication a(argc, argv);
@@ -17,7 +19,7 @@ int main(int argc, char **argv)
     QString path = Fw::Helpers::FileSystem::pluginsDir();
     qDebug() << path;
 
-    QString pluginName = Fw::Helpers::FileSystem::pluginFileName("sqlite3");
+    QString pluginName = Fw::Helpers::FileSystem::pluginFileName("plugin");
     qDebug() << pluginName;
 
     QPluginLoader pluginLoader(pluginName);
@@ -27,7 +29,7 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    Fw::Database::Plugin* plugin = qobject_cast<Fw::Database::Plugin*>(pluginLoader.instance());
+    Plugin* plugin = qobject_cast<Plugin*>(pluginLoader.instance());
     if(!plugin)
     {
         qDebug() << "Cannot load database plugin";

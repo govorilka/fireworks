@@ -12,7 +12,6 @@ namespace Fw
     namespace Console
     {
         struct Argument;
-        typedef QList<Argument> ArgumentList;
     }
 }
 
@@ -29,34 +28,36 @@ struct FIREWORKSSHARED_EXPORT Fw::Console::Argument
 class FIREWORKSSHARED_EXPORT Fw::Console::Arguments
 {
 public:
+
     explicit Arguments(const QStringList& argList);
     ~Arguments();
 
-    QString value(const QString& key, const QString& defaultValue = QString()) const;
     bool isExist(const QString& key, QString* value = 0) const;
-    inline const ArgumentList arguments() const;
+    const QString value(const QString& key, const QString& defaultValue = "") const;
+
+    inline const QList<Argument>& toList() const;
 
 private:
     inline static bool isKey(const QString& key);
     inline static bool isValue(const QString& value);
     static QString getClearArgument(const QString& arg);
 
-    ArgumentList m_arguments;
+    QList<Argument> m_arguments;
 };
 
-const Fw::Console::ArgumentList Fw::Console::Arguments::arguments() const
+const QList<Fw::Console::Argument>& Fw::Console::Arguments::toList() const
 {
     return m_arguments;
 }
 
 bool Fw::Console::Arguments::isKey(const QString& key)
 {
-    return !key.isEmpty() && (key.startsWith("--") || key.startsWith('/'));
+    return !key.isEmpty() && key.startsWith("--");
 }
 
 bool Fw::Console::Arguments::isValue(const QString& value)
 {
-    return !value.isEmpty() && !value.startsWith("--") && !value.startsWith('/');
+    return !value.isEmpty() && !value.startsWith("--");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
