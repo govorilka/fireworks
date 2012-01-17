@@ -26,7 +26,6 @@ LIBS += -L$(FIREWORKS_PATH)/bin \
 
 #Plugin library
 INCLUDEPATH += $(FIREWORKS_PATH)/laboratory/plugin
-LIBS += -L$(FIREWORKS_PATH)/bin/plugins \
-        -lplugin
+LIBS += -L$(FIREWORKS_PATH)/bin/plugins -lplugin
 
 SOURCES += main.cpp

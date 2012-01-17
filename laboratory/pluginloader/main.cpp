@@ -1,13 +1,6 @@
 #include <QtCore/qcoreapplication.h>
-#include <QtCore/qtextstream.h>
 #include <QtCore/qdebug.h>
 #include <QtCore/qpluginloader.h>
-
-#include "fwcore/fwmldocument.h"
-
-#include "fw/database/controller.hpp"
-#include "fw/database/driver.hpp"
-
 #include "fw/helpers/filesystem.hpp"
 
 #include "plugin.hpp"
@@ -19,77 +12,29 @@ int main(int argc, char **argv)
     QString path = Fw::Helpers::FileSystem::pluginsDir();
     qDebug() << path;
 
-    QString pluginName = Fw::Helpers::FileSystem::pluginFileName("plugin");
-    qDebug() << pluginName;
+    QString pluginName1 = Fw::Helpers::FileSystem::pluginFileName("pluginimpl");
+    qDebug() << pluginName1;
 
-    QPluginLoader pluginLoader(pluginName);
-    if(!pluginLoader.load())
-    {
-        qDebug() << pluginLoader.errorString();
-        return -1;
-    }
+////////////////////////////////////////////////////////////////
 
-    Plugin* plugin = qobject_cast<Plugin*>(pluginLoader.instance());
-    if(!plugin)
-    {
-        qDebug() << "Cannot load database plugin";
-        return -1;
-    }
+    PluginLoader pluginLoader_1(pluginName1);
+    PluginLoader pluginLoader_2(pluginName1);
 
-    qDebug() << plugin->hi();
+    ResourceInterface* res_1 = pluginLoader_1->instance();
+    ResourceInterface* res_2 = pluginLoader_1->instance();
+    ResourceInterface* res_3 = pluginLoader_2->instance();
+    ResourceInterface* res_4 = pluginLoader_2->instance();
 
+    qDebug() << res_1->GetName();
+    qDebug() << res_2->GetName();
+    qDebug() << res_3->GetName();
+    qDebug() << res_4->GetName();
 
-//    try
-//    {
-//        Fw::Database::Controller db;
-//        FwMLObject rootObject;
-//        rootObject.parseFile(":/sqlite3/local.fwml");
-//        db.loadData(&rootObject);
-//        db->open();
+    pluginLoader_1->release(res_1);
+    pluginLoader_1->release(res_2);
+    pluginLoader_2->release(res_3);
+    pluginLoader_2->release(res_4);
 
-//        Fw::Database::QueryPtr insertQuery = db.createQuery("INSERT INTO "
-//                                                            "tempTable ( int_value, real_value, text_value ) "
-//                                                            "VALUES "
-//                                                            "( ?1, ?2, ?3 );");
-//        insertQuery->bindInt(1, 123);
-//        insertQuery->bindDouble(2, 123.456);
-//        insertQuery->bindText(3, "123456");
-//        insertQuery->step();
-
-//        insertQuery->bindInt(1, 456);
-//        insertQuery->bindDouble(2, 456.789);
-//        insertQuery->bindText(3, "456789");
-//        insertQuery->step();
-
-//        insertQuery->bindInt(1, 789);
-//        insertQuery->bindDouble(2, 789.0);
-//        insertQuery->bindText(3, "7890");
-//        insertQuery->step();
-
-//        Fw::Database::QueryPtr selectQuery = db.createQuery("SELECT "
-//                                                            "id, int_value, real_value, text_value "
-//                                                            "FROM tempTable;"
-//                                                );
-
-//        while(selectQuery->step())
-//        {
-//            qDebug() << "id: " << selectQuery->columnInt(0);
-//            qDebug() << "int_value: " << selectQuery->columnInt(1);
-//            qDebug() << "real_value: " << selectQuery->columnDouble(2);
-//            qDebug() << "text_value: " << selectQuery->columnText(3);
-//        }
-
-//    }
-//    catch(const Fw::Exception& e)
-//    {
-//        qDebug() << "Exception:" << e.error();
-//        return -1;
-//    }
-//    catch(...)
-//    {
-//        qDebug() << "Uncknown exception";
-//        return -1;
-//    }
 
     return 0;
 }

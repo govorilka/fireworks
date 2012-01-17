@@ -3,10 +3,7 @@
 
 #include <QtCore/qsharedpointer.h>
 
-class Plugin;
-class PluginLoader;
-
-//typedef QSharedPointer<Plugin> PluginPtr;
-//typedef QSharedPointer<PluginLoader> PluginLoaderPtr;
+class PluginInterface;
+class PluginLoder;
 
 #endif // DEFS_HPP

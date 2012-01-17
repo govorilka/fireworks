@@ -17,8 +17,15 @@ else {
     TARGET = ../../bin/plugins/pluginimpl
 }
 
-SOURCES += main.cpp \
+HEADERS += \
+    pluginimpl.hpp
+
+SOURCES += \
     pluginimpl.cpp
+
+#Fireworks library
+INCLUDEPATH += $(FIREWORKS_PATH)/src
+#LIBS += -L$(FIREWORKS_PATH)/bin -lfireworks4
 
 #plugin library
 INCLUDEPATH += $(FIREWORKS_PATH)/laboratory/plugin
@@ -42,6 +49,3 @@ unix:!symbian {
     }
     INSTALLS += target
 }
-
-HEADERS += \
-    pluginimpl.hpp
