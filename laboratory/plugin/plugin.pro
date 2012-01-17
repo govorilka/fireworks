@@ -17,7 +17,6 @@ else {
     TARGET = ../../bin/plugins/plugin
 }
 
-
 SOURCES += plugin.cpp \
            sqlite3plugin.cpp
 
@@ -25,6 +24,10 @@ HEADERS += plugin.hpp\
         plugin_global.hpp \
         sqlite3plugin.hpp \
     defs.hpp
+
+#Fireworks library
+INCLUDEPATH += $(FIREWORKS_PATH)/src
+LIBS += -L$(FIREWORKS_PATH)/bin -lfireworks4
 
 symbian {
     MMP_RULES += EXPORTUNFROZEN
