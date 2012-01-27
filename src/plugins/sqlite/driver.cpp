@@ -115,7 +115,7 @@ void Fw::Database::SQLite::Driver::execSimpleQuery(const QString& query) throw(c
     }
 }
 
-Fw::Database::QueryPtr Fw::Database::SQLite::Driver::createQuery(const Fw::Database::DriverPtr& driver, const QString& query) throw(const Fw::Exception&)
+Fw::Database::QueryPtr Fw::Database::SQLite::Driver::createQuery(const Fw::Database::DriverLoaderPtr& driver, const QString& query) throw(const Fw::Exception&)
 {
     if(m_connection)
     {

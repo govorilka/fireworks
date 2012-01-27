@@ -12,15 +12,16 @@ class FIREWORKSSHARED_EXPORT Fw::Database::Controller : public FwCPPObject, publ
 {
     typedef FwCPPObject BaseClass;
 
-    DriverPtr m_driver;
+    Fw::Database::DriverLoaderPtr m_driverLoader;
 
-    static DriverPtr factory(FwMLObject* config) throw(const Fw::Exception&);
+    static DriverLoaderPtr factory(FwMLObject* config) throw(const Fw::Exception&);
 
 public:
     explicit Controller(const QByteArray& name = "Fw::Database::Controller");
     virtual ~Controller();
 
     virtual bool loadData(FwMLObject* script) throw(const Fw::Exception&);
+    virtual void resetData();
 
     static QString loadQueryString(const QString& filename, const QStringList& arguments = QStringList()) throw(const Fw::Exception&);
     inline QueryPtr loadQuery(const QString& filename, const QStringList& arguments = QStringList()) throw(const Fw::Exception&);
@@ -33,8 +34,8 @@ public:
     inline const Driver* operator->() const throw(const Fw::Exception&);
     inline Driver* operator->() throw(const Fw::Exception&);
 
-    inline const Driver* driver() const;
-    inline Driver* driver();
+    inline const Driver* driver() const throw(const Fw::Exception&);
+    inline Driver* driver() throw(const Fw::Exception&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,57 +70,45 @@ Fw::Database::QueryPtr Fw::Database::Controller::loadQuery(const QString& filena
 
 Fw::Database::QueryPtr Fw::Database::Controller::createQuery(const QString& query) throw(const Fw::Exception&)
 {
-    return m_driver->createQuery(m_driver, query);
+    return m_driverLoader->driver()->createQuery(m_driverLoader, query);
 }
 
 const Fw::Database::Driver& Fw::Database::Controller::operator*() const throw(const Fw::Exception&)
 {
-    const Driver* drv = m_driver.data();
-    if(drv == 0)
-    {
-        throw Fw::Exception(drv->lastError());
-    }
-    return *drv;
+    return *driver();
 }
 
 Fw::Database::Driver& Fw::Database::Controller::operator*() throw(const Fw::Exception&)
 {
-    Driver* drv = m_driver.data();
-    if(drv == 0)
-    {
-        throw Fw::Exception(drv->lastError());
-    }
-    return *drv;
+    return *driver();
 }
 
 const Fw::Database::Driver* Fw::Database::Controller::operator->() const throw(const Fw::Exception&)
 {
-    Driver* drv = m_driver.data();
-    if(drv == 0)
-    {
-        throw Fw::Exception(drv->lastError());
-    }
-    return drv;
+    return driver();
 }
 
 Fw::Database::Driver* Fw::Database::Controller::operator->() throw(const Fw::Exception&)
 {
-    Driver* drv = m_driver.data();
-    if(drv == 0)
+    return driver();
+}
+
+const Fw::Database::Driver* Fw::Database::Controller::driver() const throw(const Fw::Exception&)
+{
+    if(m_driverLoader.isNull())
     {
-        throw Fw::Exception(drv->lastError());
+        throw Fw::Exception("Driver loader is null");
     }
-    return drv;
+    return m_driverLoader->driver();
 }
 
-const Fw::Database::Driver* Fw::Database::Controller::driver() const
+Fw::Database::Driver* Fw::Database::Controller::driver() throw(const Fw::Exception&)
 {
-    return m_driver.data();
-}
-
-Fw::Database::Driver* Fw::Database::Controller::driver()
-{
-    return m_driver.data();
+    if(m_driverLoader.isNull())
+    {
+        throw Fw::Exception("Driver loader is null");
+    }
+    return m_driverLoader->driver();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

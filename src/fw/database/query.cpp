@@ -1,7 +1,7 @@
 #include "fw/database/query.hpp"
 
-Fw::Database::Query::Query(const DriverPtr& driver) :
-    m_driver(driver),
+Fw::Database::Query::Query(const DriverLoaderPtr& driver) :
+    m_driverLoader(driver),
     m_exec(false)
 {
 }

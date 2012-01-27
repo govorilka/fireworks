@@ -36,7 +36,8 @@ void Fw::Database::Driver::execFile(QIODevice* device) throw(const Fw::Exception
     {
         if(!command.isEmpty())
         {
-            createQuery(DriverPtr(this, emptyDeleter), QString::fromUtf8(command))->step();
+            //createQuery(DriverPtr(this, EmptyDeleter), QString::fromUtf8(command))->step();
+            execSimpleQuery(QString::fromUtf8(command));
         }
     }
 
@@ -73,11 +74,4 @@ void Fw::Database::Driver::transactionRollback() throw(const Fw::Exception&)
 QString Fw::Database::Driver::lastError() const
 {
     return "Cannot connect to database";
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-Fw::Database::Plugin::Plugin(QObject* parent) :
-    BaseClass(parent)
-{
 }

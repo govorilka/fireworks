@@ -2,52 +2,69 @@
 
 #include "plugin.hpp"
 
-ResourceInterface::~ResourceInterface()
-{
-}
-
-////////////////////////////////////////////////////////////////////////////////
 
 PluginInterface::PluginInterface(QObject* parent) :
 BaseClass(parent)
 {
+
 }
 
 PluginInterface::~PluginInterface()
 {
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-PluginLoader::PluginLoader(const QString& filename) throw(const Fw::Exception&) :
-    m_loader(filename),
-    m_plugin(0)
+PluginLoader::PluginLoader(QObject* parent) :
+    BaseClass(parent),
+    m_driver(0)
 {
-    qDebug() << "PluginLoader()";
-
-    if(!m_loader.load())
-    {
-        throw Fw::Exception(QString("PluginLoader::PluginLoader : Can`t load plugin - ") + filename);
-    }
-
-    QObject* const plugin = m_loader.instance();
-    if(!plugin)
-    {
-        throw Fw::Exception(QString("PluginLoader::PluginLoader : Can`t create instance of plugin -") + filename);
-    }
-
-    m_plugin = qobject_cast<PluginInterface*>(plugin);
-    if(!m_plugin)
-    {
-        m_loader.unload();
-        throw Fw::Exception(QString("PluginLoader::PluginLoader : Plugin have wrong type -") + filename);
-    }
 }
 
 PluginLoader::~PluginLoader()
 {
-    m_loader.unload();
-    m_plugin = 0;
+    unload();
+}
 
-    qDebug() << "~PluginLoader()";
+bool PluginLoader::load(const QString& filename) throw(const Fw::Exception&)
+{
+    unload();
+    setFileName(filename);
+    if(!BaseClass::load())
+    {
+        throw Fw::Exception(QString("PluginLoader::PluginLoader : Can`t load plugin - ") + filename);
+    }
+
+    QObject* const pluginObject = instance();
+    if(!pluginObject)
+    {
+        throw Fw::Exception(QString("PluginLoader::PluginLoader : Can`t create instance of plugin -") + filename);
+    }
+
+    PluginInterface* plugin = qobject_cast<PluginInterface*>(pluginObject);
+    if(!plugin)
+    {
+        throw Fw::Exception(QString("PluginLoader::PluginLoader : Plugin have wrong type -") + filename);
+    }
+
+    m_driver = plugin->instance();
+}
+
+bool PluginLoader::unload()
+{
+    if(m_driver)
+    {
+        if(QObject* const pluginObject = instance())
+        {
+            if(PluginInterface* plugin = qobject_cast<PluginInterface*>(pluginObject))
+            {
+                plugin->release(m_driver);
+
+            }
+        }
+        m_driver = 0;
+    }
+
+    return BaseClass::unload();
 }

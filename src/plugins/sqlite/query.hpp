@@ -22,7 +22,7 @@ protected:
     void closeQuery();
 
 public:
-    explicit Query(const DriverPtr& driver, sqlite3_stmt* stmt);
+    explicit Query(const DriverLoaderPtr& driver, sqlite3_stmt* stmt);
     virtual ~Query();
 
     virtual void bindNull(int index) throw(const Fw::Exception&);

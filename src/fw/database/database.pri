@@ -1,24 +1,39 @@
+
+DEFINES += PLUGIN_LIBRARY
+
 HEADERS += \
     fw/database/defs.hpp \
     fw/database/controller.hpp \
     fw/database/query.hpp \
     fw/database/query_inl.hpp \
-    fw/database/driver.hpp
+    fw/database/driver.hpp \
+    fw/database/plugin.hpp
 
 SOURCES += \
     fw/database/controller.cpp \
     fw/database/query.cpp \
-    fw/database/driver.cpp
+    fw/database/driver.cpp \
+    fw/database/plugin.cpp
 
-include(sqlite/sqlite.pri)
 
-exists($(PGSQL_PATH)) {
-    include(postgresql/postgresql.pri)
+symbian {
+    MMP_RULES += EXPORTUNFROZEN
+    TARGET.UID3 = 0xE3E58FC0
+    TARGET.CAPABILITY =
+    TARGET.EPOCALLOWDLLDATA = 1
+    addFiles.sources = plugin.dll
+    addFiles.path = !:/sys/bin
+    DEPLOYMENT += addFiles
 }
-else {
-    warning("Postgresql directory is not exist")
-}
 
+unix:!symbian {
+    maemo5 {
+        target.path = /opt/usr/lib
+    } else {
+        target.path = /usr/lib
+    }
+    INSTALLS += target
+}
 
 
 

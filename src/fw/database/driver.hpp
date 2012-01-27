@@ -12,7 +12,6 @@ namespace Fw
 {
     namespace Database
     {
-        class Plugin;
         class DriverFactory;
     }
 }
@@ -28,13 +27,13 @@ public:
     explicit Driver(const QByteArray& name);
     virtual ~Driver();
 
-    inline static void deleter(Driver* driver);
-    inline static void emptyDeleter(Driver* driver);
+    inline static void Deleter(Driver* driver);
+    inline static void EmptyDeleter(Driver* driver);
 
     virtual void open() throw(const Fw::Exception&) = 0;
     virtual void close() throw() = 0;
 
-    virtual QueryPtr createQuery(const DriverPtr& driver, const QString& query) throw(const Fw::Exception&) = 0;
+    virtual QueryPtr createQuery(const DriverLoaderPtr& driver, const QString& query) throw(const Fw::Exception&) = 0;
 
     virtual QString lastError() const = 0;
     virtual bool isOpen() const = 0;
@@ -52,29 +51,17 @@ protected:
     virtual void transactionRollback() throw(const Fw::Exception&);
 };
 
-void Fw::Database::Driver::deleter(Driver* driver)
+void Fw::Database::Driver::Deleter(Driver* driver)
 {
     driver->close();
     delete driver;
     driver = 0;
 }
 
-void Fw::Database::Driver::emptyDeleter(Driver* driver)
+void Fw::Database::Driver::EmptyDeleter(Driver* driver)
 {
     driver = 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-class FIREWORKSSHARED_EXPORT Fw::Database::Plugin : public QObject
-{
-    Q_OBJECT
-    typedef QObject BaseClass;
-
-public:
-    Plugin(QObject* parent = 0);
-
-    virtual QString hi() const = 0;
-};
 
 #endif //FIREWORKS_DATABASE_DRIVER_HPP
