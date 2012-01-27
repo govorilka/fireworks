@@ -14,6 +14,7 @@ namespace Fw
         {
             inline QString pluginsDir();
             inline QString pluginFileName(const QString& name);
+            inline QString pluginPath(const QString& name);
         }
     }
 }
@@ -25,8 +26,7 @@ QString Fw::Helpers::FileSystem::pluginsDir()
 
 QString Fw::Helpers::FileSystem::pluginFileName(const QString& name)
 {
-    return QDir::toNativeSeparators(pluginsDir()
-                                    + "lib" + name.toLower().simplified()
+    return QDir::toNativeSeparators(  "lib" + name.toLower().simplified()
                                 #if defined(Q_OS_LINUX)
                                     + ".so"
                                 #elif defined(Q_OS_WINDOWS)
@@ -39,5 +39,9 @@ QString Fw::Helpers::FileSystem::pluginFileName(const QString& name)
                                     );
 }
 
+QString Fw::Helpers::FileSystem::pluginPath(const QString& name)
+{
+    return QDir::toNativeSeparators(pluginsDir() + pluginFileName(name));
+}
 
 #endif // FILESYSTEM_HPP

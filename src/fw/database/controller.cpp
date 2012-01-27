@@ -5,9 +5,6 @@
 #include "controller.hpp"
 #include "driver.hpp"
 
-#include "fw/database/postgresql/driver_postgresql.hpp"
-#include "fw/database/sqlite/driver_sqlite.hpp"
-
 Fw::Database::Controller::Controller(const QByteArray& name) :
     BaseClass(name)
 {
@@ -17,32 +14,20 @@ Fw::Database::Controller::~Controller()
 {
 }
 
-Fw::Database::DriverPtr Fw::Database::Controller::factory(FwMLObject* config) throw(const Fw::Exception&)
+Fw::Database::DriverLoaderPtr Fw::Database::Controller::factory(FwMLObject* config) throw(const Fw::Exception&)
 {
-    QByteArray driver = config->baseName().toLower();
-    if(driver.isEmpty())
-    {
-        throw Fw::Exception("Driver name is not defined");
-    }
+    DriverLoaderPtr driverLoader = DriverLoaderPtr(new DriverLoader, DriverLoader::DeleteLater);
 
-    if(driver == "sqlite")
-    {
-        return DriverPtr(new Fw::Database::SQLite::Driver("database"), Fw::Database::SQLite::Driver::deleter);
-    }
-    #ifdef FW_SUPPORT_POSTGRESQL
-    else if(driver == "postgresql")
-    {
-        return DriverPtr(new Fw::Database::PostgreSQL::Driver("database"), Fw::Database::PostgreSQL::Driver::deleter);
-    }
-    #endif //FW_SUPPORT_POSTGRESQL
+    driverLoader->load(config);
 
-    throw  Fw::Exception("Unknow driver name");
-    return Fw::Database::DriverPtr();
+    Fw::Database::Driver* drv = driverLoader->driver();
+    drv->loadData(config);
+    return driverLoader;
 }
 
 bool Fw::Database::Controller::loadData(FwMLObject* script) throw(const Fw::Exception&)
 {
-    m_driver.clear();
+    resetData();
 
     FwMLObject* driverNode = script->attribute("driver")->cast<FwMLObject>();
     if(!driverNode)
@@ -50,10 +35,14 @@ bool Fw::Database::Controller::loadData(FwMLObject* script) throw(const Fw::Exce
         throw Fw::Exception("No driver node in fwml object");
     }
 
-    m_driver = factory(driverNode);
-    m_driver->loadData(driverNode);
+    m_driverLoader = factory(driverNode);
 
     return true;
+}
+
+void Fw::Database::Controller::resetData()
+{
+    m_driverLoader.clear();
 }
 
 QString Fw::Database::Controller::loadQueryString(const QString& filename, const QStringList& arguments) throw (const Fw::Exception&)

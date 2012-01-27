@@ -13,7 +13,6 @@ public:
 
 private:
     static int s_counter;
-
     mutable int m_counter;
 };
 

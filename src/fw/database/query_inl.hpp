@@ -5,12 +5,12 @@
 
 const Fw::Database::Driver* Fw::Database::Query::driver() const
 {
-    return m_driver.data();
+    return m_driverLoader->driver();
 }
 
 Fw::Database::Driver* Fw::Database::Query::driver()
 {
-    return m_driver.data();
+    return m_driverLoader->driver();
 }
 
 QString Fw::Database::Query::toString() const throw(const Fw::Exception&)

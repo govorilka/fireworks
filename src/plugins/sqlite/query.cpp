@@ -1,5 +1,5 @@
-#include "fw/database/sqlite/query_sqlite.hpp"
-#include "fw/database/sqlite/driver_sqlite.hpp"
+#include "fw/database/sqlite/query.hpp"
+#include "fw/database/sqlite/driver.hpp"
 
 void Fw::Database::SQLite::Query::closeQuery()
 {
@@ -10,7 +10,7 @@ void Fw::Database::SQLite::Query::closeQuery()
     }
 }
 
-Fw::Database::SQLite::Query::Query(const DriverPtr& driver, sqlite3_stmt* stmt) :
+Fw::Database::SQLite::Query::Query(const DriverLoaderPtr& driver, sqlite3_stmt* stmt) :
     BaseClass(driver),
     m_stmt(stmt)
 {

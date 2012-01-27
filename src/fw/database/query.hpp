@@ -7,10 +7,11 @@
 #include "fwcore/fwcolor.h"
 
 #include "fw/database/defs.hpp"
+#include "fw/database/plugin.hpp"
 
 class  FIREWORKSSHARED_EXPORT Fw::Database::Query
 {
-    DriverPtr m_driver;
+    Fw::Database::DriverLoaderPtr m_driverLoader;
     bool m_exec;
 
 protected:
@@ -22,7 +23,7 @@ protected:
     inline Driver* driver();
 
 public:
-    explicit Query(const DriverPtr& driver);
+    explicit Query(const DriverLoaderPtr& driver);
     virtual ~Query();
 
     virtual void bindNull(int index) throw(const Fw::Exception&) = 0;

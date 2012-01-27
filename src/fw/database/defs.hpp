@@ -5,7 +5,6 @@
 
 #include "fireworks.h"
 
-
 class QObject;
 class FwMLObject;
 
@@ -13,14 +12,20 @@ namespace Fw
 {
     namespace Database
     {
-    class Controller;
+        template<typename Interface> class Plugin;
+        class Controller;
 
-    class Driver;
-    class Query;
-    class Transaction;
+        class Driver;
+        class DriverLoader;
 
-    typedef QSharedPointer<Driver> DriverPtr;
-    typedef QSharedPointer<Query> QueryPtr;
+        class Query;
+        class Transaction;
+
+        typedef QSharedPointer<DriverLoader> DriverLoaderPtr;
+        typedef QSharedPointer<Query> QueryPtr;
+
+        class PluginInterface;
+        class PluginLoder;
     }
 }
 

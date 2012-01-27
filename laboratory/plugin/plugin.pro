@@ -23,7 +23,8 @@ SOURCES += plugin.cpp \
 HEADERS += plugin.hpp\
         plugin_global.hpp \
         sqlite3plugin.hpp \
-    defs.hpp
+        defs.hpp \
+    plugin_inl.hpp
 
 #Fireworks library
 INCLUDEPATH += $(FIREWORKS_PATH)/src

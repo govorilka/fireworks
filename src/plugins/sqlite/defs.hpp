@@ -1,5 +1,5 @@
-#ifndef FIREWORKS_DATABASE_SQLITE_DEFS_HPP
-#define FIREWORKS_DATABASE_SQLITE_DEFS_HPP
+#ifndef FW_DATABASE_SQLITE_DEFS_HPP
+#define FW_DATABASE_SQLITE_DEFS_HPP
 
 #include "fw/database/defs.hpp"
 
@@ -9,10 +9,11 @@ namespace Fw
     {
         namespace SQLite
         {
+            class Plugin;
             class Driver;
             class Query;
         }
     }
 }
 
-#endif // FIREWORKS_DATABASE_SQLITE_DEFS_HPP
+#endif // FW_DATABASE_SQLITE_DEFS_HPP
