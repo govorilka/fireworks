@@ -4,22 +4,35 @@
 #
 #-------------------------------------------------
 
-QT       += core
-
+QT       += core network
 QT       -= gui
 
-TARGET = json_rpc
 CONFIG   += console
 CONFIG   -= app_bundle
+win32 {
+   TARGET = ./bin/json_rpc
+}
+else {
+   TARGET = ./bin/json_rpc
+}
 TEMPLATE = app
-
-include(cjson.pri)
 
 INCLUDEPATH += .
 
+include(cjson.pri)
+
 HEADERS += \
+    jsonrpc.hpp \
+    caschannel.hpp \
+    caschannelcategory.hpp \
+    caschannelprogram.hpp \
+    globals.hpp
 
 SOURCES += main.cpp \
+    jsonrpc.cpp \
+    caschannel.cpp \
+    caschannelcategory.cpp \
+    caschannelprogram.cpp
 
 
 
