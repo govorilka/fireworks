@@ -116,7 +116,7 @@ namespace
 /*            C_AZ,   C_Ee,  C_Uni,  C_Num,  C_Fra, C_Sig,    C_Sp,  C_Str,  C_Esc,  C_Col,            C_LCu,  C_RCu,  C_LSq,  C_RSq,  C_Sep,  C_Err */
 /*X_DOC*/{  &x_var, &x_var, &x_err, &x_err, &x_err, &x_err, &x_ign, &x_bst, &x_err, &x_err, /*X_DOC*/ &x_doc, &x_err, &x_err, &x_err, &x_err, &x_err  },
 /*X_VAR*/{       0,      0, &x_err,      0, &x_err, &x_err, &x_est, &x_err, &x_err, &x_atr, /*X_VAR*/ &x_ob2, &x_eob, &x_ar2, &x_ear, &x_val, &x_err  },
-/*X_STR*/{       0,      0,      0,      0,      0,      0,      0, &x_est, &x_err,      0, /*X_STR*/      0,      0,      0,      0,      0, &x_err  },
+/*X_STR*/{       0,      0,      0,      0,      0,      0,      0, &x_est,      0,      0, /*X_STR*/      0,      0,      0,      0,      0, &x_err  },
 /*X_VAL*/{  &x_var, &x_var, &x_err, &x_int, &x_err, &x_sg1, &x_ign, &x_bst, &x_err, &x_err, /*X_VAL*/ &x_ob1, &x_err, &x_ar1, &x_ear, &x_val, &x_err  },
 /*X_INT*/{  &x_err, &x_re2, &x_err,      0, &x_re1, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_INT*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
 /*X_RE1*/{  &x_err, &x_re2, &x_err,      0, &x_err, &x_err, &x_enu, &x_err, &x_err, &x_err, /*X_RE1*/ &x_err, &x_eob, &x_err, &x_ear, &x_val, &x_err  },
@@ -767,6 +767,89 @@ Fw::JSON::Node* Fw::JSON::String::clone() const
     return new Fw::JSON::String(m_value);
 }
 
+QString Fw::JSON::String::toString() const
+{
+    QString string = QString::fromUtf8(m_value);
+
+    QString out;
+    out.reserve(string.size());
+
+    QString::ConstIterator iter = string.begin();
+    QString::ConstIterator end = string.end();
+
+    try
+    {
+        while(iter != end)
+        {
+            if(*iter != QChar('\\'))
+            {
+                out.append(*iter);
+                ++iter;
+                continue;
+            }
+
+            if((++iter) == end)
+            {
+                throw QString();
+            }
+
+            switch(iter->unicode())
+            {
+            case 'b':
+                out.append(QChar('\b'));
+                break;
+
+            case 'f':
+                out.append(QChar('\f'));
+                break;
+
+            case 'n':
+                out.append(QChar('\n'));
+                break;
+
+            case 'r':
+                out.append(QChar('\r'));
+                break;
+
+            case 't':
+                out.append(QChar('\t'));
+                break;
+
+            case '\\':
+                out.append(QChar('\\'));
+                break;
+
+            case 'u':
+                if((end - iter) >= 5)
+                {
+                    bool ok = false;
+                    short uch = QString(iter+1, 4).toShort(&ok, 16);
+                    if(!ok)
+                    {
+                        throw QString();
+                    }
+
+                    out.append(QChar(uch));
+
+                    iter += 5;
+                    continue;
+                }
+                break;
+
+            default:
+                throw QString();
+            }
+
+            ++iter;
+        }
+    }
+    catch(const Fw::Exception& e)
+    {
+        return QString();
+    }
+
+    return out;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

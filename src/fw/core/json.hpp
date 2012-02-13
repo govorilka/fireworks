@@ -147,7 +147,7 @@ public:
     bool toBool(bool* bOk) const;
     quint32 toUInt(bool* bOk) const;
     QByteArray toUtf8() const;
-    inline QString  toQString() const;
+    QString  toString() const;
 
     Fw::JSON::Node* clone() const;
 
@@ -165,15 +165,9 @@ void Fw::JSON::String::setValue(const QByteArray& value)
     m_value = value;
 }
 
-
 bool Fw::JSON::String::isEmpty() const
 {
     return m_value.isEmpty();
-}
-
-QString Fw::JSON::String::toQString() const
-{
-    return QString::fromUtf8(m_value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
