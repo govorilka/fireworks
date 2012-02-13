@@ -1,5 +1,4 @@
-
-QT       += core gui
+QT      += core gui
 
 TARGET = ../../bin/jsontree
 
@@ -7,10 +6,19 @@ TEMPLATE = app
 
 INCLUDEPATH += ../../src/
 
-LIBS += -L../../bin \
-        -lfireworks3
+win32 {
+    LIBS += -L../../../lib \
+            -lfwcore1
+}
+else {
+    LIBS += -L../../lib \
+            -lfwcore1
+}
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES  += main.cpp\
+            mainwindow.cpp
 
 HEADERS  += mainwindow.h
+
+FORMS += \
+    mainwindow.ui

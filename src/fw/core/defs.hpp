@@ -1,0 +1,12 @@
+#ifndef FIREWORKS_CORE_DEFS_HPP
+#define FIREWORKS_CORE_DEFS_HPP
+
+#include <QtCore/qglobal.h>
+
+#if defined(FW_CORE_LIBRARY)
+#  define FW_CORE_SHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define FW_CORE_SHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // FIREWORKS_CORE_DEFS_HPP
