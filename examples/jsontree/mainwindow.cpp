@@ -14,21 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->centralwidget->setColumnCount(3);
     ui->centralwidget->setHeaderLabels(QStringList() << "Node" << "Type" << "Value");
-
-    QByteArray fwml = "\"Scene\" : {\n"
-                      "\"background\" : \"123.png\", \n"
-                      "\"size\" : { \n"
-                      "\"width\" : 100, \n"
-                      "\"height\" : 100 }, \n"
-                      "array[-56, 1, 2.25, 3e-3, 5.], \n"
-                      "\"stroka\" : \"value_str\",\n"
-                      "\"visible\" : true, \n"
-                      "\"visible_str\" : \"true\", \n"
-                      "\"stroka 2\" : \"true true\", \n"
-                      "\"zero_str\" : \"\" \n"
-                      "}";
-
-    //QByteArray fwml = "bgcolor : \"orange\", visible : false, color : white, width : 001234567890, height1 : 2.25, height2 : 3e-3, height3 : 5.";
 }
 
 MainWindow::~MainWindow()
