@@ -1,22 +1,21 @@
 #include <QtGui/qtreewidget.h>
+#include <QtGui/qfiledialog.h>
+
+#include "fw/core/exception.hpp"
 
 #include "mainwindow.h"
 
-#include "fwcore/fwml.h"
-#include "fwcore/fwmlparser.h"
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     BaseClass(parent),
-    m_treeView(0),
-    m_rootObject(0)
+    ui(new Ui::MainWindow)
 {
-    m_treeView = new QTreeWidget(this);
-    m_treeView->setColumnCount(3);
-    m_treeView->setHeaderLabels(QStringList() << "Node" << "Type" << "Value");
+    ui->setupUi(this);
+    ui->centralwidget->setColumnCount(3);
+    ui->centralwidget->setHeaderLabels(QStringList() << "Node" << "Type" << "Value");
 
-    setCentralWidget(m_treeView);
-
-    /*QByteArray fwml = "\"Scene\" : {\n"
+    QByteArray fwml = "\"Scene\" : {\n"
                       "\"background\" : \"123.png\", \n"
                       "\"size\" : { \n"
                       "\"width\" : 100, \n"
@@ -27,44 +26,27 @@ MainWindow::MainWindow(QWidget *parent) :
                       "\"visible_str\" : \"true\", \n"
                       "\"stroka 2\" : \"true true\", \n"
                       "\"zero_str\" : \"\" \n"
-                      "}";*/
+                      "}";
 
-    QByteArray fwml = "bgcolor : \"orange\", visible : false, color : white, width : 001234567890, height1 : 2.25, height2 : 3e-3, height3 : 5.";
-
-    QTreeWidgetItem* rootItem = new QTreeWidgetItem(m_treeView);
-    rootItem->setText(0, "root");
-
-    m_rootObject = new FwMLObject();
-
-    FwMLParser parser;
-    if(parser.parse(m_rootObject, fwml))
-    {
-        addNode(rootItem, m_rootObject);
-    }
-    else
-    {
-        QTreeWidgetItem* errorItem = new QTreeWidgetItem(rootItem);
-        errorItem->setText(0, "Error");
-        errorItem->setText(1, parser.errorString());
-    }
+    //QByteArray fwml = "bgcolor : \"orange\", visible : false, color : white, width : 001234567890, height1 : 2.25, height2 : 3e-3, height3 : 5.";
 }
 
 MainWindow::~MainWindow()
 {
-    delete m_rootObject;
+    delete ui;
 }
 
-void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
+void MainWindow::addNode(QTreeWidgetItem* parent, Fw::JSON::Node* node)
 {
     switch(node->type())
     {
-    case FwMLNode::T_Object:
+    case Fw::JSON::T_Object:
         {
             parent->setText(1, "object");
 
-            FwMLObject* object = node->cast<FwMLObject>();
-            QHash<QByteArray, FwMLNode*> attributes = object->attributes();
-            for(QHash<QByteArray, FwMLNode*>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter)
+            Fw::JSON::Object* object = node->cast<Fw::JSON::Object>();
+            QHash<QByteArray, Fw::JSON::Node*> attributes = object->attributes();
+            for(QHash<QByteArray, Fw::JSON::Node*>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter)
             {
                 QTreeWidgetItem* childItem = new QTreeWidgetItem(parent);
                 childItem->setText(0, QString::fromUtf8(iter.key()));
@@ -73,43 +55,43 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
         }
         break;
 
-    case FwMLNode::T_String:
+    case Fw::JSON::T_String:
         {
             parent->setText(1, "string");
-            FwMLString* stringNode = node->cast<FwMLString>();
+            Fw::JSON::String* stringNode = node->cast<Fw::JSON::String>();
             parent->setText(2, stringNode->isEmpty() ? "<empty>" : QString::fromUtf8(stringNode->value()));
         }
         break;
 
-    case FwMLNode::T_UIntNumber:
+    case Fw::JSON::T_UIntNumber:
         {
             parent->setText(1, "uint");
             parent->setText(2, QString::fromUtf8(node->toUtf8()));
         }
         break;
 
-    case FwMLNode::T_IntNumber:
+    case Fw::JSON::T_IntNumber:
         {
             parent->setText(1, "int");
             parent->setText(2, QString::fromUtf8(node->toUtf8()));
         }
         break;
 
-    case FwMLNode::T_DoubleNumber:
+    case Fw::JSON::T_DoubleNumber:
         {
             parent->setText(1, "double");
             parent->setText(2, QString::fromUtf8(node->toUtf8()));
         }
         break;
 
-    case FwMLNode::T_Array:
+    case Fw::JSON::T_Array:
         {
-            FwMLArray* array = node->cast<FwMLArray>();
+            Fw::JSON::Array* array = node->cast<Fw::JSON::Array>();
 
             parent->setText(1, QString("array[%1]").arg(array->size()));
 
             int i = 0;
-            foreach(FwMLNode* child, array->toQVector())
+            foreach(Fw::JSON::Node* child, array->toQVector())
             {
                 QTreeWidgetItem* childItem = new QTreeWidgetItem(parent);
                 childItem->setText(0, QString("[%1]").arg(i++));
@@ -117,7 +99,7 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
             }
         }
         break;
-    case FwMLNode::T_Bool:
+    case Fw::JSON::T_Bool:
         {
             parent->setText(1, "boolean");
             parent->setText(2, QString::fromUtf8(node->toUtf8()));
@@ -126,6 +108,37 @@ void MainWindow::addNode(QTreeWidgetItem* parent, FwMLNode* node)
     default:
         break;
 
+    }
+
+}
+
+void MainWindow::open()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open fwml file"));
+    if(!fileName.isEmpty())
+    {
+        open(fileName);
+    }
+}
+
+void MainWindow::open(const QString& fileName)
+{
+    m_rootObject.clear();
+    ui->centralwidget->clear();
+
+    QTreeWidgetItem* rootItem = new QTreeWidgetItem(ui->centralwidget);
+    rootItem->setText(0, "root");
+
+    try
+    {
+         m_rootObject.parseFile(fileName);
+         addNode(rootItem, &m_rootObject);
+    }
+    catch(const Fw::Exception& e)
+    {
+        QTreeWidgetItem* errorItem = new QTreeWidgetItem(rootItem);
+        errorItem->setText(0, "Error");
+        errorItem->setText(1, QString::fromUtf8(e.error()));
     }
 
 }

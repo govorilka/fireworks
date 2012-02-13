@@ -1,0 +1,14 @@
+{
+    "background" : "123.png", 
+    "size" : { 
+        "width" : 100, 
+        "height" : 100 
+    }, 
+    "number array" : [-56, 1, 2.25, 3e-3, 5.], 
+    "stroka" : "value_str",
+    "stroka 2" : "true true", 
+    "zero_str" : "",
+    "visible" : true,
+    "visible_str" : "true"
+}
+

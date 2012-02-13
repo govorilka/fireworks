@@ -3,11 +3,15 @@
 
 #include <QtGui/QMainWindow>
 
+#include "fw/core/json.hpp"
+
 class QTreeWidget;
 class QTreeWidgetItem;
 
-class FwMLObject;
-class FwMLNode;
+namespace Ui
+{
+    class MainWindow;
+}
 
 class MainWindow : public QMainWindow
 {
@@ -18,11 +22,15 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void addNode(QTreeWidgetItem* parent, FwMLNode* node);
+    void addNode(QTreeWidgetItem* parent, Fw::JSON::Node* node);
+
+public slots:
+    void open();
+    void open(const QString& fileName);
 
 private:
-    QTreeWidget* m_treeView;
-    FwMLObject* m_rootObject;
+    Ui::MainWindow *ui;
+    Fw::JSON::Object m_rootObject;
 };
 
 #endif // MAINWINDOW_H
