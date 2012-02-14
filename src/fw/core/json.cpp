@@ -138,7 +138,6 @@ namespace
         inline void setupAttributeValue();
         inline void setupArrayValue();
 
-
         Fw::JSON::Node* parent;
         QByteArray attribute;
         bool specialChar;
@@ -224,23 +223,22 @@ namespace
         {
         case Fw::JSON::T_String:
             {
-
                 if(isVariable)
                 {
                     bool bOk = false;
                     bool value = Fw::JSON::nameToBool(buffer, &bOk);
                     if(bOk)
                     {
-                        new Fw::JSON::Boolean(value, attribute, static_cast<Fw::JSON::Object*>(parent));
+                        static_cast<Fw::JSON::Object*>(parent)->addBoolean(attribute, value);
                     }
                     else
                     {
-                        new Fw::JSON::String(buffer, attribute, static_cast<Fw::JSON::Object*>(parent));
+                        static_cast<Fw::JSON::Object*>(parent)->addString(attribute, QString::fromUtf8(buffer));
                     }
                 }
                 else
                 {
-                    new Fw::JSON::String(buffer, attribute, static_cast<Fw::JSON::Object*>(parent));
+                    static_cast<Fw::JSON::Object*>(parent)->addString(attribute, QString::fromUtf8(buffer));
                 }
                 buffer = QByteArray();
             }
@@ -254,17 +252,17 @@ namespace
                 {
                     throw Fw::Exception("Invalid number value", line, column);
                 }
-                new Fw::JSON::Number(value, attribute, static_cast<Fw::JSON::Object*>(parent));
+                static_cast<Fw::JSON::Object*>(parent)->addNumber(attribute, value);
                 buffer = QByteArray();
             }
             break;
 
         case Fw::JSON::T_Array:
-            parent = new Fw::JSON::Array(attribute, static_cast<Fw::JSON::Object*>(parent));
+            parent = static_cast<Fw::JSON::Object*>(parent)->addArray(attribute);
             break;
 
         case Fw::JSON::T_Object:
-            parent = new Fw::JSON::Object(attribute, static_cast<Fw::JSON::Object*>(parent));
+            parent = static_cast<Fw::JSON::Object*>(parent)->addObject(attribute);
             break;
 
         case Fw::JSON::T_Null:
@@ -284,23 +282,22 @@ namespace
         {
         case Fw::JSON::T_String:
             {
-
                 if(isVariable)
                 {
                     bool bOk = false;
                     bool value = Fw::JSON::nameToBool(buffer, &bOk);
                     if(bOk)
                     {
-                        new Fw::JSON::Boolean(value, static_cast<Fw::JSON::Array*>(parent));
+                        static_cast<Fw::JSON::Array*>(parent)->addBoolean(value);
                     }
                     else
                     {
-                        new Fw::JSON::String(buffer, static_cast<Fw::JSON::Array*>(parent));
+                        static_cast<Fw::JSON::Array*>(parent)->addString(QString::fromUtf8(buffer));
                     }
                 }
                 else
                 {
-                    new Fw::JSON::String(buffer, static_cast<Fw::JSON::Array*>(parent));
+                    static_cast<Fw::JSON::Array*>(parent)->addString(QString::fromUtf8(buffer));
                 }
                 buffer = QByteArray();
             }
@@ -314,17 +311,17 @@ namespace
                 {
                     throw Fw::Exception("Invalid number value", line, column);
                 }
-                new Fw::JSON::Number(value, static_cast<Fw::JSON::Array*>(parent));
+                static_cast<Fw::JSON::Array*>(parent)->addNumber(value);
                 buffer = QByteArray();
             }
             break;
 
         case Fw::JSON::T_Array:
-            parent = new Fw::JSON::Array(static_cast<Fw::JSON::Array*>(parent));
+            parent = static_cast<Fw::JSON::Array*>(parent)->addArray();
             break;
 
         case Fw::JSON::T_Object:
-            parent = new Fw::JSON::Object(static_cast<Fw::JSON::Array*>(parent));
+            parent = static_cast<Fw::JSON::Array*>(parent)->addObject();
             break;
 
         case Fw::JSON::T_Null:
@@ -579,18 +576,6 @@ Fw::JSON::Node::Node() :
 {
 }
 
-Fw::JSON::Node::Node(const QByteArray& attrName, Fw::JSON::Object* parent) :
-    m_parent(parent)
-{
-   parent->addAttribute(attrName, this);
-}
-
-Fw::JSON::Node::Node(Fw::JSON::Array* parent) :
-    m_parent(parent)
-{
-    parent->addNode(this);
-}
-
 Fw::JSON::Node::~Node()
 {
     takeFromParent();
@@ -643,40 +628,21 @@ void Fw::JSON::Node::takeFromParent()
             Q_ASSERT(false);
             break;
         }
-
         m_parent = 0;
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Fw::JSON::String::String() :
-    BaseClass(),
-    m_value(QByteArray())
-{
-}
-
-Fw::JSON::String::String(const QByteArray& value) :
+Fw::JSON::String::String(const QString& value) :
    BaseClass(),
    m_value(value)
 {
 }
 
-Fw::JSON::String::String(const QByteArray &value, const QByteArray& attr, Fw::JSON::Object* parent) :
-    BaseClass(attr, parent),
-    m_value(value)
-{
-}
-
-Fw::JSON::String::String(const QByteArray &value, Fw::JSON::Array* parent) :
-    BaseClass(parent),
-    m_value(value)
-{
-}
-
 QByteArray Fw::JSON::String::toUtf8() const
 {
-    return "\"" + m_value + "\"";
+    return "\"" + m_value.toUtf8() + "\"";
 }
 
 int Fw::JSON::String::toInt(bool* bOk) const
@@ -684,19 +650,7 @@ int Fw::JSON::String::toInt(bool* bOk) const
     return m_value.toInt(bOk);
 }
 
-bool Fw::JSON::String::toBool(bool* bOk) const
-{
-    QByteArray lowerValue = m_value.toLower();
-    if(lowerValue == "true" || lowerValue == "yes")
-    {
-        (*bOk) = true;
-        return true;
-    }
-    (*bOk) = (lowerValue == "false" || lowerValue == "no");
-    return false;
-}
-
-quint32 Fw::JSON::String::toUInt(bool* bOk) const
+uint Fw::JSON::String::toUint(bool* bOk) const
 {
     if(!m_value.isEmpty())
     {
@@ -710,21 +664,30 @@ quint32 Fw::JSON::String::toUInt(bool* bOk) const
     return 0;
 }
 
-Fw::JSON::Node* Fw::JSON::String::clone() const
+bool Fw::JSON::String::toBool(bool* bOk) const
 {
-    return new Fw::JSON::String(m_value);
+    QString lowerValue = m_value.toLower();
+    if(lowerValue == "true" || lowerValue == "yes")
+    {
+        (*bOk) = true;
+        return true;
+    }
+    (*bOk) = (lowerValue == "false" || lowerValue == "no");
+    return false;
 }
 
-QString Fw::JSON::String::toString() const
+double Fw::JSON::String::toNumber(bool* bOk) const
 {
-    QString string = QString::fromUtf8(m_value);
+    return m_value.toDouble(bOk);
+}
 
+QString Fw::JSON::String::toString(bool* bOk) const
+{
     QString out;
-    out.reserve(string.size());
+    out.reserve(m_value.size());
 
-    QString::ConstIterator iter = string.begin();
-    QString::ConstIterator end = string.end();
-
+    QString::ConstIterator iter = m_value.begin();
+    QString::ConstIterator end = m_value.end();
     try
     {
         while(iter != end)
@@ -793,35 +756,24 @@ QString Fw::JSON::String::toString() const
     }
     catch(const Fw::Exception& e)
     {
+        (*bOk) = false;
         return QString();
     }
 
+    (*bOk) = true;
     return out;
+}
+
+Fw::JSON::Node* Fw::JSON::String::clone() const
+{
+    return new Fw::JSON::String(m_value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Fw::JSON::Number::Number() :
-    BaseClass(),
-    m_value(0.)
-{
-}
-
 Fw::JSON::Number::Number(double value) :
     BaseClass(),
     m_value(value)
-{
-}
-
-Fw::JSON::Number::Number(double value, const QByteArray& attrName, Fw::JSON::Object* parent) :
-   BaseClass(attrName, parent),
-   m_value(value)
-{
-}
-
-Fw::JSON::Number::Number(double value, Fw::JSON::Array* parent) :
-   BaseClass(parent),
-   m_value(value)
 {
 }
 
@@ -835,7 +787,18 @@ int Fw::JSON::Number::toInt(bool* bOk) const
     if(qAbs(m_value) > 0. && (qAbs(m_value) - INT_MAX) < 0.)
     {
         (*bOk) = true;
-        return m_value;
+        return static_cast<int>(m_value);
+    }
+    (*bOk) = false;
+    return 0;
+}
+
+uint Fw::JSON::Number::toUint(bool* bOk) const
+{
+    if(m_value > 0. && ((m_value - UINT_MAX) < 0.))
+    {
+        (*bOk) = true;
+        return static_cast<uint>(m_value);
     }
     (*bOk) = false;
     return 0;
@@ -843,8 +806,18 @@ int Fw::JSON::Number::toInt(bool* bOk) const
 
 bool Fw::JSON::Number::toBool(bool* bOk) const
 {
-   (*bOk) = true;
-   return qFuzzyCompare(m_value, 0.);
+    (*bOk) = true;
+    return qFuzzyCompare(m_value, 0.);
+}
+
+double Fw::JSON::Number::toNumber(bool* bOk) const
+{
+    return m_value;
+}
+
+QString Fw::JSON::Number::toString(bool* bOk) const
+{
+    return QString::number(m_value);
 }
 
 Fw::JSON::Node* Fw::JSON::Number::clone() const
@@ -854,20 +827,60 @@ Fw::JSON::Node* Fw::JSON::Number::clone() const
     return number;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+Fw::JSON::Boolean::Boolean(bool value) :
+    BaseClass(),
+    m_value(value)
+{
+}
+
+QByteArray Fw::JSON::Boolean::toUtf8() const
+{
+    return m_value ? Fw::JSON::constantTrue : Fw::JSON::constantFalse;
+}
+
+int Fw::JSON::Boolean::toInt(bool* bOk) const
+{
+    (*bOk) = true;
+    return m_value;
+}
+
+uint Fw::JSON::Boolean::toUint(bool* bOk) const
+{
+    (*bOk) = true;
+    return m_value;
+}
+
+bool Fw::JSON::Boolean::toBool(bool* bOk) const
+{
+    (*bOk) = true;
+    return m_value;
+}
+
+double Fw::JSON::Boolean::toNumber(bool* bOk) const
+{
+    (*bOk) = true;
+    return m_value;
+}
+
+QString Fw::JSON::Boolean::toString(bool* bOk) const
+{
+    (*bOk) = true;
+    return boolToName(m_value);
+}
+
+Fw::JSON::Node* Fw::JSON::Boolean::clone() const
+{
+    Fw::JSON::Boolean* newNode = new Fw::JSON::Boolean();
+    newNode->m_value = m_value;
+    return newNode;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Fw::JSON::Object::Object() :
     BaseClass()
-{
-}
-
-Fw::JSON::Object::Object(const QByteArray& attrName, Fw::JSON::Object* parent) :
-    BaseClass(attrName, parent)
-{
-}
-
-Fw::JSON::Object::Object(Fw::JSON::Array* parent) :
-   BaseClass(parent)
 {
 }
 
@@ -887,9 +900,16 @@ void Fw::JSON::Object::clear()
     m_attributes.clear();
 }
 
-void Fw::JSON::Object::addAttribute(const QByteArray& name, Fw::JSON::Node* value, bool replace)
+Fw::JSON::Node* Fw::JSON::Object::addAttribute(const QByteArray& name, Fw::JSON::Node* value, bool replace)
 {
-    value->takeFromParent();
+    if(value->m_parent)
+    {
+        if(value->m_parent == this)
+        {
+            return value;
+        }
+        value->takeFromParent();
+    }
 
     Fw::JSON::Node* currentAttr = m_attributes.value(name);
     if(currentAttr)
@@ -903,17 +923,16 @@ void Fw::JSON::Object::addAttribute(const QByteArray& name, Fw::JSON::Node* valu
             Fw::JSON::Array* addArray = currentAttr->cast<Fw::JSON::Array>();
             if(!addArray)
             {
-                currentAttr->takeFromParent();
-                addArray = new Fw::JSON::Array(name, this);
-                addArray->addNode(currentAttr);
+                addArray = this->addArray(name);
+                addArray->addValue(currentAttr);
             }
-            addArray->addNode(value);
-            return;
+            return addArray->addValue(value);
         }
     }
 
     value->m_parent = this;
     m_attributes.insert(name, value);
+    return value;
 }
 
 QByteArray Fw::JSON::Object::toUtf8() const
@@ -1020,10 +1039,28 @@ int Fw::JSON::Object::toInt(bool* bOk) const
     return 0;
 }
 
+uint Fw::JSON::Object::toUint(bool* bOk) const
+{
+    (*bOk) = false;
+    return 0;
+}
+
 bool Fw::JSON::Object::toBool(bool* bOk) const
 {
-   (*bOk) = false;
-   return false;
+    (*bOk) = false;
+    return false;
+}
+
+double Fw::JSON::Object::toNumber(bool* bOk) const
+{
+    (*bOk) = false;
+    return 0.;
+}
+
+QString Fw::JSON::Object::toString(bool* bOk) const
+{
+    (*bOk) = false;
+    return QString();
 }
 
 Fw::JSON::Node* Fw::JSON::Object::clone() const
@@ -1045,17 +1082,12 @@ Fw::JSON::Array::Array() :
 {
 }
 
-Fw::JSON::Array::Array(const QByteArray& attrName, Fw::JSON::Object* parent) :
-   BaseClass(attrName, parent)
-{
-}
-
-Fw::JSON::Array::Array(Fw::JSON::Array* parent) :
-    BaseClass(parent)
-{
-}
-
 Fw::JSON::Array::~Array()
+{
+    clear();
+}
+
+void Fw::JSON::Array::clear()
 {
     foreach(Fw::JSON::Node* node, m_data)
     {
@@ -1094,6 +1126,16 @@ int Fw::JSON::Array::toInt(bool* bOk) const
     return 0;
 }
 
+uint Fw::JSON::Array::toUint(bool* bOk) const
+{
+    if(size() == 1)
+    {
+        return m_data.at(0)->toUint(bOk);
+    }
+    (*bOk) = false;
+    return 0;
+}
+
 bool Fw::JSON::Array::toBool(bool* bOk) const
 {
     if(size() == 1)
@@ -1104,80 +1146,48 @@ bool Fw::JSON::Array::toBool(bool* bOk) const
     return false;
 }
 
+double Fw::JSON::Array::toNumber(bool* bOk) const
+{
+    if(size() == 1)
+    {
+        return m_data.at(0)->toNumber(bOk);
+    }
+    (*bOk) = false;
+    return 0.;
+}
+
+QString Fw::JSON::Array::toString(bool* bOk) const
+{
+    if(size() == 1)
+    {
+        return m_data.at(0)->toString(bOk);
+    }
+    (*bOk) = false;
+    return QString();
+}
+
 Fw::JSON::Node* Fw::JSON::Array::clone() const
 {
     Fw::JSON::Array* newArray = new Fw::JSON::Array();
     newArray->m_data.reserve(m_data.size());
     foreach(Fw::JSON::Node* child, m_data)
     {
-        newArray->addNode(child->clone());
+        newArray->addValue(child->clone());
     }
     return newArray;
 }
 
-void Fw::JSON::Array::addNode(Fw::JSON::Node* node)
+Fw::JSON::Node* Fw::JSON::Array::addValue(Fw::JSON::Node* node)
 {
-    if(node->m_parent && node->m_parent != this)
+    if(node->m_parent)
     {
+        if(node->m_parent == this)
+        {
+            return node;
+        }
         node->takeFromParent();
     }
     node->m_parent = this;
     m_data.append(node);
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-
-Fw::JSON::Boolean::Boolean() :
-    BaseClass(),
-    m_value(false)
-{
-}
-
-Fw::JSON::Boolean::Boolean(bool value) :
-    BaseClass(),
-    m_value(value)
-{
-}
-
-Fw::JSON::Boolean::Boolean(bool value, const QByteArray &attrName, Fw::JSON::Object *parent) :
-    BaseClass(attrName, parent),
-    m_value(value)
-{
-}
-
-Fw::JSON::Boolean::Boolean(bool value, Fw::JSON::Array* parent) :
-    BaseClass(parent),
-    m_value(value)
-{
-}
-
-QByteArray Fw::JSON::Boolean::toUtf8() const
-{
-    return m_value ? Fw::JSON::constantTrue : Fw::JSON::constantFalse;
-}
-
-int Fw::JSON::Boolean::toInt(bool *bOk) const
-{
-    (*bOk) = true;
-    return m_value;
-}
-
-quint32 Fw::JSON::Boolean::toUInt(bool* bOk) const
-{
-    (*bOk) = true;
-    return m_value;
-}
-
-Fw::JSON::Node* Fw::JSON::Boolean::clone() const
-{
-    Fw::JSON::Boolean* newNode = new Fw::JSON::Boolean();
-    newNode->m_value = m_value;
-    return newNode;
-}
-
-bool Fw::JSON::Boolean::toBool(bool *bOk) const
-{
-    (*bOk) = true;
-    return m_value;
+    return node;
 }

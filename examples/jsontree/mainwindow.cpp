@@ -42,9 +42,10 @@ void MainWindow::addNode(QTreeWidgetItem* parent, Fw::JSON::Node* node)
 
     case Fw::JSON::T_String:
         {
+            bool bOk = false;
             parent->setText(1, "string");
             Fw::JSON::String* stringNode = node->cast<Fw::JSON::String>();
-            parent->setText(2, stringNode->isEmpty() ? "<empty>" : stringNode->toString());
+            parent->setText(2, stringNode->isEmpty() ? "<empty>" : stringNode->toString(&bOk));
         }
         break;
 

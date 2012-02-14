@@ -49,8 +49,6 @@ public:
     friend class Fw::JSON::Array;
 
     Node();
-    Node(const QByteArray& attrName, Fw::JSON::Object* parent);
-    Node(Fw::JSON::Array* parent);
     virtual ~Node();
 
     virtual int type() const = 0;
@@ -74,18 +72,16 @@ public:
     void takeFromParent();
 
     virtual int toInt(bool* bOk) const = 0;
+    virtual uint toUint(bool* bOk) const = 0;
     virtual bool toBool(bool* bOk) const = 0;
+    virtual double toNumber(bool* bOk) const = 0;
+    virtual QString toString(bool* bOk) const = 0;
 
     virtual Fw::JSON::Node* clone() const = 0;
 
 private:
     Fw::JSON::Node* m_parent;
 };
-
-Fw::JSON::Node* Fw::JSON::Node::parent() const
-{
-    return m_parent;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -96,16 +92,6 @@ public:
 
     Base() :
         BaseClass()
-    {
-    }
-
-    Base(const QByteArray& attrName, Fw::JSON::Object* parent) :
-        BaseClass(attrName, parent)
-    {
-    }
-
-    Base(Fw::JSON::Array* parent) :
-        BaseClass(parent)
     {
     }
 
@@ -128,42 +114,26 @@ class FW_CORE_SHARED_EXPORT Fw::JSON::String : public Fw::JSON::Base<Fw::JSON::T
     typedef Fw::JSON::Base<Fw::JSON::T_String> BaseClass;
 
 public:
-    explicit String();
-    explicit String(const QByteArray& value);
-    String(const QByteArray &value, const QByteArray& attr, Fw::JSON::Object* parent);
-    String(const QByteArray &value, Fw::JSON::Array* parent);
+    explicit String(const QString& value = QString());
 
-    inline QByteArray value() const;
-    inline void setValue(const QByteArray& value);
+    inline QString value() const;
+    inline void setValue(const QString& value);
 
     inline bool isEmpty() const;
 
-    int toInt(bool* bOk) const;
-    bool toBool(bool* bOk) const;
-    quint32 toUInt(bool* bOk) const;
     QByteArray toUtf8() const;
-    QString  toString() const;
+
+    virtual int toInt(bool* bOk) const;
+    virtual uint toUint(bool* bOk) const;
+    virtual bool toBool(bool* bOk) const;
+    virtual double toNumber(bool* bOk) const;
+    virtual QString toString(bool* bOk) const;
 
     Fw::JSON::Node* clone() const;
 
 private:
-    QByteArray m_value;
+    QString m_value;
 };
-
-QByteArray Fw::JSON::String::value() const
-{
-    return m_value;
-}
-
-void Fw::JSON::String::setValue(const QByteArray& value)
-{
-    m_value = value;
-}
-
-bool Fw::JSON::String::isEmpty() const
-{
-    return m_value.isEmpty();
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -171,18 +141,18 @@ class FW_CORE_SHARED_EXPORT Fw::JSON::Number : public Fw::JSON::Base<Fw::JSON::T
 {
     typedef Fw::JSON::Base<Fw::JSON::T_Number> BaseClass;
 public:
-    Number();
-    Number(double value);
-    Number(double value, const QByteArray& attrName, Fw::JSON::Object* parent);
-    Number(double value, Fw::JSON::Array* parent);
+    Number(double value = 0.);
 
     inline double value() const;
     inline void setValue(double value);
 
     QByteArray toUtf8() const;
 
-    int toInt(bool* bOk) const;
-    bool toBool(bool* bOk) const;
+    virtual int toInt(bool* bOk) const;
+    virtual uint toUint(bool* bOk) const;
+    virtual bool toBool(bool* bOk) const;
+    virtual double toNumber(bool* bOk) const;
+    virtual QString toString(bool* bOk) const;
 
     Fw::JSON::Node* clone() const;
 
@@ -190,16 +160,33 @@ private:
     double m_value;
 };
 
+/////////////////////////////////////////////////////////////////////////////////
 
-double Fw::JSON::Number::value() const
+class FW_CORE_SHARED_EXPORT Fw::JSON::Boolean: public Fw::JSON::Base<Fw::JSON::T_Bool>
 {
-    return m_value;
-}
+  typedef Fw::JSON::Base<Fw::JSON::T_Bool> BaseClass;
 
-void Fw::JSON::Number::setValue(double value)
-{
-    m_value = value;
-}
+public:
+    friend class Fw::JSON::Node;
+
+    Boolean(bool value = false);
+
+    inline bool value() const;
+    inline void setValue(bool value);
+
+    QByteArray toUtf8() const;
+
+    virtual int toInt(bool* bOk) const;
+    virtual uint toUint(bool* bOk) const;
+    virtual bool toBool(bool* bOk) const;
+    virtual double toNumber(bool* bOk) const;
+    virtual QString toString(bool* bOk) const;
+
+    Fw::JSON::Node* clone() const;
+
+private:
+    bool m_value;
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -211,18 +198,18 @@ public:
     friend class Fw::JSON::Node;
 
     Object();
-    Object(const QByteArray& attrName, Fw::JSON::Object* parent);
-    Object(Fw::JSON::Array* parent);
     ~Object();
 
+    Node* addAttribute(const QByteArray& name, Fw::JSON::Node* value, bool replace = true);
+    inline void removeAttribute(const QByteArray& name);
+
+    inline String* addString(const QByteArray& name, const QString& value);
+    inline Number* addNumber(const QByteArray& name, double value);
+    inline Boolean* addBoolean(const QByteArray& name, bool value);
+    inline Object* addObject(const QByteArray& name);
+    inline Array* addArray(const QByteArray& name);
+
     void clear();
-
-    inline QByteArray className() const;
-    inline QByteArray baseName() const;
-
-    inline QByteArray stringValue(const QByteArray& attrName) const;
-
-    void addAttribute(const QByteArray& name, Fw::JSON::Node* value, bool replace = true);
 
     inline Fw::JSON::Node* attribute(const QByteArray& name) const;
     inline QByteArray attributeName(Fw::JSON::Node* child) const;
@@ -231,75 +218,23 @@ public:
     inline QList<Fw::JSON::Node*> toList() const;
     inline int attributesCount() const;
 
-    inline void removeAttribute(const QByteArray& name);
-
     QByteArray toUtf8() const;
 
     void parse(const QByteArray& utf8String) throw(Fw::Exception);
     void parse(QIODevice* ioDevice) throw(Fw::Exception);
     void parseFile(const QString& fileName) throw(Fw::Exception);
 
-    int toInt(bool* bOk) const;
-    bool toBool(bool* bOk) const;
+    virtual int toInt(bool* bOk) const;
+    virtual uint toUint(bool* bOk) const;
+    virtual bool toBool(bool* bOk) const;
+    virtual double toNumber(bool* bOk) const;
+    virtual QString toString(bool* bOk) const;
 
     Fw::JSON::Node* clone() const;
 
 private:
     QHash<QByteArray, Fw::JSON::Node*> m_attributes;
 };
-
-Fw::JSON::Node* Fw::JSON::Object::attribute(const QByteArray& name) const
-{
-    return m_attributes.value(name, 0);
-}
-
-QByteArray Fw::JSON::Object::attributeName(Fw::JSON::Node* child) const
-{
-    return m_attributes.key(child, "");
-}
-
-QHash<QByteArray, Fw::JSON::Node*> Fw::JSON::Object::attributes() const
-{
-    return m_attributes;
-}
-
-QList<Fw::JSON::Node*> Fw::JSON::Object::toList() const
-{
-    return m_attributes.values();
-}
-
-void Fw::JSON::Object::removeAttribute(const QByteArray& name)
-{
-    if(m_attributes.contains(name))
-    {
-        delete m_attributes.take(name);
-    }
-}
-
-int Fw::JSON::Object::attributesCount() const
-{
-    return m_attributes.size();
-}
-
-QByteArray Fw::JSON::Object::className() const
-{
-    return stringValue("class");
-}
-
-QByteArray Fw::JSON::Object::baseName() const
-{
-    return stringValue("base").simplified().toLower();
-}
-
-QByteArray Fw::JSON::Object::stringValue(const QByteArray& attrName) const
-{
-    Fw::JSON::String* classNode = attribute(attrName)->cast<Fw::JSON::String>();
-    if(classNode)
-    {
-        return classNode->value();
-    }
-    return QByteArray();
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -311,11 +246,17 @@ public:
     friend class Fw::JSON::Node;
 
     Array();
-    Array(const QByteArray& attrName, Fw::JSON::Object* parent);
-    Array(Fw::JSON::Array* parent);
     ~Array();
 
-    void addNode(Fw::JSON::Node* node);
+    void clear();
+
+    Node* addValue(Fw::JSON::Node* node);
+
+    inline String* addString(const QString& value);
+    inline Number* addNumber(double value);
+    inline Boolean* addBoolean(bool value);
+    inline Object* addObject();
+    inline Array* addArray();
 
     inline int size() const;
 
@@ -324,8 +265,11 @@ public:
 
     QByteArray toUtf8() const;
 
-    int toInt(bool* bOk) const;
-    bool toBool(bool* bOk) const;
+    virtual int toInt(bool* bOk) const;
+    virtual uint toUint(bool* bOk) const;
+    virtual bool toBool(bool* bOk) const;
+    virtual double toNumber(bool* bOk) const;
+    virtual QString toString(bool* bOk) const;
 
     Fw::JSON::Node* clone() const;
 
@@ -335,67 +279,6 @@ private:
     QVector<Fw::JSON::Node*> m_data;
 };
 
-int Fw::JSON::Array::size() const
-{
-    return m_data.size();
-}
-
-int Fw::JSON::Array::indexOf(Fw::JSON::Node* item) const
-{
-    return m_data.indexOf(item);
-}
-
-Fw::JSON::Node* Fw::JSON::Array::item(int index) const
-{
-    if(index < m_data.size() && index >= 0)
-    {
-        return m_data.at(index);
-    }
-    return 0;
-}
-
-QVector<Fw::JSON::Node*> Fw::JSON::Array::toQVector() const
-{
-    return m_data;
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-class FW_CORE_SHARED_EXPORT Fw::JSON::Boolean: public Fw::JSON::Base<Fw::JSON::T_Bool>
-{
-  typedef Fw::JSON::Base<Fw::JSON::T_Bool> BaseClass;
-
-public:
-    friend class Fw::JSON::Node;
-
-    Boolean();
-    Boolean(bool value);
-    Boolean(bool value, const QByteArray& attrName, Fw::JSON::Object* parent);
-    Boolean(bool value, Fw::JSON::Array* parent);
-
-    inline bool value() const;
-    inline void setValue(bool value);
-
-    QByteArray toUtf8() const;
-
-    int toInt(bool* bOk) const;
-    bool toBool(bool *bOk) const;
-    quint32 toUInt(bool* bOk) const;
-
-    Fw::JSON::Node* clone() const;
-
-private:
-    bool m_value;
-};
-
-bool Fw::JSON::Boolean::value() const
-{
-    return m_value;
-}
-
-void Fw::JSON::Boolean::setValue(bool value)
-{
-    m_value = value;
-}
+#include "fw/core/json_inl.hpp"
 
 #endif // FIREWORKS_CORE_JSON_HPP
