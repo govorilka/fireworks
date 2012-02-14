@@ -44,6 +44,12 @@
    <property name="text">
     <string>&amp;Open</string>
    </property>
+   <property name="font">
+    <font>
+     <family>Droid Sans</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
    </property>

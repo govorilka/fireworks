@@ -14,9 +14,7 @@ namespace Fw
     {
         class Node;
         class String;
-        class UIntNumber;
-        class IntNumber;
-        class DoubleNumber;
+        class Number;
         class Boolean;
         class Object;
         class Array;
@@ -27,10 +25,7 @@ namespace Fw
         {
             T_Null,
             T_String,
-            T_UIntNumber,
-            T_IntNumber,
-            T_FloatNumber,
-            T_DoubleNumber,
+            T_Number,
             T_Bool,
             T_Object,
             T_Array
@@ -172,84 +167,14 @@ bool Fw::JSON::String::isEmpty() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FW_CORE_SHARED_EXPORT Fw::JSON::UIntNumber : public Fw::JSON::Base<Fw::JSON::T_UIntNumber>
+class FW_CORE_SHARED_EXPORT Fw::JSON::Number : public Fw::JSON::Base<Fw::JSON::T_Number>
 {
-    typedef Fw::JSON::Base<Fw::JSON::T_UIntNumber> BaseClass;
+    typedef Fw::JSON::Base<Fw::JSON::T_Number> BaseClass;
 public:
-    explicit UIntNumber();
-    explicit UIntNumber(quint32 value);
-    explicit UIntNumber(quint32 value, const QByteArray& attrName, Fw::JSON::Object* parent);
-    explicit UIntNumber(quint32 value, Fw::JSON::Array* parent);
-
-    inline quint32 value() const;
-    inline void setValue(quint32 value);
-
-    QByteArray toUtf8() const;
-
-    int toInt(bool* bOk) const;
-    bool toBool(bool* bOk) const;
-
-    Fw::JSON::Node* clone() const;
-
-private:
-    quint32 m_value;
-};
-
-quint32 Fw::JSON::UIntNumber::value() const
-{
-    return m_value;
-}
-
-void Fw::JSON::UIntNumber::setValue(quint32 value)
-{
-    m_value = value;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-class FW_CORE_SHARED_EXPORT Fw::JSON::IntNumber : public Fw::JSON::Base<Fw::JSON::T_IntNumber>
-{
-    typedef Fw::JSON::Base<Fw::JSON::T_IntNumber> BaseClass;
-
-public:
-    IntNumber();
-    IntNumber(int value, const QByteArray& attrName, Fw::JSON::Object* parent);
-    IntNumber(int value, Fw::JSON::Array* parent);
-
-    QByteArray toUtf8() const;
-
-    inline int value() const;
-    inline void setValue(int value);
-
-    int toInt(bool* bOk) const;
-    bool toBool(bool* bOk) const;
-
-    Fw::JSON::Node* clone() const;
-
-private:
-   int m_value;
-};
-
-int Fw::JSON::IntNumber::value() const
-{
-    return m_value;
-}
-
-void Fw::JSON::IntNumber::setValue(int value)
-{
-    m_value = value;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-class FW_CORE_SHARED_EXPORT Fw::JSON::DoubleNumber : public Fw::JSON::Base<Fw::JSON::T_DoubleNumber>
-{
-    typedef Fw::JSON::Base<Fw::JSON::T_DoubleNumber> BaseClass;
-public:
-    DoubleNumber();
-    DoubleNumber(double value);
-    DoubleNumber(double value, const QByteArray& attrName, Fw::JSON::Object* parent);
-    DoubleNumber(double value, Fw::JSON::Array* parent);
+    Number();
+    Number(double value);
+    Number(double value, const QByteArray& attrName, Fw::JSON::Object* parent);
+    Number(double value, Fw::JSON::Array* parent);
 
     inline double value() const;
     inline void setValue(double value);
@@ -266,12 +191,12 @@ private:
 };
 
 
-double Fw::JSON::DoubleNumber::value() const
+double Fw::JSON::Number::value() const
 {
     return m_value;
 }
 
-void Fw::JSON::DoubleNumber::setValue(double value)
+void Fw::JSON::Number::setValue(double value)
 {
     m_value = value;
 }
