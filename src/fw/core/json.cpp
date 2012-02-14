@@ -246,33 +246,7 @@ namespace
             }
             break;
 
-        case Fw::JSON::T_UIntNumber:
-            {
-                bool bOk = false;
-                quint32 value = buffer.toUInt(&bOk);
-                if(!bOk)
-                {
-                    throw Fw::Exception("Invalid number value", "", line, column);
-                }
-                new Fw::JSON::UIntNumber(value, attribute, static_cast<Fw::JSON::Object*>(parent));
-                buffer = QByteArray();
-            }
-            break;
-
-        case Fw::JSON::T_IntNumber:
-            {
-                bool bOk = false;
-                int value = buffer.toInt(&bOk);
-                if(!bOk)
-                {
-                    throw Fw::Exception("Invalid number value", line, column);
-                }
-                new Fw::JSON::IntNumber(value, attribute, static_cast<Fw::JSON::Object*>(parent));
-                buffer = QByteArray();
-            }
-            break;
-
-        case Fw::JSON::T_DoubleNumber:
+        case Fw::JSON::T_Number:
             {
                 bool bOk = false;
                 double value = buffer.toDouble(&bOk);
@@ -280,7 +254,7 @@ namespace
                 {
                     throw Fw::Exception("Invalid number value", line, column);
                 }
-                new Fw::JSON::DoubleNumber(value, attribute, static_cast<Fw::JSON::Object*>(parent));
+                new Fw::JSON::Number(value, attribute, static_cast<Fw::JSON::Object*>(parent));
                 buffer = QByteArray();
             }
             break;
@@ -332,33 +306,7 @@ namespace
             }
             break;
 
-        case Fw::JSON::T_UIntNumber:
-            {
-                bool bOk = false;
-                quint32 value = buffer.toUInt(&bOk);
-                if(!bOk)
-                {
-                    throw Fw::Exception("Invalid number value", line, column);
-                }
-                new Fw::JSON::UIntNumber(value, static_cast<Fw::JSON::Array*>(parent));
-                buffer = QByteArray();
-            }
-            break;
-
-        case Fw::JSON::T_IntNumber:
-            {
-                bool bOk = false;
-                int value = buffer.toInt(&bOk);
-                if(!bOk)
-                {
-                    throw Fw::Exception("Invalid number value", line, column);
-                }
-                new Fw::JSON::IntNumber(value, static_cast<Fw::JSON::Array*>(parent));
-                buffer = QByteArray();
-            }
-            break;
-
-        case Fw::JSON::T_DoubleNumber:
+        case Fw::JSON::T_Number:
             {
                 bool bOk = false;
                 double value = buffer.toDouble(&bOk);
@@ -366,7 +314,7 @@ namespace
                 {
                     throw Fw::Exception("Invalid number value", line, column);
                 }
-                new Fw::JSON::DoubleNumber(value, static_cast<Fw::JSON::Array*>(parent));
+                new Fw::JSON::Number(value, static_cast<Fw::JSON::Array*>(parent));
                 buffer = QByteArray();
             }
             break;
@@ -454,21 +402,21 @@ namespace
     void x_int(char c, ParseData* data) throw(Fw::Exception&)
     {
         data->xcmd = X_INT;
-        data->type = Fw::JSON::T_UIntNumber;
+        data->type = Fw::JSON::T_Number;
         data->buffer += c;
     }
 
     void x_re1(char c, ParseData* data) throw(Fw::Exception&)
     {
         data->xcmd = X_RE1;
-        data->type = Fw::JSON::T_DoubleNumber;
+        data->type = Fw::JSON::T_Number;
         data->buffer += c;
     }
 
     void x_re2(char c, ParseData* data) throw(Fw::Exception&)
     {
         data->xcmd = X_RE2;
-        data->type = Fw::JSON::T_DoubleNumber;
+        data->type = Fw::JSON::T_Number;
         data->buffer += c;
     }
 
@@ -496,12 +444,12 @@ namespace
         if(c == '+')
         {
             data->xcmd = X_INT;
-            data->type = Fw::JSON::T_UIntNumber;
+            data->type = Fw::JSON::T_Number;
         }
         else if(c == '-')
         {
             data->xcmd = X_INT;
-            data->type = Fw::JSON::T_IntNumber;
+            data->type = Fw::JSON::T_Number;
             data->buffer += c;
         }
     }
@@ -853,135 +801,36 @@ QString Fw::JSON::String::toString() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Fw::JSON::UIntNumber::UIntNumber() :
-    BaseClass(),
-    m_value(0)
-{
-}
-
-Fw::JSON::UIntNumber::UIntNumber(quint32 value) :
-    BaseClass(),
-    m_value(value)
-{
-}
-
-Fw::JSON::UIntNumber::UIntNumber(quint32 value, const QByteArray& attrName, Fw::JSON::Object* parent) :
-   BaseClass(attrName, parent),
-   m_value(value)
-{
-}
-
-Fw::JSON::UIntNumber::UIntNumber(quint32 value, Fw::JSON::Array* parent) :
-    BaseClass(parent),
-    m_value(value)
-{
-}
-
-QByteArray Fw::JSON::UIntNumber::toUtf8() const
-{
-    return QByteArray::number(m_value);
-}
-
-int Fw::JSON::UIntNumber::toInt(bool* bOk) const
-{
-    if(m_value <= INT_MAX)
-    {
-        (*bOk) = true;
-        return m_value;
-    }
-    (*bOk) = false;
-    return 0;
-}
-
-bool Fw::JSON::UIntNumber::toBool(bool* bOk) const
-{
-   (*bOk) = true;
-   return m_value == 0;
-}
-
-Fw::JSON::Node* Fw::JSON::UIntNumber::clone() const
-{
-    Fw::JSON::UIntNumber* number = new Fw::JSON::UIntNumber();
-    number->m_value = m_value;
-    return number;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-Fw::JSON::IntNumber::IntNumber() :
-    BaseClass(),
-    m_value(0)
-{
-}
-
-Fw::JSON::IntNumber::IntNumber(int value, const QByteArray& attrName, Fw::JSON::Object* parent) :
-    BaseClass(attrName, parent),
-    m_value(value)
-{
-}
-
-Fw::JSON::IntNumber::IntNumber(int value, Fw::JSON::Array* parent) :
-    BaseClass(parent),
-    m_value(value)
-{
-}
-
-QByteArray Fw::JSON::IntNumber::toUtf8() const
-{
-    return QByteArray::number(m_value);
-}
-
-int Fw::JSON::IntNumber::toInt(bool* bOk) const
-{
-   (*bOk) = true;
-   return m_value;
-}
-
-bool Fw::JSON::IntNumber::toBool(bool* bOk) const
-{
-   (*bOk) = true;
-   return m_value == 0;
-}
-
-Fw::JSON::Node* Fw::JSON::IntNumber::clone() const
-{
-    Fw::JSON::IntNumber* number = new Fw::JSON::IntNumber();
-    number->m_value = m_value;
-    return number;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-Fw::JSON::DoubleNumber::DoubleNumber() :
+Fw::JSON::Number::Number() :
     BaseClass(),
     m_value(0.)
 {
 }
 
-Fw::JSON::DoubleNumber::DoubleNumber(double value) :
+Fw::JSON::Number::Number(double value) :
     BaseClass(),
     m_value(value)
 {
 }
 
-Fw::JSON::DoubleNumber::DoubleNumber(double value, const QByteArray& attrName, Fw::JSON::Object* parent) :
+Fw::JSON::Number::Number(double value, const QByteArray& attrName, Fw::JSON::Object* parent) :
    BaseClass(attrName, parent),
    m_value(value)
 {
 }
 
-Fw::JSON::DoubleNumber::DoubleNumber(double value, Fw::JSON::Array* parent) :
+Fw::JSON::Number::Number(double value, Fw::JSON::Array* parent) :
    BaseClass(parent),
    m_value(value)
 {
 }
 
-QByteArray Fw::JSON::DoubleNumber::toUtf8() const
+QByteArray Fw::JSON::Number::toUtf8() const
 {
     return QByteArray::number(m_value);
 }
 
-int Fw::JSON::DoubleNumber::toInt(bool* bOk) const
+int Fw::JSON::Number::toInt(bool* bOk) const
 {
     if(qAbs(m_value) > 0. && (qAbs(m_value) - INT_MAX) < 0.)
     {
@@ -992,15 +841,15 @@ int Fw::JSON::DoubleNumber::toInt(bool* bOk) const
     return 0;
 }
 
-bool Fw::JSON::DoubleNumber::toBool(bool* bOk) const
+bool Fw::JSON::Number::toBool(bool* bOk) const
 {
    (*bOk) = true;
    return qFuzzyCompare(m_value, 0.);
 }
 
-Fw::JSON::Node* Fw::JSON::DoubleNumber::clone() const
+Fw::JSON::Node* Fw::JSON::Number::clone() const
 {
-    Fw::JSON::DoubleNumber* number = new Fw::JSON::DoubleNumber();
+    Fw::JSON::Number* number = new Fw::JSON::Number();
     number->m_value = m_value;
     return number;
 }

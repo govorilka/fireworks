@@ -48,23 +48,9 @@ void MainWindow::addNode(QTreeWidgetItem* parent, Fw::JSON::Node* node)
         }
         break;
 
-    case Fw::JSON::T_UIntNumber:
+    case Fw::JSON::T_Number:
         {
-            parent->setText(1, "uint");
-            parent->setText(2, QString::fromUtf8(node->toUtf8()));
-        }
-        break;
-
-    case Fw::JSON::T_IntNumber:
-        {
-            parent->setText(1, "int");
-            parent->setText(2, QString::fromUtf8(node->toUtf8()));
-        }
-        break;
-
-    case Fw::JSON::T_DoubleNumber:
-        {
-            parent->setText(1, "double");
+            parent->setText(1, "number");
             parent->setText(2, QString::fromUtf8(node->toUtf8()));
         }
         break;
