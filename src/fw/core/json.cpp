@@ -635,30 +635,29 @@ void Fw::JSON::Node::takeFromParent()
 ////////////////////////////////////////////////////////////////////////////////
 
 Fw::JSON::String::String(const QString& value) :
-   BaseClass(),
-   m_value(value)
+   BaseClass(value)
 {
 }
 
 QByteArray Fw::JSON::String::toUtf8() const
 {
-    return "\"" + m_value.toUtf8() + "\"";
+    return "\"" + value().toUtf8() + "\"";
 }
 
 int Fw::JSON::String::toInt(bool* bOk) const
 {
-    return m_value.toInt(bOk);
+    return value().toInt(bOk);
 }
 
 uint Fw::JSON::String::toUint(bool* bOk) const
 {
-    if(!m_value.isEmpty())
+    if(!value().isEmpty())
     {
-        if(m_value.at(0) == '#')
+        if(value().at(0) == '#')
         {
-            return m_value.right(m_value.length() - 1).toUInt(bOk, 16);
+            return value().right(value().length() - 1).toUInt(bOk, 16);
         }
-        return m_value.toUInt(bOk);
+        return value().toUInt(bOk);
     }
     (*bOk) = false;
     return 0;
@@ -666,7 +665,7 @@ uint Fw::JSON::String::toUint(bool* bOk) const
 
 bool Fw::JSON::String::toBool(bool* bOk) const
 {
-    QString lowerValue = m_value.toLower();
+    QString lowerValue = value().toLower();
     if(lowerValue == "true" || lowerValue == "yes")
     {
         (*bOk) = true;
@@ -678,16 +677,16 @@ bool Fw::JSON::String::toBool(bool* bOk) const
 
 double Fw::JSON::String::toNumber(bool* bOk) const
 {
-    return m_value.toDouble(bOk);
+    return value().toDouble(bOk);
 }
 
 QString Fw::JSON::String::toString(bool* bOk) const
 {
     QString out;
-    out.reserve(m_value.size());
+    out.reserve(value().size());
 
-    QString::ConstIterator iter = m_value.begin();
-    QString::ConstIterator end = m_value.end();
+    QString::ConstIterator iter = value().begin();
+    QString::ConstIterator end = value().end();
     try
     {
         while(iter != end)
@@ -766,28 +765,27 @@ QString Fw::JSON::String::toString(bool* bOk) const
 
 Fw::JSON::Node* Fw::JSON::String::clone() const
 {
-    return new Fw::JSON::String(m_value);
+    return new Fw::JSON::String(value());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 Fw::JSON::Number::Number(double value) :
-    BaseClass(),
-    m_value(value)
+    BaseClass(value)
 {
 }
 
 QByteArray Fw::JSON::Number::toUtf8() const
 {
-    return QByteArray::number(m_value);
+    return QByteArray::number(value());
 }
 
 int Fw::JSON::Number::toInt(bool* bOk) const
 {
-    if(qAbs(m_value) > 0. && (qAbs(m_value) - INT_MAX) < 0.)
+    if(qAbs(value()) > 0. && (qAbs(value()) - INT_MAX) < 0.)
     {
         (*bOk) = true;
-        return static_cast<int>(m_value);
+        return static_cast<int>(value());
     }
     (*bOk) = false;
     return 0;
@@ -795,10 +793,10 @@ int Fw::JSON::Number::toInt(bool* bOk) const
 
 uint Fw::JSON::Number::toUint(bool* bOk) const
 {
-    if(m_value > 0. && ((m_value - UINT_MAX) < 0.))
+    if(value() > 0. && ((value() - UINT_MAX) < 0.))
     {
         (*bOk) = true;
-        return static_cast<uint>(m_value);
+        return static_cast<uint>(value());
     }
     (*bOk) = false;
     return 0;
@@ -807,74 +805,70 @@ uint Fw::JSON::Number::toUint(bool* bOk) const
 bool Fw::JSON::Number::toBool(bool* bOk) const
 {
     (*bOk) = true;
-    return qFuzzyCompare(m_value, 0.);
+    return qFuzzyCompare(value(), 0.);
 }
 
 double Fw::JSON::Number::toNumber(bool* bOk) const
 {
-    return m_value;
+    (*bOk) = true;
+    return value();
 }
 
 QString Fw::JSON::Number::toString(bool* bOk) const
 {
-    return QString::number(m_value);
+    return QString::number(value());
 }
 
 Fw::JSON::Node* Fw::JSON::Number::clone() const
 {
-    Fw::JSON::Number* number = new Fw::JSON::Number();
-    number->m_value = m_value;
-    return number;
+    return new Fw::JSON::Number(value());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 Fw::JSON::Boolean::Boolean(bool value) :
-    BaseClass(),
-    m_value(value)
+    BaseClass(value)
 {
 }
 
 QByteArray Fw::JSON::Boolean::toUtf8() const
 {
-    return m_value ? Fw::JSON::constantTrue : Fw::JSON::constantFalse;
+    return value() ? Fw::JSON::constantTrue : Fw::JSON::constantFalse;
 }
 
 int Fw::JSON::Boolean::toInt(bool* bOk) const
 {
     (*bOk) = true;
-    return m_value;
+    return value();
 }
 
 uint Fw::JSON::Boolean::toUint(bool* bOk) const
 {
     (*bOk) = true;
-    return m_value;
+    return value();
 }
 
 bool Fw::JSON::Boolean::toBool(bool* bOk) const
 {
     (*bOk) = true;
-    return m_value;
+    return value();
 }
 
 double Fw::JSON::Boolean::toNumber(bool* bOk) const
 {
     (*bOk) = true;
-    return m_value;
+    return value();
 }
 
 QString Fw::JSON::Boolean::toString(bool* bOk) const
 {
     (*bOk) = true;
-    return boolToName(m_value);
+    return boolToName(value());
 }
 
 Fw::JSON::Node* Fw::JSON::Boolean::clone() const
 {
-    Fw::JSON::Boolean* newNode = new Fw::JSON::Boolean();
-    newNode->m_value = m_value;
-    return newNode;
+    return new Fw::JSON::Boolean(value());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -944,7 +938,6 @@ bool Fw::JSON::Object::boolAttribute(const QByteArray& name, bool defaultVal) co
             return attribute->value();
         }
     }
-
     return defaultVal;
 }
 

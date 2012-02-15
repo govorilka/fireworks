@@ -10,43 +10,9 @@ Fw::JSON::Node* Fw::JSON::Node::parent() const
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QString Fw::JSON::String::value() const
-{
-    return m_value;
-}
-
-void Fw::JSON::String::setValue(const QString& value)
-{
-    m_value = value;
-}
-
 bool Fw::JSON::String::isEmpty() const
 {
-    return m_value.isEmpty();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-double Fw::JSON::Number::value() const
-{
-    return m_value;
-}
-
-void Fw::JSON::Number::setValue(double value)
-{
-    m_value = value;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-bool Fw::JSON::Boolean::value() const
-{
-    return m_value;
-}
-
-void Fw::JSON::Boolean::setValue(bool value)
-{
-    m_value = value;
+    return value().isEmpty();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
