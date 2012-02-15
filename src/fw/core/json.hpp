@@ -20,6 +20,8 @@ namespace Fw
         class Array;
 
         template <int type_id> class Base;
+        template <typename T, int type_id> class BaseValue;
+
 
         enum NodeType
         {
@@ -88,16 +90,8 @@ private:
 template <int type_id> class Fw::JSON::Base : public Fw::JSON::Node
 {
     typedef Fw::JSON::Node BaseClass;
+
 public:
-
-    Base() :
-        BaseClass()
-    {
-    }
-
-    ~Base()
-    {
-    }
 
     static const int typeID = type_id;
 
@@ -109,15 +103,42 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FW_CORE_SHARED_EXPORT Fw::JSON::String : public Fw::JSON::Base<Fw::JSON::T_String>
+template <typename T, int type_id> class Fw::JSON::BaseValue : public Fw::JSON::Base<type_id>
 {
-    typedef Fw::JSON::Base<Fw::JSON::T_String> BaseClass;
+    typedef Fw::JSON::Node BaseClass;
+
+public:
+
+    typedef T BaseType;
+
+    BaseValue(const BaseType& value) :
+        m_value(value)
+    {
+    }
+
+    inline const BaseType& value() const
+    {
+        return m_value;
+    }
+
+    inline void setValue(const BaseType& value)
+    {
+        m_value = value;
+    }
+
+private:
+    BaseType m_value;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+class FW_CORE_SHARED_EXPORT Fw::JSON::String : public Fw::JSON::BaseValue<QString, Fw::JSON::T_String>
+{
+    typedef Fw::JSON::BaseValue<QString, Fw::JSON::T_String> BaseClass;
 
 public:
     explicit String(const QString& value = QString());
-
-    inline QString value() const;
-    inline void setValue(const QString& value);
 
     inline bool isEmpty() const;
 
@@ -130,21 +151,15 @@ public:
     virtual QString toString(bool* bOk) const;
 
     Fw::JSON::Node* clone() const;
-
-private:
-    QString m_value;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FW_CORE_SHARED_EXPORT Fw::JSON::Number : public Fw::JSON::Base<Fw::JSON::T_Number>
+class FW_CORE_SHARED_EXPORT Fw::JSON::Number : public Fw::JSON::BaseValue<double, Fw::JSON::T_Number>
 {
-    typedef Fw::JSON::Base<Fw::JSON::T_Number> BaseClass;
+    typedef Fw::JSON::BaseValue<double, Fw::JSON::T_Number> BaseClass;
 public:
     Number(double value = 0.);
-
-    inline double value() const;
-    inline void setValue(double value);
 
     QByteArray toUtf8() const;
 
@@ -155,25 +170,19 @@ public:
     virtual QString toString(bool* bOk) const;
 
     Fw::JSON::Node* clone() const;
-
-private:
-    double m_value;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
 
-class FW_CORE_SHARED_EXPORT Fw::JSON::Boolean: public Fw::JSON::Base<Fw::JSON::T_Bool>
+class FW_CORE_SHARED_EXPORT Fw::JSON::Boolean: public Fw::JSON::BaseValue<bool, Fw::JSON::T_Bool>
 {
-  typedef Fw::JSON::Base<Fw::JSON::T_Bool> BaseClass;
+  typedef Fw::JSON::BaseValue<bool, Fw::JSON::T_Bool> BaseClass;
 
 public:
     friend class Fw::JSON::Node;
 
     Boolean(bool value = false);
 
-    inline bool value() const;
-    inline void setValue(bool value);
-
     QByteArray toUtf8() const;
 
     virtual int toInt(bool* bOk) const;
@@ -183,9 +192,6 @@ public:
     virtual QString toString(bool* bOk) const;
 
     Fw::JSON::Node* clone() const;
-
-private:
-    bool m_value;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -211,8 +217,20 @@ public:
 
     void clear();
 
-    inline Fw::JSON::Node* attribute(const QByteArray& name) const;
     inline QByteArray attributeName(Fw::JSON::Node* child) const;
+
+    inline Fw::JSON::Node* attribute(const QByteArray& name) const;
+    template<class T> typename T::BaseType attribute(const QByteArray& name, const typename T::BaseType& defaultValue)
+    {
+        if(Fw::JSON::Node* node = attribute(name))
+        {
+            if(T* attribute = node->cast<T>())
+            {
+                return attribute->value();
+            }
+        }
+        return defaultValue;
+    }
 
     bool boolAttribute(const QByteArray& name, bool defaultVal = false) const;
     double numberAttribute(const QByteArray& name, double defaultVal = 0.0) const;

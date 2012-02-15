@@ -1,3 +1,5 @@
+#include <QtCore/qdebug.h>
+
 #include <QtGui/qtreewidget.h>
 #include <QtGui/qfiledialog.h>
 
@@ -37,6 +39,8 @@ void MainWindow::addNode(QTreeWidgetItem* parent, Fw::JSON::Node* node)
                 childItem->setText(0, QString::fromUtf8(iter.key()));
                 addNode(childItem, iter.value());
             }
+
+            qDebug() << object->attribute<Fw::JSON::String>("stroka", "<empty>");
         }
         break;
 
