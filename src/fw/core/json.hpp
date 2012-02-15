@@ -214,6 +214,12 @@ public:
     inline Fw::JSON::Node* attribute(const QByteArray& name) const;
     inline QByteArray attributeName(Fw::JSON::Node* child) const;
 
+    bool boolAttribute(const QByteArray& name, bool defaultVal = false) const;
+    double numberAttribute(const QByteArray& name, double defaultVal = 0.0) const;
+    QString stringAttribute(const QByteArray& name, const QString& defaultVal = QString()) const;
+    Fw::JSON::Object* objectAttribute(const QByteArray& name, Fw::JSON::Object* defaultVal = 0) const;
+    Fw::JSON::Array* arrayAttribute(const QByteArray& name, Fw::JSON::Array* defaultVal = 0) const;
+
     inline QHash<QByteArray, Fw::JSON::Node*> attributes() const;
     inline QList<Fw::JSON::Node*> toList() const;
     inline int attributesCount() const;
