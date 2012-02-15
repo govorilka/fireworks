@@ -27,7 +27,8 @@ SOURCES += \
 HEADERS += defs.hpp \
     exception.hpp \
     json.hpp \
-    json_inl.hpp
+    json_inl.hpp \
+    rpc.hpp
 
 symbian {
     MMP_RULES += EXPORTUNFROZEN

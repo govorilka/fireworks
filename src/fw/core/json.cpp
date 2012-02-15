@@ -935,6 +935,71 @@ Fw::JSON::Node* Fw::JSON::Object::addAttribute(const QByteArray& name, Fw::JSON:
     return value;
 }
 
+bool Fw::JSON::Object::boolAttribute(const QByteArray& name, bool defaultVal) const
+{
+    if(Fw::JSON::Node* node = attribute(name))
+    {
+        if(Fw::JSON::Boolean* attribute = node->cast<Fw::JSON::Boolean>())
+        {
+            return attribute->value();
+        }
+    }
+
+    return defaultVal;
+}
+
+double Fw::JSON::Object::numberAttribute(const QByteArray& name, double defaultVal) const
+{
+    if(Fw::JSON::Node* node = attribute(name))
+    {
+        if(Fw::JSON::Number* attribute = node->cast<Fw::JSON::Number>())
+        {
+            return attribute->value();
+        }
+    }
+
+    return defaultVal;
+}
+
+QString Fw::JSON::Object::stringAttribute(const QByteArray& name, const QString& defaultVal) const
+{
+    if(Fw::JSON::Node* node = attribute(name))
+    {
+        if(Fw::JSON::String* attribute = node->cast<Fw::JSON::String>())
+        {
+            return attribute->value();
+        }
+    }
+
+    return defaultVal;
+}
+
+Fw::JSON::Object* Fw::JSON::Object::objectAttribute(const QByteArray& name, Fw::JSON::Object* defaultVal) const
+{
+    if(Fw::JSON::Node* node = attribute(name))
+    {
+        if(Fw::JSON::Object* attribute = node->cast<Fw::JSON::Object>())
+        {
+            return attribute;
+        }
+    }
+
+    return defaultVal;
+}
+
+Fw::JSON::Array* Fw::JSON::Object::arrayAttribute(const QByteArray& name, Fw::JSON::Array* defaultVal) const
+{
+    if(Fw::JSON::Node* node = attribute(name))
+    {
+        if(Fw::JSON::Array* attribute = node->cast<Fw::JSON::Array>())
+        {
+            return attribute;
+        }
+    }
+
+    return defaultVal;
+}
+
 QByteArray Fw::JSON::Object::toUtf8() const
 {
     QByteArray attributes;

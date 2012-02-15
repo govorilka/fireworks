@@ -159,7 +159,7 @@ m_networkManager(0)
 {
     m_networkManager = new QNetworkAccessManager(this);
 
-    connect(m_networkManager, SIGNAL(finished(QNetworkReply*)),
+    BaseClass::connect(m_networkManager, SIGNAL(finished(QNetworkReply*)),
              this, SLOT(replyFinished(QNetworkReply*)));
 
     makeRequestPlaylist(0);
