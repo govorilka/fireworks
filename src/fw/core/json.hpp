@@ -138,7 +138,13 @@ class FW_CORE_SHARED_EXPORT Fw::JSON::String : public Fw::JSON::BaseValue<QStrin
     typedef Fw::JSON::BaseValue<QString, Fw::JSON::T_String> BaseClass;
 
 public:
-    explicit String(const QString& value = QString());
+
+    inline static BaseType defaultValue()
+    {
+        return QString();
+    }
+
+    explicit String(const QString& value = defaultValue());
 
     inline bool isEmpty() const;
 
@@ -159,7 +165,13 @@ class FW_CORE_SHARED_EXPORT Fw::JSON::Number : public Fw::JSON::BaseValue<double
 {
     typedef Fw::JSON::BaseValue<double, Fw::JSON::T_Number> BaseClass;
 public:
-    Number(double value = 0.);
+
+    inline static BaseType defaultValue()
+    {
+        return 0.;
+    }
+
+    Number(double value = defaultValue());
 
     QByteArray toUtf8() const;
 
@@ -179,9 +191,13 @@ class FW_CORE_SHARED_EXPORT Fw::JSON::Boolean: public Fw::JSON::BaseValue<bool, 
   typedef Fw::JSON::BaseValue<bool, Fw::JSON::T_Bool> BaseClass;
 
 public:
-    friend class Fw::JSON::Node;
 
-    Boolean(bool value = false);
+    inline static BaseType defaultValue()
+    {
+        return false;
+    }
+
+    Boolean(bool value = defaultValue());
 
     QByteArray toUtf8() const;
 
@@ -217,26 +233,11 @@ public:
 
     void clear();
 
-    inline QByteArray attributeName(Fw::JSON::Node* child) const;
-
     inline Fw::JSON::Node* attribute(const QByteArray& name) const;
-    template<class T> typename T::BaseType attribute(const QByteArray& name, const typename T::BaseType& defaultValue)
-    {
-        if(Fw::JSON::Node* node = attribute(name))
-        {
-            if(T* attribute = node->cast<T>())
-            {
-                return attribute->value();
-            }
-        }
-        return defaultValue;
-    }
+    inline QByteArray attributeName(Fw::JSON::Node* child) const;  
 
-    bool boolAttribute(const QByteArray& name, bool defaultVal = false) const;
-    double numberAttribute(const QByteArray& name, double defaultVal = 0.0) const;
-    QString stringAttribute(const QByteArray& name, const QString& defaultVal = QString()) const;
-    Fw::JSON::Object* objectAttribute(const QByteArray& name, Fw::JSON::Object* defaultVal = 0) const;
-    Fw::JSON::Array* arrayAttribute(const QByteArray& name, Fw::JSON::Array* defaultVal = 0) const;
+    template<class T> bool hasValue(const QByteArray& name, typename T::BaseType* value = 0);
+    template<class T> typename T::BaseType value(const QByteArray& name, const typename T::BaseType& defaultValue = T::defaultValue());
 
     inline QHash<QByteArray, Fw::JSON::Node*> attributes() const;
     inline QList<Fw::JSON::Node*> toList() const;

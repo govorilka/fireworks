@@ -27,6 +27,28 @@ QByteArray Fw::JSON::Object::attributeName(Fw::JSON::Node* child) const
     return m_attributes.key(child, "");
 }
 
+template<class T> bool Fw::JSON::Object::hasValue(const QByteArray& name, typename T::BaseType* value)
+{
+    if(T* node = attribute(name)->cast<T>())
+    {
+        if(value)
+        {
+            (*value) = node->value();
+        }
+        return true;
+    }
+    return false;
+}
+
+template<class T> typename T::BaseType Fw::JSON::Object::value(const QByteArray& name, const typename T::BaseType& defaultValue)
+{
+    if(T* node = attribute(name)->cast<T>())
+    {
+        return node->value();
+    }
+    return defaultValue;
+}
+
 QHash<QByteArray, Fw::JSON::Node*> Fw::JSON::Object::attributes() const
 {
     return m_attributes;

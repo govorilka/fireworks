@@ -40,7 +40,13 @@ void MainWindow::addNode(QTreeWidgetItem* parent, Fw::JSON::Node* node)
                 addNode(childItem, iter.value());
             }
 
-            qDebug() << object->attribute<Fw::JSON::String>("stroka", "<empty>");
+            QString str = "<empty>";
+            if(object->hasValue<Fw::JSON::String>("stroka", &str))
+            {
+                qDebug() << str;
+            }
+            qDebug() << object->value<Fw::JSON::String>("stroka");
+
         }
         break;
 
