@@ -8,10 +8,10 @@ QT       += core
 QT       -= gui
 
 win32 {
-   TARGET = ../../../../lib/fwjsonrpc
+   TARGET = ../../../../lib/fwjsonrpc1
 }
 else {
-   TARGET = ../../../lib/fwjsonrpc
+   TARGET = ../../../lib/fwjsonrpc1
 }
 
 TEMPLATE = lib
@@ -34,5 +34,6 @@ SOURCES += \
 
 HEADERS += \
     jsonrpc.hpp \
-    jsonrpc_inl.hpp
+    jsonrpc_inl.hpp \
+    defs.hpp
 

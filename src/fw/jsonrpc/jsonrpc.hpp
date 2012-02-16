@@ -9,6 +9,8 @@
 
 #include "fw/core/json.hpp"
 
+#include "fw/jsonrpc/defs.hpp"
+
 namespace Fw
 {
     namespace JSON
@@ -19,7 +21,7 @@ namespace Fw
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class Fw::JSON::RPC : public QObject
+class FW_JSONRPC_SHARED_EXPORT Fw::JSON::RPC : public QObject
 {
     Q_OBJECT
     typedef QObject BaseClass;
@@ -47,38 +49,47 @@ private slots:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class Fw::JSON::RPC::Sentence
+class FW_JSONRPC_SHARED_EXPORT Fw::JSON::RPC::Sentence
 {
 public:
+
+    typedef QSharedPointer<Fw::JSON::Object> ObjectPointer;
+
     Sentence();
 
-    bool isValid() const;
+    //bool isValid() const;
 
-    void parse(QIODevice* ioDevice) throw(Fw::Exception);
+    //void parse(QIODevice* ioDevice) throw(Fw::Exception);
 
     inline int id() const;
+
     inline QString method() const;
 
     inline QByteArray toUtf8() const;
 
 protected:
-    QSharedPointer<Fw::JSON::Object> m_object;
+    virtual bool validation(ObjectPointer& object) const = 0;
+
+    ObjectPointer m_object;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class Fw::JSON::RPC::Request : public Fw::JSON::RPC::Sentence
+class FW_JSONRPC_SHARED_EXPORT Fw::JSON::RPC::Request : public Fw::JSON::RPC::Sentence
 {
 public:
     Request(int id, const QString& method);
 
     inline Fw::JSON::Object* params();
     inline const Fw::JSON::Object* const params() const;
+
+protected:
+    bool validation(ObjectPointer& object) const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class Fw::JSON::RPC::Response : public Fw::JSON::RPC::Sentence
+class FW_JSONRPC_SHARED_EXPORT Fw::JSON::RPC::Response : public Fw::JSON::RPC::Sentence
 {
 public:
     Response();
@@ -93,8 +104,13 @@ public:
     inline void setNetworkError(const QByteArray&);
     inline const QByteArray& networkError() const;
 
+protected:
+    bool validation(ObjectPointer& object) const;
+
 private:
     QByteArray m_error;
 };
+
+#include "jsonrpc_inl.hpp"
 
 #endif // FIREWORKS_JSONRPC_HPP
