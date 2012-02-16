@@ -3,22 +3,22 @@
 
 #include "fw/jsonrpc/jsonrpc.hpp"
 
-bool Fw::JSON::RPC::BaseRPC::isValid() const
+//bool Fw::JSON::RPC::Sentence::isValid() const
+//{
+//    return id() && validation();
+//}
+
+int Fw::JSON::RPC::Sentence::id() const
 {
-    return id() && !method().isEmpty();
+    return m_object->value<Fw::JSON::Number>("id");
 }
 
-int Fw::JSON::RPC::BaseRPC::id() const
+QString Fw::JSON::RPC::Sentence::method() const
 {
-    return m_object->numberAttribute("id");
+    return m_object->value<Fw::JSON::String>("method");
 }
 
-QString Fw::JSON::RPC::BaseRPC::method() const
-{
-    return m_object->stringAttribute("method");
-}
-
-QByteArray Fw::JSON::RPC::BaseRPC::toUtf8() const
+QByteArray Fw::JSON::RPC::Sentence::toUtf8() const
 {
     return m_object->toUtf8();
 }
@@ -27,29 +27,29 @@ QByteArray Fw::JSON::RPC::BaseRPC::toUtf8() const
 
 Fw::JSON::Object* Fw::JSON::RPC::Request::params()
 {
-    return m_object->objectAttribute("params");
+    return const_cast<Fw::JSON::Object*>(params());
 }
 
 const Fw::JSON::Object* const Fw::JSON::RPC::Request::params() const
 {
-    return m_object->objectAttribute("params");
+    return m_object->attribute("params")->cast<Fw::JSON::Object>();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Fw::JSON::RPC::Response::parse(QIODevice* ioDevice) throw(Fw::Exception)
-{
-    m_object->parse(ioDevice);
-}
+//void Fw::JSON::RPC::Response::parse(QIODevice* ioDevice) throw(Fw::Exception)
+//{
+//    m_object->parse(ioDevice);
+//}
 
 const Fw::JSON::Object* const Fw::JSON::RPC::Response::result() const
 {
-    return m_object->objectAttribute("result");
+    return m_object->attribute("result")->cast<Fw::JSON::Object>();
 }
 
 const Fw::JSON::Object* const Fw::JSON::RPC::Response::error() const
 {
-    return m_object->objectAttribute("error");
+    return m_object->attribute("error")->cast<Fw::JSON::Object>();
 }
 
 inline void Fw::JSON::RPC::Response::setNetworkError(const QByteArray& error)
@@ -61,5 +61,21 @@ inline const QByteArray& Fw::JSON::RPC::Response::networkError() const
 {
     return m_error;
 }
+
+int Fw::JSON::RPC::Response::errorCode() const
+{
+    return m_object->value<Fw::JSON::Number>("code");
+}
+
+QString Fw::JSON::RPC::Response::errorMessage() const
+{
+    return m_object->value<Fw::JSON::String>("message");
+}
+
+const Fw::JSON::Object* const Fw::JSON::RPC::Response::errorData() const
+{
+    return m_object->attribute("data")->cast<Fw::JSON::Object>();
+}
+
 
 #endif // FIREWORKS_JSONRPC_INL_INL_HPP
