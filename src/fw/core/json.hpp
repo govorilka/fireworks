@@ -237,7 +237,9 @@ public:
     inline QByteArray attributeName(Fw::JSON::Node* child) const;  
 
     template<class T> bool hasValue(const QByteArray& name, typename T::BaseType* value = 0);
+
     template<class T> typename T::BaseType value(const QByteArray& name, const typename T::BaseType& defaultValue = T::defaultValue());
+    template<class T> T* setValue(const QByteArray& name, const typename T::BaseType& value);
 
     inline QHash<QByteArray, Fw::JSON::Node*> attributes() const;
     inline QList<Fw::JSON::Node*> toList() const;

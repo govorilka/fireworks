@@ -9,13 +9,25 @@ QT       += core gui
 TARGET = jsonrpc
 TEMPLATE = app
 
+INCLUDEPATH += ../../src/
+
+win32 {
+    LIBS += -L../../../lib \
+            -lfwcore1 \
+            -lfwjsonrpc1
+}
+else {
+    LIBS += -L../../lib \
+            -lfwcore1 \
+            -lfwjsonrpc1
+}
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    mainform.cpp
+           mainwindow.cpp \
+           mainform.cpp
 
 HEADERS  += mainwindow.hpp \
-    mainform.hpp
+            mainform.hpp
 
 FORMS    += mainwindow.ui \
-    mainform.ui
+            mainform.ui

@@ -24,12 +24,12 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="0" colspan="3">
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QTextEdit" name="textEdit"/>
+     <widget class="QTextEdit" name="requestEdit"/>
      <widget class="QTreeWidget" name="treeWidget">
       <column>
        <property name="text">
@@ -37,6 +37,13 @@
        </property>
       </column>
      </widget>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="resetBtn">
+     <property name="text">
+      <string>reset</string>
+     </property>
     </widget>
    </item>
   </layout>

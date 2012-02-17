@@ -8,6 +8,7 @@
 #include <QUrl>
 
 #include "fw/core/json.hpp"
+#include "fw/core/exception.hpp"
 
 #include "fw/jsonrpc/defs.hpp"
 
@@ -55,20 +56,22 @@ public:
 
     typedef QSharedPointer<Fw::JSON::Object> ObjectPointer;
 
-    Sentence();
+    Sentence(int id = 0);
 
-    //bool isValid() const;
+    bool isValid(QByteArray* errorMessage = 0) const;
 
-    //void parse(QIODevice* ioDevice) throw(Fw::Exception);
+    void parse(QIODevice* ioDevice) throw(const Fw::Exception&);
 
     inline int id() const;
+    inline void setID(int id);
 
     inline QString method() const;
+    inline void setMethod(const QString& method) const;
 
     inline QByteArray toUtf8() const;
 
 protected:
-    virtual bool validation(ObjectPointer& object) const = 0;
+    virtual void validation(const ObjectPointer& object) const throw(const Fw::Exception&) = 0;
 
     ObjectPointer m_object;
 };
@@ -77,22 +80,25 @@ protected:
 
 class FW_JSONRPC_SHARED_EXPORT Fw::JSON::RPC::Request : public Fw::JSON::RPC::Sentence
 {
+    typedef Sentence BaseClass;
+
 public:
-    Request(int id, const QString& method);
+    Request(int id = 0, const QString& method = QString(), Node *params = 0);
 
     inline Fw::JSON::Object* params();
     inline const Fw::JSON::Object* const params() const;
 
 protected:
-    bool validation(ObjectPointer& object) const;
+    void validation(const ObjectPointer& object) const throw(const Fw::Exception&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class FW_JSONRPC_SHARED_EXPORT Fw::JSON::RPC::Response : public Fw::JSON::RPC::Sentence
 {
-public:
-    Response();
+    typedef Sentence BaseClass;
+public: 
+    Response(int id = 0);
 
     inline const Fw::JSON::Object* const result() const;
     inline const Fw::JSON::Object* const error() const;
@@ -105,7 +111,7 @@ public:
     inline const QByteArray& networkError() const;
 
 protected:
-    bool validation(ObjectPointer& object) const;
+    void validation(const ObjectPointer& object) const throw(const Fw::Exception&);
 
 private:
     QByteArray m_error;

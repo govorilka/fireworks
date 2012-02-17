@@ -49,6 +49,16 @@ template<class T> typename T::BaseType Fw::JSON::Object::value(const QByteArray&
     return defaultValue;
 }
 
+template<class T> T* Fw::JSON::Object::setValue(const QByteArray& name, const typename T::BaseType& value)
+{
+    if(T* node = attribute(name)->cast<T>())
+    {
+        node->setValue(value);
+        return node;
+    }
+    return static_cast<T*>(addAttribute(name, new T(value), true));
+}
+
 QHash<QByteArray, Fw::JSON::Node*> Fw::JSON::Object::attributes() const
 {
     return m_attributes;
