@@ -1,10 +1,13 @@
 #ifndef MAINFORM_HPP
 #define MAINFORM_HPP
 
-#include <QWidget>
+#include <QtGui/qwidget.h>
 
-namespace Ui {
-class MainForm;
+#include "fw/jsonrpc/jsonrpc.hpp"
+
+namespace Ui
+{
+    class MainForm;
 }
 
 class MainForm : public QWidget
@@ -14,7 +17,13 @@ class MainForm : public QWidget
 public:
     explicit MainForm(QWidget *parent = 0);
     ~MainForm();
-    
+
+    QByteArray requestText() const;
+    void setRequestText(const QByteArray& text);
+
+public slots:
+    void resetRequest();
+
 private:
     Ui::MainForm *ui;
 };

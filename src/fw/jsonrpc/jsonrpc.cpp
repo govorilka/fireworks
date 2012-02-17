@@ -35,35 +35,83 @@ void Fw::JSON::RPC::finish(QNetworkReply* reply)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Fw::JSON::RPC::Sentence::Sentence() :
+Fw::JSON::RPC::Sentence::Sentence(int id) :
     m_object(new Fw::JSON::Object())
 {
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-Fw::JSON::RPC::Request::Request(int id, const QString& method)
-{
     m_object->addString("jsonrpc", "2.0");
-    m_object->addNumber("id", id);
-    m_object->addString("method", method);
-    m_object->addObject("params");
+    if(id)
+    {
+        m_object->addNumber("id", id);
+    }
 }
 
-bool Fw::JSON::RPC::Request::validation(ObjectPointer& object) const
+void Fw::JSON::RPC::Sentence::parse(QIODevice* ioDevice) throw(const Fw::Exception&)
 {
-    Q_UNUSED(object);
-    return false;
+    m_object->parse(ioDevice);
+    QByteArray errorMessage;
+    if(!isValid(&errorMessage))
+    {
+        throw Fw::Exception(errorMessage);
+    }
+}
+
+bool Fw::JSON::RPC::Sentence::isValid(QByteArray* errorMessage) const
+{
+    try
+    {
+        if(!m_object->hasValue<Fw::JSON::Number>("id"))
+        {
+            throw Fw::Exception("Attribute 'id' is not define");
+        }
+
+        QString version = m_object->value<Fw::JSON::String>("jsonrpc");
+        if(version != "2.0")
+        {
+            throw Fw::Exception("Unsupported version json rpc or attribute 'jsonprc' is not define."
+                                "This library used version 2.0");
+        }
+
+        validation(m_object);
+    }
+    catch(const Fw::Exception& e)
+    {
+        if(errorMessage)
+        {
+            (*errorMessage) = e.error();
+        }
+        return false;
+    }
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Fw::JSON::RPC::Response::Response()
+Fw::JSON::RPC::Request::Request(int id, const QString& method, Fw::JSON::Node* params) :
+    BaseClass(id)
+{
+    if(!method.isEmpty())
+    {
+        m_object->addString("method", method);
+    }
+    if(params)
+    {
+        m_object->addAttribute("params", params);
+    }
+}
+
+void Fw::JSON::RPC::Request::validation(const ObjectPointer& object) const throw(const Fw::Exception&)
+{
+    Q_UNUSED(object);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Fw::JSON::RPC::Response::Response(int id) :
+    BaseClass(id)
 {
 }
 
-bool Fw::JSON::RPC::Response::validation(ObjectPointer& object) const
+void Fw::JSON::RPC::Response::validation(const ObjectPointer& object) const throw(const Fw::Exception&)
 {
     Q_UNUSED(object);
-    return false;
 }

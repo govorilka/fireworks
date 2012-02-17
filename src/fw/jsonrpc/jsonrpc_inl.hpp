@@ -3,19 +3,24 @@
 
 #include "fw/jsonrpc/jsonrpc.hpp"
 
-//bool Fw::JSON::RPC::Sentence::isValid() const
-//{
-//    return id() && validation();
-//}
-
 int Fw::JSON::RPC::Sentence::id() const
 {
     return m_object->value<Fw::JSON::Number>("id");
 }
 
+void Fw::JSON::RPC::Sentence::setID(int id)
+{
+    m_object->setValue<Fw::JSON::Number>("id", id);
+}
+
 QString Fw::JSON::RPC::Sentence::method() const
 {
     return m_object->value<Fw::JSON::String>("method");
+}
+
+void Fw::JSON::RPC::Sentence::setMethod(const QString& method) const
+{
+    m_object->setValue<Fw::JSON::String>("method", method);
 }
 
 QByteArray Fw::JSON::RPC::Sentence::toUtf8() const
