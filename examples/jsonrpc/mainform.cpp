@@ -21,6 +21,7 @@ void MainForm::resetRequest()
     Fw::JSON::RPC::Request r;
     r.setID(0);
     r.setMethod("method");
+    r.setParam(new Fw::JSON::Object);
     setRequestText(r.toUtf8());
 }
 

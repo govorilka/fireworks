@@ -934,25 +934,19 @@ QByteArray Fw::JSON::Object::toUtf8() const
     QByteArray attributes;
     for(QHash<QByteArray, Fw::JSON::Node*>::const_iterator iter = m_attributes.begin(); iter != m_attributes.end(); ++iter)
     {
-        if(!attributes.isEmpty())
-        {
-           attributes += ",";
-        }
-        Fw::JSON::Node* node = iter.value();
-        QByteArray value = node->toUtf8();
+        QByteArray value = iter.value()->toUtf8();
         if(!value.isEmpty())
         {
+            if(!attributes.isEmpty())
+            {
+               attributes += ",";
+            }
             attributes += ("\"" + iter.key() + "\"");
             attributes += ":";
             attributes += value;
         }
-    }
 
-    if(attributes.isEmpty())
-    {
-        return "";
     }
-
     return "{" + attributes + "}";
 }
 
