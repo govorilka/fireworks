@@ -13,16 +13,6 @@ void Fw::JSON::RPC::Sentence::setID(int id)
     m_object->setValue<Fw::JSON::Number>("id", id);
 }
 
-QString Fw::JSON::RPC::Sentence::method() const
-{
-    return m_object->value<Fw::JSON::String>("method");
-}
-
-void Fw::JSON::RPC::Sentence::setMethod(const QString& method) const
-{
-    m_object->setValue<Fw::JSON::String>("method", method);
-}
-
 QByteArray Fw::JSON::RPC::Sentence::toUtf8() const
 {
     return m_object->toUtf8();
@@ -30,14 +20,24 @@ QByteArray Fw::JSON::RPC::Sentence::toUtf8() const
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Fw::JSON::Object* Fw::JSON::RPC::Request::params()
+QString Fw::JSON::RPC::Request::method() const
 {
-    return const_cast<Fw::JSON::Object*>(params());
+    return m_object->value<Fw::JSON::String>("method");
 }
 
-const Fw::JSON::Object* const Fw::JSON::RPC::Request::params() const
+void Fw::JSON::RPC::Request::setMethod(const QString& method)
 {
-    return m_object->attribute("params")->cast<Fw::JSON::Object>();
+    m_object->setValue<Fw::JSON::String>("method", method);
+}
+
+Fw::JSON::Node* Fw::JSON::RPC::Request::param() const
+{
+    return m_object->attribute("param");
+}
+
+void Fw::JSON::RPC::Request::setParam(Fw::JSON::Node* param)
+{
+    m_object->addAttribute("param", param);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

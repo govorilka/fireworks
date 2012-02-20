@@ -65,9 +65,6 @@ public:
     inline int id() const;
     inline void setID(int id);
 
-    inline QString method() const;
-    inline void setMethod(const QString& method) const;
-
     inline QByteArray toUtf8() const;
 
 protected:
@@ -85,8 +82,11 @@ class FW_JSONRPC_SHARED_EXPORT Fw::JSON::RPC::Request : public Fw::JSON::RPC::Se
 public:
     Request(int id = 0, const QString& method = QString(), Node *params = 0);
 
-    inline Fw::JSON::Object* params();
-    inline const Fw::JSON::Object* const params() const;
+    inline QString method() const;
+    inline void setMethod(const QString& method);
+
+    inline Fw::JSON::Node* param() const;
+    inline void setParam(Fw::JSON::Node* param);
 
 protected:
     void validation(const ObjectPointer& object) const throw(const Fw::Exception&);
