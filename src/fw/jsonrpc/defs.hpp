@@ -9,4 +9,12 @@
 #  define FW_JSONRPC_SHARED_EXPORT Q_DECL_IMPORT
 #endif
 
+namespace Fw
+{
+    namespace JSON
+    {
+        class RPC;
+    }
+}
+
 #endif //FIREWORKS_JSONRPC_DEFS_HPP

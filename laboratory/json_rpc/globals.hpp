@@ -2,8 +2,8 @@
 #define GLOBALS_HPP
 
 //const char DateTimeFormat[] = "yyyy-MM-dd hh:mm:ss";
-//const char APIServerURL[] = "https://cas.211.ru/jsonrpc/";
-const char APIServerURL[] = "https://89.189.190.163/jsonrpc/";
+const char APIServerURL[] = "http://cas.211.ru/jsonrpc/";
+//const char APIServerURL[] = "https://89.189.190.163/jsonrpc/";
 
 enum UNICODE_names : ushort
 {

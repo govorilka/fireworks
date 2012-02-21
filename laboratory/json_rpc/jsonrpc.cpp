@@ -10,7 +10,7 @@
 
 const QByteArray GetNetworkMACAddres()
 {
-    return "00-1D-7D-7C-5A-32";
+    return "00:11:95:fc:71:3b";
 }
 
 QByteArray TimestampToStringDate(uint timestamp)
@@ -181,8 +181,8 @@ void JsonRpc::makeRequestPlaylist(qint32 requestID)
     qDebug() << jsonRequest;
     qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 
-    QNetworkReply* reply = m_networkManager->post(QNetworkRequest(QUrl(APIServerURL)), jsonRequest);
-    m_replysPlaylist.insert(reply);
+    //QNetworkReply* reply = m_networkManager->post(QNetworkRequest(QUrl(APIServerURL)), jsonRequest);
+    //m_replysPlaylist.insert(reply);
 }
 
 void JsonRpc::makeRequestEPG(qint32 channelID, qint32 limit, const QDateTime& begin, const QDateTime& end)

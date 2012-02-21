@@ -1,6 +1,8 @@
 #ifndef FIREWORKS_JSONRPC_HPP
 #define FIREWORKS_JSONRPC_HPP
 
+#include <QtCore/qpointer.h>
+
 #include <QtCore/QSharedPointer>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkRequest>
@@ -11,14 +13,6 @@
 #include "fw/core/exception.hpp"
 
 #include "fw/jsonrpc/defs.hpp"
-
-namespace Fw
-{
-    namespace JSON
-    {
-        class RPC;
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -33,15 +27,17 @@ public:
     class Request;
     class Response;
 
-    RPC(QNetworkAccessManager* networkManager);
+    RPC(QNetworkAccessManager* networkManager, QObject* parent = 0);
 
-    void send(const QUrl& serverURL, const Request& request);
+    void send(const QUrl& serverURL, const Request& request) throw (const Fw::Exception&);
+    void send(const QUrl& serverURL, const QString& request) throw (const Fw::Exception&);
 
 signals:
-    void finished(const Response& response);
+    void finished(const Fw::JSON::RPC::Response& response);
+    void error(const QString& message);
 
 private:
-    QNetworkAccessManager* m_networkManager;
+    QPointer<QNetworkAccessManager> m_networkManager;
 
 private slots:
     void finish(QNetworkReply* reply);
@@ -59,13 +55,17 @@ public:
     Sentence(int id = 0);
 
     bool isValid(QByteArray* errorMessage = 0) const;
+    inline void valid() const throw(const Fw::Exception&);
 
-    void parse(QIODevice* ioDevice) throw(const Fw::Exception&);
+    inline void parse(QIODevice* ioDevice) throw(const Fw::Exception&);
+    inline void parse(const QString& json) throw(const Fw::Exception&);
 
     inline int id() const;
     inline void setID(int id);
 
     inline QByteArray toUtf8() const;
+
+    inline ObjectPointer object() const;
 
 protected:
     virtual void validation(const ObjectPointer& object) const throw(const Fw::Exception&) = 0;
@@ -77,7 +77,7 @@ protected:
 
 class FW_JSONRPC_SHARED_EXPORT Fw::JSON::RPC::Request : public Fw::JSON::RPC::Sentence
 {
-    typedef Sentence BaseClass;
+    typedef Fw::JSON::RPC::Sentence BaseClass;
 
 public:
     Request(int id = 0, const QString& method = QString(), Node *params = 0);
@@ -96,7 +96,7 @@ protected:
 
 class FW_JSONRPC_SHARED_EXPORT Fw::JSON::RPC::Response : public Fw::JSON::RPC::Sentence
 {
-    typedef Sentence BaseClass;
+    typedef Fw::JSON::RPC::Sentence BaseClass;
 public: 
     Response(int id = 0);
 

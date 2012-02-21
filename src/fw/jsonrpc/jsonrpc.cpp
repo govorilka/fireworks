@@ -1,36 +1,52 @@
+#include <QtCore/qdebug.h>
 
 #include "fw/jsonrpc/jsonrpc.hpp"
 
 
-Fw::JSON::RPC::RPC(QNetworkAccessManager* networkManager) :
+Fw::JSON::RPC::RPC(QNetworkAccessManager* networkManager, QObject* parent) :
+    BaseClass(parent),
     m_networkManager(networkManager)
 {
     connect(m_networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(finish(QNetworkReply*)));
 }
 
-void Fw::JSON::RPC::send(const QUrl& serverURL, const Fw::JSON::RPC::Request& request)
+void Fw::JSON::RPC::send(const QUrl& serverURL, const Request& request) throw (const Fw::Exception&)
 {
-    m_networkManager->post(QNetworkRequest(serverURL), request.toUtf8());
+    request.valid();
+    qDebug() << request.toUtf8();
+    if(m_networkManager)
+    {
+        m_networkManager->post(QNetworkRequest(serverURL), request.toUtf8());
+    }
+}
+
+void Fw::JSON::RPC::send(const QUrl& serverURL, const QString& request) throw (const Fw::Exception&)
+{
+    Request r;
+    r.parse(request);
+    send(serverURL, r);
 }
 
 void Fw::JSON::RPC::finish(QNetworkReply* reply)
 {
-    Response response;
     try
     {
         if(reply->error() != QNetworkReply::NoError)
         {
             throw Fw::Exception("Server error:" + reply->errorString().toUtf8());
         }
-        //response.parse(reply);
+
+        Response response;
+        response.parse(reply);
+        emit finished(response);
+
     }
     catch(const Fw::Exception& e)
     {
-        // response.setNetworkError(e.error());
+        qDebug() << e.error();
+        emit error(e.error());
     }
     reply->deleteLater();
-    emit finished(response);
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,16 +61,6 @@ Fw::JSON::RPC::Sentence::Sentence(int id) :
     }
 }
 
-void Fw::JSON::RPC::Sentence::parse(QIODevice* ioDevice) throw(const Fw::Exception&)
-{
-    m_object->parse(ioDevice);
-    QByteArray errorMessage;
-    if(!isValid(&errorMessage))
-    {
-        throw Fw::Exception(errorMessage);
-    }
-}
-
 bool Fw::JSON::RPC::Sentence::isValid(QByteArray* errorMessage) const
 {
     try
@@ -64,14 +70,21 @@ bool Fw::JSON::RPC::Sentence::isValid(QByteArray* errorMessage) const
             throw Fw::Exception("Attribute 'id' is not define");
         }
 
-        QString version = m_object->value<Fw::JSON::String>("jsonrpc");
-        if(version != "2.0")
+        Fw::JSON::Node* version = m_object->attribute("jsonrpc");
+        if(!version)
         {
-            throw Fw::Exception("Unsupported version json rpc or attribute 'jsonprc' is not define."
+            throw Fw::Exception("Attribute 'jsonprc' is not define."
                                 "This library used version 2.0");
         }
 
-        validation(m_object);
+        bool bOk = false;
+        if(version->toUint(&bOk) != 2)
+        {
+            throw Fw::Exception("Unsupported version json rpc."
+                                "This library used version 2.0");
+        }
+
+        valid();
     }
     catch(const Fw::Exception& e)
     {
