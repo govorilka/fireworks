@@ -128,3 +128,13 @@ void Fw::JSON::RPC::Response::validation(const ObjectPointer& object) const thro
 {
     Q_UNUSED(object);
 }
+
+Fw::JSON::Object* Fw::JSON::RPC::Response::resultObject() const throw (const Fw::Exception&)
+{
+    Fw::JSON::Object* object = result()->cast<Fw::JSON::Object>();
+    if(!object)
+    {
+        throw Fw::Exception("Object 'result' is not defined or 'result' is not a json object");
+    }
+    return object;
+}

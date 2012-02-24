@@ -20,6 +20,18 @@ QString FwScheduler::lastError() const
 
 ////////////////////////////////////////////////////////////////////
 
+QNetworkReply* FwSchedulerNetworkManager::get(FwNetworkSchedulerTask* task, const QUrl& url)
+{
+    return addReply(task, BaseClass::get(QNetworkRequest(url)));
+}
+
+QNetworkReply* FwSchedulerNetworkManager::post(FwNetworkSchedulerTask* task, const QUrl& url, const QByteArray& data)
+{
+    return addReply(task, BaseClass::post(QNetworkRequest(url), data));
+}
+
+////////////////////////////////////////////////////////////////////
+
 int FwSchedulerTask::interval() const
 {
     return m_interval;

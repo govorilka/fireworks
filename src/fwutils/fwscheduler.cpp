@@ -218,9 +218,8 @@ FwSchedulerNetworkManager::FwSchedulerNetworkManager(QObject* parent) :
             this, SLOT(replyFinished(QNetworkReply*)));
 }
 
-QNetworkReply* FwSchedulerNetworkManager::get(FwNetworkSchedulerTask* task, const QUrl& url)
+QNetworkReply* FwSchedulerNetworkManager::addReply(FwNetworkSchedulerTask* task, QNetworkReply* reply)
 {
-    QNetworkReply* reply = BaseClass::get(QNetworkRequest(url));
     if(reply)
     {
         replyCache.insert(qHash(reply), task);
@@ -437,8 +436,13 @@ void FwNetworkSchedulerTask::run()
     if(m_url.isValid() && networkManager)
     {
         pause();
-        m_masterReply = networkManager->get(this, m_url);
+        m_masterReply = createMasterReply(networkManager, m_url);
     }
+}
+
+QNetworkReply* FwNetworkSchedulerTask::createMasterReply(QPointer<FwSchedulerNetworkManager>& networkManager, const QUrl& url)
+{
+    return networkManager->get(this, m_url);
 }
 
 void FwNetworkSchedulerTask::setUrl(const QUrl& url)
