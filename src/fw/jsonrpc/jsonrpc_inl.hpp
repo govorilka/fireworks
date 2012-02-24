@@ -71,9 +71,9 @@ void Fw::JSON::RPC::Request::setParam(Fw::JSON::Node* param)
 //    object()->parse(ioDevice);
 //}
 
-const Fw::JSON::Object* const Fw::JSON::RPC::Response::result() const
+Fw::JSON::Node* Fw::JSON::RPC::Response::result() const
 {
-    return object()->attribute("result")->cast<Fw::JSON::Object>();
+    return object()->attribute("result");
 }
 
 const Fw::JSON::Object* const Fw::JSON::RPC::Response::error() const

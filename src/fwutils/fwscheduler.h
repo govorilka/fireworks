@@ -75,7 +75,11 @@ class FIREWORKSSHARED_EXPORT FwSchedulerNetworkManager : public QNetworkAccessMa
 public:
     FwSchedulerNetworkManager(QObject* parent = 0);
 
-    QNetworkReply* get(FwNetworkSchedulerTask* task, const QUrl& url);
+    inline QNetworkReply* get(FwNetworkSchedulerTask* task, const QUrl& url);
+    inline QNetworkReply* post(FwNetworkSchedulerTask* task, const QUrl& url, const QByteArray& data);
+
+protected:
+    QNetworkReply* addReply(FwNetworkSchedulerTask* task, QNetworkReply* reply);
 
 private:
     QHash<int, QPointer<FwNetworkSchedulerTask> >  replyCache;
@@ -172,7 +176,9 @@ public:
     bool loadData(FwMLObject *object);
 
 protected:
-    void run();
+    virtual void run();
+
+    virtual QNetworkReply* createMasterReply(QPointer<FwSchedulerNetworkManager>& networkManager, const QUrl& url);
 
     QPointer<FwSchedulerNetworkManager> networkManager;
 

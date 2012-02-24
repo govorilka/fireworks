@@ -20,6 +20,10 @@ DEFINES += FIREWORKS_LIBRARY
 
 INCLUDEPATH += .
 
+LIBS += -L$(FIREWORKS_PATH)/lib \
+        -lfwcore1 \
+        -lfwjsonrpc1
+
 SOURCES += fireworks.cpp
 
 HEADERS += fireworks.h

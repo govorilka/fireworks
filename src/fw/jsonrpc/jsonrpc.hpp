@@ -100,7 +100,9 @@ class FW_JSONRPC_SHARED_EXPORT Fw::JSON::RPC::Response : public Fw::JSON::RPC::S
 public: 
     Response(int id = 0);
 
-    inline const Fw::JSON::Object* const result() const;
+    inline Fw::JSON::Node* result() const;
+    Fw::JSON::Object* resultObject() const throw (const Fw::Exception&);
+
     inline const Fw::JSON::Object* const error() const;
 
     inline int errorCode() const;
